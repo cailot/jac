@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="base.definition" template="/WEB-INF/layouts/classic.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="menu" value="/WEB-INF/layouts/tiles/menu.jsp" />
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!--Student -->
+	<definition name="adminPage" extends="base.definition">
+		<put-attribute name="title" value="Administrator Staff Page" />
+		<put-attribute name="body" value="/WEB-INF/layouts/admin.jsp" />
+	</definition>
+	<definition name="studentListPage" extends="base.definition">
+		<put-attribute name="title" value="Student List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/student/studentList.jsp" />
+	</definition>
+
+	<!--Course -->
+	<definition name="courseListPage" extends="base.definition">
+		<put-attribute name="title" value="Course List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/courseList.jsp" />
+	</definition>
+
+	<!--Class -->
+	<definition name="classListPage" extends="base.definition">
+		<put-attribute name="title" value="Class List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/classList.jsp" />
+	</definition>
+
+	<!--Teacher -->
+	<definition name="teacherPage" extends="base.definition">
+		<put-attribute name="title" value="Teacher List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/teacher.jsp" />
+	</definition>
+
+	<!-- Setting -->
+	<definition name="settingPage" extends="base.definition">
+		<put-attribute name="title" value="Setting" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/adminSetting.jsp" />
+	</definition>
+
+
+
+	<!-- Payment Base -->
+	<definition name="payment.definition" template="/WEB-INF/layouts/payment.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- Receipt -->
+	<definition name="receiptPage" extends="payment.definition">
+		<put-attribute name="title" value="James An College Receipt Page" />
+		<put-attribute name="body" value="/WEB-INF/layouts/invoice/receipt.jsp" />
+	</definition>
+	
+	<!-- Invoice -->
+	<definition name="invoicePage" extends="payment.definition">
+		<put-attribute name="title" value="James An College Invoice Page" />
+		<put-attribute name="body" value="/WEB-INF/layouts/invoice/invoice.jsp" />
+	</definition>
+</tiles-definitions>
