@@ -55,6 +55,12 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	}
 
 	@Override
+	public List<EnrolmentDTO> findEnrolmentByClazzAndInvoice(Long clazzId, Long invoiceId) {
+		List<EnrolmentDTO> dtos = enrolmentRepository.findEnrolmentByClazzIdAndInvoiceId(clazzId, invoiceId);
+		return dtos;
+	}
+
+	@Override
 	public EnrolmentDTO addEnrolment(Enrolment enrolment) {
 		Enrolment enrol = enrolmentRepository.save(enrolment);
 		EnrolmentDTO dto = new EnrolmentDTO(enrol);
