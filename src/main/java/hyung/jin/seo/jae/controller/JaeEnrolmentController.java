@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -174,6 +175,69 @@ public class JaeEnrolmentController {
 	}
 
 	// associate book with Invoice
+	// @PostMapping("/associateBook/{studentId}")
+	// @ResponseBody
+	// public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody Long[] bookIds) {
+	// 	List<MaterialDTO> dtos = new ArrayList<>();
+	// 	// 1. get Invoice
+	// 	Invoice invo = invoiceService.getInvoiceByStudentId(studentId);
+	// 	// if no invoice or no book, return empty list
+	// 	if((invo==null) || (bookIds==null)) return dtos;
+		
+	// 	// 2. bring all registered Book - bookId & invoiceId
+	// 	List<MaterialDTO> alreadys = materialService.findMaterialByInvoice(invo.getId());
+	// 	// 3, store list for registered book Ids
+	// 	List<Long> registeredIds = new ArrayList<Long>();
+	// 	for(MaterialDTO dto : alreadys){
+	// 		registeredIds.add(Long.parseLong(dto.getBookId()));
+	// 	}
+	// 	for(Long bookId : bookIds){
+	// 		boolean isExist = false;
+	// 		for(Long registeredId : registeredIds){
+	// 		// 3-1. if bookId is in the list and passed parameters then skip - already exist
+	// 			if(bookId == registeredId){
+	// 				isExist = true;
+	// 				// add book price as re-initialized by Enrolment
+	// 				Book book = bookService.getBook(bookId);
+	// 				// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
+	// 				invo.setAmount(invo.getAmount() + book.getPrice());
+	// 				// System.out.println("After - invo.getAmout() : " + invo.getAmount());
+	// 				// amount update for invoice
+	// 				invoiceService.updateInvoice(invo, invo.getId());
+	// 				registeredIds.remove(registeredId);
+	// 				break;			
+	// 			}	
+	// 		}
+	// 		if(isExist) continue; // keep outter loop
+	// 		// 3-2. if bookId not in the list then add - new book
+	// 		// 4-2. get Book
+	// 		Book book = bookService.getBook(bookId);
+	// 		// 5-2. update invoice amount
+
+	// 		// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
+	// 		invo.setAmount(invo.getAmount() + book.getPrice());
+	// 		// System.out.println("After - invo.getAmout() : " + invo.getAmount());
+			
+	// 		// 6-2. create Material
+	// 		Material material = new Material();
+	// 		material.setBook(book);
+	// 		material.setInvoice(invo);
+	// 		// 7-2. save Material
+	// 		material = materialService.addMaterial(material);		
+	// 	}
+	// 	// 3-3. if bookId is in the list but no passed then delete - delete book
+	// 	for(Long deleteId : registeredIds){
+	// 		// 4-3. remove Material by bookId & invoiceId
+	// 		materialService.deleteMaterial(invo.getId(), deleteId);
+	// 	}
+	// 	// add MaterialDTO to return list
+	// 	Set<Material> materials = invo.getMaterials();
+	// 	for (Material material : materials) {
+	// 		dtos.add(new MaterialDTO(material));
+	// 	}
+	// 	return dtos;
+	// }
+
 	@PostMapping("/associateBook/{studentId}")
 	@ResponseBody
 	public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody Long[] bookIds) {
@@ -226,9 +290,7 @@ public class JaeEnrolmentController {
 		}
 		// 3-3. if bookId is in the list but no passed then delete - delete book
 		for(Long deleteId : registeredIds){
-			// 4-3. get Book
-			// Book book = bookService.getBook(deleteId);
-			// 5-3. remove Material by bookId & invoiceId
+			// 4-3. remove Material by bookId & invoiceId
 			materialService.deleteMaterial(invo.getId(), deleteId);
 		}
 		// add MaterialDTO to return list
@@ -308,6 +370,52 @@ public class JaeEnrolmentController {
 		for(EnrolmentDTO data : formData){
 			// if Invoice is already created and still available, use it
 			if(isInvoiceExist){
+				// check class already belong to Invoice
+				List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByClazzAndInvoice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")), invoice.getId());
+				// if class already belong to Invoice, update Enrolment
+				
+				/* 
+				if((enrols!=null) && (enrols.size()>0)){
+					// 1. get Enrolment
+					Enrolment enrolment = enrolmentService.getEnrolment(Long.parseLong(enrols.get(0).getId()));
+					// 2. assign start-week, end-week, amount, credit, discount
+					enrolment.setStartWeek(data.getStartWeek());
+					enrolment.setEndWeek(data.getEndWeek());
+					double cred = data.getCredit();
+					// enrolment.setCredit(cred);
+					double disc = data.getDiscount();
+					// enrolment.setDiscount(disc);
+					// double amount = data.getAmount();
+					// if amount is changed, update Invoice amount
+					// if(amount!=enrolment.getAmount()){
+					// 	invoice.setAmount(invoice.getAmount() + (amount - enrolment.getAmount()));
+					// 	invoiceService.updateInvoice(invoice, invoice.getId());
+					// }
+					// 3. update Enrolment
+					enrolment = enrolmentService.updateEnrolment(enrolment, enrolment.getId());
+					// 4. put into List<EnrolmentDTO> after adding price,grade,name,year - no need to get from DB
+					EnrolmentDTO dto = new EnrolmentDTO(enrolment);
+					dto.setPrice(data.getPrice());
+					dto.setGrade(data.getGrade());
+					dto.setName(data.getName());
+					dto.setYear(data.getYear());
+					dtos.add(dto);
+				*/
+
+
+
+
+				// if class not belong to Invoice, create new Enrolment
+
+				
+
+
+
+
+
+
+
+
 
 			}else{ // if no Invoice or Invoice is already paid, create new Invoice		
 				// 1. create new Enrolment
