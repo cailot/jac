@@ -22,7 +22,7 @@ public class InvoiceDTO extends MoneyDTO{
 
 	private String paymentDate;
 
-	private double credit;
+	private int credit;
 
 	private double discount;
 
@@ -61,7 +61,7 @@ public class InvoiceDTO extends MoneyDTO{
 		return invoice;
     }
 
-	public InvoiceDTO(long id, double credit, double discount, double paidAmount, double amount, LocalDate registerDate, LocalDate payCompleteDate, String info){
+	public InvoiceDTO(long id, int credit, double discount, double paidAmount, double amount, LocalDate registerDate, LocalDate payCompleteDate, String info){
 		this.id = String.valueOf(id);
 		this.credit = credit;
 		this.discount = discount;
