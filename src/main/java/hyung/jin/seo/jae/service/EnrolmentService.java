@@ -47,4 +47,7 @@ public interface EnrolmentService {
 
 	// find enrolment by id
 	Enrolment getEnrolment(Long id);
+
+	// find active enrolment by id
+	EnrolmentDTO getActiveEnrolment(Long id);
 }

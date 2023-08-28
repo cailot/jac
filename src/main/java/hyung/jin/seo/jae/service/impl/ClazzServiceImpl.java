@@ -128,5 +128,10 @@ public class ClazzServiceImpl implements ClazzService {
 		return dtos;
 	}
 
+	@Override
+	public double getPrice(Long id) {
+		return clazzRepository.getPrice(id);
+	}
+
 
 }
