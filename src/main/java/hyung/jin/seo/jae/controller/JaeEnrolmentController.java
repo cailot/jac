@@ -366,263 +366,128 @@ public class JaeEnrolmentController {
 		Student student = studentService.getStudent(studentId);
 		// if no Invoice or Invoice is already paid, create new Invoice; otherwise use existing Invoice
 		Invoice invoice = (isInvoiceExist) ? invo : invoiceService.addInvoice(new Invoice());
+		// get registered enrolments by invoice id
+		List<Long> enrolmentIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
 
 		for(EnrolmentDTO data : formData){
 			// if Invoice is already created and still available, use it
 			if(isInvoiceExist){
 				// check class already belong to Invoice
-				List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByClazzAndInvoice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")), invoice.getId());
-				// if class already belong to Invoice, update Enrolment
-				
-				/* 
-				if((enrols!=null) && (enrols.size()>0)){
-					// 1. get Enrolment
-					Enrolment enrolment = enrolmentService.getEnrolment(Long.parseLong(enrols.get(0).getId()));
-					// 2. assign start-week, end-week, amount, credit, discount
+				// Invoice already created but additional Enrolment (ADD)
+				if(StringUtils.isEmpty(data.getId())){
+					// 1. create new Enrolment
+					Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
+					// 2. associate new Enrolment with Clazz,Student,Invoice
+					Enrolment enrolment = new Enrolment();
 					enrolment.setStartWeek(data.getStartWeek());
 					enrolment.setEndWeek(data.getEndWeek());
-					double cred = data.getCredit();
-					// enrolment.setCredit(cred);
-					double disc = data.getDiscount();
-					// enrolment.setDiscount(disc);
-					// double amount = data.getAmount();
-					// if amount is changed, update Invoice amount
-					// if(amount!=enrolment.getAmount()){
-					// 	invoice.setAmount(invoice.getAmount() + (amount - enrolment.getAmount()));
-					// 	invoiceService.updateInvoice(invoice, invoice.getId());
-					// }
+					enrolment.setCredit(data.getCredit());
+					enrolment.setDiscount(data.getDiscount());
+					enrolment.setClazz(clazz);
+					enrolment.setStudent(student);
+					enrolment.setInvoice(invoice);
+					// 3. save new Enrolment
+					enrolmentService.addEnrolment(enrolment);
+					// 4.  put into List<EnrolmentDTO>
+					dtos.add(data);
+					// 5. update Invoice amount
+					double price = clazzService.getPrice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")));
+					double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - data.getDiscount());
+					int credit = data.getCredit();
+					double discount = data.getDiscount();
+					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
+					invoice.setCredit(invoice.getCredit() + credit);
+					invoice.setDiscount(invoice.getDiscount() + discount);
+					invoiceService.updateInvoice(invoice, invoice.getId());
+				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
+					// 1. get existing Enrolment
+					Enrolment existing = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
+
+					// 2. update invoice amount (extract existing amount, credit, discount)
+					int start = existing.getStartWeek();
+					int end = existing.getEndWeek();
+					int credit = existing.getCredit();
+					double discount = existing.getDiscount();
+					double price = clazzService.getPrice(existing.getClazz().getId()); // <-- check !!
+					double enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+					invoice.setCredit(invoice.getCredit() - credit);
+					invoice.setDiscount(invoice.getDiscount() - discount);
+					invoice.setAmount(invoice.getAmount() - enrolmentPrice);
+					
 					// 3. update Enrolment
-					enrolment = enrolmentService.updateEnrolment(enrolment, enrolment.getId());
-					// 4. put into List<EnrolmentDTO> after adding price,grade,name,year - no need to get from DB
-					EnrolmentDTO dto = new EnrolmentDTO(enrolment);
-					dto.setPrice(data.getPrice());
-					dto.setGrade(data.getGrade());
-					dto.setName(data.getName());
-					dto.setYear(data.getYear());
-					dtos.add(dto);
-				*/
+					existing.setStartWeek(data.getStartWeek());
+					existing.setEndWeek(data.getEndWeek());
+					existing.setCredit(data.getCredit());
+					existing.setDiscount(data.getDiscount());
+					enrolmentService.updateEnrolment(existing, existing.getId());
 
+					// 4. put into List<EnrolmentDTO>
+					dtos.add(data);
 
+					// 5. update Invoice
+					start = existing.getStartWeek();
+					end = existing.getEndWeek();
+					credit = existing.getCredit();
+					discount = existing.getDiscount();
+					enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+					invoice.setCredit(invoice.getCredit() + credit);
+					invoice.setDiscount(invoice.getDiscount() + discount);
+					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
+					invoiceService.updateInvoice(invoice, invoice.getId());
 
+					// 6. remove enrolmentId from enrolmentIds
+					enrolmentIds.remove(existing.getId());
+				}
 
-				// if class not belong to Invoice, create new Enrolment
-
-				
-
-
-
-
-
-
-
-
-
-			}else{ // if no Invoice or Invoice is already paid, create new Invoice		
+			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)	
 				// 1. create new Enrolment
 				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
 				// 2. associate new Enrolment with Clazz,Student,Invoice
 				Enrolment enrolment = new Enrolment();
 				enrolment.setStartWeek(data.getStartWeek());
 				enrolment.setEndWeek(data.getEndWeek());
+				enrolment.setCredit(data.getCredit());
+				enrolment.setDiscount(data.getDiscount());
 				enrolment.setClazz(clazz);
 				enrolment.setStudent(student);
 				enrolment.setInvoice(invoice);
 				// 3. save new Enrolment
 				enrolmentService.addEnrolment(enrolment);
-				// 4.  put into List<EnrolmentDTO> after adding price,grade,name,year - no need to get from DB
-				EnrolmentDTO dto = new EnrolmentDTO(enrolment);
-				dto.setPrice(data.getPrice());
-				dto.setGrade(data.getGrade());
-				dto.setName(data.getName());
-				dto.setYear(data.getYear());
-				dtos.add(dto);
+				// 4.  put into List<EnrolmentDTO>
+				dtos.add(data);
 				// 5. update Invoice amount
-				double enrolmentPrice = (data.getEndWeek()-data.getStartWeek()+1)*data.getPrice();
+				double price = clazzService.getPrice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")));
+				double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - data.getDiscount());
+				int credit = data.getCredit();
+				double discount = data.getDiscount();
 				invoice.setAmount(invoice.getAmount() + enrolmentPrice);
+				invoice.setCredit(invoice.getCredit() + credit);
+				invoice.setDiscount(invoice.getDiscount() + discount);
 				invoiceService.updateInvoice(invoice, invoice.getId());
 			}
-		}
+		}// end of loop
 		
-		return dtos;
-		
-		// // 1. get student
-		// Student std = studentService.getStudent(studentId);
-		// // 2. get enrolmentIds by studentId
-		// List<Long> enrolmentIds = enrolmentService.findEnrolmentIdByStudentId(studentId);
-		// // 3. create or update Enrolment
-		// for(EnrolmentDTO data : formData) {
-		// 	try{
-		// 		// New Enrolment if no id comes in
-		// 		if(data.getId()==null) {
-		// 		// 4-A. associate clazz with student
-		// 		Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-		// 		// 5-A. create Enrolment
-		// 		Enrolment enrolment = new Enrolment();
-		// 		// 6-A. associate enrolment with clazz and student
-		// 		enrolment.setClazz(clazz);
-		// 		enrolment.setStudent(std);
-		// 		enrolment.setStartWeek(data.getStartWeek());
-		// 		enrolment.setEndWeek(data.getEndWeek());
-		// 		// 7-A. save enrolment
-		// 		enrolmentService.addEnrolment(enrolment);
-		// 		}else {	// Update Enrolment if id comes in
-		// 			// 4-B. get Enrolment
-		// 			Enrolment enrolment = data.convertToEnrolment();
-		// 			// 5-B. update Enrolment
-		// 			enrolment = enrolmentService.updateEnrolment(enrolment, enrolment.getId());
-		// 			// 6-B remove enrolmentId from enrolmentIds
-		// 			enrolmentIds.remove(enrolment.getId());
-		// 		}
-		// 	}catch(NoSuchElementException e){
-		// 		String message = "Error registering Course: " + e.getMessage();
-		// 		return null;
-		// 	}				
-		// }
-		// // 7. archive enrolments not in formData
-		// for(Long enrolmentId : enrolmentIds) {
-		// 	enrolmentService.archiveEnrolment(enrolmentId);
-		// }
-		// // 8. trigger Invoice
-		// List<EnrolmentDTO> dtos = triggerInvoice(studentId);
-		// // 9. return success
-		// return dtos;
+		// 6. archive enrolments not in formData (DELETE)
+		for(Long enrolmentId : enrolmentIds) {
+			// update Invoice amount
+			Enrolment enrolment = enrolmentService.getEnrolment(enrolmentId);
+			int start = enrolment.getStartWeek();	
+			int end = enrolment.getEndWeek();
+			int credit = enrolment.getCredit();
+			double discount = enrolment.getDiscount();
+			double price = clazzService.getPrice(enrolment.getClazz().getId());
+			double enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+			invoice.setCredit(invoice.getCredit() - credit);
+			invoice.setDiscount(invoice.getDiscount() - discount);
+			invoice.setAmount(invoice.getAmount() - enrolmentPrice);
+			invoiceService.updateInvoice(invoice, invoice.getId());
 
-
-
-
-	}
-
-
-
-
-
-
-
-
-
-
-
-		// as soon as Enrolment created or updated, it will trigger invoice
-	private List<EnrolmentDTO> triggerInvoice(Long studentId){
-		// 1. get latest Enrolment
-		List<EnrolmentDTO> dtos = enrolmentService.findEnrolmentByStudent(studentId);
-		
-		// 2. create Invoice
-		InvoiceDTO invoiceDTO = checkInvoice(studentId, dtos);
-
-		// 3. assign invoice id to enrolment
-		for(EnrolmentDTO data : dtos){
-			data.setInvoiceId(invoiceDTO.getId());
-			data.setAmount(invoiceDTO.getAmount());
+			// archive Enrolment
+			enrolmentService.archiveEnrolment(enrolmentId);
 		}
 		return dtos;
+
 	}
 
-
-	// copy from InvoiceController
-	public InvoiceDTO checkInvoice(Long studentId, List<EnrolmentDTO> formData){
-
-		Long invoId = invoiceService.getInvoiceIdByStudentId(studentId);
-		///////////////////////////////////////////////////////
-		// if no data comes, it means no enrolment in invoice
-		///////////////////////////////////////////////////////
-		if((formData==null) || (formData.size()==0)) {
-			// 1. get Enrolment by invoice Id
-			// for(Long invoId : invoiceIds){
-				if(invoId!=null){
-					// 2. get enrolment Id by invoice Id
-					List<Long> enrolmentIds = enrolmentService.findEnrolmentIdByInvoiceId(invoId);
-					for(Long data : enrolmentIds) {
-						// 3. archive Enrolment
-						enrolmentService.archiveEnrolment(data);
-					}
-				}
-			// }
-			return null;
-		}
-
-		// 1. check whether Enrolment is already invoiced
-		double total = 0;
-		double credit = 0;
-		double discount = 0;
-		boolean alreadyInvoiced = false;
-		long invoiceId = 0;
-		// any null included, it should re-issue invoice
-		alreadyInvoiced = (invoId==null) ? false : true;
-		if(alreadyInvoiced){ // if already invoiced, get first invoice id
-			// for(Long invoId : invoiceIds){
-			// 	if(invoId!=null){
-			 		invoiceId = invoId;
-			// 		break;
-			// 	}
-			// }
-			// 2. find Invoice if Enrolment is invoiced
-			Invoice invoice = invoiceService.getInvoice(invoiceId);
-
-			// update Invoice in case of any change from client
-
-			for(EnrolmentDTO data : formData) {
-				// 4. get Enrolment
-				Enrolment enrolment = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
-				// 5. assign start-week, end-week, amount, credit, discount
-				enrolment.setStartWeek(data.getStartWeek());
-				enrolment.setEndWeek(data.getEndWeek());
-				double cred = data.getCredit();
-				// enrolment.setCredit(cred);
-				double disc = data.getDiscount();
-				// enrolment.setDiscount(disc);
-				// double amount = data.getAmount();
-				double amount = (data.getEndWeek()-data.getStartWeek()+1)*data.getPrice();
-				
-				// enrolment.setAmount(amount);
-				// 6. sum total amount
-				credit += cred;
-				discount += disc;
-				total += amount;
-				// 7. add Enrolments to Invoice
-				invoice.addEnrolment(enrolment);
-			}
-			// 8. update total
-			invoice.setCredit(credit);
-			invoice.setDiscount(discount);
-			invoice.setAmount(total);
-			// 9. update Invoice
-			InvoiceDTO dto = invoiceService.updateInvoice(invoice, invoiceId);
-			// return dto
-			return dto;
-		}else{
-
-			// 3. create new invoice when no Invoice is found
-			Invoice invoice = new Invoice();
-			for(EnrolmentDTO data : formData) {
-				// 4. get Enrolment
-				Enrolment enrolment = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
-				// 5. assign start-week, end-week, amount, credit, discount
-				enrolment.setStartWeek(data.getStartWeek());
-				enrolment.setEndWeek(data.getEndWeek());
-				double cred = data.getCredit();
-				// enrolment.setCredit(cred);
-				double disc = data.getDiscount();
-				// enrolment.setDiscount(disc);
-				double amount = (data.getAmount()==0) ? data.getPrice() * (data.getEndWeek() - data.getStartWeek() + 1) : data.getAmount();
-				//double amount = data.getAmount();
-				// enrolment.setAmount(amount);
-				// 6. sum total amount
-				credit += cred;
-				discount += disc;
-				total += amount;
-				// 7. add Enrolments to Invoice
-				invoice.addEnrolment(enrolment);
-			}
-			// 8. update total
-			invoice.setCredit(credit);
-			invoice.setDiscount(discount);
-			invoice.setAmount(total);
-			// 9. create Invoice
-			InvoiceDTO dto = null;//invoiceService.addInvoice(invoice);
-			// 10. return flag;
-			return dto;
-		}
-	}
 
 }

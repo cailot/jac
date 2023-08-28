@@ -111,7 +111,7 @@ public class Invoice{
     private LocalDate paymentDate;
 
 	@Column
-    private double credit;
+    private int credit;
 
 	@Column
     private double discount;

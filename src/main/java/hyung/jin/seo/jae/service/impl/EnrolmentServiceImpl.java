@@ -92,6 +92,12 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	}
 
 	@Override
+	public EnrolmentDTO getActiveEnrolment(Long id) {
+		EnrolmentDTO enrol = enrolmentRepository.findActiveEnrolmentById(id);
+		return enrol;
+	}
+
+	@Override
 	public Enrolment updateEnrolment(Enrolment enrolment, Long id) {
 		// search by getId
 		Enrolment existing = enrolmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Enrolment not found"));

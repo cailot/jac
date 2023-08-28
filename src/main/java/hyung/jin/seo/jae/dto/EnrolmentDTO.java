@@ -29,7 +29,7 @@ public class EnrolmentDTO extends MoneyDTO{
 
 	private int endWeek;
 
-	private double credit;
+	private int credit;
 
 	private double discount;
 
@@ -66,9 +66,8 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.cancellationReason = enrol.getCancellationReason();
 		this.startWeek = enrol.getStartWeek();
 		this.endWeek = enrol.getEndWeek();
-		// this.credit = enrol.getCredit();
-		// this.discount = enrol.getDiscount();
-		// this.amount = enrol.getAmount();
+		this.credit = enrol.getCredit();
+		this.discount = enrol.getDiscount();
 		this.studentId = (enrol.getStudent()!=null) ? String.valueOf(enrol.getStudent().getId()) : "";
 		this.clazzId = (enrol.getClazz()!=null) ? String.valueOf(enrol.getClazz().getId()) : "";
 		this.invoiceId = (enrol.getInvoice()!=null) ? String.valueOf(enrol.getInvoice().getId()) : "";
@@ -82,16 +81,15 @@ public class EnrolmentDTO extends MoneyDTO{
 		enrolement.setCancelled(cancelled);
 		enrolement.setStartWeek(startWeek);
 		enrolement.setEndWeek(endWeek);
-		// enrolement.setCredit(credit);
-		// enrolement.setDiscount(discount);
-		// enrolement.setAmount(amount);
+		enrolement.setCredit(credit);
+		enrolement.setDiscount(discount);
 		if(StringUtils.isNotBlank(paymentDate)) enrolement.setRegisterDate(LocalDate.parse(paymentDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		if(StringUtils.isNotBlank(cancellationReason)) enrolement.setCancellationReason(cancellationReason);
 		enrolement.setInfo(info);		
     	return enrolement;
     }
 
-	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, double credit, double discount, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
+	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, double discount, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.cancelled = cancelled;
@@ -145,7 +143,7 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.endWeek = (obj[5]!=null) ? (int)obj[5] : 0;
 		this.info = (obj[6]!=null) ? String.valueOf(obj[6]) : "";				
 		this.invoiceId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0";
-		this.credit = (obj[8]!=null) ? Double.parseDouble(String.valueOf(obj[8])) : 0;
+		this.credit = (obj[8]!=null) ? Integer.parseInt(String.valueOf(obj[8])) : 0;
 		this.discount = (obj[9]!=null) ? Double.parseDouble(String.valueOf(obj[9])) : 0;
 		this.amount = (obj[10]!=null) ? Double.parseDouble(String.valueOf(obj[10])) : 0;
 		this.paid = (obj[11]!=null) ? Double.parseDouble(String.valueOf(obj[11])) : 0;

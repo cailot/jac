@@ -334,7 +334,9 @@ function associateRegistration(){
 		enrolData.discount = $(this).find('.discount').text();
 		enrolData.credit = $(this).find('.credit').text();
 		enrolData.weeks = $(this).find('.weeks').text();
-		enrolData.day = $(this).find('.day').text();
+		// enrolData.day = $(this).find('.clazzChoice').val();
+		enrolData.day = $(this).find('.clazzChoice option:selected').text();
+
 
 		var clazz = {
 			"id" : enrolData.id,
@@ -381,6 +383,8 @@ function associateRegistration(){
 		}
 	});
 	
+	console.log(enrolData);
+
 	// Make the AJAX enrolment for class
 	$.ajax({
 		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,

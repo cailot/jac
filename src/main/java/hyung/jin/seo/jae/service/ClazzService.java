@@ -30,4 +30,7 @@ public interface ClazzService {
 
 	// update class
 	ClazzDTO updateClazz(Clazz clazz);
+
+	// get class price
+	double getPrice(Long id);
 }

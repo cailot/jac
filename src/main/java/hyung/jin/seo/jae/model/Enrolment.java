@@ -60,6 +60,12 @@ public class Enrolment{ // bridge table between Student & Class
 	private int endWeek;
 
 	@Column
+    private int credit;
+
+	@Column
+    private double discount;
+
+	@Column
 	private boolean old;
 
 	@Column(length = 100)
