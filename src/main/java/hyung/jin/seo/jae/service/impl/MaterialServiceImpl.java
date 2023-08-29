@@ -82,4 +82,14 @@ public class MaterialServiceImpl implements MaterialService {
 		//materialRepository.deleteMaterial(invoiceId, bookId);
 		materialRepository.deleteMaterialByInvoiceIdAndBookId(invoiceId, bookId);
 	}
+
+	@Override
+	public List<Long> findMaterialIdByInvoiceId(long invoiceId) {
+		return materialRepository.findMaterialIdByInvoiceId(invoiceId);
+	}
+
+	@Override
+	public List<Long> findBookIdByInvoiceId(long invoiceId) {
+		return materialRepository.findBookIdByInvoiceId(invoiceId);
+	}
 }

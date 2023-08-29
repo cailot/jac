@@ -83,5 +83,10 @@ public class BookServiceImpl implements BookService {
 		}
 		return dtos;
 	}
+
+	@Override
+	public double getPrice(Long materialId) {
+		return bookRepository.getPrice(materialId);
+	}
 	
 }
