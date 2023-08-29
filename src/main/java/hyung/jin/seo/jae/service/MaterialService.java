@@ -27,5 +27,11 @@ public interface MaterialService {
 	// return total count
 	long checkCount();
 
+	// return Material ids by invoice id
+	List<Long> findMaterialIdByInvoiceId(long invoiceId);
+
+	// return Book ids by invoice id
+	List<Long> findBookIdByInvoiceId(long invoiceId);
+
 
 }
