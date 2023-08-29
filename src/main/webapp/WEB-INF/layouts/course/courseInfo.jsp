@@ -214,38 +214,126 @@ function addClassToBasket(value) {
 		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week)); // start week
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week)); // end week
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(weeks));// weeks
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(9));// credit
+
+		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week)); // start week
+	    var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week); // start week
+		startWeekCell.on('input', function() {
+			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+			var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
+    		var weeksValue = parseInt($('.weeks').text()); // Get the value from class weeks cell
+			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
+			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
+			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
+			// update weeks & amount
+			$('.weeks').text(((endWeekValue-updatedValue)+1) + creditValue);
+			var originalPrice = (((endWeekValue-updatedValue)+1) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
+    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+		});
+		row.append(startWeekCell);		
+
+
+
+
+		//row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week)); // end week
+		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week); // end week
+		endWeekCell.on('input', function() {
+			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+			var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
+    		var weeksValue = parseInt($('.weeks').text()); // Get the value from class weeks cell
+			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
+			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
+			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
+			// update weeks & amount
+			$('.weeks').text(((updatedValue-startWeekValue)+1) + creditValue);
+			var originalPrice = (((updatedValue-startWeekValue)+1) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
+    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+		});
+		row.append(endWeekCell);		
+
+			
+		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(weeks));// weeks
+		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(weeks);// weeks	
+		weeksCell.on('input', function() {
+			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+			var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
+    		var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
+			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
+			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
+			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
+			// update end-week & amount
+			$('.end-week').text(((updatedValue+startWeekValue-1) - creditValue));
+			var originalPrice = ((updatedValue-creditValue) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
+    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+		});
+		row.append(weeksCell);		
+
+
+
+
+		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0));// credit
+		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0);// credit
+		var previousCredit = parseInt(creditCell.text());		
+		creditCell.on('input', function() {
+			//debugger;
+			console.log(previousCredit);
+			if(previousCredit == 0){ // never use credit before
+				var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+				previousCredit = updatedValue;
+				var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
+				var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
+				// update end-week
+				$('.end-week').text(endWeekValue + updatedValue);
+				// update weeks
+				$('.weeks').text(((endWeekValue-startWeekValue)+1) + updatedValue);
+				var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
+				var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
+				var originalPrice = (((endWeekValue-startWeekValue)+1) * priceValue);
+				var discountedPrice = parseFloat(originalPrice * (discountValue/100));
+				// update amount
+				$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+			}else if(previousCredit > 0){ // already use credit
+				var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+				//previousCredit = updatedValue;
+				var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
+				var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
+				// get original end-week value
+				var originalEndWeekValue = endWeekValue - previousCredit;				
+				// update end-week
+				$('.end-week').text(originalEndWeekValue + updatedValue);
+				// update weeks
+				$('.weeks').text(((originalEndWeekValue-startWeekValue)+1) + updatedValue);
+
+				var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
+				var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
+				var originalPrice = (((originalEndWeekValue-startWeekValue)+1) * priceValue);
+				var discountedPrice = parseFloat(originalPrice * (discountValue/100));
+				$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+				// update previousCredit
+				previousCredit = updatedValue;
+			}
+		});
+		row.append(creditCell);		
+	
+
+
+
+
+
 		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('discount').text(0));// discount
+
 		row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('amount').text(0)); // amount
+
+
+
+		var totalAmount = parseFloat(((weeksCell.text()-creditCell.text()) * (value.price)) - parseInt($('.discount').text()));	// ----> need to change value.discount  part !!
+		row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalAmount)); // amount
 		row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 		row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 		row.append($('<td class="hidden-column description">').text(value.description)); // description
 
-		var startWeekCell = row.find('.start-week');
-		var endWeekCell = row.find('.end-week');
-		var weeksCell = row.find('.weeks');
-		
-		function updateWeeks() {
-		start_week = parseInt(startWeekCell.text());
-		end_week = parseInt(endWeekCell.text());
-		weeks = (end_week - start_week) + 1;
-		weeksCell.text(weeks);
-		}
-		
-		function updateEndWeek() {
-		start_week = parseInt(startWeekCell.text());
-		weeks = parseInt(weeksCell.text());
-		end_week = start_week + weeks - 1;
-		endWeekCell.text(end_week);
-		}
-		
-		startWeekCell.on('input', function() {updateWeeks();});
-		endWeekCell.on('input', function() {updateWeeks();});
-		weeksCell.on('input', function() {updateEndWeek();});
 		
 		// $('#basketTable > tbody').append(row);
 		$('#basketTable > tbody').prepend(row);
@@ -260,7 +348,7 @@ function addClassToBasket(value) {
 //		Add book to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBookToBasket(value){
-	// console.log(value);
+	//console.log(value);
 	var row = $('<tr class="d-flex">');
 	row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
 	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" title="book"></i></td>')); // item
@@ -276,6 +364,7 @@ function addBookToBasket(value){
 	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
 	$('#basketTable > tbody').prepend(row);
+	
 	// Automatically dismiss the alert after 2 seconds
 	showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
 }
@@ -310,7 +399,6 @@ function associateRegistration(){
 			// if hiddenValues[0] is ELEARNING, push hiddenValues[1] to elearnings array
 			if(hiddenValues[0] === ELEARNING){
 				elearnings.push(hiddenValues[1]);
-				// how to jump to next <tr>
 				return true;
 			}else if(hiddenValues[0] === BOOK){
 				books.push(hiddenValues[1]);
@@ -320,9 +408,7 @@ function associateRegistration(){
 			}
 		}
 
-		//enrolData.clazzId =  $(this).find('.clazzChoice').val();
-		// find value of next td whose class is 'start-year'
-		enrolData.id = $(this).find('.id').text();
+		enrolData.id = $(this).find('.enrolId').text();
 		enrolData.startWeek = $(this).find('.start-week').text();
 		enrolData.endWeek = $(this).find('.end-week').text();
 		enrolData.price = $(this).find('.price').text();
@@ -334,7 +420,6 @@ function associateRegistration(){
 		enrolData.discount = $(this).find('.discount').text();
 		enrolData.credit = $(this).find('.credit').text();
 		enrolData.weeks = $(this).find('.weeks').text();
-		// enrolData.day = $(this).find('.clazzChoice').val();
 		enrolData.day = $(this).find('.clazzChoice option:selected').text();
 
 
@@ -383,7 +468,7 @@ function associateRegistration(){
 		}
 	});
 	
-	console.log(enrolData);
+	//console.log(enrolData);
 
 	// Make the AJAX enrolment for class
 	$.ajax({
@@ -573,7 +658,7 @@ function retrieveEnrolment(studentId){
 				// It is an EnrolmentDTO object		
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table
-					console.log(value);
+					//console.log(value);
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 					row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
@@ -591,7 +676,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
 					row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
         			row.append($('<td class="hidden-column description">').text(value.description)); // description
-					row.append($('<td class="hidden-column id">').text(value.id)); // enrolmentId
+					row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
     
 					$('#basketTable > tbody').append(row);	
 					// update invoice table with Enrolment
