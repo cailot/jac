@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.model.Material;
 
@@ -29,6 +28,13 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
     @Query("DELETE FROM Material m WHERE m.invoice.id = :invoiceId AND m.book.id = :bookId")
     void deleteMaterialByInvoiceIdAndBookId(@Param("invoiceId") Long invoiceId, @Param("bookId") Long bookId);
 
+	// return Material ids by invoice id
+	@Query("SELECT m.id FROM Material m WHERE m.invoice.id = ?1")
+	List<Long> findMaterialIdByInvoiceId(long invoiceId);
+
+	// return Book ids by invoice id
+	@Query("SELECT m.book.id FROM Material m WHERE m.invoice.id = ?1")
+	List<Long> findBookIdByInvoiceId(long invoiceId);
 
 
 	long count();
