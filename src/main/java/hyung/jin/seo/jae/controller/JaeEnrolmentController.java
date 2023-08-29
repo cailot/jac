@@ -174,69 +174,6 @@ public class JaeEnrolmentController {
 		return ResponseEntity.ok("eLearning Success");
 	}
 
-	// associate book with Invoice
-	// @PostMapping("/associateBook/{studentId}")
-	// @ResponseBody
-	// public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody Long[] bookIds) {
-	// 	List<MaterialDTO> dtos = new ArrayList<>();
-	// 	// 1. get Invoice
-	// 	Invoice invo = invoiceService.getInvoiceByStudentId(studentId);
-	// 	// if no invoice or no book, return empty list
-	// 	if((invo==null) || (bookIds==null)) return dtos;
-		
-	// 	// 2. bring all registered Book - bookId & invoiceId
-	// 	List<MaterialDTO> alreadys = materialService.findMaterialByInvoice(invo.getId());
-	// 	// 3, store list for registered book Ids
-	// 	List<Long> registeredIds = new ArrayList<Long>();
-	// 	for(MaterialDTO dto : alreadys){
-	// 		registeredIds.add(Long.parseLong(dto.getBookId()));
-	// 	}
-	// 	for(Long bookId : bookIds){
-	// 		boolean isExist = false;
-	// 		for(Long registeredId : registeredIds){
-	// 		// 3-1. if bookId is in the list and passed parameters then skip - already exist
-	// 			if(bookId == registeredId){
-	// 				isExist = true;
-	// 				// add book price as re-initialized by Enrolment
-	// 				Book book = bookService.getBook(bookId);
-	// 				// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
-	// 				invo.setAmount(invo.getAmount() + book.getPrice());
-	// 				// System.out.println("After - invo.getAmout() : " + invo.getAmount());
-	// 				// amount update for invoice
-	// 				invoiceService.updateInvoice(invo, invo.getId());
-	// 				registeredIds.remove(registeredId);
-	// 				break;			
-	// 			}	
-	// 		}
-	// 		if(isExist) continue; // keep outter loop
-	// 		// 3-2. if bookId not in the list then add - new book
-	// 		// 4-2. get Book
-	// 		Book book = bookService.getBook(bookId);
-	// 		// 5-2. update invoice amount
-
-	// 		// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
-	// 		invo.setAmount(invo.getAmount() + book.getPrice());
-	// 		// System.out.println("After - invo.getAmout() : " + invo.getAmount());
-			
-	// 		// 6-2. create Material
-	// 		Material material = new Material();
-	// 		material.setBook(book);
-	// 		material.setInvoice(invo);
-	// 		// 7-2. save Material
-	// 		material = materialService.addMaterial(material);		
-	// 	}
-	// 	// 3-3. if bookId is in the list but no passed then delete - delete book
-	// 	for(Long deleteId : registeredIds){
-	// 		// 4-3. remove Material by bookId & invoiceId
-	// 		materialService.deleteMaterial(invo.getId(), deleteId);
-	// 	}
-	// 	// add MaterialDTO to return list
-	// 	Set<Material> materials = invo.getMaterials();
-	// 	for (Material material : materials) {
-	// 		dtos.add(new MaterialDTO(material));
-	// 	}
-	// 	return dtos;
-	// }
 
 	@PostMapping("/associateBook/{studentId}")
 	@ResponseBody
@@ -247,13 +184,17 @@ public class JaeEnrolmentController {
 		// if no invoice or no book, return empty list
 		if((invo==null) || (bookIds==null)) return dtos;
 		
-		// 2. bring all registered Book - bookId & invoiceId
-		List<MaterialDTO> alreadys = materialService.findMaterialByInvoice(invo.getId());
-		// 3, store list for registered book Ids
-		List<Long> registeredIds = new ArrayList<Long>();
-		for(MaterialDTO dto : alreadys){
-			registeredIds.add(Long.parseLong(dto.getBookId()));
-		}
+		// // 2. bring all registered Book - bookId & invoiceId
+		List<Long> registeredIds = materialService.findBookIdByInvoiceId(invo.getId());
+
+		// List<MaterialDTO> alreadys = materialService.findMaterialByInvoice(invo.getId());
+		// // 3, store list for registered book Ids
+		// List<Long> registeredIds = new ArrayList<Long>();
+		// for(MaterialDTO dto : alreadys){
+		// 	registeredIds.add(Long.parseLong(dto.getBookId()));
+		// }
+
+
 		for(Long bookId : bookIds){
 			boolean isExist = false;
 			for(Long registeredId : registeredIds){
@@ -301,54 +242,6 @@ public class JaeEnrolmentController {
 		return dtos;
 	}
 
-/* 
-	@PostMapping("/associateClazz/{studentId}")
-	@ResponseBody
-	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
-		// 1. get student
-		Student std = studentService.getStudent(studentId);
-		// 2. get enrolmentIds by studentId
-		List<Long> enrolmentIds = enrolmentService.findEnrolmentIdByStudentId(studentId);
-		// 3. create or update Enrolment
-		for(EnrolmentDTO data : formData) {
-			try{
-				// New Enrolment if no id comes in
-				if(data.getId()==null) {
-				// 4-A. associate clazz with student
-				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-				// 5-A. create Enrolment
-				Enrolment enrolment = new Enrolment();
-				// 6-A. associate enrolment with clazz and student
-				enrolment.setClazz(clazz);
-				enrolment.setStudent(std);
-				enrolment.setStartWeek(data.getStartWeek());
-				enrolment.setEndWeek(data.getEndWeek());
-				// 7-A. save enrolment
-				enrolmentService.addEnrolment(enrolment);
-				}else {	// Update Enrolment if id comes in
-					// 4-B. get Enrolment
-					Enrolment enrolment = data.convertToEnrolment();
-					// 5-B. update Enrolment
-					enrolment = enrolmentService.updateEnrolment(enrolment, enrolment.getId());
-					// 6-B remove enrolmentId from enrolmentIds
-					enrolmentIds.remove(enrolment.getId());
-				}
-			}catch(NoSuchElementException e){
-				String message = "Error registering Course: " + e.getMessage();
-				return null;
-			}				
-		}
-		// 7. archive enrolments not in formData
-		for(Long enrolmentId : enrolmentIds) {
-			enrolmentService.archiveEnrolment(enrolmentId);
-		}
-		// 8. trigger Invoice
-		List<EnrolmentDTO> dtos = triggerInvoice(studentId);
-		// 9. return success
-		return dtos;
-	}
-*/
-
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
 	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
@@ -367,7 +260,7 @@ public class JaeEnrolmentController {
 		// if no Invoice or Invoice is already paid, create new Invoice; otherwise use existing Invoice
 		Invoice invoice = (isInvoiceExist) ? invo : invoiceService.addInvoice(new Invoice());
 		// get registered enrolments by invoice id
-		List<Long> enrolmentIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
+		List<Long> registeredIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
 
 		for(EnrolmentDTO data : formData){
 			// if Invoice is already created and still available, use it
@@ -436,7 +329,7 @@ public class JaeEnrolmentController {
 					invoiceService.updateInvoice(invoice, invoice.getId());
 
 					// 6. remove enrolmentId from enrolmentIds
-					enrolmentIds.remove(existing.getId());
+					registeredIds.remove(existing.getId());
 				}
 
 			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)	
@@ -468,7 +361,7 @@ public class JaeEnrolmentController {
 		}// end of loop
 		
 		// 6. archive enrolments not in formData (DELETE)
-		for(Long enrolmentId : enrolmentIds) {
+		for(Long enrolmentId : registeredIds) {
 			// update Invoice amount
 			Enrolment enrolment = enrolmentService.getEnrolment(enrolmentId);
 			int start = enrolment.getStartWeek();	
