@@ -20,4 +20,7 @@ public interface BookService {
 
 	// return total count
 	long checkCount();
+
+	// get price by material id
+	double getPrice(Long materialId);
 }

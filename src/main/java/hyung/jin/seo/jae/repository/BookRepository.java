@@ -17,4 +17,9 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 	List<Book> findBookByInvoiceId(Long invoiceId);
 	
 	long count();
+
+	// get price by material id
+	@Query(value = "SELECT b.price FROM Book b where b.id = (SELECT m.bookId FROM Material m WHERE m.id = :materialId)", nativeQuery = true)
+	double getPrice(Long materialId);
+	
 }
