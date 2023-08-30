@@ -53,3 +53,13 @@ function encodeDecodeString(str) {
 	var formattedDate = day + '/' + month + '/' + year;
 	return formattedDate;
   }
+
+ // avoid null string 
+  function defaultIfEmpty(input, defaultValue) {
+	if (typeof input === 'string' && input !== null && input !== '') {
+	  return input;
+	} else {
+	  return defaultValue; // Or any other value you want to return for non-valid strings
+	}
+  }
+  
