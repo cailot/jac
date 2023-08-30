@@ -169,7 +169,7 @@ function addElearningToBasket(value){
 //		Add class to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addClassToBasket(value) {
-	    // console.log(value);
+	// console.log(value);
   $.ajax({
     url: '${pageContext.request.contextPath}/class/classesByCourse',
     type: 'GET',
