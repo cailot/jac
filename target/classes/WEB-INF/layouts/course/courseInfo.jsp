@@ -169,7 +169,7 @@ function addElearningToBasket(value){
 //		Add class to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addClassToBasket(value) {
-	//    console.log(value);
+	    // console.log(value);
   $.ajax({
     url: '${pageContext.request.contextPath}/class/classesByCourse',
     type: 'GET',
@@ -194,6 +194,7 @@ function addClassToBasket(value) {
 			weeks = (end_week - start_week) + 1;
 		}    
 		var row = $('<tr class="d-flex">');
+
 		// dynamic clazz id assign
 		var dropdown = $('<select class="clazzChoice">');
 		$.each(data, function(index, clazz) {
@@ -215,126 +216,127 @@ function addClassToBasket(value) {
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week)); // start week
-	    var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week); // start week
+		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week); // start week
 		startWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
-    		var weeksValue = parseInt($('.weeks').text()); // Get the value from class weeks cell
-			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
-			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
-			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
-			// update weeks & amount
-			$('.weeks').text(((endWeekValue-updatedValue)+1) + creditValue);
-			var originalPrice = (((endWeekValue-updatedValue)+1) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
-    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+			var row = $(this).closest('tr'); // Get the closest <tr> element
+			var endWeekValue = parseInt(row.find('.end-week').text()); // Get the value from class end-week cell within the same row
+			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
+			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
+			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
+			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
+			// Update weeks & amount within the same row
+			row.find('.weeks').text(((endWeekValue - updatedValue) + 1) + creditValue);
+			var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
+			row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
 		});
-		row.append(startWeekCell);		
-
-
-
-
-		//row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week)); // end week
+		row.append(startWeekCell);
+		
 		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week); // end week
-		endWeekCell.on('input', function() {
+			endWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
-    		var weeksValue = parseInt($('.weeks').text()); // Get the value from class weeks cell
-			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
-			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
-			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
-			// update weeks & amount
-			$('.weeks').text(((updatedValue-startWeekValue)+1) + creditValue);
-			var originalPrice = (((updatedValue-startWeekValue)+1) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
-    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+			var row = $(this).closest('tr'); // Get the closest <tr> element
+			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
+			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
+			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
+			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
+			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
+			// update weeks & amount within the same row
+			row.find('.weeks').text(((updatedValue - startWeekValue) + 1) + creditValue);
+			var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
+			row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
 		});
-		row.append(endWeekCell);		
+		row.append(endWeekCell);
 
-			
-		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(weeks));// weeks
 		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(weeks);// weeks	
 		weeksCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
-    		var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
-			var creditValue = parseInt($('.credit').text()); // Get the value from class credit cell
-			var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
-			var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
-			// update end-week & amount
-			$('.end-week').text(((updatedValue+startWeekValue-1) - creditValue));
-			var originalPrice = ((updatedValue-creditValue) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue/100));
-    		$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
+			var row = $(this).closest('tr'); // Get the closest <tr> element
+			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
+			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
+			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
+			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
+			// update end-week & amount within the same row
+			row.find('.end-week').text(updatedValue + startWeekValue - 1);
+			var originalPrice = ((updatedValue - creditValue) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
+			row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
 		});
-		row.append(weeksCell);		
+		row.append(weeksCell);
 
-
-
-
-		// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0));// credit
-		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0);// credit
-		var previousCredit = parseInt(creditCell.text());		
+		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0); // credit
+		var previousCredit = parseInt(creditCell.text());
 		creditCell.on('input', function() {
-			//debugger;
-			console.log(previousCredit);
-			if(previousCredit == 0){ // never use credit before
-				var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-				previousCredit = updatedValue;
-				var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
-				var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
+			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
+			var row = $(this).closest('tr'); // Get the closest <tr> element
+			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
+			var endWeekValue = parseInt(row.find('.end-week').text()); // Get the value from class end-week cell within the same row
+			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
+			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
+			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
+			var originalEndWeekValue = endWeekValue;
+			if (previousCredit == 0) { // never use credit before
 				// update end-week
-				$('.end-week').text(endWeekValue + updatedValue);
+				row.find('.end-week').text(endWeekValue + updatedValue);
 				// update weeks
-				$('.weeks').text(((endWeekValue-startWeekValue)+1) + updatedValue);
-				var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
-				var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
-				var originalPrice = (((endWeekValue-startWeekValue)+1) * priceValue);
-				var discountedPrice = parseFloat(originalPrice * (discountValue/100));
-				// update amount
-				$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
-			}else if(previousCredit > 0){ // already use credit
-				var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-				//previousCredit = updatedValue;
-				var startWeekValue = parseInt($('.start-week').text()); // Get the value from class start-week cell
-				var endWeekValue = parseInt($('.end-week').text()); // Get the value from class end-week cell
-				// get original end-week value
-				var originalEndWeekValue = endWeekValue - previousCredit;				
+				row.find('.weeks').text(weeksValue + updatedValue);
+			} else if (previousCredit > 0) { // already use credit
+				originalEndWeekValue = endWeekValue - previousCredit;
 				// update end-week
-				$('.end-week').text(originalEndWeekValue + updatedValue);
+				row.find('.end-week').text(originalEndWeekValue + updatedValue);
 				// update weeks
-				$('.weeks').text(((originalEndWeekValue-startWeekValue)+1) + updatedValue);
+				row.find('.weeks').text(originalEndWeekValue - startWeekValue + 1 + updatedValue);
+			}
+			var originalPrice = ((parseInt(row.find('.weeks').text()) - updatedValue) * priceValue);
+			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
+			row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
+			previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
+		});
+		row.append(creditCell);
 
-				var priceValue = parseFloat($('.price').text()); // Get the value from class price cell
-				var discountValue = parseFloat($('.discount').text()); // Get the value from class discount cell
-				var originalPrice = (((originalEndWeekValue-startWeekValue)+1) * priceValue);
-				var discountedPrice = parseFloat(originalPrice * (discountValue/100));
-				$('.amount').text( originalPrice - discountedPrice); // Update class two cell with the calculated value
-				// update previousCredit
-				previousCredit = updatedValue;
+		var discountCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('discount').text(0); // discount
+		discountCell.on('input', function() {
+			var updatedValue = $(this).text();
+			var row = $(this).closest('tr'); // Get the parent row of the discount cell
+			if (updatedValue === null || updatedValue === '' || updatedValue === '0') {
+				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
+				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
+				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
+				var originalPrice = (weeksValue - creditValue) * priceValue;
+				// update amount
+				row.find('.amount').text(originalPrice); // Update class amount cell in the same row with the calculated value
+			} else if (updatedValue.toString().includes('%')) {
+				// calculate discount percentage
+				// remove '%' from updatedValue
+				updatedValue = parseInt(updatedValue.replace('%', ''));
+				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
+				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
+				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
+				var originalPrice = (weeksValue - creditValue) * priceValue;
+				var discountedPrice = originalPrice * (updatedValue / 100);
+				// update amount
+				row.find('.amount').text(originalPrice - discountedPrice); // Update amount cell in the same row with the calculated value
+			} else {
+				// calculate discount amount
+				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
+				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
+				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
+				var originalPrice = (weeksValue - creditValue) * priceValue;
+				// update amount
+				row.find('.amount').text(originalPrice - updatedValue); // Update amount cell in the same row with the calculated value
 			}
 		});
-		row.append(creditCell);		
-	
-
-
-
-
-
-		row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('discount').text(0));// discount
+		row.append(discountCell);
 
 		row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-
-
-
-		var totalAmount = parseFloat(((weeksCell.text()-creditCell.text()) * (value.price)) - parseInt($('.discount').text()));	// ----> need to change value.discount  part !!
+		var discountValue= defaultIfEmpty(discountCell.text(), "0");
+		var totalAmount = (discountValue.toString().includes('%')) ? parseFloat(((weeksCell.text()-creditCell.text()) * (value.price)) * (1-(discountCell.text()/100))) : parseFloat(((weeksCell.text()-creditCell.text()) * (value.price)) - parseFloat(discountValue));
 		row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalAmount)); // amount
 		row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 		row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 		row.append($('<td class="hidden-column description">').text(value.description)); // description
-
-		
 		// $('#basketTable > tbody').append(row);
 		$('#basketTable > tbody').prepend(row);
 		
