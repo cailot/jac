@@ -21,7 +21,8 @@ $(document).ready(
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
-	// console.log(data);
+	// debugger;
+
 	// set invoiceId into hiddenId
 	$('#hiddenId').val(data.invoiceId);
 
@@ -31,27 +32,32 @@ function addEnrolmentToInvoiceList(data) {
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
 
-    row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
     row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>'));
     row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
     row.append($('<td class="smaller-table-font text-center">').text(data.year));
+	row.append($('<td class="smaller-table-font text-center">').text(data.day));
     
 	// set editable attribute to true if the amount is not fully paid	
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(data.startWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(data.endWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(data.endWeek));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(data.endWeek - data.startWeek + 1)) : row.append($('<td class="smaller-table-font text-center" >').addClass('weeks').text(data.endWeek - data.startWeek + 1));
-    row.append($('<td class="smaller-table-font text-right">').addClass('price').text((data.price).toFixed(2)));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(data.credit)) : row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(data.credit));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').text('0 %')) : row.append($('<td class="smaller-table-font text-center">').text('0 %'));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('discount').text(data.discount)) : row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount));
-	//(needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('amount').text((data.amount).toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-center">').addClass('amount').text((data.amount).toFixed(2)).attr("id", "amountCell"));
-	var amount = (data.endWeek - data.startWeek + 1) * data.price;
-	(needPay) ? row.append($('<td class="smaller-table-font text-right" contenteditable="true">').addClass('amount').text(amount.toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(amount.toFixed(2)).attr("id", "amountCell"));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(data.endWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(data.endWeek));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('weeks').text(data.endWeek - data.startWeek + 1)) : row.append($('<td class="smaller-table-font text-center" >').addClass('weeks').text(data.endWeek - data.startWeek + 1));
+    (needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(data.credit)) : row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(data.credit));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount)) : row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount));
+	
+	row.append($('<td class="smaller-table-font text-right">').addClass('price').text((data.price).toFixed(2)));
+	
+	// (needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').text('0 %')) : row.append($('<td class="smaller-table-font text-center">').text('0 %'));
+	
+	(needPay) ? row.append($('<td class="smaller-table-font text-right" contenteditable="true">').addClass('amount').text(data.amount.toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(data.amount.toFixed(2)).attr("id", "amountCell"));
 
 	row.append($('<td class="smaller-table-font paid-date text-center">').text(data.paymentDate));
-	row.append($('<td>').addClass('hidden-column paid').text(data.paid));
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'\')"></i>'));
+		
+		
+	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
+	row.append($('<td>').addClass('hidden-column paid').text(data.paid));
+	
 
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
@@ -64,46 +70,46 @@ function addEnrolmentToInvoiceList(data) {
 	$('#invoiceListTable > tbody').prepend(row);
     // $('#invoiceListTable > tbody').append(row);
 
-    var startWeekCell = row.find('.start-week');
-    var endWeekCell = row.find('.end-week');
-    var weeksCell = row.find('.weeks');
-    var creditCell = row.find('.credit');
-    var amountCell = row.find('.amount');
-    // var rxAmount = $("#rxAmount");
-    // rxAmount.text((data.price*(data.endWeek-data.startWeek+1)).toFixed(2)); // initial receivable amount
+    // var startWeekCell = row.find('.start-week');
+    // var endWeekCell = row.find('.end-week');
+    // var weeksCell = row.find('.weeks');
+    // var creditCell = row.find('.credit');
+    // var amountCell = row.find('.amount');
+    // // var rxAmount = $("#rxAmount");
+    // // rxAmount.text((data.price*(data.endWeek-data.startWeek+1)).toFixed(2)); // initial receivable amount
 
-    function updateWeeks() {
-        var startWeek = parseInt(startWeekCell.text());
-        var endWeek = parseInt(endWeekCell.text());
-        var weeks = parseInt(weeksCell.text());
-        var credit = parseInt(creditCell.text());
-        var price = parseFloat(row.find('.price').text());
+    // function updateWeeks() {
+    //     var startWeek = parseInt(startWeekCell.text());
+    //     var endWeek = parseInt(endWeekCell.text());
+    //     var weeks = parseInt(weeksCell.text());
+    //     var credit = parseInt(creditCell.text());
+    //     var price = parseFloat(row.find('.price').text());
 
-        if (!isNaN(startWeek) && !isNaN(endWeek)) {
-            weeks = endWeek - startWeek + 1;
-            weeksCell.text(weeks);
-        } else if (!isNaN(weeks) && !isNaN(startWeek)) {
-            endWeek = startWeek + weeks - 1;
-            endWeekCell.text(endWeek);
-        } else if (!isNaN(weeks)) {
-            endWeek = startWeek + weeks - 1;
-            endWeekCell.text(endWeek);
-        }
+    //     if (!isNaN(startWeek) && !isNaN(endWeek)) {
+    //         weeks = endWeek - startWeek + 1;
+    //         weeksCell.text(weeks);
+    //     } else if (!isNaN(weeks) && !isNaN(startWeek)) {
+    //         endWeek = startWeek + weeks - 1;
+    //         endWeekCell.text(endWeek);
+    //     } else if (!isNaN(weeks)) {
+    //         endWeek = startWeek + weeks - 1;
+    //         endWeekCell.text(endWeek);
+    //     }
 
-        if (!isNaN(weeks) && !isNaN(credit)) {
-            weeks += credit;
-            weeksCell.text(weeks);
-            endWeek = startWeek + weeks - 1;
-            endWeekCell.text(endWeek);
-        }
+    //     if (!isNaN(weeks) && !isNaN(credit)) {
+    //         weeks += credit;
+    //         weeksCell.text(weeks);
+    //         endWeek = startWeek + weeks - 1;
+    //         endWeekCell.text(endWeek);
+    //     }
 
-        // var amount = price * (weeks-credit);
-        // amountCell.text(rxAmount.toFixed(2));
-    }
+    //     // var amount = price * (weeks-credit);
+    //     // amountCell.text(rxAmount.toFixed(2));
+    // }
 
-    startWeekCell.on('input', updateWeeks);
-    endWeekCell.on('input', updateWeeks);
-    creditCell.on('input', updateWeeks);
+    // startWeekCell.on('input', updateWeeks);
+    // endWeekCell.on('input', updateWeeks);
+    // creditCell.on('input', updateWeeks);
 	// update Receivable Amount
 	updateReceivableAmount();
 }
@@ -541,19 +547,34 @@ function addInformation(){
 </script>
 <style>
 	/* Adjust column sizes for the table */
-	#invoiceListTable th:nth-child(1) { width: 5%; } /* item */
-	#invoiceListTable th:nth-child(2) { width: 25%; }  /* description */
+	#invoiceListTable th:nth-child(1) { width: 3%; } /* item */
+	#invoiceListTable th:nth-child(2) { width: 34%; }  /* description */
 	#invoiceListTable th:nth-child(3) { width: 5%; } /* year */
-	#invoiceListTable th:nth-child(4) { width: 8%; } /* start */
-	#invoiceListTable th:nth-child(5) { width: 8%; } /* end */
-	#invoiceListTable th:nth-child(6) { width: 5%; } /* weeks */
-	#invoiceListTable th:nth-child(7) { width: 13%; } /* price */
+	#invoiceListTable th:nth-child(4) { width: 8%; } /* day */
+	#invoiceListTable th:nth-child(5) { width: 4%; } /* start */
+	#invoiceListTable th:nth-child(6) { width: 4%; } /* end */
+	#invoiceListTable th:nth-child(7) { width: 4%; } /* weeks */
 	#invoiceListTable th:nth-child(8) { width: 5%; } /* credit */
-	#invoiceListTable th:nth-child(9) { width: 5%; } /* discount % */
-	#invoiceListTable th:nth-child(10) { width: 5%; } /* discount $ */
-	#invoiceListTable th:nth-child(11) { width: 8%; } /* amount */
-	#invoiceListTable th:nth-child(12) { width: 8%; } /* date */
-	#invoiceListTable th:nth-child(13) { width: 5%; } /* note */
+	#invoiceListTable th:nth-child(9) { width: 5%; } /* discount */
+	#invoiceListTable th:nth-child(10) { width: 5%; } /* price % */
+	#invoiceListTable th:nth-child(11) { width: 10%; } /* amount */
+	#invoiceListTable th:nth-child(12) { width: 10%; } /* date */
+	#invoiceListTable th:nth-child(13) { width: 3%; } /* note */
+
+	#invoiceListTable td:nth-child(1) { width: 3%; } /* item */
+	#invoiceListTable td:nth-child(2) { width: 34%; }  /* description */
+	#invoiceListTable td:nth-child(3) { width: 5%; } /* year */
+	#invoiceListTable td:nth-child(4) { width: 8%; } /* day */
+	#invoiceListTable td:nth-child(5) { width: 4%; } /* start */
+	#invoiceListTable td:nth-child(6) { width: 4%; } /* end */
+	#invoiceListTable td:nth-child(7) { width: 4%; } /* weeks */
+	#invoiceListTable td:nth-child(8) { width: 5%; } /* credit */
+	#invoiceListTable td:nth-child(9) { width: 5%; } /* discount */
+	#invoiceListTable td:nth-child(10) { width: 5%; } /* price % */
+	#invoiceListTable td:nth-child(11) { width: 10%; } /* amount */
+	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
+	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
+
 </style>
 <!-- Main Body -->
 <div class="modal-body" style="padding-top: 0.25rem; padding-left: 0rem; padding-right: 0rem;">
@@ -599,13 +620,13 @@ function addInformation(){
 									<th class="smaller-table-font text-center">Item</th>
 									<th class="smaller-table-font text-center">Description</th>
 									<th class="smaller-table-font text-center">Year</th>
+									<th class="smaller-table-font text-center">Day</th>									
 									<th class="smaller-table-font text-center">Start</th>
 									<th class="smaller-table-font text-center">End</th>
 									<th class="smaller-table-font text-center">Wks</th>
+									<th class="smaller-table-font text-center">CR</th>
+									<th class="smaller-table-font text-center">DS</th>
 									<th class="smaller-table-font text-center">Price</th>
-									<th class="smaller-table-font text-center">Credit</th>
-									<th class="smaller-table-font text-center">DC%</th>
-									<th class="smaller-table-font text-center">DC$</th>
 									<th class="smaller-table-font text-center">Amount</th>
 									<th class="smaller-table-font text-center">Date</th>
 									<th class="smaller-table-font text-center" data-orderable="false">Note</th>
