@@ -345,7 +345,9 @@ public class JaeEnrolmentController {
 				enrolment.setStudent(student);
 				enrolment.setInvoice(invoice);
 				// 3. save new Enrolment
-				enrolmentService.addEnrolment(enrolment);
+				EnrolmentDTO added = enrolmentService.addEnrolment(enrolment);
+				data.setId(added.getId());
+				data.setInvoiceId(invoice.getId()+"");
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
 				// 5. update Invoice amount
@@ -378,6 +380,8 @@ public class JaeEnrolmentController {
 			// archive Enrolment
 			enrolmentService.archiveEnrolment(enrolmentId);
 		}
+
+		System.out.println("dtos : " + dtos);
 		return dtos;
 
 	}
