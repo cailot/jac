@@ -225,7 +225,7 @@
 				row.find('.weeks').text(((endWeekValue - updatedValue) + 1) + creditValue);
 				var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
 				var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-				row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
+				row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
 			});
 			row.append(startWeekCell);
 			
@@ -242,7 +242,7 @@
 				row.find('.weeks').text(((updatedValue - startWeekValue) + 1) + creditValue);
 				var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
 				var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-				row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
+				row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
 			});
 			row.append(endWeekCell);
 	
@@ -258,7 +258,7 @@
 				row.find('.end-week').text(updatedValue + startWeekValue - 1);
 				var originalPrice = ((updatedValue - creditValue) * priceValue);
 				var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-				row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
+				row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 			});
 			row.append(weeksCell);
 	
@@ -287,7 +287,7 @@
 				}
 				var originalPrice = ((parseInt(row.find('.weeks').text()) - updatedValue) * priceValue);
 				var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-				row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
+				row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 				previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
 			});
 			row.append(creditCell);
@@ -302,7 +302,7 @@
 					var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
 					var originalPrice = (weeksValue - creditValue) * priceValue;
 					// update amount
-					row.find('.amount').text(originalPrice); // Update class amount cell in the same row with the calculated value
+					row.find('.amount').text(originalPrice.toFixed(2)); // Update class amount cell in the same row with the calculated value
 				} else if (updatedValue.toString().includes('%')) {
 					// calculate discount percentage
 					// remove '%' from updatedValue
@@ -313,7 +313,7 @@
 					var originalPrice = (weeksValue - creditValue) * priceValue;
 					var discountedPrice = originalPrice * (updatedValue / 100);
 					// update amount
-					row.find('.amount').text(originalPrice - discountedPrice); // Update amount cell in the same row with the calculated value
+					row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update amount cell in the same row with the calculated value
 				} else {
 					// calculate discount amount
 					var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
@@ -321,13 +321,13 @@
 					var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
 					var originalPrice = (weeksValue - creditValue) * priceValue;
 					// update amount
-					row.find('.amount').text(originalPrice - updatedValue); // Update amount cell in the same row with the calculated value
+					row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
 				}
 			});
 			row.append(discountCell);
 	
 			row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-			row.append($('<td class="smaller-table-font text-center">').addClass('amount').text((weeksCell.text() * value.price))); // amount					
+			row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(((weeksCell.text() * value.price)).toFixed(2))); // amount					
 			row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 			row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 			row.append($('<td class="hidden-column description">').text(value.description)); // description
@@ -415,7 +415,9 @@
 			enrolData.credit = $(this).find('.credit').text();
 			enrolData.weeks = $(this).find('.weeks').text();
 			enrolData.day = $(this).find('.clazzChoice option:selected').text();
-	
+			if(enrolData.day === ""){ // if day is not selected from dropdown
+				enrolData.day = $(this).find('.day').text()
+			}	
 	
 			var clazz = {
 				"id" : enrolData.id,
@@ -674,7 +676,7 @@
 							row.find('.weeks').text(((endWeekValue - updatedValue) + 1) + creditValue);
 							var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
 							var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-							row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
+							row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
 						});
 						row.append(startWeekCell);
 
@@ -692,7 +694,7 @@
 							row.find('.weeks').text(((updatedValue - startWeekValue) + 1) + creditValue);
 							var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
 							var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-							row.find('.amount').text(originalPrice - discountedPrice); // Update class two cell within the same row with the calculated value
+							row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
 						});
 						row.append(endWeekCell);
 
@@ -709,7 +711,7 @@
 							row.find('.end-week').text(updatedValue + startWeekValue - 1);
 							var originalPrice = ((updatedValue - creditValue) * priceValue);
 							var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-							row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
+							row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 						});
 						row.append(weeksCell);
 
@@ -739,7 +741,7 @@
 							}
 							var originalPrice = ((parseInt(row.find('.weeks').text()) - updatedValue) * priceValue);
 							var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-							row.find('.amount').text(originalPrice - discountedPrice); // Update class amount cell within the same row with the calculated value
+							row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 							previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
 						});
 						row.append(creditCell);
@@ -755,7 +757,7 @@
 								var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
 								var originalPrice = (weeksValue - creditValue) * priceValue;
 								// update amount
-								row.find('.amount').text(originalPrice); // Update class amount cell in the same row with the calculated value
+								row.find('.amount').text(originalPrice.toFixed(2)); // Update class amount cell in the same row with the calculated value
 							} else if (updatedValue.toString().includes('%')) {
 								// calculate discount percentage
 								// remove '%' from updatedValue
@@ -766,7 +768,7 @@
 								var originalPrice = (weeksValue - creditValue) * priceValue;
 								var discountedPrice = originalPrice * (updatedValue / 100);
 								// update amount
-								row.find('.amount').text(originalPrice - discountedPrice); // Update amount cell in the same row with the calculated value
+								row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update amount cell in the same row with the calculated value
 							} else {
 								// calculate discount amount
 								var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
@@ -774,13 +776,13 @@
 								var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
 								var originalPrice = (weeksValue - creditValue) * priceValue;
 								// update amount
-								row.find('.amount').text(originalPrice - updatedValue); // Update amount cell in the same row with the calculated value
+								row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
 							}
 						});
 						row.append(discountCell);
 
 						row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(value.amount)); // amount				
+						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(value.amount.toFixed(2))); // amount				
 						row.append($("<td>").html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
 						row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
@@ -1010,7 +1012,7 @@
 											<th class="smaller-table-font text-center">Start</th>
 											<th class="smaller-table-font text-center">End</th>
 											<th class="smaller-table-font text-center">Wks</th>
-											<th class="smaller-table-font text-center">Cr.</th>
+											<th class="smaller-table-font text-center">CR</th>
 											<th class="smaller-table-font text-center">DC</th>
 											<th class="smaller-table-font text-center">Price</th>
 											<th class="smaller-table-font text-center">Amount</th>

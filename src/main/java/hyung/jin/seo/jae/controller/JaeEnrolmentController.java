@@ -285,12 +285,20 @@ public class JaeEnrolmentController {
 					dtos.add(data);
 					// 5. update Invoice amount
 					double price = clazzService.getPrice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")));
-					double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - data.getDiscount());
+					// check discount is % or amount value
+					String discount =StringUtils.defaultString(data.getDiscount(), "0");
+					double discountAmount = 0;
+					if(discount.contains("%")){
+						discountAmount = (((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
+					}else{
+						discountAmount = Double.parseDouble(discount);
+					}
+					double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - discountAmount);
 					int credit = data.getCredit();
-					double discount = data.getDiscount();
+					// double discount = data.getDiscount();
 					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
 					invoice.setCredit(invoice.getCredit() + credit);
-					invoice.setDiscount(invoice.getDiscount() + discount);
+					invoice.setDiscount(invoice.getDiscount() + discountAmount);
 					invoiceService.updateInvoice(invoice, invoice.getId());
 				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
 					// 1. get existing Enrolment
@@ -300,11 +308,18 @@ public class JaeEnrolmentController {
 					int start = existing.getStartWeek();
 					int end = existing.getEndWeek();
 					int credit = existing.getCredit();
-					double discount = existing.getDiscount();
+					// check discount is % or amount value
+					String discount =StringUtils.defaultString(data.getDiscount(), "0");
+					double discountAmount = 0;
+					if(discount.contains("%")){
+						discountAmount = (((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
+					}else{
+						discountAmount = Double.parseDouble(discount);
+					}
 					double price = clazzService.getPrice(existing.getClazz().getId()); // <-- check !!
-					double enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+					double enrolmentPrice = ((((end-start+1)-credit) * price) - discountAmount);
 					invoice.setCredit(invoice.getCredit() - credit);
-					invoice.setDiscount(invoice.getDiscount() - discount);
+					invoice.setDiscount(invoice.getDiscount() - discountAmount);
 					invoice.setAmount(invoice.getAmount() - enrolmentPrice);
 					
 					// 3. update Enrolment
@@ -322,9 +337,10 @@ public class JaeEnrolmentController {
 					end = existing.getEndWeek();
 					credit = existing.getCredit();
 					discount = existing.getDiscount();
-					enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+
+					enrolmentPrice = ((((end-start+1)-credit) * price) - discountAmount);
 					invoice.setCredit(invoice.getCredit() + credit);
-					invoice.setDiscount(invoice.getDiscount() + discount);
+					invoice.setDiscount(invoice.getDiscount() + discountAmount);
 					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
 					invoiceService.updateInvoice(invoice, invoice.getId());
 
@@ -352,12 +368,20 @@ public class JaeEnrolmentController {
 				dtos.add(data);
 				// 5. update Invoice amount
 				double price = clazzService.getPrice(Long.parseLong(StringUtils.defaultString(data.getClazzId(), "0")));
-				double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - data.getDiscount());
+				// check discount is % or amount value
+				String discount =StringUtils.defaultString(data.getDiscount(), "0");
+				double discountAmount = 0;
+				if(discount.contains("%")){
+					discountAmount = (((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
+				}else{
+					discountAmount = Double.parseDouble(discount);
+				}
+				double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - discountAmount);
 				int credit = data.getCredit();
-				double discount = data.getDiscount();
+				// double discount = data.getDiscount();
 				invoice.setAmount(invoice.getAmount() + enrolmentPrice);
 				invoice.setCredit(invoice.getCredit() + credit);
-				invoice.setDiscount(invoice.getDiscount() + discount);
+				invoice.setDiscount(invoice.getDiscount() + discountAmount);
 				invoiceService.updateInvoice(invoice, invoice.getId());
 			}
 		}// end of loop
@@ -369,11 +393,18 @@ public class JaeEnrolmentController {
 			int start = enrolment.getStartWeek();	
 			int end = enrolment.getEndWeek();
 			int credit = enrolment.getCredit();
-			double discount = enrolment.getDiscount();
 			double price = clazzService.getPrice(enrolment.getClazz().getId());
-			double enrolmentPrice = ((((end-start+1)-credit) * price) - discount);
+			// check discount is % or amount value
+			String discount =StringUtils.defaultString(enrolment.getDiscount(), "0");
+			double discountAmount = 0;
+			if(discount.contains("%")){
+				discountAmount = (((end-start+1)-credit) * price) * (Double.parseDouble(discount.replace("%", ""))/100);
+			}else{
+				discountAmount = Double.parseDouble(discount);
+			}
+			double enrolmentPrice = ((((end-start+1)-credit) * price) - discountAmount);
 			invoice.setCredit(invoice.getCredit() - credit);
-			invoice.setDiscount(invoice.getDiscount() - discount);
+			invoice.setDiscount(invoice.getDiscount() - discountAmount);
 			invoice.setAmount(invoice.getAmount() - enrolmentPrice);
 			invoiceService.updateInvoice(invoice, invoice.getId());
 

@@ -21,7 +21,6 @@ $(document).ready(
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
-	// debugger;
 
 	// set invoiceId into hiddenId
 	$('#hiddenId').val(data.invoiceId);
@@ -625,7 +624,7 @@ function addInformation(){
 									<th class="smaller-table-font text-center">End</th>
 									<th class="smaller-table-font text-center">Wks</th>
 									<th class="smaller-table-font text-center">CR</th>
-									<th class="smaller-table-font text-center">DS</th>
+									<th class="smaller-table-font text-center">DC</th>
 									<th class="smaller-table-font text-center">Price</th>
 									<th class="smaller-table-font text-center">Amount</th>
 									<th class="smaller-table-font text-center">Date</th>

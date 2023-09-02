@@ -13,7 +13,6 @@ public interface InvoiceService {
 	// get total number of cycle
  	long checkCount();
 
-
 	// get InvoiceDTO by student Id
 	InvoiceDTO getInvoiceDTOByStudentId(Long studentId);
 
