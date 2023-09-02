@@ -538,105 +538,105 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Delete registration with Student    
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function deleteRegistration(){
-		// get id from 'formId'
-		const studentId = $('#formId').val();
-		// if id is null, show alert and return
-		if (studentId == null || studentId == '') {
-			//warn if student id  is empty
-			$('#warning-alert .modal-body').text('Please search student before apply');
-			$('#warning-alert').modal('toggle');
-			return; 
-		}
+	// function deleteRegistration(){
+	// 	// get id from 'formId'
+	// 	const studentId = $('#formId').val();
+	// 	// if id is null, show alert and return
+	// 	if (studentId == null || studentId == '') {
+	// 		//warn if student id  is empty
+	// 		$('#warning-alert .modal-body').text('Please search student before apply');
+	// 		$('#warning-alert').modal('toggle');
+	// 		return; 
+	// 	}
 	
-		var elearnings = [];
-		var enrolData = [];
-		var books = [];
+	// 	var elearnings = [];
+	// 	var enrolData = [];
+	// 	var books = [];
 	
-		var elearningData = elearnings.map(function(id) {
-			return parseInt(id);
-		});
-		var bookData = books.map(function(id){
-			return parseInt(id);
-		});
+	// 	var elearningData = elearnings.map(function(id) {
+	// 		return parseInt(id);
+	// 	});
+	// 	var bookData = books.map(function(id){
+	// 		return parseInt(id);
+	// 	});
 	
-		// Make the AJAX enrolment for eLearning
-		$.ajax({
-			url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
-			method: 'POST',
-			data: JSON.stringify(elearningData),
-			contentType: 'application/json',
-			success: function(response) {
-				// Handle the response
-				// console.log(response);
-			},
-			error: function(xhr, status, error) {
-				// Handle the error
-				console.error(error);
-			}
-		});
+	// 	// Make the AJAX enrolment for eLearning
+	// 	$.ajax({
+	// 		url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
+	// 		method: 'POST',
+	// 		data: JSON.stringify(elearningData),
+	// 		contentType: 'application/json',
+	// 		success: function(response) {
+	// 			// Handle the response
+	// 			// console.log(response);
+	// 		},
+	// 		error: function(xhr, status, error) {
+	// 			// Handle the error
+	// 			console.error(error);
+	// 		}
+	// 	});
 		
-		// Make the AJAX enrolment for class
-		$.ajax({
-			url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
-			method: 'POST',
-			data: JSON.stringify(enrolData),
-			contentType: 'application/json',
-			success: function(response) {
-				//debugger;
-				if(response.length >0){
-					$.each(response, function(index, value){
-						// update the invoice table
-						// console.log(value);
-						addEnrolmentToInvoiceList(value);
-					});
-				}else{
-					// console.log('No enrolment');
-					// remove enrolments from invoice table
-					removeEnrolmentFromInvoiceList();
+	// 	// Make the AJAX enrolment for class
+	// 	$.ajax({
+	// 		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
+	// 		method: 'POST',
+	// 		data: JSON.stringify(enrolData),
+	// 		contentType: 'application/json',
+	// 		success: function(response) {
+	// 			//debugger;
+	// 			if(response.length >0){
+	// 				$.each(response, function(index, value){
+	// 					// update the invoice table
+	// 					// console.log(value);
+	// 					addEnrolmentToInvoiceList(value);
+	// 				});
+	// 			}else{
+	// 				// console.log('No enrolment');
+	// 				// remove enrolments from invoice table
+	// 				removeEnrolmentFromInvoiceList();
 	
-				}
-				// nested ajax for book after creating or updating invoice
-				// Make the AJAX enrolment for book
-				$.ajax({
-					url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
-					method: 'POST',
-					data: JSON.stringify(bookData),
-					contentType: 'application/json',
-					success: function(response) {
-						// Handle the response
-						if(response.length >0){
-							$.each(response, function(index, value){
-								//addBookToInvoice(value);
-								addBookToInvoiceList(value);
-							});
-						}else{
-							// remove books from invoice table
-							removeBookFromInvoiceList();
-						}
-					},
-					error: function(xhr, status, error) {
-						// Handle the error
-						console.error(error);
-					}
-				});
+	// 			}
+	// 			// nested ajax for book after creating or updating invoice
+	// 			// Make the AJAX enrolment for book
+	// 			$.ajax({
+	// 				url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
+	// 				method: 'POST',
+	// 				data: JSON.stringify(bookData),
+	// 				contentType: 'application/json',
+	// 				success: function(response) {
+	// 					// Handle the response
+	// 					if(response.length >0){
+	// 						$.each(response, function(index, value){
+	// 							//addBookToInvoice(value);
+	// 							addBookToInvoiceList(value);
+	// 						});
+	// 					}else{
+	// 						// remove books from invoice table
+	// 						removeBookFromInvoiceList();
+	// 					}
+	// 				},
+	// 				error: function(xhr, status, error) {
+	// 					// Handle the error
+	// 					console.error(error);
+	// 				}
+	// 			});
 	
-				// Handle the response
-				// console.log(response);
-				$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
-				$('#success-alert').modal('toggle');
-			},
-			error: function(xhr, status, error) {
-				// Handle the error
-				console.error(error);
-			}
-		});
+	// 			// Handle the response
+	// 			// console.log(response);
+	// 			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
+	// 			$('#success-alert').modal('toggle');
+	// 		},
+	// 		error: function(xhr, status, error) {
+	// 			// Handle the error
+	// 			console.error(error);
+	// 		}
+	// 	});
 	
-		// clear lecture basket
-		clearEnrolmentBasket();
-		//reloadEnrolment(studentId);
+	// 	// clear lecture basket
+	// 	clearEnrolmentBasket();
+	// 	//reloadEnrolment(studentId);
 	
-	}
+	// }
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -904,7 +904,33 @@
 			border-color: #dee2e6; /* Change border color for active tab */
 		}
 	
+		#basketTable th:nth-child(1) { width: 0%; } /* hidden id */
+		#basketTable th:nth-child(2) { width: 5%; }  /* item */
+		#basketTable th:nth-child(3) { width: 23%; } /* name */
+		#basketTable th:nth-child(4) { width: 13%; } /* day */
+		#basketTable th:nth-child(5) { width: 7%; } /* year */
+		#basketTable th:nth-child(6) { width: 6%; } /* start */
+		#basketTable th:nth-child(7) { width: 6%; } /* end */
+		#basketTable th:nth-child(8) { width: 6%; } /* weeks */
+		#basketTable th:nth-child(9) { width: 4%; } /* credit % */
+		#basketTable th:nth-child(10) { width: 7%; } /* discount % */
+		#basketTable th:nth-child(11) { width: 8%; } /* price */
+		#basketTable th:nth-child(12) { width: 11%; } /* amount */
+		#basketTable th:nth-child(13) { width: 4%; } /* delete */
 	
+		#basketTable td:nth-child(1) { width: 0%; } /* hidden id */
+		#basketTable td:nth-child(2) { width: 5%; }  /* item */
+		#basketTable td:nth-child(3) { width: 23%; } /* name */
+		#basketTable td:nth-child(4) { width: 13%; } /* day */
+		#basketTable td:nth-child(5) { width: 7%; } /* year */
+		#basketTable td:nth-child(6) { width: 6%; } /* start */
+		#basketTable td:nth-child(7) { width: 6%; } /* end */
+		#basketTable td:nth-child(8) { width: 6%; } /* weeks */
+		#basketTable td:nth-child(9) { width: 4%; } /* credit % */
+		#basketTable td:nth-child(10) { width: 7%; } /* discount % */
+		#basketTable td:nth-child(11) { width: 8%; } /* price */
+		#basketTable td:nth-child(12) { width: 11%; } /* amount */
+		#basketTable td:nth-child(13) { width: 4%; } /* delete */
 	</style>
 	
 	</style>
@@ -936,14 +962,14 @@
 							<option value="vce">VCE</option>
 						</select>
 					</div>
-					<div class="offset-md-4">
+					<div class="offset-md-6">
 					</div>
 					<div class="col-md-2">
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
 					</div>
-					<div class="col-md-2">
+					<!-- <div class="col-md-2">
 						<button id="deleteEnrolmentBtn" type="button" class="btn btn-block btn-danger btn-sm" data-toggle="modal" onclick="deleteRegistration()">Delete</button>
-					</div>
+					</div> -->
 					<div class="col-md-2">
 						<button id="clearEnrolmentBtn" type="button" class="btn btn-block btn-success btn-sm" data-toggle="modal" onclick="clearEnrolmentBasket()">Clear</button>
 					</div>
@@ -960,154 +986,113 @@
 									<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books</a>
 									<!-- <a class="nav-item nav-link" id="nav-etc-tab" data-toggle="tab" href="#nav-etc" role="tab" aria-controls="nav-etc" aria-selected="false">Etc</a> -->
 							  </div>
-						  </nav>                  
-	<style>
-		#basketTable th:nth-child(1) { width: 0%; } /* hidden id */
-		#basketTable th:nth-child(2) { width: 5%; }  /* item */
-		#basketTable th:nth-child(3) { width: 23%; } /* name */
-		#basketTable th:nth-child(4) { width: 13%; } /* day */
-		#basketTable th:nth-child(5) { width: 7%; } /* year */
-		#basketTable th:nth-child(6) { width: 6%; } /* start */
-		#basketTable th:nth-child(7) { width: 6%; } /* end */
-		#basketTable th:nth-child(8) { width: 6%; } /* weeks */
-		#basketTable th:nth-child(9) { width: 4%; } /* credit % */
-		#basketTable th:nth-child(10) { width: 7%; } /* discount % */
-		#basketTable th:nth-child(11) { width: 8%; } /* price */
-		#basketTable th:nth-child(12) { width: 11%; } /* amount */
-		#basketTable th:nth-child(13) { width: 4%; } /* delete */
-	
-		#basketTable td:nth-child(1) { width: 0%; } /* hidden id */
-		#basketTable td:nth-child(2) { width: 5%; }  /* item */
-		#basketTable td:nth-child(3) { width: 23%; } /* name */
-		#basketTable td:nth-child(4) { width: 13%; } /* day */
-		#basketTable td:nth-child(5) { width: 7%; } /* year */
-		#basketTable td:nth-child(6) { width: 6%; } /* start */
-		#basketTable td:nth-child(7) { width: 6%; } /* end */
-		#basketTable td:nth-child(8) { width: 6%; } /* weeks */
-		#basketTable td:nth-child(9) { width: 4%; } /* credit % */
-		#basketTable td:nth-child(10) { width: 7%; } /* discount % */
-		#basketTable td:nth-child(11) { width: 8%; } /* price */
-		#basketTable td:nth-child(12) { width: 11%; } /* amount */
-		#basketTable td:nth-child(13) { width: 4%; } /* delete */
-	
-		/* #basketTable td {
-			padding-left: 0.1rem;
-			padding-right: 0.1rem;
-			padding-top: 0.75rem;
-			padding-bottom: 0.75rem;
-		} */
-	</style>
-	
-						  <div class="tab-content" id="nav-tabContent">
-							<!-- Lecture List -->
-							<div class="tab-pane fade show active" id="nav-basket" role="tabpanel" aria-labelledby="nav-basket-tab">
-								<table class="table" id="basketTable" name="basketTable">
-									<thead>
-										<tr class="d-flex">
-											<th class="hidden-column"></th>
-											<th class="smaller-table-font text-center" style="padding-left: 0.25rem;">Item</th>
-											<th class="smaller-table-font text-center">Name</th>
-											<th class="smaller-table-font text-center">Day</th>
-											<th class="smaller-table-font text-center">Year</th>
-											<th class="smaller-table-font text-center">Start</th>
-											<th class="smaller-table-font text-center">End</th>
-											<th class="smaller-table-font text-center">Wks</th>
-											<th class="smaller-table-font text-center">CR</th>
-											<th class="smaller-table-font text-center">DC</th>
-											<th class="smaller-table-font text-center">Price</th>
-											<th class="smaller-table-font text-center">Amount</th>
-											<th class="smaller-table-font text-center hidden-column"></th>
-										</tr>
-									</thead>
-									<tbody>
-										
-									</tbody>
-								</table> 
-							</div>
-	
-	
-							<script>
-								// Function to check if tbody is empty and enable or disable the button
-								function checkTbodyEmpty() {
-								  // Get the tbody element
-								  var tbody = document.querySelector('#basketTable tbody');
-								  // If tbody is empty, disable the button
-								  if (tbody.children.length === 0) {
-									$('#applyEnrolmentBtn').prop('disabled', true);
-									$('#deleteEnrolmentBtn').prop('disabled', true);
-									$('#clearEnrolmentBtn').prop('disabled', true);
-								  } else {
-									$('#applyEnrolmentBtn').prop('disabled', false);
-									$('#deleteEnrolmentBtn').prop('disabled', false);
-									$('#clearEnrolmentBtn').prop('disabled', false);
-								  }
-								}
-								// Call the checkTbodyEmpty function initially
-								checkTbodyEmpty();
-								// Attach an event listener to the tbody that will trigger the checkTbodyEmpty function whenever its content changes
-								var tbody = document.querySelector('#basketTable tbody');
-								tbody.addEventListener('DOMSubtreeModified', checkTbodyEmpty);
-							</script>
-	
-	
-							<!-- e-Learning -->
-							<div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
-								<table class="table" id="elearnTable" name="elearnTable">
-									<thead>
-										<tr class="d-flex">
-											<th class="hidden-column"></th>
-											<th class="smaller-table-font col-1">Item</th>
-											<th class="smaller-table-font col-1">Grade</th>
-											<th class="smaller-table-font col-9" style="padding-left: 20px;">Subjects</th>
-											<th class="col-1"></th>
-										</tr>
-									</thead>
-									<tbody>
-										
-									</tbody>
-								</table>
-							</div>
-							<!-- Course -->
-							<div class="tab-pane fade" id="nav-fee" role="tabpanel" aria-labelledby="nav-fee-tab">
-								  <table class="table" id="courseTable" name="courseTable">
-									  <thead>
-										  <tr class="d-flex">
-											  <th class="hidden-column"></th>
-											  <th class="smaller-table-font col-1">Item</th>
-											  <th class="smaller-table-font col-5" style="padding-left: 20px;">Name</th>
-											  <th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
-											  <th class="smaller-table-font col-1">Price</th>
-											  <th class="smaller-table-font col-1"></th>
-										  </tr>
-									  </thead>
-									  <tbody>
-										  
-									  </tbody>
-								  </table>
-							  </div>
-							  <!-- Book -->
-							  <div class="tab-pane fade" id="nav-book" role="tabpanel" aria-labelledby="nav-book-tab">
-								  <table class="table" cellspacing="0" id="bookTable" name="bookTable">
-									  <thead>
-										  <tr class="d-flex">
-											  <th class="hidden-column"></th>
-											  <th class="smaller-table-font col-1">Item</th>
-											  <th class="smaller-table-font col-5" style="padding-left: 20px;">Description</th>
-											  <th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
-											  <th class="smaller-table-font col-1">Price</th>
-											  <th class="smaller-table-font col-1"></th>
-										  </tr>
-									  </thead>
-									  <tbody>
-									  </tbody>
-								  </table>
-							  </div>
-						  </div>
+						</nav>                  
+						<div class="tab-content" id="nav-tabContent">
+						<!-- Lecture List -->
+						<div class="tab-pane fade show active" id="nav-basket" role="tabpanel" aria-labelledby="nav-basket-tab">
+							<table class="table" id="basketTable" name="basketTable">
+								<thead>
+									<tr class="d-flex">
+										<th class="hidden-column"></th>
+										<th class="smaller-table-font text-center" style="padding-left: 0.25rem;">Item</th>
+										<th class="smaller-table-font text-center">Name</th>
+										<th class="smaller-table-font text-center">Day</th>
+										<th class="smaller-table-font text-center">Year</th>
+										<th class="smaller-table-font text-center">Start</th>
+										<th class="smaller-table-font text-center">End</th>
+										<th class="smaller-table-font text-center">Wks</th>
+										<th class="smaller-table-font text-center">CR</th>
+										<th class="smaller-table-font text-center">DC</th>
+										<th class="smaller-table-font text-center">Price</th>
+										<th class="smaller-table-font text-center">Amount</th>
+										<th class="smaller-table-font text-center hidden-column"></th>
+									</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+							</table> 
+						</div>
+				<!-- <script>
+					// Function to check if tbody is empty and enable or disable the button
+					function checkTbodyEmpty() {
+						// Get the tbody element
+						var tbody = document.querySelector('#basketTable tbody');
+						// If tbody is empty, disable the button
+						if (tbody.children.length === 0) {
+						$('#applyEnrolmentBtn').prop('disabled', true);
+						$('#deleteEnrolmentBtn').prop('disabled', true);
+						$('#clearEnrolmentBtn').prop('disabled', true);
+						} else {
+						$('#applyEnrolmentBtn').prop('disabled', false);
+						$('#deleteEnrolmentBtn').prop('disabled', false);
+						$('#clearEnrolmentBtn').prop('disabled', false);
+						}
+					}
+					// Call the checkTbodyEmpty function initially
+					checkTbodyEmpty();
+					// Attach an event listener to the tbody that will trigger the checkTbodyEmpty function whenever its content changes
+					var tbody = document.querySelector('#basketTable tbody');
+					tbody.addEventListener('DOMSubtreeModified', checkTbodyEmpty);
+				</script> -->
+				<!-- e-Learning -->
+				<div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
+					<table class="table" id="elearnTable" name="elearnTable">
+						<thead>
+							<tr class="d-flex">
+								<th class="hidden-column"></th>
+								<th class="smaller-table-font col-1">Item</th>
+								<th class="smaller-table-font col-1">Grade</th>
+								<th class="smaller-table-font col-9" style="padding-left: 20px;">Subjects</th>
+								<th class="col-1"></th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
+				<!-- Course -->
+				<div class="tab-pane fade" id="nav-fee" role="tabpanel" aria-labelledby="nav-fee-tab">
+						<table class="table" id="courseTable" name="courseTable">
+							<thead>
+								<tr class="d-flex">
+									<th class="hidden-column"></th>
+									<th class="smaller-table-font col-1">Item</th>
+									<th class="smaller-table-font col-5" style="padding-left: 20px;">Name</th>
+									<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
+									<th class="smaller-table-font col-1">Price</th>
+									<th class="smaller-table-font col-1"></th>
+								</tr>
+							</thead>
+							<tbody>
+								
+							</tbody>
+						</table>
+					</div>
+					<!-- Book -->
+					<div class="tab-pane fade" id="nav-book" role="tabpanel" aria-labelledby="nav-book-tab">
+						<table class="table" cellspacing="0" id="bookTable" name="bookTable">
+							<thead>
+								<tr class="d-flex">
+									<th class="hidden-column"></th>
+									<th class="smaller-table-font col-1">Item</th>
+									<th class="smaller-table-font col-5" style="padding-left: 20px;">Description</th>
+									<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
+									<th class="smaller-table-font col-1">Price</th>
+									<th class="smaller-table-font col-1"></th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-		</form>
+		</div>
 	</div>
+</form>
+</div>
 	
 	
 	
