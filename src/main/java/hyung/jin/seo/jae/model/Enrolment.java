@@ -63,7 +63,7 @@ public class Enrolment{ // bridge table between Student & Class
     private int credit;
 
 	@Column
-    private double discount;
+    private String discount;
 
 	@Column
 	private boolean old;
