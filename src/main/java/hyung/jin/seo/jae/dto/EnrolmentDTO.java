@@ -31,7 +31,7 @@ public class EnrolmentDTO extends MoneyDTO{
 
 	private int credit;
 
-	private double discount;
+	private String discount;
 
 	// private double amount;
 
@@ -89,7 +89,7 @@ public class EnrolmentDTO extends MoneyDTO{
     	return enrolement;
     }
 
-	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, double discount, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
+	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.cancelled = cancelled;
@@ -144,7 +144,7 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.info = (obj[6]!=null) ? String.valueOf(obj[6]) : "";				
 		this.invoiceId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0";
 		this.credit = (obj[8]!=null) ? Integer.parseInt(String.valueOf(obj[8])) : 0;
-		this.discount = (obj[9]!=null) ? Double.parseDouble(String.valueOf(obj[9])) : 0;
+		this.discount = (obj[9]!=null) ? String.valueOf(obj[9]) : "0";
 		this.amount = (obj[10]!=null) ? Double.parseDouble(String.valueOf(obj[10])) : 0;
 		this.paid = (obj[11]!=null) ? Double.parseDouble(String.valueOf(obj[11])) : 0;
 		this.paymentDate = (obj[12] != null) ? JaeUtils.dateFormat.format(obj[12]) : null;

@@ -118,6 +118,14 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		if(!StringUtils.equalsIgnoreCase(StringUtils.defaultString(enrolment.getCancellationReason()), StringUtils.defaultString(existing.getCancellationReason()))){
 			existing.setCancellationReason(StringUtils.defaultString(enrolment.getCancellationReason()));
 		}
+		// credit
+		if(enrolment.getCredit()!=existing.getCredit()){
+			existing.setCredit(enrolment.getCredit());
+		}
+		// discount
+		if(enrolment.getDiscount()!=existing.getDiscount()){
+			existing.setDiscount(enrolment.getDiscount());
+		}
 		// info
 		if(!StringUtils.equalsIgnoreCase(StringUtils.defaultString(enrolment.getInfo()), StringUtils.defaultString(existing.getInfo()))){
 			existing.setInfo(StringUtils.defaultString(enrolment.getInfo()));
