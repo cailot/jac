@@ -386,12 +386,12 @@ public class JaeEnrolmentController {
 		}
 
 
-		// Set<Enrolment> enrolments = invoice.getEnrolments();
-		// for (Enrolment enrolment : enrolments) {
-		// 	System.out.println("--- : " + enrolment);
+		Set<Enrolment> enrolments = invoice.getEnrolments();
+		for (Enrolment enrolment : enrolments) {
+			System.out.println("--- : " + enrolment);
 		
 		// // 	// dtos.add(new EnrolmentDTO(enrolment));
-		// }
+		}
 		return dtos;
 
 	}
