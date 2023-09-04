@@ -20,6 +20,10 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 
 	// get price by material id
 	@Query(value = "SELECT b.price FROM Book b where b.id = (SELECT m.bookId FROM Material m WHERE m.id = :materialId)", nativeQuery = true)
-	double getPrice(Long materialId);
+	double getPriceByMaterialId(Long materialId);
+
+	// get price by book id
+	@Query("SELECT b.price FROM Book b WHERE b.id = ?1")
+	double getPrice(Long bookId);
 	
 }

@@ -353,8 +353,9 @@
 		row.append($('<td style="width: 6%;">'));
 		row.append($('<td style="width: 4%;">'));
 		row.append($('<td style="width: 7%;">'));
-		row.append($('<td class="smaller-table-font text-center price" style="width: 8%;">').text(value.price)); // price
-		row.append($('<td style="width: 11%;">'));
+		row.append($('<td style="width: 8%;">')); // price
+		// row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
+		row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(Number(value.price).toFixed(2)));
 		row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 		row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
 		$('#basketTable > tbody').prepend(row);
@@ -535,109 +536,6 @@
 	
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//      Delete registration with Student    
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	// function deleteRegistration(){
-	// 	// get id from 'formId'
-	// 	const studentId = $('#formId').val();
-	// 	// if id is null, show alert and return
-	// 	if (studentId == null || studentId == '') {
-	// 		//warn if student id  is empty
-	// 		$('#warning-alert .modal-body').text('Please search student before apply');
-	// 		$('#warning-alert').modal('toggle');
-	// 		return; 
-	// 	}
-	
-	// 	var elearnings = [];
-	// 	var enrolData = [];
-	// 	var books = [];
-	
-	// 	var elearningData = elearnings.map(function(id) {
-	// 		return parseInt(id);
-	// 	});
-	// 	var bookData = books.map(function(id){
-	// 		return parseInt(id);
-	// 	});
-	
-	// 	// Make the AJAX enrolment for eLearning
-	// 	$.ajax({
-	// 		url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
-	// 		method: 'POST',
-	// 		data: JSON.stringify(elearningData),
-	// 		contentType: 'application/json',
-	// 		success: function(response) {
-	// 			// Handle the response
-	// 			// console.log(response);
-	// 		},
-	// 		error: function(xhr, status, error) {
-	// 			// Handle the error
-	// 			console.error(error);
-	// 		}
-	// 	});
-		
-	// 	// Make the AJAX enrolment for class
-	// 	$.ajax({
-	// 		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
-	// 		method: 'POST',
-	// 		data: JSON.stringify(enrolData),
-	// 		contentType: 'application/json',
-	// 		success: function(response) {
-	// 			//debugger;
-	// 			if(response.length >0){
-	// 				$.each(response, function(index, value){
-	// 					// update the invoice table
-	// 					// console.log(value);
-	// 					addEnrolmentToInvoiceList(value);
-	// 				});
-	// 			}else{
-	// 				// console.log('No enrolment');
-	// 				// remove enrolments from invoice table
-	// 				removeEnrolmentFromInvoiceList();
-	
-	// 			}
-	// 			// nested ajax for book after creating or updating invoice
-	// 			// Make the AJAX enrolment for book
-	// 			$.ajax({
-	// 				url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
-	// 				method: 'POST',
-	// 				data: JSON.stringify(bookData),
-	// 				contentType: 'application/json',
-	// 				success: function(response) {
-	// 					// Handle the response
-	// 					if(response.length >0){
-	// 						$.each(response, function(index, value){
-	// 							//addBookToInvoice(value);
-	// 							addBookToInvoiceList(value);
-	// 						});
-	// 					}else{
-	// 						// remove books from invoice table
-	// 						removeBookFromInvoiceList();
-	// 					}
-	// 				},
-	// 				error: function(xhr, status, error) {
-	// 					// Handle the error
-	// 					console.error(error);
-	// 				}
-	// 			});
-	
-	// 			// Handle the response
-	// 			// console.log(response);
-	// 			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
-	// 			$('#success-alert').modal('toggle');
-	// 		},
-	// 		error: function(xhr, status, error) {
-	// 			// Handle the error
-	// 			console.error(error);
-	// 		}
-	// 	});
-	
-	// 	// clear lecture basket
-	// 	clearEnrolmentBasket();
-	// 	//reloadEnrolment(studentId);
-	
-	// }
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Retrieve Enroloment & Update Invoice Table
@@ -782,12 +680,23 @@
 						row.append(discountCell);
 
 						row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(value.amount.toFixed(2))); // amount				
+
+						var totalEnrolPrice = ((weeksCell.text()-(creditCell.text()))* value.price);
+						var discount = defaultIfEmpty(discountCell.text(), 0);	
+						if(discount.toString().includes('%')){
+							discount = discount.replace('%', '');
+							totalEnrolPrice = totalEnrolPrice - (totalEnrolPrice * (discount / 100));
+						}else{
+							totalEnrolPrice = totalEnrolPrice - discount;
+						}
+
+						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalEnrolPrice.toFixed(2))); // amount				
 						row.append($("<td>").html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
 						row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 						row.append($('<td class="hidden-column description">').text(value.description)); // description
 						row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
+						row.append($('<td class="hidden-column invoiceAmount">').text(value.amount)); // invoice amount	
 		
 						$('#basketTable > tbody').prepend(row);
 
@@ -808,8 +717,8 @@
 						row.append($('<td style="width: 6%;">'));
 						row.append($('<td style="width: 4%;">'));
 						row.append($('<td style="width: 7%;">'));
-						row.append($('<td class="smaller-table-font text-center price" style="width: 8%;">').text(value.price)); // price
-						row.append($('<td style="width: 11%;">'));
+						row.append($('<td style="width: 8%;">')); // price
+						row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
 						row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 						row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
 						$('#basketTable > tbody').append(row);

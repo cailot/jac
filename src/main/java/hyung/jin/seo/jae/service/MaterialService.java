@@ -12,6 +12,9 @@ public interface MaterialService {
 	// list Materials based on invoice Id
 	List<MaterialDTO> findMaterialByInvoice(Long id);
 
+	// get Material based on invoice Id and book Id
+	MaterialDTO findMaterialByInvoiceAndBook(Long invoiceId, Long bookId);
+
 	// get Material by Id
 	Material getMaterial(Long id);
 
