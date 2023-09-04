@@ -38,9 +38,20 @@ public class Invoice{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "invoiceId")
-	private Set<Enrolment> enrolments = new LinkedHashSet<>();
+	// @OneToMany(fetch = FetchType.LAZY)
+	// @JoinColumn(name = "invoiceId")
+	// private Set<Enrolment> enrolments = new LinkedHashSet<>();
+
+	// public void addEnrolment(Enrolment enrolment){
+	// 	enrolments.add(enrolment);
+	// }
+	@OneToMany(mappedBy = "invoice", cascade = {
+     	CascadeType.PERSIST,
+		CascadeType.MERGE,
+		CascadeType.REFRESH,
+		CascadeType.DETACH
+	})
+    private Set<Enrolment> enrolments = new HashSet<>();
 
 	public void addEnrolment(Enrolment enrolment){
 		enrolments.add(enrolment);
@@ -71,23 +82,6 @@ public class Invoice{
 	public void addOutstanding(Outstanding stand){
 		outstandings.add(stand);
 	}
-
-	// Unidirectional ManyToMany
-    // @ManyToMany(fetch = FetchType.LAZY, cascade = {
-	// 	CascadeType.PERSIST,
-	// 	CascadeType.MERGE,
-	// 	CascadeType.REFRESH,
-	// 	CascadeType.DETACH
-	// })
-    // @JoinTable(name="Invoice_Book",
-    // 	joinColumns = @JoinColumn(name="invoiceId"),
-    // 	inverseJoinColumns = @JoinColumn(name="bookId")
-    // )
-    // private Set<Book> books = new LinkedHashSet<>();
-
-	// public void addBook(Book book){
-	// 	books.add(book);
-	// }
 
 	@OneToMany(mappedBy = "invoice", cascade = {
      	CascadeType.PERSIST,
