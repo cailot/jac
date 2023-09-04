@@ -182,54 +182,32 @@ public class JaeEnrolmentController {
 		Invoice invo = invoiceService.getInvoiceByStudentId(studentId);
 		// if no invoice or no book, return empty list
 		if((invo==null) || (bookIds==null)) return dtos;
-		
-		// // 2. bring all registered Book - bookId & invoiceId
+		// 2. bring all registered Book - bookId & invoiceId
 		List<Long> registeredIds = materialService.findBookIdByInvoiceId(invo.getId());
-
-		// List<MaterialDTO> alreadys = materialService.findMaterialByInvoice(invo.getId());
-		// // 3, store list for registered book Ids
-		// List<Long> registeredIds = new ArrayList<Long>();
-		// for(MaterialDTO dto : alreadys){
-		// 	registeredIds.add(Long.parseLong(dto.getBookId()));
-		// }
-
-
 		for(Long bookId : bookIds){
-			boolean isExist = false;
-			for(Long registeredId : registeredIds){
-			// 3-1. if bookId is in the list and passed parameters then skip - already exist
-				if(bookId == registeredId){
-					isExist = true;
-					// add book price as re-initialized by Enrolment
-					Book book = bookService.getBook(bookId);
-					// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
-					invo.setAmount(invo.getAmount() + book.getPrice());
-					// System.out.println("After - invo.getAmout() : " + invo.getAmount());
-					// amount update for invoice
-					invoiceService.updateInvoice(invo, invo.getId());
-					registeredIds.remove(registeredId);
-					break;			
-				}	
+			// check whether registeredIds contains bookId or not
+			if(registeredIds.contains(bookId)){ // if book is already registered, then do nothging but remove from registeredIds
+				registeredIds.remove(bookId);
+				continue;
+			}else{ // there is no registered book, which requires adding new book
+				// 4-2. get Book
+				Book book = bookService.getBook(bookId);
+				// 5-2. update invoice amount
+				invo.setAmount(invo.getAmount() + book.getPrice());
+				// 6-2. create Material
+				Material material = new Material();
+				material.setBook(book);
+				material.setInvoice(invo);
+				// no need to update Invoice ??
+				// 7-2. save Material
+				material = materialService.addMaterial(material);	
 			}
-			if(isExist) continue; // keep outter loop
-			// 3-2. if bookId not in the list then add - new book
-			// 4-2. get Book
-			Book book = bookService.getBook(bookId);
-			// 5-2. update invoice amount
-
-			// System.out.println("Before - invo.getAmout() : " + invo.getAmount());
-			invo.setAmount(invo.getAmount() + book.getPrice());
-			// System.out.println("After - invo.getAmout() : " + invo.getAmount());
-			
-			// 6-2. create Material
-			Material material = new Material();
-			material.setBook(book);
-			material.setInvoice(invo);
-			// 7-2. save Material
-			material = materialService.addMaterial(material);		
-		}
+		}	
 		// 3-3. if bookId is in the list but no passed then delete - delete book
 		for(Long deleteId : registeredIds){
+			// update Invoice
+			double price = bookService.getPrice(deleteId);
+			invo.setAmount(invo.getAmount() - price);
 			// 4-3. remove Material by bookId & invoiceId
 			materialService.deleteMaterial(invo.getId(), deleteId);
 		}

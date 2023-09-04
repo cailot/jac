@@ -92,4 +92,9 @@ public class MaterialServiceImpl implements MaterialService {
 	public List<Long> findBookIdByInvoiceId(long invoiceId) {
 		return materialRepository.findBookIdByInvoiceId(invoiceId);
 	}
+
+	@Override
+	public MaterialDTO findMaterialByInvoiceAndBook(Long invoiceId, Long bookId) {
+		return materialRepository.findMaterialByInvoiceIdAndBookId(invoiceId, bookId);
+	}
 }

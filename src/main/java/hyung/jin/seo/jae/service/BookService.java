@@ -22,5 +22,8 @@ public interface BookService {
 	long checkCount();
 
 	// get price by material id
-	double getPrice(Long materialId);
+	double getPriceByMaterial(Long materialId);
+
+	// get price by book id
+	double getPrice(Long bookId);
 }

@@ -47,7 +47,16 @@ function addEnrolmentToInvoiceList(data) {
 	
 	// (needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').text('0 %')) : row.append($('<td class="smaller-table-font text-center">').text('0 %'));
 	
-	(needPay) ? row.append($('<td class="smaller-table-font text-right" contenteditable="true">').addClass('amount').text(data.amount.toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(data.amount.toFixed(2)).attr("id", "amountCell"));
+
+	var totalEnrolPrice = ((row.find('.weeks').text()-(row.find('.credit').text()))* data.price);
+	var discount = defaultIfEmpty(row.find('.discount').text(), 0);	
+	if(discount.toString().includes('%')){
+		discount = discount.replace('%', '');
+		totalEnrolPrice = totalEnrolPrice - (totalEnrolPrice * (discount / 100));
+	}else{
+		totalEnrolPrice = totalEnrolPrice - discount;
+	}
+	(needPay) ? row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(totalEnrolPrice.toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(totalEnrolPrice.toFixed(2)).attr("id", "amountCell"));
 
 	row.append($('<td class="smaller-table-font paid-date text-center">').text(data.paymentDate));
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
@@ -56,6 +65,7 @@ function addEnrolmentToInvoiceList(data) {
 		
 	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
 	row.append($('<td>').addClass('hidden-column paid').text(data.paid));
+	row.append($('<td>').addClass('hidden-column invoiceAmount').text(data.amount));
 	
 
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
@@ -169,22 +179,19 @@ function addBookToInvoiceList(data) {
 	// console.log(data);
 	$('#hiddenId').val(data.invoiceId);
 	var row = $('<tr>');
-	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + data.bookId)); // 0
 	row.append($('<td class="text-center"><i class="bi bi-book" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font">').text(data.name)); // description
-	row.append($('<td>'));
-	row.append($('<td>'));
-	row.append($('<td>'));
-	row.append($('<td>'));
-	row.append($('<td class="smaller-table-font text-right">').addClass('fee').text(Number(data.price).toFixed(2)));// price
-	row.append($('<td>'));
-	row.append($('<td>'));
-	row.append($('<td>'));
-	
-	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price).toFixed(2)));// Total	
-	row.append($('<td>').addClass('hidden-column paid').text(0)); // 0	
+	row.append($('<td>')); // year
+	row.append($('<td>')); // day
+	row.append($('<td>')); // start
+	row.append($('<td>')); // end
+	row.append($('<td>')); // weeks 
+	row.append($('<td>')); // credit
+	row.append($('<td>')); // discount
+	row.append($('<td>')); // price	
+	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price).toFixed(2)));// Amount	
 	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate));// payment date
-
+	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + data.bookId)); // 0
 	// if data.info is not empty, then display filled icon, otherwise display empty icon	
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
