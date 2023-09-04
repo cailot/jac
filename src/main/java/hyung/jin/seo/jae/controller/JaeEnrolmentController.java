@@ -71,10 +71,10 @@ public class JaeEnrolmentController {
 		List<String> invoiceIds = new ArrayList();
 		// 1. get enrolments
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByStudent(id);
-		// 2. get invoice id and add to list dtos
+		// 2. list invoice ids
 		for(EnrolmentDTO enrol : enrols){
 			invoiceIds.add(enrol.getInvoiceId());
-			dtos.add(enrol);
+			// dtos.add(enrol);
 		}
 		// 3. when returns, dtos keep order of materials, enrolments, outstandings
 		// 3-A. get materials by invoice id and add to list dtos
@@ -85,9 +85,9 @@ public class JaeEnrolmentController {
 			}
 		}
 		// 3-B. add enrolments to list dtos
-		// for(EnrolmentDTO enrol : enrols){
-		// 	dtos.add(enrol);
-		// }
+		for(EnrolmentDTO enrol : enrols){
+			dtos.add(enrol);
+		}
 		// 3-C. add outstandings to list dtos
 		for(String invoiceId : invoiceIds){
 			List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(Long.parseLong(invoiceId));
@@ -96,7 +96,6 @@ public class JaeEnrolmentController {
 			}
 		}
 		// 4. return dtos mixed by enrolments and outstandings
-	//	System.out.println(dtos);
 		return dtos;
 	}
 
@@ -185,33 +184,32 @@ public class JaeEnrolmentController {
 		// 2. bring all registered Book - bookId & invoiceId
 		List<Long> registeredIds = materialService.findBookIdByInvoiceId(invo.getId());
 		for(Long bookId : bookIds){
-			// check whether registeredIds contains bookId or not
+			// 2-1. check whether registeredIds contains bookId or not
 			if(registeredIds.contains(bookId)){ // if book is already registered, then do nothging but remove from registeredIds
 				registeredIds.remove(bookId);
 				continue;
 			}else{ // there is no registered book, which requires adding new book
-				// 4-2. get Book
+				// 2-2. get Book
 				Book book = bookService.getBook(bookId);
-				// 5-2. update invoice amount
+				// 2-3. update invoice amount
 				invo.setAmount(invo.getAmount() + book.getPrice());
-				// 6-2. create Material
+				// 2-4. create Material
 				Material material = new Material();
 				material.setBook(book);
 				material.setInvoice(invo);
-				// no need to update Invoice ??
-				// 7-2. save Material
+				// 2-4. save Material - Invoice will be automatically updated
 				material = materialService.addMaterial(material);	
 			}
 		}	
-		// 3-3. if bookId is in the list but no passed then delete - delete book
+		// 3. if bookId is in the list but no passed then delete - delete book
 		for(Long deleteId : registeredIds){
-			// update Invoice
+			// 3-2. update Invoice
 			double price = bookService.getPrice(deleteId);
 			invo.setAmount(invo.getAmount() - price);
-			// 4-3. remove Material by bookId & invoiceId
+			// 3-3. remove Material by bookId & invoiceId - Invoice will be automatically upated
 			materialService.deleteMaterial(invo.getId(), deleteId);
 		}
-		// add MaterialDTO to return list
+		// 4. add MaterialDTO to return list
 		Set<Material> materials = invo.getMaterials();
 		for (Material material : materials) {
 			dtos.add(new MaterialDTO(material));
@@ -219,6 +217,7 @@ public class JaeEnrolmentController {
 		return dtos;
 	}
 
+	
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
 	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
