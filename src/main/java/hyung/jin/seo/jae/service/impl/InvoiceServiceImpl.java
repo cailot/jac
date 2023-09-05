@@ -102,5 +102,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return invoiceRepository.findInvoiceByStudentId(studentId);
 	}
 
+	@Override
+	public double getInvoiceAmount(Long id) {
+		return invoiceRepository.getInvoiceOwningAmount(id);
+	}
+
 
 }

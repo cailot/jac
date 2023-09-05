@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -68,7 +69,7 @@ public class JaeEnrolmentController {
 	@ResponseBody
 	public List searchEnrolmentByStudent(@PathVariable Long id) {
 		List dtos = new ArrayList();
-		List<String> invoiceIds = new ArrayList();
+		Set<String> invoiceIds = new HashSet<>();
 		// 1. get enrolments
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByStudent(id);
 		// 2. list invoice ids
@@ -385,16 +386,7 @@ public class JaeEnrolmentController {
 			enrolmentService.archiveEnrolment(enrolmentId);
 		}
 
-
-		Set<Enrolment> enrolments = invoice.getEnrolments();
-		for (Enrolment enrolment : enrolments) {
-			// Not enough info compared to passed EnrolmentDTO 
-			// if(!enrolment.isOld()){
-			// 	dtos.add(new EnrolmentDTO(enrolment));
-			// }
-		}
 		return dtos;
-
 	}
 
 

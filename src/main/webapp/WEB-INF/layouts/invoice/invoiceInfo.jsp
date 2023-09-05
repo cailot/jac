@@ -22,11 +22,7 @@ $(document).ready(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
 
-	// set invoiceId into hiddenId
-	$('#hiddenId').val(data.invoiceId);
-
-    var row = $('<tr>');
-	
+	var row = $('<tr>');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
@@ -65,7 +61,8 @@ function addEnrolmentToInvoiceList(data) {
 		
 	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
 	row.append($('<td>').addClass('hidden-column paid').text(data.paid));
-	row.append($('<td>').addClass('hidden-column invoiceAmount').text(data.amount));
+	row.append($('<td>').addClass('hidden-column invoiceId').text(data.invoiceId));
+	// row.append($('<td>').addClass('hidden-column invoiceAmount').text(data.amount));
 	
 
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
@@ -77,50 +74,8 @@ function addEnrolmentToInvoiceList(data) {
 	
 	// add new row at first row
 	$('#invoiceListTable > tbody').prepend(row);
-    // $('#invoiceListTable > tbody').append(row);
-
-    // var startWeekCell = row.find('.start-week');
-    // var endWeekCell = row.find('.end-week');
-    // var weeksCell = row.find('.weeks');
-    // var creditCell = row.find('.credit');
-    // var amountCell = row.find('.amount');
-    // // var rxAmount = $("#rxAmount");
-    // // rxAmount.text((data.price*(data.endWeek-data.startWeek+1)).toFixed(2)); // initial receivable amount
-
-    // function updateWeeks() {
-    //     var startWeek = parseInt(startWeekCell.text());
-    //     var endWeek = parseInt(endWeekCell.text());
-    //     var weeks = parseInt(weeksCell.text());
-    //     var credit = parseInt(creditCell.text());
-    //     var price = parseFloat(row.find('.price').text());
-
-    //     if (!isNaN(startWeek) && !isNaN(endWeek)) {
-    //         weeks = endWeek - startWeek + 1;
-    //         weeksCell.text(weeks);
-    //     } else if (!isNaN(weeks) && !isNaN(startWeek)) {
-    //         endWeek = startWeek + weeks - 1;
-    //         endWeekCell.text(endWeek);
-    //     } else if (!isNaN(weeks)) {
-    //         endWeek = startWeek + weeks - 1;
-    //         endWeekCell.text(endWeek);
-    //     }
-
-    //     if (!isNaN(weeks) && !isNaN(credit)) {
-    //         weeks += credit;
-    //         weeksCell.text(weeks);
-    //         endWeek = startWeek + weeks - 1;
-    //         endWeekCell.text(endWeek);
-    //     }
-
-    //     // var amount = price * (weeks-credit);
-    //     // amountCell.text(rxAmount.toFixed(2));
-    // }
-
-    // startWeekCell.on('input', updateWeeks);
-    // endWeekCell.on('input', updateWeeks);
-    // creditCell.on('input', updateWeeks);
-	// update Receivable Amount
-	updateReceivableAmount();
+    // update latest invoice id and balance
+	updateLatestInvoiceId(data.invoiceId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,8 +83,8 @@ function addEnrolmentToInvoiceList(data) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOutstandingToInvoiceList(data) {
 	// console.log('addOutstandingToInvoiceListTable - ' + JSON.stringify(data));
-	// set invoiceId into hiddenId
-	$('#hiddenId').val(data.invoiceId);
+	// set invoiceId into hiddenInvoiceId
+	$('#hiddenInvoiceId').val(data.invoiceId);
 	// debugger;
 	var newOS = $('<tr>');
 	newOS.append($('<td>').addClass('hidden-column').addClass('outstanding-match').text(OUTSTANDING + '|' + data.id));
@@ -177,7 +132,7 @@ function addOutstandingToInvoiceList(data) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBookToInvoiceList(data) {
 	// console.log(data);
-	$('#hiddenId').val(data.invoiceId);
+	// $('#hiddenInvoiceId').val(data.invoiceId);
 	var row = $('<tr>');
 	row.append($('<td class="text-center"><i class="bi bi-book" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font">').text(data.name)); // description
@@ -192,6 +147,9 @@ function addBookToInvoiceList(data) {
 	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price).toFixed(2)));// Amount	
 	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate));// payment date
 	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + data.bookId)); // 0
+	row.append($('<td class="hidden-column materialId">').text(data.id)); 
+	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId)); 
+						
 	// if data.info is not empty, then display filled icon, otherwise display empty icon	
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
@@ -203,7 +161,7 @@ function addBookToInvoiceList(data) {
 
 	$('#invoiceListTable > tbody').prepend(row);
 	// update Receivable Amount
-	updateReceivableAmount();
+	//updateReceivableAmount();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,6 +198,36 @@ function removeBookFromInvoiceList() {
 	});
 	// update Receivable Amount
 	updateReceivableAmount();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Lastest Invoice Id
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateLatestInvoiceId(invoiceId){
+	//debugger;
+	// get the value of hidden invoiceId
+	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+	// compare hiddenInvoiceId with invoiceId
+	if(invoiceId >= hiddenInvoiceId){
+		// update invoiceId to hiddenInvoiceId
+		$("#hiddenInvoiceId").val(invoiceId);
+		// update 'rxAmount' via ajax call
+		$.ajax({
+			url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
+			method: 'GET',
+			success: function(response) {
+				// Handle the response
+				// console.log(response);
+				debugger;
+				$("#rxAmount").text(response.toFixed(2));
+			},
+			error: function(xhr, status, error) {
+				// Handle the error
+				console.error(error);
+				$("#rxAmount").text(0);
+			}
+		});	
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,7 +284,7 @@ function clearInvoiceTable(){
 	// clear rxAmount in invoice section
 	$('#rxAmount').text('0.00');
 	// clear stored invoice id
-	$('#hiddenId').val('');
+	$('#hiddenInvoiceId').val(0);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,7 +310,7 @@ function displayPayment(){
 //		Display Receipt in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayPaymentInfoInNewTab(paymentType){
-  var invoiceId = $('#hiddenId').val();
+  var invoiceId = $('#hiddenInvoiceId').val();
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
   var lastName = $('#formLastName').val();
@@ -382,7 +370,7 @@ function makePayment(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function createInvoice(){
 
-	var hidden = $('#hiddenId').val();
+	var hidden = $('#hiddenInvoiceId').val();
 	// console.log('create invoice hidden : ' + hidden);
 
 	var enrols = [];
@@ -422,8 +410,8 @@ function createInvoice(){
 		contentType : 'application/json',
 		success : function(invoice) {
 
-			// update invoiceId to hiddenId
-			$("#hiddenId").val(invoice.id);
+			// update invoiceId to hiddenInvoiceId
+			$("#hiddenInvoiceId").val(invoice.id);
 			
 			// Display the success alert
 			$("#invoiceId").val(invoice.id);
@@ -589,7 +577,7 @@ function addInformation(){
 			<div class="form-row">
 				<div class="col-md-6">
 					<div class="row">
-						<input type="hidden" id="hiddenId" name="hiddenId" />
+						<input type="hidden" id="hiddenInvoiceId" name="hiddenInvoiceId" />
 						<div class="col-md-4">
 							<p>Balance :</p>
 						</div>
