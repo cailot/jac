@@ -475,17 +475,13 @@
 			contentType: 'application/json',
 			success: function(response) {
 				//debugger;
+				removeEnrolmentFromInvoiceList();
 				if(response.length >0){
 					$.each(response, function(index, value){
 						// update the invoice table
 						// console.log(value);
 						addEnrolmentToInvoiceList(value);
 					});
-				}else{
-					// console.log('No enrolment');
-					// remove enrolments from invoice table
-					removeEnrolmentFromInvoiceList();
-	
 				}
 				// nested ajax for book after creating or updating invoice
 				// Make the AJAX enrolment for book
@@ -552,7 +548,7 @@
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
-						console.log(value);
+						// console.log(value);
 						var row = $('<tr class="d-flex">');
 						row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
@@ -697,6 +693,7 @@
 						row.append($('<td class="hidden-column description">').text(value.description)); // description
 						row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
 						row.append($('<td class="hidden-column invoiceAmount">').text(value.amount)); // invoice amount	
+						row.append($('<td class="hidden-column paid">').text(value.paid)); // paid	
 		
 						$('#basketTable > tbody').prepend(row);
 
@@ -720,7 +717,10 @@
 						row.append($('<td style="width: 8%;">')); // price
 						row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
 						row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
-						row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
+						row.append($('<td class="hidden-column grade">').text(value.grade));
+						row.append($('<td class="hidden-column materialId">').text(value.id)); 
+						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); 
+						
 						$('#basketTable > tbody').append(row);
 						// update invoice table with Book
 						addBookToInvoiceList(value);
