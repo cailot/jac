@@ -68,6 +68,15 @@ public class JaeInvoiceController {
 		return count;
 	}
 
+	// get invoice amount
+	@GetMapping("/amount/{id}")
+	@ResponseBody
+	public double getInvoiceAmount(@PathVariable("id") Long id) {	
+		double amount = invoiceService.getInvoiceAmount(id);
+		System.out.println("[[[[[[[ amount: " + amount);
+		return amount;
+	}
+
 	// bring all invoices in database
 	@GetMapping("/list")
 	@ResponseBody

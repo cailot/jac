@@ -27,4 +27,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 	@Query("SELECT MAX(e.invoice.id) FROM Enrolment e WHERE e.student.id = ?1 and e.old = false order by e.registerDate desc")
 	Long findLatestInvoiceIdByStudentId(long studentId);
 
+	// return invoice amount by id
+	@Query("SELECT (i.amount - i.paidAmount) FROM Invoice i WHERE i.id = ?1")
+	double getInvoiceOwningAmount(long id);
 }
