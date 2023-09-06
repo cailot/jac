@@ -105,33 +105,41 @@
             <tbody>
                 <c:set var="finalTotal" value="0" />
                 <c:set var="paidTotal" value="0" />
-                <%-- Check if enrolments attribute exists in session --%>
+                <!-- Check if enrolments attribute exists in session -->
                 <c:if test="${not empty sessionScope.enrolments}">
-                    <%-- Retrieve the payments from session --%>
+                    <!-- Retrieve the payments from session -->
                     <c:set var="enrolments" value="${sessionScope.enrolments}" />
                     <c:forEach items="${enrolments}" var="enrolment">
                         <tr>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>Class [<c:out value="${fn:toUpperCase(enrolment.grade)}" />] <c:out value="${enrolment.name}" /></td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'><c:out value="${enrolment.extra}" /></td>
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${enrolment.endWeek-enrolment.startWeek+1}" /></td>
+                            <c:set var="weeks" value="${enrolment.endWeek - enrolment.startWeek + 1}" />
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
+                                <c:out value="${weeks}" />
+                            </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${enrolment.price}" /></td>
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${enrolment.discount}" /></td>
-                            <c:set var="totalPrice" value="${((enrolment.endWeek - enrolment.startWeek + 1) * (enrolment.price)) - enrolment.discount}" />
+                            <!-- discount -->
+                            <c:set var="discount" value="${enrolment.discount}" />
+                            <c:if test="${fn:contains(discount, '%')}">
+                                <c:set var="discount" value="${(weeks-enrolment.credit)*enrolment.price*(discount.replace('%', '')/100)}" />
+                            </c:if>                          
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${discount}" /></td>                    
+                            <c:set var="totalPrice" value="${((weeks - enrolment.credit) * (enrolment.price)) - discount}" />
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${totalPrice}" /></td>
-                            <%-- Add the amount to the finalTotal variable --%>
+                            <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
-                            <%-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings --%>
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
                             <c:if test="${empty sessionScope.outstandings}">
                                 <c:set var="paidTotal" value="${paidTotal + enrolment.paid}" />
                             </c:if>
                         </tr>
-                        <!-- <c:out value="${enrolment}" /> -->
+                        <%--<c:out value="${enrolment}" />--%>
                     </c:forEach>
                 </c:if>
 
-                <%-- Check if materials attribute exists in session --%>
+                <!-- Check if materials attribute exists in session -->
                 <c:if test="${not empty sessionScope.materials}">
-                    <%-- Retrieve the payments from session --%>
+                    <!-- Retrieve the payments from session -->
                     <c:set var="materials" value="${sessionScope.materials}" />
                     <c:forEach items="${materials}" var="book">
                         <tr>
@@ -141,9 +149,9 @@
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${book.price}" /></td>
-                            <%-- Add the amount to the finalTotal variable --%>
+                            <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + book.price}" />
-                            <%-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings --%>
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
                             <c:if test="${empty sessionScope.materials}">
                                 <c:set var="paidTotal" value="${paidTotal + book.price}" />
                             </c:if>
@@ -152,9 +160,9 @@
                     </c:forEach>
                 </c:if>
 
-                <%-- Check if outstandings attribute exists in session --%>
+                <!-- Check if outstandings attribute exists in session -->
                 <c:if test="${not empty sessionScope.outstandings}">
-                    <%-- Retrieve the outstandings from session --%>
+                    <!-- Retrieve the outstandings from session -->
                     <c:set var="outstandings" value="${sessionScope.outstandings}" />
                     <c:forEach items="${outstandings}" var="outstanding">
                         <tr>
@@ -185,18 +193,18 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            <%-- Add the paid to the paidTotal variable --%>
+                            <!-- Add the paid to the paidTotal variable -->
                             <c:set var="paidTotal" value="${paidTotal + outstanding.paid}" />
                         </tr>
                     </c:forEach>
                 </c:if>
 
-                <c:if test="${not empty sessionScope.invoiceInfo}">
-                    <c:set var="invoiceInfo" value="${sessionScope.invoiceInfo}" />
-                    <tr>
-                        <td colspan='6' style='height: 40px; padding: 10px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'>Other Information : <c:out value="${invoiceInfo}" /></td>
-                    </tr>
-                </c:if>
+                <!-- <tr>
+                    <td colspan='6' style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'><b>Other Information</b>, Paid Date :  02/07/2023</td>
+                </tr> -->
+                <tr>
+                    <td colspan='6' style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'></td>
+                </tr>
 
             </tbody>
         </table>
@@ -230,7 +238,7 @@
                 <td style="height: 32px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-weight: bold; font-family: 'arial', sans-serif; border: 0;font-weight: 600 !important;">BALANCE</td>
                 <td style="height: 32px; width: 100px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: center; color: #bdbdbd; font-style: normal; font-family: 'arial', sans-serif; border: 0;">$</td>
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
-                    <%-- Check if the balance is full paid --%>
+                    <!-- Check if the balance is full paid -->
                     <c:choose>
                         <c:when test="${finalTotal - paidTotal <= 0}">
                             PAID IN FULL

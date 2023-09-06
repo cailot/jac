@@ -747,7 +747,7 @@
 						row.append($('<td class="hidden-column materialId">').text(value.id)); 
 						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); 
 						
-						$('#basketTable > tbody').append(row);
+						$('#basketTable > tbody').prepend(row);
 						// update invoice table with Book
 						addBookToInvoiceList(value);
 					}
