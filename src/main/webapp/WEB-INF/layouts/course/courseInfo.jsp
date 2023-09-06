@@ -467,7 +467,7 @@
 		
 		//console.log(enrolData);
 	
-		// Make the AJAX enrolment for class
+		// 1. Make the AJAX enrolment for class
 		$.ajax({
 			url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
 			method: 'POST',
@@ -482,9 +482,15 @@
 						// console.log(value);
 						addEnrolmentToInvoiceList(value);
 					});
+				}else{
+					// simply update balance for invoice table as Enrolment is deleted
+					if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
+						updateLatestInvoiceId(enrolData.invoiceId);
+					}
 				}
+				
 				// nested ajax for book after creating or updating invoice
-				// Make the AJAX enrolment for book
+				// 2. Make the AJAX enrolment for book
 				$.ajax({
 					url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
 					method: 'POST',
@@ -499,11 +505,12 @@
 								// console.log(value);
 								addBookToInvoiceList(value);
 							});
+						}else{
+							// simply update balance for invoice table as Book is deleted
+							if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
+								updateLatestInvoiceId(enrolData.invoiceId);
+							}
 						}
-						// else{
-						//  // remove books from invoice table
-						//  removeBookFromInvoiceList();
-						// }
 					},
 					error: function(xhr, status, error) {
 						// Handle the error

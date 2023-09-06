@@ -162,6 +162,8 @@ function addBookToInvoiceList(data) {
 	$('#invoiceListTable > tbody').prepend(row);
 	// update Receivable Amount
 	//updateReceivableAmount();
+	// update latest invoice id and balance
+	updateLatestInvoiceId(data.invoiceId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +181,7 @@ function removeEnrolmentFromInvoiceList() {
 		}
 	});
 	// update Receivable Amount
-	updateReceivableAmount();
+	// updateReceivableAmount();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +199,7 @@ function removeBookFromInvoiceList() {
 		}
 	});
 	// update Receivable Amount
-	updateReceivableAmount();
+	// updateReceivableAmount();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +220,7 @@ function updateLatestInvoiceId(invoiceId){
 			success: function(response) {
 				// Handle the response
 				// console.log(response);
-				debugger;
+				//debugger;
 				$("#rxAmount").text(response.toFixed(2));
 			},
 			error: function(xhr, status, error) {
@@ -253,28 +255,28 @@ function updateOutstandingAmount(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Receivable Amount
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateReceivableAmount(){
-	//debugger;
-	var totalAmount = 0;
-	var totalPaid = 0;
-	// find the value of all amount cells
-	$('#invoiceListTable > tbody > tr').each(function() {
-		var amount = parseFloat($(this).find('.amount').text());
-		var paid = parseFloat($(this).find('.paid').text());
-		totalAmount += amount;
-		totalPaid += paid;
-	});
-	var difference = (totalAmount - totalPaid).toFixed(2);	
-	// if amount - paid < 0, then amount is 0
-	if (difference <= 0) {	
-		// full paid so nothing to add
-		$('#paymentBtn').prop('disabled', true);
-	}else{
-		totalAmount = parseFloat(difference);
-		$('#paymentBtn').prop('disabled', false);
-	}
-	$("#rxAmount").text(difference);
-}
+// function updateReceivableAmount(){
+// 	//debugger;
+// 	var totalAmount = 0;
+// 	var totalPaid = 0;
+// 	// find the value of all amount cells
+// 	$('#invoiceListTable > tbody > tr').each(function() {
+// 		var amount = parseFloat($(this).find('.amount').text());
+// 		var paid = parseFloat($(this).find('.paid').text());
+// 		totalAmount += amount;
+// 		totalPaid += paid;
+// 	});
+// 	var difference = (totalAmount - totalPaid).toFixed(2);	
+// 	// if amount - paid < 0, then amount is 0
+// 	if (difference <= 0) {	
+// 		// full paid so nothing to add
+// 		$('#paymentBtn').prop('disabled', true);
+// 	}else{
+// 		totalAmount = parseFloat(difference);
+// 		$('#paymentBtn').prop('disabled', false);
+// 	}
+// 	$("#rxAmount").text(difference);
+// }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clean invoiceTable
