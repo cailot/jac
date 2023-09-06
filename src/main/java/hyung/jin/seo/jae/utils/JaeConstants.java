@@ -8,7 +8,6 @@ public interface JaeConstants {
 	
 	String STOPPED = "Stopped";
 	
-	
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	DAY LIST
@@ -93,6 +92,8 @@ public interface JaeConstants {
 	String ACADEMIC_NEXT_YEAR_COURSE_SUFFIX = " (From New Academic Year)";
 
 	int ACADEMIC_NEXT_YEAR_COURSE_PRICE_INCREASE = 3;
+
+	String NEW_ENROLMENT = "NEW";	
 
 	///////////////////////////////////////////////////////////////////////
 	//

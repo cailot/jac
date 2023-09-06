@@ -35,6 +35,7 @@ import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
 import hyung.jin.seo.jae.service.StudentService;
+import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("enrolment")
@@ -275,6 +276,9 @@ public class JaeEnrolmentController {
 					// 4. save new Enrolment - Invoice will be automatically updated
 					enrolmentService.addEnrolment(enrolment);
 					// 5.  put into List<EnrolmentDTO>
+					data.setExtra(JaeConstants.NEW_ENROLMENT);
+					data.setId(enrolment.getId()+"");
+					data.setInvoiceId(invoice.getId()+"");
 					dtos.add(data);
 				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
 					// 1. get existing Enrolment
@@ -354,6 +358,7 @@ public class JaeEnrolmentController {
 				enrolment.setInvoice(invoice);
 				// 4. save new Enrolment - Invoice will be automatically updated
 				EnrolmentDTO added = enrolmentService.addEnrolment(enrolment);
+				data.setExtra(JaeConstants.NEW_ENROLMENT);
 				data.setId(added.getId());
 				data.setInvoiceId(invoice.getId()+"");
 				// 4.  put into List<EnrolmentDTO>

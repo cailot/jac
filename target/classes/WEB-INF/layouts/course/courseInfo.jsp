@@ -8,6 +8,7 @@
 	const CLASS = 'class';
 	const BOOK = 'book';
 	const ETC = 'etc';
+	const NEW = 'NEW';
 	
 	$(document).ready(
 		function() {
@@ -329,6 +330,8 @@
 			row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
 			row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(((weeksCell.text() * value.price)).toFixed(2))); // amount					
 			row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
+			row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
+			row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
 			row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 			row.append($('<td class="hidden-column description">').text(value.description)); // description
 			$('#basketTable > tbody').prepend(row);
@@ -478,8 +481,24 @@
 				removeEnrolmentFromInvoiceList();
 				if(response.length >0){
 					$.each(response, function(index, value){
-						// update the invoice table
-						// console.log(value);
+						// if extra is NEW, it requires updating enrolment id in basket table
+						if(value.extra != null && value.extra === NEW){
+							// how to add enrolment id to basket table
+							$('#basketTable > tbody > tr').each(function() {
+								var hiddens = $(this).find('.data-type').text();
+								if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
+									var hiddenValues = hiddens.split('|');
+									if(hiddenValues[1]===value.clazzId){
+										// console.log(hiddens + ' - ' + value.clazzId);
+										$(this).find('.enrolId').text(value.id);
+										$(this).find('.invoiceId').text(value.invoiceId);
+										$(this).find('.clazzChoice').prop('disabled', true);		
+									}
+								}
+							});
+
+						}
+						// update the invoice table 
 						addEnrolmentToInvoiceList(value);
 					});
 				}else{
