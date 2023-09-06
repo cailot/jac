@@ -73,7 +73,6 @@ public class JaeInvoiceController {
 	@ResponseBody
 	public double getInvoiceAmount(@PathVariable("id") Long id) {	
 		double amount = invoiceService.getInvoiceAmount(id);
-		System.out.println("[[[[[[[ amount: " + amount);
 		return amount;
 	}
 
