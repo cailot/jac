@@ -87,40 +87,30 @@ function addOutstandingToInvoiceList(data) {
 	$('#hiddenInvoiceId').val(data.invoiceId);
 	// debugger;
 	var newOS = $('<tr>');
-	newOS.append($('<td>').addClass('hidden-column').addClass('outstanding-match').text(OUTSTANDING + '|' + data.id));
 	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
 	newOS.append($('<td class="smaller-table-font">').text('Outstanding'));
-	newOS.append($('<td>'));
-	newOS.append($('<td>'));
-	newOS.append($('<td>'));
-	newOS.append($('<td>'));
-		
-	// newOS.append($('<td colspan="4" class="smaller-table-font">').text(data.paid + ' Paid'));
-	newOS.append($('<td class="smaller-table-font text-right">').html(data.paid + ' <i class="bi bi-check2-circle text-danger" title="paid"></i>'));
-	newOS.append($('<td>'));
-	newOS.append($('<td>'));
-	newOS.append($('<td>'));
-	
+	newOS.append($('<td>')); // year
+	newOS.append($('<td>')); // day
+	newOS.append($('<td>')); // start
+	newOS.append($('<td>')); // end
+	newOS.append($('<td>')); // weeks
+	newOS.append($('<td>')); // credit
+	newOS.append($('<td>')); // discount
+	newOS.append($('<td class="smaller-table-font text-right">').html(data.paid + ' <i class="bi bi-check2-circle text-danger" title="paid"></i>')); // price	
 	// set editable attribute to true if the amount is not fully paid	
-	newOS.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text((data.remaining).toFixed(2)));
-	// newOS.append($('<td class="smaller-table-font text-center">')
-    // .addClass('amount')
-    // .css('color', data.remaining > 0 ? 'red' : '')
-    // .css('font-weight', data.remaining > 0 ? 'bold' : '')
-    // .text((data.remaining).toFixed(2)));
+	newOS.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text((data.remaining).toFixed(2))); // amount
+	newOS.append($('<td class="smaller-table-font text-center paid-date">').text(data.registerDate)); // payment date
+	newOS.append($('<td class="hidden-column paid">').text(data.paid));
+	newOS.append($('<td class="hidden-column outstanding-match">').text(OUTSTANDING + '|' + data.id));
 
-	newOS.append($('<td class="smaller-table-font text-center paid-date">').text(data.registerDate));
-	newOS.append($('<td>').addClass('hidden-column paid').text(data.paid));
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
-	isNotBlank(data.info) ? newOS.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newOS.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'\')"></i>'));
-		
+	isNotBlank(data.info) ? newOS.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newOS.append($("<td class='col-1 memo text-center'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'\')"></i>'));		
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
 		if ($(this).find('.outstanding-match').text() === newOS.find('.outstanding-match').text()) {
 			$(this).remove();
 		}
 	});
-
 	$('#invoiceListTable > tbody').prepend(newOS);
 
 	// update Outstanding Amount
@@ -544,7 +534,7 @@ function addInformation(){
 <style>
 	/* Adjust column sizes for the table */
 	#invoiceListTable th:nth-child(1) { width: 3%; } /* item */
-	#invoiceListTable th:nth-child(2) { width: 34%; }  /* description */
+	#invoiceListTable th:nth-child(2) { width: 30%; }  /* description */
 	#invoiceListTable th:nth-child(3) { width: 5%; } /* year */
 	#invoiceListTable th:nth-child(4) { width: 8%; } /* day */
 	#invoiceListTable th:nth-child(5) { width: 4%; } /* start */
@@ -552,13 +542,13 @@ function addInformation(){
 	#invoiceListTable th:nth-child(7) { width: 4%; } /* weeks */
 	#invoiceListTable th:nth-child(8) { width: 5%; } /* credit */
 	#invoiceListTable th:nth-child(9) { width: 5%; } /* discount */
-	#invoiceListTable th:nth-child(10) { width: 5%; } /* price % */
+	#invoiceListTable th:nth-child(10) { width: 9%; } /* price % */
 	#invoiceListTable th:nth-child(11) { width: 10%; } /* amount */
 	#invoiceListTable th:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable th:nth-child(13) { width: 3%; } /* note */
 
 	#invoiceListTable td:nth-child(1) { width: 3%; } /* item */
-	#invoiceListTable td:nth-child(2) { width: 34%; }  /* description */
+	#invoiceListTable td:nth-child(2) { width: 30%; }  /* description */
 	#invoiceListTable td:nth-child(3) { width: 5%; } /* year */
 	#invoiceListTable td:nth-child(4) { width: 8%; } /* day */
 	#invoiceListTable td:nth-child(5) { width: 4%; } /* start */
@@ -566,7 +556,7 @@ function addInformation(){
 	#invoiceListTable td:nth-child(7) { width: 4%; } /* weeks */
 	#invoiceListTable td:nth-child(8) { width: 5%; } /* credit */
 	#invoiceListTable td:nth-child(9) { width: 5%; } /* discount */
-	#invoiceListTable td:nth-child(10) { width: 5%; } /* price % */
+	#invoiceListTable td:nth-child(10) { width: 9%; } /* price % */
 	#invoiceListTable td:nth-child(11) { width: 10%; } /* amount */
 	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
