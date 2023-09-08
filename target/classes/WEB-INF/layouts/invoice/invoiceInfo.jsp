@@ -84,7 +84,7 @@ function addEnrolmentToInvoiceList(data) {
 function addOutstandingToInvoiceList(data) {
 	// console.log('addOutstandingToInvoiceListTable - ' + JSON.stringify(data));
 	// set invoiceId into hiddenInvoiceId
-	$('#hiddenInvoiceId').val(data.invoiceId);
+	//$('#hiddenInvoiceId').val(data.invoiceId);
 	// debugger;
 	var newOS = $('<tr>');
 	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
@@ -114,7 +114,9 @@ function addOutstandingToInvoiceList(data) {
 	$('#invoiceListTable > tbody').prepend(newOS);
 
 	// update Outstanding Amount
-	updateOutstandingAmount();
+	// updateOutstandingAmount();
+	// update latest invoice id and balance
+	updateLatestInvoiceId(data.invoiceId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,52 +222,35 @@ function updateLatestInvoiceId(invoiceId){
 			}
 		});	
 	}
+
+	// var rxAmount = parseFloat($("#rxAmount").text());
+	// if (rxAmount <= 0) {
+	// 	$('#paymentBtn').prop('disabled', true);
+	// }else{
+	// 	$('#paymentBtn').prop('disabled', false);
+	// }
+
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Outstanding Amount
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateOutstandingAmount(){
-	//debugger;
-	// reset rxAmount
-	$("#rxAmount").text('0.00');
-	// find the value of amount in the first row
-	var amountValue = $('#invoiceListTable > tbody > tr:first').find('.amount').text();
-	// set the value of outstanding amount
-	$("#rxAmount").text(parseFloat(amountValue).toFixed(2));
-	var rxAmount = parseFloat($("#rxAmount").text());
-	if (rxAmount <= 0) {
-		$('#paymentBtn').prop('disabled', true);
-	}else{
-		$('#paymentBtn').prop('disabled', false);
-	}
-
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Receivable Amount
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// function updateReceivableAmount(){
+// function updateOutstandingAmount(){
 // 	//debugger;
-// 	var totalAmount = 0;
-// 	var totalPaid = 0;
-// 	// find the value of all amount cells
-// 	$('#invoiceListTable > tbody > tr').each(function() {
-// 		var amount = parseFloat($(this).find('.amount').text());
-// 		var paid = parseFloat($(this).find('.paid').text());
-// 		totalAmount += amount;
-// 		totalPaid += paid;
-// 	});
-// 	var difference = (totalAmount - totalPaid).toFixed(2);	
-// 	// if amount - paid < 0, then amount is 0
-// 	if (difference <= 0) {	
-// 		// full paid so nothing to add
-// 		$('#paymentBtn').prop('disabled', true);
-// 	}else{
-// 		totalAmount = parseFloat(difference);
-// 		$('#paymentBtn').prop('disabled', false);
-// 	}
-// 	$("#rxAmount").text(difference);
+// 	// reset rxAmount
+// 	$("#rxAmount").text('0.00');
+// 	// find the value of amount in the first row
+// 	var amountValue = $('#invoiceListTable > tbody > tr:first').find('.amount').text();
+// 	// set the value of outstanding amount
+// 	$("#rxAmount").text(parseFloat(amountValue).toFixed(2));
+// 	// var rxAmount = parseFloat($("#rxAmount").text());
+// 	// if (rxAmount <= 0) {
+// 	// 	$('#paymentBtn').prop('disabled', true);
+// 	// }else{
+// 	// 	$('#paymentBtn').prop('disabled', false);
+// 	// }
+
 // }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +280,15 @@ function displayPayment(){
 		// console.log($("#payRxAmount").val() + '-' + $("#payAmount").val());
 		$("#payOutstanding").val(difference.toFixed(2));
     });
+
+	// set payDate to today
+	var today = new Date();
+	var day = today.getDate();
+	var month = today.getMonth() + 1; // Note: January is 0
+	var year = today.getFullYear();
+	var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+	document.getElementById('payDate').value = formattedDate;
+			 
     $('#paymentModal').modal('toggle');
 }
 
@@ -680,14 +674,6 @@ function addInformation(){
 						<div class="col-md-6">
 							<input type="text" class="form-control datepicker" id="payDate" name="payDate" placeholder="dd/mm/yyyy">
 						</div>
-						<script>
-							var today = new Date();
-							var day = today.getDate();
-							var month = today.getMonth() + 1; // Note: January is 0
-							var year = today.getFullYear();
-							var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-							document.getElementById('payDate').value = formattedDate;
-						</script>
 					</div>
 					<div class="form-row mt-2">
 						<div class="col-md-6">
@@ -762,7 +748,6 @@ function addInformation(){
 		</div>
 	</div>
 </div>
-
 
 <!-- Bootstrap Editable Table JavaScript -->
 <script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
