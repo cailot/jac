@@ -8,6 +8,7 @@
 			firstName : $("#addFirstName").val(),
 			lastName : $("#addLastName").val(),
 			address : $("#addAddress").val(),
+			gender : $("#addGender").val(),
 			email1 : $("#addEmail1").val(),
 			email2 : $("#addEmail2").val(),
 			relation1 : $("#addRelation1").val(),
@@ -41,6 +42,7 @@
 				$("#formRelation1").val(student.relation1);
 				$("#formRelation2").val(student.relation2);
 				$("#formGrade").val(student.grade);
+				$("#formGender").val(student.gender);
 				$("#formAddress").val(student.address);
 				$("#formContact1").val(student.contactNo1);
 				$("#formContact2").val(student.contactNo2);
@@ -153,6 +155,8 @@
 					row.append($('<td>').text(value.firstName));
 					row.append($('<td>').text(value.lastName));
 					row.append($('<td>').text(value.grade.toUpperCase()));
+					// row.append($('<td>').text(value.gender.toUpperCase()));
+					row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
 					row.append($('<td>').text(formatDate(value.registerDate)));
 					row.append($('<td>').text(formatDate(value.endDate)));
 					row.append($('<td>').text(value.email1));
@@ -197,6 +201,7 @@
 			address : $("#formAddress").val(),
 			contactNo1 : $("#formContact1").val(),
 			contactNo2 : $("#formContact2").val(),
+			gender : $("#formGender").val(),
 			memo : $("#formMemo").val(),
 			state : $("#formState").val(),
 			branch : $("#formBranch").val(),
@@ -238,6 +243,7 @@
 			$("#formRelation1").val(value['relation1']).css("color", "black").prop('disabled', false);
 			$("#formRelation2").val(value['relation2']).css("color", "black").prop('disabled', false);
 			$("#formGrade").val(value['grade']).css("color", "black").prop('disabled', false);
+			$("#formGender").val(value['gender']).css("color", "black").prop('disabled', false);
 			$("#formAddress").val(value['address']).css("color", "black").prop('disabled', false);
 			$("#formContact1").val(value['contactNo1']).css("color", "black").prop('disabled', false);
 			$("#formContact2").val(value['contactNo2']).css("color", "black").prop('disabled', false);
@@ -255,6 +261,7 @@
 			$("#formRelation1").val(value['relation1']).css("color", "red").prop('disabled', true);
 			$("#formRelation2").val(value['relation2']).css("color", "red").prop('disabled', true);
 			$("#formGrade").val(value['grade']).css("color", "red").prop('disabled', true);
+			$("#formGender").val(value['gender']).css("color", "red").prop('disabled', true);
 			$("#formAddress").val(value['address']).css("color", "red").prop('disabled', true);
 			$("#formContact1").val(value['contactNo1']).css("color", "red").prop('disabled', true);
 			$("#formContact2").val(value['contactNo2']).css("color", "red").prop('disabled', true);
@@ -377,6 +384,7 @@
 				<th data-field="firstname">First Name</th>
 				<th data-field="lastname">Last Name</th>
 				<th data-field="grade">Grade</th>
+				<th data-field="grade">Gender</th>
 				<th data-field="startdate">Start Date</th>
 				<th data-field="enddate">End Date</th>
 				<th data-field="email">Main Email</th>
@@ -493,7 +501,13 @@
 						</div>
 					</div>
 					<div class="form-row mt-2">
-						<div class="col-md-12">
+						<div class="col-md-3">
+							<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</select>
+						</div>
+						<div class="col-md-9">
 							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 						</div>
 					</div>
@@ -665,12 +679,18 @@
 			</div>
 		</div>
 		<div class="form-row mt-3">
-			<div class="col-md-6">
+			<div class="col-md-5">
 				<input type="text"
 					class="form-control" id="formFirstName" name="formFirstName" placeholder="First Name">
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<input type="text" class="form-control" id="formLastName" name="formLastName" placeholder="Last Name">
+			</div>
+			<div class="col-md-3">
+				<select class="form-control" id="formGender" name="formGender">
+					<option value="male">Male</option>
+					<option value="female">Female</option>
+				</select>
 			</div>
 		</div>
 		<div class="form-row mt-3">

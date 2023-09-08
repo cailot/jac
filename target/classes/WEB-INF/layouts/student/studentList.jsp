@@ -70,6 +70,7 @@ function addStudent() {
 		state : $("#addState").val(),
 		branch : $("#addBranch").val(),
 		grade : $("#addGrade").val(),
+		gender : $("#addGender").val(),
 		enrolmentDate : $("#addEnrolment").val()
 	}
 	// Send AJAX to server
@@ -118,6 +119,7 @@ function updateStudentInfo(){
 		state : $("#editState").val(),
 		branch : $("#editBranch").val(),
 		grade : $("#editGrade").val(),
+		gender : $("#editGender").val(),
 		registerDate : $("#editRegister").val()
 	}
 		
@@ -202,6 +204,7 @@ function retrieveStudentInfo(std) {
 			$("#editState").val(student.state);
 			$("#editBranch").val(student.branch);
 			$("#editGrade").val(student.grade);
+			$("#editGender").val(student.gender);
 			// Set date value
 			var date = new Date(student.registerDate); // Replace with your date value
 			$("#editRegister").datepicker('setDate', date);
@@ -348,6 +351,7 @@ function retrieveStudentInfo(std) {
 										<th>First Name</th>
 										<th>Last Name</th>
 										<th>Grade</th>
+										<th>Gender</th>
 										<th>Register Date</th>
 										<th>Start</th>
 										<th>End</th>
@@ -367,9 +371,7 @@ function retrieveStudentInfo(std) {
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${fn:toUpperCase(student.grade)}" /></span></td>
-												<!-- <c:set var="regDate" value="${student.registerDate}" />
-												<c:set var="starts" value="${fn:split(regDate, '|')}" />
-												<td class="ellipsis"><span><c:out value="${starts[0]}" /></span></td> -->
+												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${student.registerDate}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${student.startWeek}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${student.endWeek}" /></span></td>	
@@ -481,13 +483,16 @@ function retrieveStudentInfo(std) {
 							</div>
 						</div>
 						<div class="form-row mt-2">
-							<div class="col-md-12">
+							<div class="col-md-3">
+								<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
+									<option value="male">Male</option>
+									<option value="female">Female</option>
+								</select>
+							</div>
+							<div class="col-md-9">
 								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 							</div>
 						</div>
-
-
-
 						<div class="form-row">
 							<div class="col-md-12 mt-4">
 								<section class="fieldset rounded" style="padding: 10px;">
@@ -601,19 +606,16 @@ function retrieveStudentInfo(std) {
 							</div>
 						</div>	
 						<div class="form-row mt-2">
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="editId" class="label-form">ID:</label> <input type="text" class="form-control" id="editId" name="editId" readonly>
 							</div>
 							<div class="col-md-4">
 								<label for="editFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="editFirstName" name="editFirstName">
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="editLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="editLastName" name="editLastName">
 							</div>
-						</div>
-					
-						<div class="form-row mt-2">
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
 									<option value="p2">P2</option>
 									<option value="p3">P3</option>
@@ -634,6 +636,14 @@ function retrieveStudentInfo(std) {
 									<option value="srw8">SRW8</option>
 									<option value="jmss">JMSS</option>
 									<option value="vce">VCE</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-3">
+								<label for="editGender" class="label-form">Gender</label> <select class="form-control" id="editGender" name="editGender">
+									<option value="male">Male</option>
+									<option value="female">Female</option>
 								</select>
 							</div>
 							<div class="col-md-9">

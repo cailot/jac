@@ -76,6 +76,9 @@ public class Student {
     @Column(length = 1000, nullable = true)
     private String memo;
     
+    @Column(length = 7, nullable = true)
+    private String gender;
+    
     @CreationTimestamp
     private LocalDate registerDate;
     
