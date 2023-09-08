@@ -46,6 +46,8 @@ public class StudentDTO implements Serializable{
     private String branch;
     
     private String memo;
+
+	private String gender;
     
     private String registerDate;
     
@@ -75,6 +77,7 @@ public class StudentDTO implements Serializable{
     	if(StringUtils.isNotBlank(state)) std.setState(this.state);
     	if(StringUtils.isNotBlank(branch)) std.setBranch(this.branch);
     	if(StringUtils.isNotBlank(memo)) std.setMemo(this.memo);
+		if(StringUtils.isNotBlank(gender)) std.setGender(this.gender);
     	if(StringUtils.isNotBlank(registerDate)) std.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	if(StringUtils.isNotBlank(endDate)) std.setEndDate(LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	return std;
@@ -96,6 +99,7 @@ public class StudentDTO implements Serializable{
     	if(StringUtils.isNotBlank(state)) std.setState(this.state);
     	if(StringUtils.isNotBlank(branch)) std.setBranch(this.branch);
     	if(StringUtils.isNotBlank(memo)) std.setMemo(this.memo);
+		if(StringUtils.isNotBlank(gender)) std.setGender(this.gender);
     	if(StringUtils.isNotBlank(registerDate)) std.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	if(StringUtils.isNotBlank(endDate)) std.setEndDate(LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	return std;
@@ -117,15 +121,17 @@ public class StudentDTO implements Serializable{
         this.state = (std.getState()!=null) ? std.getState() : "";
         this.branch = (std.getBranch()!=null) ? std.getBranch() : "";
         this.memo = (std.getMemo()!=null) ? std.getMemo() : "";
+		this.gender = (std.getGender()!=null) ? std.getGender() : "";
         this.registerDate = (std.getRegisterDate()!=null) ? std.getRegisterDate().toString() : "";
         this.endDate = (std.getEndDate()!=null) ? std.getEndDate().toString() : ""; 
     }
     
-	public StudentDTO(long id, String firstName, String lastName, String grade, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate) {
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
         this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
         this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
         this.contactNo2 = (contactNo2 !=null) ? contactNo2 : "";
         this.email1 = (email1!=null) ? email1 : "";
@@ -135,11 +141,12 @@ public class StudentDTO implements Serializable{
         this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
     }
 
-	public StudentDTO(long id, String firstName, String lastName, String grade, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, int startWeek, int endWeek) {
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, int startWeek, int endWeek) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
         this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
         this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
         this.contactNo2 = (contactNo2 !=null) ? contactNo2 : "";
         this.email1 = (email1!=null) ? email1 : "";
