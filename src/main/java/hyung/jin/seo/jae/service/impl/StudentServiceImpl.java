@@ -111,6 +111,8 @@ public class StudentServiceImpl implements StudentService {
 		existing.setLastName(newLastName);
 		String newGrade = StringUtils.defaultString(newStudent.getGrade());
 		existing.setGrade(newGrade);
+		String newGender = StringUtils.defaultString(newStudent.getGender());
+		existing.setGender(newGender);
 		String newContactNo1 = StringUtils.defaultString(newStudent.getContactNo1());
 		existing.setContactNo1(newContactNo1);
 		String newContactNo2 = StringUtils.defaultString(newStudent.getContactNo2());

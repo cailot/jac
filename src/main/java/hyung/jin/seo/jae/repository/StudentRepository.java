@@ -29,15 +29,15 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
         List<Integer> findYearsByStudentId(Long id);	
 
 	// retrieve active student by state, branch & grade called from studentList.jsp
-	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate) FROM Student s WHERE s.state LIKE ?1 AND s.branch LIKE ?2 AND s.grade LIKE ?3 AND s.endDate IS NULL")
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate) FROM Student s WHERE s.state LIKE ?1 AND s.branch LIKE ?2 AND s.grade LIKE ?3 AND s.endDate IS NULL")
 	List<StudentDTO> listActiveStudent(String state, String branch, String grade);
 
 	// retrieve inactive student by state, branch & grade called from studentList.jsp
-	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate) FROM Student s WHERE s.state LIKE ?1 AND s.branch LIKE ?2 AND s.grade LIKE ?3 AND s.endDate IS NOT NULL")
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate) FROM Student s WHERE s.state LIKE ?1 AND s.branch LIKE ?2 AND s.grade LIKE ?3 AND s.endDate IS NOT NULL")
 	List<StudentDTO> listInactiveStudent(String state, String branch, String grade);
 
 	@Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
-        "(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, e.startWeek, e.endWeek) " +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, e.startWeek, e.endWeek) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "WHERE s.endDate IS NULL " +
@@ -51,7 +51,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 
 
 	@Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
-        "(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, e.startWeek, e.endWeek) " +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, e.startWeek, e.endWeek) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "WHERE s.endDate IS NOT NULL " +
