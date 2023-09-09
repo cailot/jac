@@ -324,9 +324,35 @@
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function readyForCourseRegistration(grade){
 		$("#registerGrade").val(grade);
-		listElearns(grade);
+		// listElearns(grade);
 		listCourses(grade);
-		listBooks(grade);
+		listBooks(grade);	
+		$.when(listElearns(grade)).done(async function() {
+   			console.log($('#basketTable > tbody > tr').length);
+    		if($('#basketTable > tbody > tr').length == 0){
+        		// by default set e-learnings added to basket if basket is empty
+    			$('#elearnTable > tbody > tr').each(function(index, value) {
+					// add tr to basketTable
+					//console.log(value);
+					var row = $("<tr class='d-flex'>");
+					var elearningId = $(this).find('td').eq(0).text();
+					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + elearningId));
+					row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+					row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + $(this).find('td').eq(2).text().toUpperCase() + '] ' + $(this).find('td').eq(3).text()));
+					row.append($('<td style="width: 7%;">'));
+					row.append($('<td style="width: 6%;">'));
+					row.append($('<td style="width: 6%;">'));
+					row.append($('<td style="width: 6%;">'));
+					row.append($('<td style="width: 4%;">'));
+					row.append($('<td style="width: 7%;">'));
+					row.append($('<td style="width: 8%;">'));   
+					row.append($('<td style="width: 11%;">'));
+					row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
+					row.append($('<td>').addClass('hidden-column').addClass('grade').text($(this).find('td').eq(2).text()));
+					$('#basketTable > tbody').append(row);    
+        		});
+    		}
+		});
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
