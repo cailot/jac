@@ -24,6 +24,10 @@ public interface EnrolmentService {
 	// list enrolments by clazz Id and invoice Id
 	List<EnrolmentDTO> findEnrolmentByClazzAndInvoice(Long clazzId, Long invoiceId);
 
+	// list enrolments by invoice Id and student Id
+	List<EnrolmentDTO> findEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId);
+
+
 	// return total count
 	long checkCount();
 
@@ -50,4 +54,8 @@ public interface EnrolmentService {
 
 	// find active enrolment by id
 	EnrolmentDTO getActiveEnrolment(Long id);
+
+	// find latest invoice id by student id
+	Long findLatestInvoiceIdByStudent(Long studentId);
+
 }

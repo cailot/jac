@@ -68,35 +68,40 @@ public class JaeEnrolmentController {
 	// search enrolment by student Id and return mixed list of materials, enrolments, outstandings
 	@GetMapping("/search/student/{id}")
 	@ResponseBody
-	public List searchEnrolmentByStudent(@PathVariable Long id) {
+	public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
 		List dtos = new ArrayList();
-		Set<String> invoiceIds = new HashSet<>();
+		// get lastest invoice id
+
+		//Set<String> invoiceIds = new HashSet<>();
+		long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
 		// 1. get enrolments
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByStudent(id);
 		// 2. list invoice ids
-		for(EnrolmentDTO enrol : enrols){
-			invoiceIds.add(enrol.getInvoiceId());
-			// dtos.add(enrol);
-		}
+		// for(EnrolmentDTO enrol : enrols){
+		// 	// invoiceIds.add(enrol.getInvoiceId());
+		// 	long invoId = Long.parseLong(enrol.getInvoiceId());
+		// 	if(invoId > invoiceId) invoiceId = invoId;
+		// }
 		// 3. when returns, dtos keep order of materials, enrolments, outstandings
 		// 3-A. get materials by invoice id and add to list dtos
-		for(String invoiceId : invoiceIds){
-			List<MaterialDTO> materials = materialService.findMaterialByInvoice(Long.parseLong(invoiceId));
+		// for(String invoiceId : invoiceIds){
+			List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
 			for(MaterialDTO material : materials){
 				dtos.add(material);
 			}
-		}
+		// }
 		// 3-B. add enrolments to list dtos
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByStudent(id);
+		
 		for(EnrolmentDTO enrol : enrols){
 			dtos.add(enrol);
 		}
 		// 3-C. add outstandings to list dtos
-		for(String invoiceId : invoiceIds){
-			List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(Long.parseLong(invoiceId));
+		// for(String invoiceId : invoiceIds){
+			List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
 			for(OutstandingDTO stand : stands){
 				dtos.add(stand);
 			}
-		}
+		// }
 		// 4. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}

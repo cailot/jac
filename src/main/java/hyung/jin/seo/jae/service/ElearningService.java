@@ -28,4 +28,5 @@ public interface ElearningService {
 	
 	// delete elearning
 	void deleteElearning(Long id);
+
 }

@@ -156,4 +156,9 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		List<Long> enrolmentIds = enrolmentRepository.findEnrolmentIdByInvoiceId(invoiceId);
 		return enrolmentIds;
 	}
+
+	@Override
+	public Long findLatestInvoiceIdByStudent(Long studentId) {
+		return enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+	}
 }
