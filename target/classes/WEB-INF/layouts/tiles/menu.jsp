@@ -80,7 +80,7 @@
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/admin">Student Admin</a>
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentList">Student List</a>
-				  <a class="dropdown-item" style="color: #212529;" href="#">Student Invoice</a>
+				  <a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentInvoice">Student Invoice</a>
 			</div>
 		</li>
 

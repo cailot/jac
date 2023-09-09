@@ -10,13 +10,17 @@
 	</definition>
 
 	<!--Student -->
-	<definition name="adminPage" extends="base.definition">
+	<definition name="studentAdminPage" extends="base.definition">
 		<put-attribute name="title" value="Administrator Staff Page" />
-		<put-attribute name="body" value="/WEB-INF/layouts/admin.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/studentAdmin.jsp" />
 	</definition>
 	<definition name="studentListPage" extends="base.definition">
 		<put-attribute name="title" value="Student List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentList.jsp" />
+	</definition>
+	<definition name="studentInvoicePage" extends="base.definition">
+		<put-attribute name="title" value="Student Invoice" />
+		<put-attribute name="body" value="/WEB-INF/layouts/student/studentInvoice.jsp" />
 	</definition>
 
 	<!--Course -->

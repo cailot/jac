@@ -9,14 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class JaeController {
 
 
-	@GetMapping("/admin")
+	@GetMapping("/studentAdmin")
 	public String adminJob(HttpSession session) {
-		return "adminPage";
+		return "studentAdminPage";
 	}
 
 	@GetMapping("/studentList")
 	public String studentList(HttpSession session) {
 		return "studentListPage";
+	}
+
+
+	@GetMapping("/studentInvoice")
+	public String studentInvoice(HttpSession session) {
+		return "studentInvoicePage";
 	}
 
 	@GetMapping("/courseList")
