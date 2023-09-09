@@ -46,11 +46,6 @@
     }
 </style>
 
-
-<!-- <div id="background">
-    <p id="bg-text">Received</p>
-</div> -->
-
 <div class="toolbar no-print">
     <div class="text-right pt-3">
         <form action="/ADM/InvoicePdfV2" id="InvoiceForm" method="post" name="InvoiceForm">
