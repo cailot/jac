@@ -30,11 +30,9 @@
 	
 			$('#registerGrade').on('change',function() {
 				var grade = $(this).val();
-				//console.log(grade);
 				listElearns(grade);
 				listCourses(grade);
 				listBooks(grade);
-				// listEtcs(grade);
 			});
 			
 			// remove records from basket when click on delete icon
@@ -49,33 +47,68 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Search e-Learning based on Grade    
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function listElearns(grade) {
-		// clear 'elearnTable' table body
-		$('#elearnTable tbody').empty();
-		$.ajax({
-			url : '${pageContext.request.contextPath}/elearning/grade',
-			type : 'GET',
-			data : {
-				grade : grade,
-			},
-			success : function(data) {
-				$.each(data, function(index, value) {
-					const cleaned = cleanUpJson(value);
-					// console.log(cleaned);
-					var row = $("<tr class='d-flex'>");
-					row.append($('<td>').addClass('hidden-column').text(value.id));
-					row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-					row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
-					row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
-					row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
-					$('#elearnTable > tbody').append(row);
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
+	// function listElearns(grade) {
+	// 	// clear 'elearnTable' table body
+	// 	$('#elearnTable tbody').empty();
+	// 	$.ajax({
+	// 		url : '${pageContext.request.contextPath}/elearning/grade',
+	// 		type : 'GET',
+	// 		data : {
+	// 			grade : grade,
+	// 		},
+	// 		success : function(data) {
+	// 			$.each(data, function(index, value) {
+	// 				const cleaned = cleanUpJson(value);
+	// 				// console.log(cleaned);
+	// 				var row = $("<tr class='d-flex'>");
+	// 				row.append($('<td>').addClass('hidden-column').text(value.id));
+	// 				row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+	// 				row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
+	// 				row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
+	// 				row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
+	// 				$('#elearnTable > tbody').append(row);
+	// 			});
+	// 		},
+	// 		error : function(xhr, status, error) {
+	// 			console.log('Error : ' + error);
+	// 		}
+	// 	});
+	// }
+
+// change to async function to make sure 'readyForCourseRegistration() in studentInfo.jsp' executes after 'listElearns()' is completed
+async function listElearns(grade) {
+    return new Promise(function(resolve, reject) {
+        // clear 'elearnTable' table body
+        $('#elearnTable tbody').empty();
+        $.ajax({
+            url: '${pageContext.request.contextPath}/elearning/grade',
+            type: 'GET',
+            data: {
+                grade: grade,
+            },
+            success: function(data) {
+                $.each(data, function(index, value) {
+                    const cleaned = cleanUpJson(value);
+                    // console.log(cleaned);
+                    var row = $("<tr class='d-flex'>");
+                    row.append($('<td>').addClass('hidden-column').text(value.id));
+                    row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+                    row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
+                    row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
+                    row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
+                    $('#elearnTable > tbody').append(row);
+                });
+                resolve();
+            },
+            error: function(xhr, status, error) {
+                console.log('Error : ' + error);
+                reject(error);
+            }
+        });
+    });
+}
+
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Search Course based on Grade    
 	//////////////////////////////////////////////////////////////////////////////////////////////////////

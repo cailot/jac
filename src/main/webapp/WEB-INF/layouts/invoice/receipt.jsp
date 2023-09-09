@@ -233,14 +233,6 @@
                         </tr>
                     </c:forEach>
                 </c:if>
-
-                <!-- <tr>
-                    <td colspan='6' style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'><b>Other Information</b>, Paid Date :  02/07/2023</td>
-                </tr> -->
-                <tr>
-                    <td colspan='6' style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'></td>
-                </tr>
-
             </tbody>
         </table>
 
