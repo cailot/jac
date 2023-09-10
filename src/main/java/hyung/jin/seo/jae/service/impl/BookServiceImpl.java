@@ -23,7 +23,13 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<BookDTO> allBooks() {
-		List<Book> books = bookRepository.findAll();
+		List<Book> books = new ArrayList<>();
+		try{
+			books = bookRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		// bookRepository.findAll();
 		List<BookDTO> dtos = new ArrayList<>();
 		for(Book book: books){
 			BookDTO dto = new BookDTO(book);
@@ -34,7 +40,13 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public Book getBook(Long id){
-		Book book = bookRepository.findById(id).get();
+		Book book = null;
+		try{
+			book = bookRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		// bookRepository.findById(id).get();
 		return book;
 	}
 
@@ -75,7 +87,13 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public List<BookDTO> findBookByInvoiceId(Long id) {
-		List<Book> books = bookRepository.findBookByInvoiceId(id);
+		List<Book> books = new ArrayList<>();
+		try{
+			books = bookRepository.findBookByInvoiceId(id);
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		// bookRepository.findBookByInvoiceId(id);
 		List<BookDTO> dtos = new ArrayList<>();
 		for(Book book: books){
 			BookDTO dto = new BookDTO(book);
@@ -86,12 +104,26 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public double getPriceByMaterial(Long materialId) {
-		return bookRepository.getPriceByMaterialId(materialId);
+		double price = 0;
+		try{
+			price = bookRepository.getPriceByMaterialId(materialId);
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		return price;
+		// return bookRepository.getPriceByMaterialId(materialId);
 	}
 
 	@Override
 	public double getPrice(Long bookId) {
-		return bookRepository.getPrice(bookId);
+		double price = 0;
+		try{
+			price = bookRepository.getPrice(bookId);
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		return price;
+		// return bookRepository.getPrice(bookId);
 	}
 	
 }

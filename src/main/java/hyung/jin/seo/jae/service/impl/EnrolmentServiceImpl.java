@@ -22,7 +22,12 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 
 	@Override
 	public List<EnrolmentDTO> allEnrolments() {
-		List<Enrolment> enrols = enrolmentRepository.findAll();
+		List<Enrolment> enrols = new ArrayList<>();
+		try{
+			enrols = enrolmentRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		for(Enrolment enrol: enrols){
 			EnrolmentDTO dto = new EnrolmentDTO(enrol);
@@ -33,7 +38,13 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 
 	@Override
 	public List<EnrolmentDTO> findEnrolmentByStudent(Long studentId) {
-		List<Object[]> objects = enrolmentRepository.findEnrolmentByStudentId(studentId);
+		List<Object[]> objects = new ArrayList<>();
+		try{
+			objects = enrolmentRepository.findEnrolmentByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
+		// enrolmentRepository.findEnrolmentByStudentId(studentId);
 		List<EnrolmentDTO> dtos = new ArrayList<EnrolmentDTO>();
 		for(Object[] object : objects){
 			EnrolmentDTO dto = new EnrolmentDTO(object);
@@ -44,19 +55,34 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 
 	@Override
 	public List<EnrolmentDTO> findEnrolmentByClazz(Long claszzId) {
-		List<EnrolmentDTO> dtos = enrolmentRepository.findEnrolmentByClazzId(claszzId);
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findEnrolmentByClazzId(claszzId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}	
 		return dtos;
 	}
 
 	@Override
 	public List<EnrolmentDTO> findEnrolmentByClazzAndStudent(Long clazzId, Long studentId) {
-		List<EnrolmentDTO> dtos = enrolmentRepository.findEnrolmentByClazzIdAndStudentId(clazzId, studentId);
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findEnrolmentByClazzIdAndStudentId(clazzId, studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return dtos;
 	}
 
 	@Override
 	public List<EnrolmentDTO> findEnrolmentByClazzAndInvoice(Long clazzId, Long invoiceId) {
-		List<EnrolmentDTO> dtos = enrolmentRepository.findEnrolmentByClazzIdAndInvoiceId(clazzId, invoiceId);
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findEnrolmentByClazzIdAndInvoiceId(clazzId, invoiceId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return dtos;
 	}
 
@@ -75,25 +101,45 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 
 	@Override
 	public List<Long> findClazzIdByStudentId(Long studentId) {
-		List<Long> clazzIds = enrolmentRepository.findClazzIdByStudentId(studentId);
+		List<Long> clazzIds = new ArrayList<>();
+		try{
+			clazzIds = enrolmentRepository.findClazzIdByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return clazzIds;
 	}
 
 	@Override
 	public List<Long> findEnrolmentIdByStudentId(Long studentId) {
-		List<Long> enrolmentIds = enrolmentRepository.findEnrolmentIdByStudentId(studentId);
+		List<Long> enrolmentIds = new ArrayList<>();
+		try{
+			enrolmentIds = enrolmentRepository.findEnrolmentIdByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return enrolmentIds;
 	}
 
 	@Override
 	public Enrolment getEnrolment(Long id) {
-		Enrolment enrol = enrolmentRepository.findById(id).get();
+		Enrolment enrol = null;
+		try{
+			enrol = enrolmentRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return enrol;
 	}
 
 	@Override
 	public EnrolmentDTO getActiveEnrolment(Long id) {
-		EnrolmentDTO enrol = enrolmentRepository.findActiveEnrolmentById(id);
+		EnrolmentDTO enrol = null;
+		try{
+			enrol = enrolmentRepository.findActiveEnrolmentById(id);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		} 
 		return enrol;
 	}
 
@@ -138,27 +184,61 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	@Override
 	public void archiveEnrolment(Long id) {
 		// 1. get Enrolment
-		Enrolment enrol = enrolmentRepository.findById(id).get();
-		// 2. set old to true
-		enrol.setOld(true);
-		// 3. save
-		enrolmentRepository.save(enrol);		
+		Enrolment enrol = null;
+		try{
+			enrol = enrolmentRepository.findById(id).get();
+			// 2. set old to true
+			enrol.setOld(true);
+			// 3. save
+			enrolmentRepository.save(enrol);		
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 	}
 
 	@Override
 	public List<EnrolmentDTO> findEnrolmentByInvoice(Long invoiceId) {
-		List<EnrolmentDTO> dtos = enrolmentRepository.findEnrolmentByInvoiceId(invoiceId);
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findEnrolmentByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return dtos;
 	}
 
 	@Override
 	public List<Long> findEnrolmentIdByInvoiceId(Long invoiceId) {
-		List<Long> enrolmentIds = enrolmentRepository.findEnrolmentIdByInvoiceId(invoiceId);
+		List<Long> enrolmentIds = new ArrayList<>();
+		try{
+			enrolmentIds = enrolmentRepository.findEnrolmentIdByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
 		return enrolmentIds;
 	}
 
 	@Override
 	public Long findLatestInvoiceIdByStudent(Long studentId) {
-		return enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+		//return enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+		Long invoiceId = 0L;
+		try{
+			invoiceId = enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return invoiceId;
+	}
+
+	@Override
+	public List<EnrolmentDTO> findEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId) {
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
+		return dtos;
+		// return enrolmentRepository.findEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
 	}
 }

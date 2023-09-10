@@ -1,12 +1,12 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.model.Elearning;
@@ -27,7 +27,13 @@ public class ElearningServiceImpl implements ElearningService {
 
 	@Override
 	public List<Elearning> allElearnings() {
-		List<Elearning> courses = elearningRepository.findAll();
+		List<Elearning> courses = new ArrayList<>();
+		try{
+			courses = elearningRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No elearning found");
+		}
+		// elearningRepository.findAll();
 		return courses;
 	}
 	
@@ -78,13 +84,25 @@ public class ElearningServiceImpl implements ElearningService {
 
 	@Override
 	public List<Elearning> gradeElearnings(String grade) {
-		List<Elearning> courses = elearningRepository.findAllByGrade(grade);
+		List<Elearning> courses = new ArrayList<>();
+		try{
+			courses = elearningRepository.findAllByGrade(grade);
+		}catch(Exception e){
+			System.out.println("No elearning found");
+		}
+		// elearningRepository.findAllByGrade(grade);
 		return courses;
 	}
 
 	@Override
 	public List<Elearning> studentElearnings(Long id) {
-		List<Elearning> courses = elearningRepository.findByStudentId(id);
+		List<Elearning> courses = new ArrayList<>();
+		try{
+			courses = elearningRepository.findByStudentId(id);
+		}catch(Exception e){
+			System.out.println("No elearning found");
+		}
+		// elearningRepository.findByStudentId(id);
 		return courses;
 	}
 

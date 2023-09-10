@@ -32,7 +32,13 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public List<CourseDTO> allCourses() {
-		List<Course> crs = courseRepository.findAll();
+		List<Course> crs = new ArrayList<>();
+		try{
+			crs = courseRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No course found");
+		}
+		// courseRepository.findAll();
 		List<CourseDTO> dtos = new ArrayList<>();
 		for(Course course: crs){
 			CourseDTO dto = new CourseDTO(course);

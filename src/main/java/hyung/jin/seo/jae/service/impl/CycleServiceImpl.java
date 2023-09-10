@@ -42,7 +42,13 @@ public class CycleServiceImpl implements CycleService {
 
 	@Override
 	public List<CycleDTO> allCycles() {
-		List<Cycle> cycles = cycleRepository.findAll();
+		List<Cycle> cycles = new ArrayList<>();
+		try{
+			cycles = cycleRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No cycle found");
+		}
+		// cycleRepository.findAll();
 		List<CycleDTO> dtos = new ArrayList<>();
 		for(Cycle cycle: cycles){
 			CycleDTO dto = new CycleDTO(cycle);
@@ -235,14 +241,9 @@ public class CycleServiceImpl implements CycleService {
 		String startDate = getStartDate(year);
 		LocalDate academicYearStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);
-        // LocalDate weekEndDay = weekStartDay.plusDays(6);
-
+     
         String formattedWeekStartDay = weekStartDay.format(dateFormatter);
-        // String formattedWeekEndDay = weekEndDay.format(dateFormatter);
-
-        // System.out.println("Week " + week + " Start Day: " + formattedWeekStartDay);
-        // System.out.println("Week " + week + " End Day: " + formattedWeekEndDay);
-		return formattedWeekStartDay;
+     	return formattedWeekStartDay;
 	}
 
 	@Override
@@ -252,11 +253,7 @@ public class CycleServiceImpl implements CycleService {
 		LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);
         LocalDate weekEndDay = weekStartDay.plusDays(6);
 
-        // String formattedWeekStartDay = weekStartDay.format(dateFormatter);
         String formattedWeekEndDay = weekEndDay.format(dateFormatter);
-
-        // System.out.println("Week " + week + " Start Day: " + formattedWeekStartDay);
-        // System.out.println("Week " + week + " End Day: " + formattedWeekEndDay);
 		return formattedWeekEndDay;
 	}
 
@@ -274,15 +271,5 @@ public class CycleServiceImpl implements CycleService {
 		}
 		return startDate;
 	}
-
-
-
-
-
-
-
-
-
-
 
 }

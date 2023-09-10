@@ -22,6 +22,7 @@ $(document).ready(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
 
+	// console.log(data);
 	var row = $('<tr>');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;
@@ -82,7 +83,7 @@ function addEnrolmentToInvoiceList(data) {
 //		Add Outstanding to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOutstandingToInvoiceList(data) {
-	// console.log('addOutstandingToInvoiceListTable - ' + JSON.stringify(data));
+	//  console.log('addOutstandingToInvoiceListTable - ' + JSON.stringify(data));
 	// set invoiceId into hiddenInvoiceId
 	//$('#hiddenInvoiceId').val(data.invoiceId);
 	// debugger;
@@ -198,7 +199,7 @@ function removeBookFromInvoiceList() {
 //		Update Lastest Invoice Id
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateLatestInvoiceId(invoiceId){
-	//debugger;
+	// debugger;
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
 	// compare hiddenInvoiceId with invoiceId
@@ -295,7 +296,7 @@ function displayPayment(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Receipt in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayPaymentInfoInNewTab(paymentType){
+function displayInfoInNewTab(paymentType){
   var invoiceId = $('#hiddenInvoiceId').val();
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
@@ -343,7 +344,7 @@ function makePayment(){
 			document.getElementById('makePayment').reset();
 			$('#paymentModal').modal('toggle');	
 			// display receipt
-			displayPaymentInfoInNewTab('receipt');
+			displayInfoInNewTab('receipt');
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -456,7 +457,7 @@ function issueInvoice(){
 			// disappear invoice dialogue
 			$('#invoiceModal').modal('toggle');
 			// show invoice in another tab
-			displayPaymentInfoInNewTab('invoice');
+			displayInfoInNewTab('invoice');
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -586,8 +587,7 @@ function addInformation(){
 				</div>
 
 				<div class="col md-auto">
-					<button type="button" class="btn btn-block btn-primary btn-sm"
-						onclick="ntForm()">Record</button>
+					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="displayInfoInNewTab('studentInvoice')">Record</button>
 				</div>
 			</div>
 		</div>

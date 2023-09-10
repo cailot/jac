@@ -89,7 +89,7 @@ public class EnrolmentDTO extends MoneyDTO{
     	return enrolement;
     }
 
-	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
+	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.cancelled = cancelled;
@@ -101,6 +101,7 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.amount	= amount;
 		this.paid = paid;
 		this.discount = discount;
+		this.invoiceId = String.valueOf(invoiceId);
 		this.paymentDate = (payDate != null) ? payDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 		this.studentId = String.valueOf(studentId);
 		this.clazzId = String.valueOf(clazzId);
