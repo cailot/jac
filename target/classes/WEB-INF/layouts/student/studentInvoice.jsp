@@ -43,12 +43,11 @@ $(document).ready(function () {
 
     // if student id is passed by url, retrieve student info
 	var studentId = getParameterByName('studentId');
+	alert(studentId);
 	if(studentId !==null && studentId !==''){
 		$("#studentKeyword").val(studentId);
+		getInvoice(studentId);
 	}
-
-	getInvoice(studentId);
-
 
 });
 
@@ -95,7 +94,7 @@ function getParameterByName(name) {
 //			Search Student with Keyword	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function searchStudent() {
-	debugger;
+	//debugger;
 	//warn if keyword is empty
 	if ($("#studentKeyword").val() == '') {
 		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
@@ -115,7 +114,6 @@ function searchStudent() {
 			if (data == '') {
 				$('#warning-alert .modal-body').html('No record found with <b>' + $("#studentKeyword").val() + '</b>');
 				$('#warning-alert').modal('toggle');
-				// document.getElementById("studentInvoice").reset();
 				clearStudentInfo();
 				return;
 			}
@@ -220,7 +218,8 @@ function clearStudentInfo() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/student/list">
+		<!-- <form id="studentInvoice"> -->
+			<div id="studentInvoice">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -270,8 +269,7 @@ function clearStudentInfo() {
 						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="col-md-2"></div>
-
+					<div class="offset-md-2"></div>
 					<div class="col-md-2">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block" onclick="searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
@@ -336,7 +334,8 @@ function clearStudentInfo() {
 					</div>
 				</div>
 			</div>
-		</form>
+		<!-- </form> -->
+		</div>
 	</div>
 </div>
 
