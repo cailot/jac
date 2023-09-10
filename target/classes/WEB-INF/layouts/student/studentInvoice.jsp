@@ -17,7 +17,7 @@
   
 <script>
 $(document).ready(function () {
-    $('#studentListTable').DataTable({
+    $('#invoiceTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -34,149 +34,115 @@ $(document).ready(function () {
 		//pageLength: 20
     });
     
-	$('table .password').on('click', function(){
-		var username = $(this).parent().find('#username').val();
-		$('#passwordModal #usernamepassword').val(username);
-	});
-	
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		//format: 'dd/mm/yyyy',
-		autoclose : true,
-		todayHighlight : true
+	// bring up selected invoice
+	$('#invoiceTable').on('click', 'a', function(e) {
+		e.preventDefault();
+		var invoiceId = $(this).closest('tr').find('td:eq(0)').text();
+		alert(invoiceId);
 	});
 
-    
+    // if student id is passed by url, retrieve student info
+	var studentId = getParameterByName('studentId');
+	if(studentId !==null && studentId !==''){
+		$("#studentKeyword").val(studentId);
+	}
+
+	getInvoice(studentId);
+
+
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Student
+//		Bring all Invoice by Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function addStudent() {
-	// Get from form data
-	var std = {
-		firstName : $("#addFirstName").val(),
-		lastName : $("#addLastName").val(),
-		email1 : $("#addEmail1").val(),
-		email2 : $("#addEmail2").val(),
-		relation1 : $("#addRelation1").val(),
-		relation2 : $("#addRelation2").val(),
-		address : $("#addAddress").val(),
-		contactNo1 : $("#addContact1").val(),
-		contactNo2 : $("#addContact2").val(),
-		memo : $("#addMemo").val(),
-		state : $("#addState").val(),
-		branch : $("#addBranch").val(),
-		grade : $("#addGrade").val(),
-		gender : $("#addGender").val(),
-		enrolmentDate : $("#addEnrolment").val()
+function getInvoice(studentId) {
+	//warn if keyword is empty
+	if (studentId == '') {
+		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
+		$('#warning-alert').modal('toggle');
+		return;
 	}
 	// Send AJAX to server
 	$.ajax({
-        url : '${pageContext.request.contextPath}/student/register',
-        type : 'POST',
-        dataType : 'json',
-        data : JSON.stringify(std),
-        contentType : 'application/json',
-        success : function() {
-			// Display the success alert
-            $('#success-alert .modal-body').text(
-                    'New Student is registered successfully.');
-            $('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-        },
-        error : function(xhr, status, error) {
-            console.log('Error : ' + error);
-        }
-    });
-	$('#registerStudentModal').modal('hide');
-	// flush all registered data
-	document.getElementById("studentRegister").reset();
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateStudentInfo(){
-	
-	// get from formData
-	var std = {
-		id : $('#editId').val(),
-		firstName : $("#editFirstName").val(),
-		lastName : $("#editLastName").val(),
-		email1 : $("#editEmail1").val(),
-		email2 : $("#editEmail2").val(),
-		address : $("#editAddress").val(),
-		contactNo1 : $("#editContact1").val(),
-		contactNo2 : $("#editContact2").val(),
-		relation1 : $("#editRelation1").val(),
-		relation2 : $("#editRelation2").val(),
-		memo : $("#editMemo").val(),
-		state : $("#editState").val(),
-		branch : $("#editBranch").val(),
-		grade : $("#editGrade").val(),
-		gender : $("#editGender").val(),
-		registerDate : $("#editRegister").val()
-	}
-		
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/update',
-		type : 'PUT',
-		dataType : 'json',
-		data : JSON.stringify(std),
-		contentType : 'application/json',
-		success : function(value) {
-			// Display success alert
-			$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
-			$('#success-alert').modal('show');
-			// fetch data again
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-			
+		url : '${pageContext.request.contextPath}/enrolment/search/student/' + studentId,
+		type : 'GET',
+		success : function(data) {
+			$.each(data, function(index, value){
+				console.log(value);
+			});	
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
 		}
 	});
-	
-	$('#editStudentModal').modal('hide');
-	// flush all registered data
-	document.getElementById("studentEdit").reset();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		De-activate Student
+//		get Parameter from URL
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function inactivateStudent(id) {
-	if(confirm("Are you sure you want to suspend this student?")){
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/inactivate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now suspended');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function(e) {
-					location.reload();
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}else{
+// Function to get URL parameters by name
+function getParameterByName(name) {
+    var url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//			Search Student with Keyword	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function searchStudent() {
+	debugger;
+	//warn if keyword is empty
+	if ($("#studentKeyword").val() == '') {
+		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
+		$('#warning-alert').modal('toggle');
 		return;
 	}
+	// send query to controller
+	$('#invoiceTable tbody').empty();
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/search',
+		type : 'GET',
+		data : {
+			keyword : $("#studentKeyword").val()
+		},
+		success : function(data) {
+			console.log('search - ' + data);
+			if (data == '') {
+				$('#warning-alert .modal-body').html('No record found with <b>' + $("#studentKeyword").val() + '</b>');
+				$('#warning-alert').modal('toggle');
+				// document.getElementById("studentInvoice").reset();
+				clearStudentInfo();
+				return;
+			}
+			$.each(data, function(index, value) {
+				const cleaned = cleanUpJson(value);
+				var row = $("<tr onclick='displayStudentInfo(" + cleaned + ")'>");		
+				row.append($('<td>').text(value.id));
+				row.append($('<td>').text(value.firstName));
+				row.append($('<td>').text(value.lastName));
+				row.append($('<td>').text(value.grade.toUpperCase()));
+				row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
+				row.append($('<td>').text(formatDate(value.registerDate)));
+				row.append($('<td>').text(formatDate(value.endDate)));
+				row.append($('<td>').text(value.email1));
+				row.append($('<td>').text(value.contactNo1));
+				row.append($('<td>').text(value.email2));
+				row.append($('<td>').text(value.contactNo2));
+				row.append($('<td>').text(value.address));
+				$('#studentListResultTable > tbody').append(row);
+			});
+			$('#studentListResult').modal('show');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Student by User's click	
@@ -216,6 +182,14 @@ function retrieveStudentInfo(std) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clear Student Info	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearStudentInfo() {
+	$("#studentKeyword").val('');
+	document.getElementById("studentInvoice").reset();
+}
+
 </script>
 
 <style>
@@ -246,7 +220,7 @@ function retrieveStudentInfo(std) {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/list">
+		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/student/list">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -291,52 +265,20 @@ function retrieveStudentInfo(std) {
 							<option value="packenham">Packenham</option>
 						</select>
 					</div>
-					<div class="col-md-1">
-						<label for="listGrade" class="label-form">Grade</label> 
-						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
-						</select>
-					</div>
 					<div class="col-md-2">
-						<label for="listYear" class="label-form">Enrolment</label> 
-						<select class="form-control" id="listYear" name="listYear">
-							<!-- <option value="All">All</option> -->
-							<option value="2023">Academic Year 23/24</option>
-							<option value="2022">Academic Year 22/23</option>
-							<option value="2021">Academic Year 21/22</option>
-							<option value="2020">Academic Year 20/21</option>
-						</select>
+						<label for="studentKeyword" class="label-form">Student Info</label> 
+						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
 					</div>
+					<!-- put blank col-md-2 -->
+					<div class="col-md-2"></div>
+
 					<div class="col-md-2">
-						<label for="listActive" class="label-form">Activated</label> 
-						<select class="form-control" id="listActive" name="listActive">
-							<!-- <option value="All">All Students</option> -->
-							<option value="Current">Current Students</option>
-							<option value="Stopped">Stopped Students</option>
-						</select>
-					</div>
-					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block" onclick="searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
-					<div class="col mx-auto">
-						<label class="label-form-white">Registration</label> 
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;Registration</button>
+					<div class="col-md-2">
+						<label class="label-form-white">Clear</label> 
+						<button type="button" class="btn btn-block btn-success" onclick="clearStudentInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 					</div>
 				</div>
 			</div>
@@ -348,21 +290,20 @@ function retrieveStudentInfo(std) {
 								<thead class="table-primary">
 									<tr>
 										<th>ID</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Grade</th>
-										<th>Gender</th>
-										<th>Register Date</th>
-										<th>Start</th>
-										<th>End</th>
-										<th>Main Email</th>
-										<th>Main Contact</th>
-										<th>Sub Email</th>
-										<th>Sub Contact</th>
+										<th>Type</th>
+										<th>Payment Date</th>
+										<th>Refund Date</th>
+										<th>Payment$</th>
+										<th>OS</th>
+										<th>Total</th>
+										<th>Discount$</th>
+										<th>Amount</th>
+										<th>Description</th>
 										<th data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
+								<%--
 								<c:choose>
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
@@ -388,6 +329,7 @@ function retrieveStudentInfo(std) {
 										</c:forEach>
 									</c:when>
 								</c:choose>
+								--%>
 								</tbody>
 							</table>
 						</div>
@@ -395,353 +337,6 @@ function retrieveStudentInfo(std) {
 				</div>
 			</div>
 		</form>
-	</div>
-</div>
-
-<!-- Register Form Dialogue -->
-<div class="modal fade" id="registerStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Student Registration</header>
-					<form id="studentRegister">
-						<div class="form-row mt-2">
-							<div class="col-md-4">
-								<label for="addState" class="label-form">State</label> <select class="form-control" id="addState" name="addState">
-									<option value="vic">Victoria</option>
-									</select>
-							</div>
-							<div class="col-md-5">
-								<label for="addBranch" class="label-form">Branch</label> <select class="form-control" id="addBranch" name="addBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
-								</select>
-							</div>
-							<div class="col-md-3">
-								<label for="addRegisterDate" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="dd/mm/yyyy">
-							</div>
-							<script>
-								var today = new Date();
-								var day = today.getDate();
-								var month = today.getMonth() + 1; // Note: January is 0
-								var year = today.getFullYear();
-								var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-								document.getElementById('addRegisterDate').value = formattedDate;
-							</script>
-						</div>
-						<div class="form-row mt-2">
-							<div class="col-md-5">
-								<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
-							</div>
-							<div class="col-md-4">
-								<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
-							</div>
-							<div class="col-md-3">
-								<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade">
-									<option value="p2">P2</option>
-									<option value="p3">P3</option>
-									<option value="p4">P4</option>
-									<option value="p5">P5</option>
-									<option value="p6">P6</option>
-									<option value="s7">S7</option>
-									<option value="s8">S8</option>
-									<option value="s9">S9</option>
-									<option value="s10">S10</option>
-									<option value="s10e">S10E</option>
-									<option value="tt6">TT6</option>
-									<option value="tt8">TT8</option>
-									<option value="tt8e">TT8E</option>
-									<option value="srw4">SRW4</option>
-									<option value="srw5">SRW5</option>
-									<option value="srw6">SRW6</option>
-									<option value="srw8">SRW8</option>
-									<option value="jmss">JMSS</option>
-									<option value="vce">VCE</option>
-								</select>
-							</div>
-						</div>
-						<div class="form-row mt-2">
-							<div class="col-md-3">
-								<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
-									<option value="male">Male</option>
-									<option value="female">Female</option>
-								</select>
-							</div>
-							<div class="col-md-9">
-								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="addContact1" name="addContact1" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="addRelation1" name="addRelation1">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="addEmail1" name="addEmail1" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="addContact2" name="addContact2" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="addRelation2" name="addRelation2">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="addEmail2" name="addEmail2" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-12">
-								<label for="addMemo" class="label-form">Memo</label>
-								<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>
-							</div>
-						</div>
-					</form>
-					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addStudent()">Register</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>	
-				</section>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Edit Form Dialogue -->
-<div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Student Edit</header>
-						<form id="studentEdit">
-						<div class="form-row mt-2">
-							<div class="col-md-4">
-								<label for="editState" class="label-form">State</label> <select class="form-control" id="editState" name="editState">
-									<option value="vic">Victoria</option>
-								</select>
-							</div>
-							<div class="col-md-5">
-								<label for="editBranch" class="label-form">Branch</label> <select class="form-control" id="editBranch" name="editBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
-								</select>
-							</div>
-							<div class="col-md-3">
-								<label for="editRegister" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="editRegister" name="editRegister" placeholder="dd/mm/yyyy">
-							</div>
-						</div>	
-						<div class="form-row mt-2">
-							<div class="col-md-3">
-								<label for="editId" class="label-form">ID:</label> <input type="text" class="form-control" id="editId" name="editId" readonly>
-							</div>
-							<div class="col-md-4">
-								<label for="editFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="editFirstName" name="editFirstName">
-							</div>
-							<div class="col-md-3">
-								<label for="editLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="editLastName" name="editLastName">
-							</div>
-							<div class="col-md-2">
-								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
-									<option value="p2">P2</option>
-									<option value="p3">P3</option>
-									<option value="p4">P4</option>
-									<option value="p5">P5</option>
-									<option value="p6">P6</option>
-									<option value="s7">S7</option>
-									<option value="s8">S8</option>
-									<option value="s9">S9</option>
-									<option value="s10">S10</option>
-									<option value="s10e">S10E</option>
-									<option value="tt6">TT6</option>
-									<option value="tt8">TT8</option>
-									<option value="tt8e">TT8E</option>
-									<option value="srw4">SRW4</option>
-									<option value="srw5">SRW5</option>
-									<option value="srw6">SRW6</option>
-									<option value="srw8">SRW8</option>
-									<option value="jmss">JMSS</option>
-									<option value="vce">VCE</option>
-								</select>
-							</div>
-						</div>
-						<div class="form-row mt-2">
-							<div class="col-md-3">
-								<label for="editGender" class="label-form">Gender</label> <select class="form-control" id="editGender" name="editGender">
-									<option value="male">Male</option>
-									<option value="female">Female</option>
-								</select>
-							</div>
-							<div class="col-md-9">
-								<label for="editAddress" class="label-form">Address</label> <input type="text" class="form-control" id="editAddress" name="editAddress">
-							</div>
-						</div>
-					
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact1" name="editContact1" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation1" name="editRelation1">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact2" name="editContact2" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation2" name="editRelation2">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail2" name="editEmail2" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-12">
-								<label for="editMemo" class="label-form">Memo</label>
-								<textarea class="form-control" style="height: 200px;" id="editMemo" name="editMemo"></textarea>
-							</div>
-						</div>
-					</form>					
-					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateStudentInfo()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>
-				</section>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!--  Password Modal HTML -->
-<div id="passwordStudentModal" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form method="POST" action="${pageContext.request.contextPath}/changePassword">
-				<div class="modal-header">
-					<h4 class="modal-title">Change Password</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label>Password</label> <input type="password" class="form-control" required="required" name="passwordpassword" id="passwordpassword" />
-					</div>
-					<div class="form-group">
-						<label>Confirm Password</label> <input type="password" class="form-control" required="required" name="confirmPasswordpassword" id="confirmPasswordpassword"/>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-info" onclick="return passwordChange();">Change Password</button> 
-					<input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancel">
-					<input type="hidden" name="usernamepassword" id="usernamepassword" />
-				</div>
-			</form>
-		</div>
 	</div>
 </div>
 
@@ -765,22 +360,51 @@ function retrieveStudentInfo(std) {
 	</div>
 </div>
 
-
-<!-- Deactivate Dialogue -->
-<div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Suspend</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p> Do you want to suspend this student?</p>	
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" onclick="inactivateStudent()"><i class="bi bi-x"></i> Suspend</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check"></i> Close</button>
-            </div>
-    	</div>
+<!-- Search Result Dialog -->
+<div class="modal fade" id="studentListResult">
+	<div class="modal-dialog modal-xl modal-dialog-centered">
+	  <div class="modal-content">
+		<div class="modal-header bg-primary text-white">
+		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
+		  <button type="button" class="close" data-dismiss="modal">
+			<span>&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body table-wrap">
+		  <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
+			<thead class="thead-light">
+			  <tr>
+				<th data-field="id">ID</th>
+				<th data-field="firstname">First Name</th>
+				<th data-field="lastname">Last Name</th>
+				<th data-field="grade">Grade</th>
+				<th data-field="grade">Gender</th>
+				<th data-field="startdate">Start Date</th>
+				<th data-field="enddate">End Date</th>
+				<th data-field="email">Main Email</th>
+				<th data-field="contact1">Main Contact</th>
+				<th data-field="email">Sub Email</th>
+				<th data-field="contact2">Sub Contact</th>
+				<th data-field="address">Address</th>
+			  </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		  </table>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
 	</div>
-</div>
+  </div>
+  
+<style>
+	.table-wrap {
+	  overflow-x: auto;
+	}
+	#studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.form-group{
+		margin-bottom: 30px;
+	}
+</style>

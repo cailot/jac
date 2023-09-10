@@ -155,7 +155,6 @@
 					row.append($('<td>').text(value.firstName));
 					row.append($('<td>').text(value.lastName));
 					row.append($('<td>').text(value.grade.toUpperCase()));
-					// row.append($('<td>').text(value.gender.toUpperCase()));
 					row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
 					row.append($('<td>').text(formatDate(value.registerDate)));
 					row.append($('<td>').text(formatDate(value.endDate)));
@@ -296,7 +295,9 @@
 	
 	}
 
-	// Clear all form
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Clear All Info	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 	function clearStudentForm() {
 		document.getElementById("studentInfo").reset();
 		// clear enrolment basket
@@ -328,7 +329,7 @@
 		listCourses(grade);
 		listBooks(grade);	
 		$.when(listElearns(grade)).done(async function() {
-   			console.log($('#basketTable > tbody > tr').length);
+   			// console.log($('#basketTable > tbody > tr').length);
     		if($('#basketTable > tbody > tr').length == 0){
         		// by default set e-learnings added to basket if basket is empty
     			$('#elearnTable > tbody > tr').each(function(index, value) {

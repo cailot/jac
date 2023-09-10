@@ -1,7 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,37 +70,23 @@ public class JaeEnrolmentController {
 	public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
 		List dtos = new ArrayList();
 		// get lastest invoice id
-
-		//Set<String> invoiceIds = new HashSet<>();
-		long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
-		// 1. get enrolments
-		// 2. list invoice ids
-		// for(EnrolmentDTO enrol : enrols){
-		// 	// invoiceIds.add(enrol.getInvoiceId());
-		// 	long invoId = Long.parseLong(enrol.getInvoiceId());
-		// 	if(invoId > invoiceId) invoiceId = invoId;
-		// }
-		// 3. when returns, dtos keep order of materials, enrolments, outstandings
-		// 3-A. get materials by invoice id and add to list dtos
-		// for(String invoiceId : invoiceIds){
-			List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
-			for(MaterialDTO material : materials){
-				dtos.add(material);
-			}
-		// }
-		// 3-B. add enrolments to list dtos
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByStudent(id);
-		
+		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
+		if((invoiceId==null) || (invoiceId==0L)) return dtos; // return empty list if no invoice
+		// 1. get materials by invoice id and add to list dtos
+		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
+		for(MaterialDTO material : materials){
+			dtos.add(material);
+		}
+		// 2. get enrolments by invoice id and add to list dtos
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
 		for(EnrolmentDTO enrol : enrols){
 			dtos.add(enrol);
 		}
-		// 3-C. add outstandings to list dtos
-		// for(String invoiceId : invoiceIds){
-			List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
-			for(OutstandingDTO stand : stands){
-				dtos.add(stand);
-			}
-		// }
+		// 3. get outstandings by invoice id and add to list dtos
+		List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
+		for(OutstandingDTO stand : stands){
+			dtos.add(stand);
+		}
 		// 4. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}

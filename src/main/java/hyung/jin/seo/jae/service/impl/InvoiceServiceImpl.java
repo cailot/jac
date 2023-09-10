@@ -28,7 +28,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public List<InvoiceDTO> allInvoices() {
-		List<Invoice> invoices = invoiceRepository.findAll();
+		List<Invoice> invoices = new ArrayList<>();
+		try{
+			invoices = invoiceRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		// invoiceRepository.findAll();
 		List<InvoiceDTO> dtos = new ArrayList<>();
 		for(Invoice invoice: invoices){
 			InvoiceDTO dto = new InvoiceDTO(invoice);
@@ -84,12 +90,26 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public InvoiceDTO getInvoiceDTOByStudentId(Long studentId) {
-		return invoiceRepository.findInvoiceDTOByStudentId(studentId);
+		InvoiceDTO dto = null;
+		try{
+			dto = invoiceRepository.findInvoiceDTOByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		// return invoiceRepository.findInvoiceDTOByStudentId(studentId);
+		return dto;
 	}
 
 	@Override
 	public Long getInvoiceIdByStudentId(Long studentId) {
-		return invoiceRepository.findLatestInvoiceIdByStudentId(studentId);
+		Long id = null;
+		try{
+			id = invoiceRepository.findLatestInvoiceIdByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return id;
+		// return invoiceRepository.findLatestInvoiceIdByStudentId(studentId);
 	}
 
 	@Override
@@ -104,7 +124,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public double getInvoiceAmount(Long id) {
-		return invoiceRepository.getInvoiceOwningAmount(id);
+		double amount = 0;
+		try{
+			amount = invoiceRepository.getInvoiceOwingAmount(id);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return amount;
+		// return invoiceRepository.getInvoiceOwningAmount(id);
 	}
 
 

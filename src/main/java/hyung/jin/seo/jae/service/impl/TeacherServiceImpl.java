@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,19 +26,37 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public List<Teacher> allTeachers() {
-		List<Teacher> teachers = teacherRepository.findAll();
+		List<Teacher> teachers = new ArrayList<>();
+		try{
+			teachers = teacherRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
+		// teacherRepository.findAll();
 		return teachers;
 	}
 	
 	@Override
 	public List<Teacher> currentTeachers() {
-		List<Teacher> teachers = teacherRepository.findAllByEndDateIsNull();
+		List<Teacher> teachers = new ArrayList<>();
+		try{
+			teachers = teacherRepository.findAllByEndDateIsNull();
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
+		// teacherRepository.findAllByEndDateIsNull();
 		return teachers;
 	}
 
 	@Override
 	public List<Teacher> stoppedTeachers() {
-		List<Teacher> teachers = teacherRepository.findAllByEndDateIsNotNull();
+		List<Teacher> teachers = new ArrayList<>();
+		try{
+			teachers = teacherRepository.findAllByEndDateIsNotNull();
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
+		// teacherRepository.findAllByEndDateIsNotNull();
 		return teachers;
 	}
 
@@ -75,7 +94,7 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	@Override
 	public List<Teacher> searchTeachers(String keyword) {
-		List<Teacher> teachers = null;
+		List<Teacher> teachers = new ArrayList<>();
 		Specification<Teacher> spec = Specification.where(null);
 		
 		if(StringUtils.isNumericSpace(keyword)) {
@@ -84,13 +103,23 @@ public class TeacherServiceImpl implements TeacherService {
 			// firstName or lastName search
 			spec = spec.and(TeacherSpecification.nameContains(keyword));
 		}
-		teachers = teacherRepository.findAll(spec);
+		try{
+			teachers = teacherRepository.findAll(spec);
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
+		// teachers = teacherRepository.findAll(spec);
 		return teachers;
 	}
 
 	@Override
 	public Teacher getTeacher(Long id) {
-		Teacher teacher = teacherRepository.findById(id).get();
+		Teacher teacher = null;
+		try{
+			teacher = teacherRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
 		return teacher;
 	}
 

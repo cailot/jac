@@ -28,7 +28,13 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public List<PaymentDTO> allPayments() {
-		List<Payment> payments = paymentRepository.findAll();
+		List<Payment> payments = new ArrayList<>();
+		try{
+			payments = paymentRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		// paymentRepository.findAll();
 		List<PaymentDTO> dtos = new ArrayList<>();
 		for(Payment payment: payments){
 			PaymentDTO dto = new PaymentDTO(payment);
@@ -46,7 +52,14 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public Payment getPaymentByInvoiceId(Long invoiceId) {
-		return paymentRepository.findByInvoiceId(invoiceId);
+		Payment payment = null;
+		try{
+			payment = paymentRepository.findByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return payment;
+		// return paymentRepository.findByInvoiceId(invoiceId);
 
 	}
 
@@ -82,7 +95,14 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public Payment findPaymentById(Long id) {
-		return paymentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Payment not found"));
+		Payment payment = null;
+		try{
+			payment = paymentRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return payment;
+		// return paymentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Payment not found"));
 
 	}
 
