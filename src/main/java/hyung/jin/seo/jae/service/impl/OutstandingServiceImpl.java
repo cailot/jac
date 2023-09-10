@@ -27,12 +27,6 @@ public class OutstandingServiceImpl implements OutstandingService {
 		return count;
 	}
 
-	// @Override
-	// public OutstandingDTO getOutstanding(Long id) {
-	// 	Outstanding stand = outstandingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Outstanding not found"));
-	// 	OutstandingDTO dto = new OutstandingDTO(stand);
-	// 	return dto;
-	// }
 	@Override
 	public Outstanding getOutstanding(Long id) {
 		Outstanding stand = outstandingRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Outstanding not found"));
@@ -41,7 +35,13 @@ public class OutstandingServiceImpl implements OutstandingService {
 
 	@Override
 	public List<OutstandingDTO> getOutstandingtByInvoice(Long invoiceId) {
-		List<OutstandingDTO> dtos = outstandingRepository.findByInvoiceId(invoiceId);
+		List<OutstandingDTO> dtos = new ArrayList<>();
+		try{
+			dtos = outstandingRepository.findByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No outstanding found");
+		}
+		// outstandingRepository.findByInvoiceId(invoiceId);
 		return dtos;
 	}
 
@@ -53,7 +53,13 @@ public class OutstandingServiceImpl implements OutstandingService {
 
 	@Override
 	public List<OutstandingDTO> allOutstandings() {
-		List<Outstanding> stands = outstandingRepository.findAll();
+		List<Outstanding> stands = new ArrayList<>();
+		try{
+			stands = outstandingRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No outstanding found");
+		}
+		// outstandingRepository.findAll();
 		List<OutstandingDTO> dtos = new ArrayList<>();
 		for(Outstanding stand: stands){
 			OutstandingDTO dto = new OutstandingDTO(stand);

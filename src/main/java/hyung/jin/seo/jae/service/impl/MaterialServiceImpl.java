@@ -30,7 +30,13 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<MaterialDTO> allMaterials() {
-		List<Material> materials = materialRepository.findAll();
+		List<Material> materials = new ArrayList<>();
+		try{
+			materials = materialRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		// materialRepository.findAll();
 		List<MaterialDTO> dtos = new ArrayList<>();
 		for(Material material: materials){
 			MaterialDTO dto = new MaterialDTO(material);
@@ -41,13 +47,25 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<MaterialDTO> findMaterialByInvoice(Long id) {
-		List<MaterialDTO> dtos = materialRepository.findMaterialByInvoiceId(id);
+		List<MaterialDTO> dtos = new ArrayList<>();
+		try{
+			dtos = materialRepository.findMaterialByInvoiceId(id);
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		// materialRepository.findMaterialByInvoiceId(id);
 		return dtos;
 	}
 
 	@Override
 	public Material getMaterial(Long id) {
-		Material material = materialRepository.findById(id).get();
+		Material material = null;
+		try{
+			material = materialRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		// materialRepository.findById(id).get();
 		return material;
 	}
 	
@@ -85,16 +103,37 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	public List<Long> findMaterialIdByInvoiceId(long invoiceId) {
-		return materialRepository.findMaterialIdByInvoiceId(invoiceId);
+		List<Long> ids = new ArrayList<>();
+		try{
+			ids = materialRepository.findMaterialIdByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		return ids;
+		// return materialRepository.findMaterialIdByInvoiceId(invoiceId);
 	}
 
 	@Override
 	public List<Long> findBookIdByInvoiceId(long invoiceId) {
-		return materialRepository.findBookIdByInvoiceId(invoiceId);
+		List<Long> ids = new ArrayList<>();
+		try{
+			ids = materialRepository.findBookIdByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		return ids;
+		// return materialRepository.findBookIdByInvoiceId(invoiceId);
 	}
 
 	@Override
 	public MaterialDTO findMaterialByInvoiceAndBook(Long invoiceId, Long bookId) {
-		return materialRepository.findMaterialByInvoiceIdAndBookId(invoiceId, bookId);
+		MaterialDTO dto = null;
+		try{
+			dto = materialRepository.findMaterialByInvoiceIdAndBookId(invoiceId, bookId);
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		return dto;
+		// return materialRepository.findMaterialByInvoiceIdAndBookId(invoiceId, bookId);
 	}
 }

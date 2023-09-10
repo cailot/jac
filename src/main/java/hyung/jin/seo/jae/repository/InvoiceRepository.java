@@ -29,5 +29,5 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 
 	// return invoice amount by id
 	@Query("SELECT (i.amount - i.paidAmount) FROM Invoice i WHERE i.id = ?1")
-	double getInvoiceOwningAmount(long id);
+	double getInvoiceOwingAmount(long id);
 }

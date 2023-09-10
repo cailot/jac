@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,19 +29,37 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<Student> allStudents() {
-		List<Student> students = studentRepository.findAll();
+		List<Student> students = new ArrayList<>();
+		try{
+			students = studentRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		// studentRepository.findAll();
 		return students;
 	}
 	
 	@Override
 	public List<Student> currentStudents() {
-		List<Student> students = studentRepository.findAllByEndDateIsNull();
+		List<Student> students = new ArrayList<>();
+		try{
+			students = studentRepository.findAllByEndDateIsNull();
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		// studentRepository.findAllByEndDateIsNull();
 		return students;
 	}
 
 	@Override
 	public List<Student> stoppedStudents() {
-		List<Student> students = studentRepository.findAllByEndDateIsNotNull();
+		List<Student> students = new ArrayList<>();
+		try{
+			students = studentRepository.findAllByEndDateIsNotNull();
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		// studentRepository.findAllByEndDateIsNotNull();
 		return students;
 	}
 
@@ -67,7 +86,7 @@ public class StudentServiceImpl implements StudentService {
 	
 	@Override
 	public List<Student> searchStudents(String keyword) {
-		List<Student> students = null;
+		List<Student> students = new ArrayList<>();
 		Specification<Student> spec = Specification.where(null);
 		
 		if(StringUtils.isNumericSpace(keyword)) {
@@ -76,14 +95,24 @@ public class StudentServiceImpl implements StudentService {
 			// firstName or lastName search
 			spec = spec.and(StudentSpecification.nameContains(keyword));
 		}
-//		spec = spec.and(StudentSpecification.hasNullVaule("endDate")); // among current students
-		students = studentRepository.findAll(spec);
+		try{
+			students = studentRepository.findAll(spec);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}		
+// students = studentRepository.findAll(spec);
 		return students;
 	}
 
 	@Override
 	public Student getStudent(Long id) {
-		Student std = studentRepository.findById(id).get();	
+		Student std = null;
+		try{
+			std = studentRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		// studentRepository.findById(id).get();	
 		return std;
 	}
 

@@ -30,7 +30,13 @@ public class ClazzServiceImpl implements ClazzService {
 
 	@Override
 	public List<ClazzDTO> allClasses() {
-		List<Clazz> crs = clazzRepository.findAll();
+		List<Clazz> crs = new ArrayList<>();
+		try{
+			crs = clazzRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		// clazzRepository.findAll();
 		List<ClazzDTO> dtos = new ArrayList<>();
 		for(Clazz claz : crs){
 			ClazzDTO dto = new ClazzDTO(claz);
@@ -42,24 +48,25 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> findClassesForGradeNCycle(String grade, int year) {
 		// 1. get classes
-		List<ClazzDTO> dtos = clazzRepository.findClassForGradeNCycle(grade, year);
-		// 2. get subjects
-		// List<String> subjects = subjectRepository.findSubjectNamesForGrade(grade);
-		// 2. get subjects as abbreviation
-		// List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
-		// // 3. assign subjects to classes
-		// for(ClazzDTO clazz : dtos){
-		// 	for(String subject : subjects){
-		// 		clazz.addSubject(subject);
-		// 	}
-		// }
-		// 4. return DTOs
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.findClassForGradeNCycle(grade, year);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		// clazzRepository.findClassForGradeNCycle(grade, year);
 		return dtos;	
 	}
 
 	@Override
 	public List<ClazzDTO> findClassesForCourseIdNCycle(Long id, int year) {
-		List<ClazzDTO> dtos = clazzRepository.findClassForCourseIdNCycle(id, year);
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.findClassForCourseIdNCycle(id, year);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}	
+		// clazzRepository.findClassForCourseIdNCycle(id, year);
 		return dtos;	
 	}
 
@@ -72,18 +79,15 @@ public class ClazzServiceImpl implements ClazzService {
 
 	@Override
 	public Clazz getClazz(Long id) {
-		Clazz clazz = clazzRepository.findById(id).get();
+		Clazz clazz = null;
+		try{
+			clazz = clazzRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		// clazzRepository.findById(id).get();
 		return clazz;	
 	}
-
-	// @Override
-	// public ClazzDTO updateClass(Clazz clazz) {
-	// 	Clazz cla = classRepository.save(clazz);
-	// 	ClazzDTO dto = new ClazzDTO(cla);
-	// 	return dto;
-	// }
-
-
 
 	@Override
 	public ClazzDTO updateClazz(Clazz clazz) {
@@ -130,8 +134,13 @@ public class ClazzServiceImpl implements ClazzService {
 
 	@Override
 	public double getPrice(Long id) {
-		return clazzRepository.getPrice(id);
+		double price = 0;
+		try{
+			price = clazzRepository.getPrice(id);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return price;
 	}
-
 
 }
