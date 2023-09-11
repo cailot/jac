@@ -70,7 +70,7 @@ public class JaeEnrolmentController {
 	public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
 		List dtos = new ArrayList();
 		// get lastest invoice id
-t 		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
+ 		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
 		if((invoiceId==null) || (invoiceId==0L)) return dtos; // return empty list if no invoice
 		// 1. get materials by invoice id and add to list dtos
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
