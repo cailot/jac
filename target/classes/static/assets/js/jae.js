@@ -63,3 +63,13 @@ function encodeDecodeString(str) {
 	}
   }
   
+  	// date format for datepicker. it changes date format from yyyy-mm-dd to dd/mm/yyyy
+	function formatDate(dateString) {
+		if (dateString.includes('-')) {
+			const parts = dateString.split('-');
+			const formattedDate = parts.reverse().join('/');
+			return formattedDate;
+		} else {
+			return dateString; // Return the original string if it doesn't contain '-'
+		}
+	}
