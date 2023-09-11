@@ -35,15 +35,15 @@ $(document).ready(function () {
     });
     
 	// bring up selected invoice
-	$('#invoiceTable').on('click', 'a', function(e) {
-		e.preventDefault();
-		var invoiceId = $(this).closest('tr').find('td:eq(0)').text();
-		alert(invoiceId);
-	});
+	// $('#invoiceTable').on('click', 'a', function(e) {
+	// 	e.preventDefault();
+	// 	var invoiceId = $(this).closest('tr').find('td:eq(0)').text();
+	// 	alert(invoiceId);
+	// });
 
     // if student id is passed by url, retrieve student info
 	var studentId = getParameterByName('studentId');
-	alert(studentId);
+	//alert(studentId);
 	if(studentId !==null && studentId !==''){
 		$("#studentKeyword").val(studentId);
 		getInvoice(studentId);
@@ -67,7 +67,56 @@ function getInvoice(studentId) {
 		type : 'GET',
 		success : function(data) {
 			$.each(data, function(index, value){
-				console.log(value);
+				//console.log(cleanUpJson(value));
+				// update studentListTable
+
+
+
+				const cleaned = cleanUpJson(value);
+				console.log(cleaned);
+				var row = $("<tr>");
+
+
+				row.append($('<td>').text(value.invoiceId)); // Invoice ID
+
+				if(value.hasOwnProperty('bookId')){ // Book	
+					row.append($('<td><i class="bi bi-book" data-toggle="tooltip" title="Book"></i>')); // Type
+					row.append($('<td>').text(value.id)); // ID
+					row.append($('<td>').text(value.name)); // Name
+					row.append($('<td>').text(parseFloat(value.price).toFixed(2))); // Price
+					row.append($('<td>').text(value.paymentDate)); // Payment Date
+				}else if(value.hasOwnProperty('extra')){ // Enrolment
+					row.append($('<td><i class="bi bi-mortarboard" data-toggle="tooltip" title="Class"></i>')); // Type
+					row.append($('<td>').text(value.id)); // ID
+					row.append($('<td>').text('[' + value.grade.toUpperCase() + '] ' + value.name)); // Name
+					row.append($('<td>').text(parseFloat(value.price).toFixed(2))); // Price
+					row.append($('<td>').text(value.paymentDate)); // Payment Date
+				}else{ // Outstanding
+					row.append($('<td><i class="bi bi-exclamation-circle" data-toggle="tooltip" title="Oustanding"></i>')); // Type
+					row.append($('<td>').text(value.id)); // ID
+					row.append($('<td>').text('Partial Payment')); // Name
+					row.append($('<td>' + parseFloat(value.paid).toFixed(2) + '&nbsp;<i class="bi bi-check2-circle text-danger"data-toggle="tooltip" title="Paid"></i>')); // Paid		
+					row.append($('<td>').text(value.registerDate)); // Payment Date
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				row.append($('<td><i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Note" onclick="alert(' + value.info + ')"></i>')); // Note
+				row.append($('<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="alert(' + value.invoiceId + ')"></i>')); // Receipt
+				
+				
+				
+				
+				
+				
+				$('#studentListTable > tbody').prepend(row);
+
+
 			});	
 		},
 		error : function(xhr, status, error) {
@@ -110,7 +159,7 @@ function searchStudent() {
 			keyword : $("#studentKeyword").val()
 		},
 		success : function(data) {
-			console.log('search - ' + data);
+			// console.log('search - ' + data);
 			if (data == '') {
 				$('#warning-alert .modal-body').html('No record found with <b>' + $("#studentKeyword").val() + '</b>');
 				$('#warning-alert').modal('toggle');
@@ -148,6 +197,7 @@ function searchStudent() {
 function displayStudentInvoice(student) {
 	$("#studentKeyword").val(student.id);
 	console.log(student.firstName + " " + student.lastName);
+	// $("#studentName").text(student.firstName + " " + student.lastName);
 	$('#studentListResult').modal('hide');
 	getInvoice(student.id);
 }
@@ -242,7 +292,9 @@ function clearStudentInfo() {
 						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-2"></div>
+					<div class="offset-md-2">
+						<div id="studentName"></div>
+					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block" onclick="searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
@@ -260,54 +312,25 @@ function clearStudentInfo() {
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>ID</th>
+										<th>Invoice ID</th>
 										<th>Type</th>
+										<th>ID</th>
+										<th>Name</th>
+										<th>Price</th>
 										<th>Payment Date</th>
-										<th>Refund Date</th>
-										<th>Payment$</th>
-										<th>OS</th>
-										<th>Total</th>
-										<th>Discount$</th>
-										<th>Amount</th>
-										<th>Description</th>
-										<th data-orderable="false">Action</th>
+										<th data-orderable="false">Note</th>
+										<th data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
-								<%--
-								<c:choose>
-									<c:when test="${StudentList != null}">
-										<c:forEach items="${StudentList}" var="student">
-											<tr>
-												<td class="small ellipsis" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${fn:toUpperCase(student.grade)}" /></span></td>
-												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${student.registerDate}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${student.startWeek}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${student.endWeek}" /></span></td>	
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
-												<td>
-													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<a href="#passwordStudentModal" class="password" data-toggle="modal"><i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
-				 									<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
-												</td>
-											</tr>
-										</c:forEach>
-									</c:when>
-								</c:choose>
-								--%>
+								
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
 			</div>
-		<!-- </form> -->
+		<!-- </form>  -->
 		</div>
 	</div>
 </div>
