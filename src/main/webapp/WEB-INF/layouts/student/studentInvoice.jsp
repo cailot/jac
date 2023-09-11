@@ -102,7 +102,7 @@ function searchStudent() {
 		return;
 	}
 	// send query to controller
-	$('#invoiceTable tbody').empty();
+	$('#studentListResultTable tbody').empty();
 	$.ajax({
 		url : '${pageContext.request.contextPath}/student/search',
 		type : 'GET',
@@ -119,7 +119,7 @@ function searchStudent() {
 			}
 			$.each(data, function(index, value) {
 				const cleaned = cleanUpJson(value);
-				var row = $("<tr onclick='displayStudentInfo(" + cleaned + ")'>");		
+				var row = $("<tr onclick='displayStudentInvoice(" + cleaned + ")'>");		
 				row.append($('<td>').text(value.id));
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
@@ -143,40 +143,13 @@ function searchStudent() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Student by User's click	
+//		Display Invoice by User's click	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrieveStudentInfo(std) {
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/get/' + std,
-		type : 'GET',
-		success : function(student) {
-			$('#editStudentModal').modal('show');
-			// Update display info
-			// console.log(student);
-			$("#editId").val(student.id);
-			$("#editFirstName").val(student.firstName);
-			$("#editLastName").val(student.lastName);
-			$("#editEmail1").val(student.email1);
-			$("#editEmail2").val(student.email2);
-			$("#editRelation1").val(student.relation1);
-			$("#editRelation2").val(student.relation2);
-			$("#editAddress").val(student.address);
-			$("#editContact1").val(student.contactNo1);
-			$("#editContact2").val(student.contactNo2);
-			$("#editMemo").val(student.memo);
-			$("#editState").val(student.state);
-			$("#editBranch").val(student.branch);
-			$("#editGrade").val(student.grade);
-			$("#editGender").val(student.gender);
-			// Set date value
-			var date = new Date(student.registerDate); // Replace with your date value
-			$("#editRegister").datepicker('setDate', date);
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
+function displayStudentInvoice(student) {
+	$("#studentKeyword").val(student.id);
+	console.log(student.firstName + " " + student.lastName);
+	$('#studentListResult').modal('hide');
+	getInvoice(student.id);
 }
 
 
@@ -185,7 +158,7 @@ function retrieveStudentInfo(std) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentInfo() {
 	$("#studentKeyword").val('');
-	document.getElementById("studentInvoice").reset();
+	// document.getElementById("studentInvoice").reset();
 }
 
 </script>
