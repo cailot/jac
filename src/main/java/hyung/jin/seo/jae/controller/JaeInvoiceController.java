@@ -342,51 +342,33 @@ public class JaeInvoiceController {
 	public String getPayments(@RequestParam("studentKeyword") String studentId, HttpSession session) {
 		// 1. flush session from previous payment
 		clearSession(session);
+		
 		// 2. get student and save it into session
 		long stdId = Long.parseLong(studentId);
 		Student student = studentService.getStudent(stdId);
 		session.setAttribute(JaeConstants.STUDENT_INFO, student);
 
-		// 3. get lastest invoice id by student id
-		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(stdId);
-		if(invoiceId == null) return "studentInvoicePage";
-		
-		// 3. get InvoiceDTO and save it into session
-		InvoiceDTO invoiceDTO = invoiceService.getInvoiceDTOByStudentId(stdId);
-		session.setAttribute(JaeConstants.INVOICE_INFO, invoiceDTO);
+		// 3. get invoice id by student id
+		List<Long> invoiceIds = enrolmentService.findInvoiceIdByStudent(stdId);
+		if(invoiceIds.size() == 0) return "studentInvoicePage";
 
-		// 4. get payment list and save it into session
-		List<PaymentDTO> paymentDTOs = paymentService.getPaymentByInvoice(invoiceId);
+		// 4. get InvoiceDTOs and save it into session
+		List<InvoiceDTO> invoiceDTOs = new ArrayList<InvoiceDTO>();
+		for(Long invoiceId : invoiceIds){
+			Invoice invoice = invoiceService.getInvoice(invoiceId);
+			invoiceDTOs.add(new InvoiceDTO(invoice));
+		}
+		session.setAttribute(JaeConstants.PAYMENT_INVOICES, invoiceDTOs);
+
+		// 5. get payment list and save it into session
+		List<PaymentDTO> paymentDTOs = new ArrayList<PaymentDTO>();
+		for(Long invoiceId : invoiceIds){
+			List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoiceId);
+			paymentDTOs.addAll(payments);
+		}
 		session.setAttribute(JaeConstants.PAYMENT_PAYMENTS, paymentDTOs);
 
-		// // 3. set payment elements related to invoice into session
-		// List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
-		// List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
-		// List<OutstandingDTO> outstandings = outstandingService.getOutstandingtByInvoice(invoice.getId());
-		// session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
-		// session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
-		// session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
-		// 4. set header
-		// MoneyDTO header = new MoneyDTO();
-		// List<String> headerGrade = new ArrayList<String>();
-		// String headerDueDate = JaeUtils.getToday();
-		// for(EnrolmentDTO enrol : enrolments){
-		// 	String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
-		// 	if(!headerGrade.contains(enrol.getGrade())){
-		// 		headerGrade.add(enrol.getGrade().toUpperCase());
-		// 	}
-		// 	try {
-		// 		if(JaeUtils.isEarlier(start, headerDueDate)){
-		// 			headerDueDate = start;
-		// 		}
-		// 	} catch (ParseException e) {
-		// 		return ResponseEntity.ok("Error - Date parsing error");
-		// 	}
-		// }
-		// header.setRegisterDate(headerDueDate);
-		// header.setInfo(String.join(", ", headerGrade));
-		// session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
-		// 4. return ok
+		// 6. return redirect page
 		return "studentInvoicePage";
 	}
 
