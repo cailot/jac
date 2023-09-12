@@ -29,7 +29,7 @@ public interface InvoiceService {
 	InvoiceDTO updateInvoice(Invoice invoice, Long id);
 
 	// find Invoice by Id
-	InvoiceDTO findInvoiceById(Long id);
+	// InvoiceDTO findInvoiceById(Long id);
 
 	// get Invoice by Id
     Invoice getInvoice(Long id);
