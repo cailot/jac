@@ -17,7 +17,7 @@ public interface PaymentService {
     PaymentDTO getPayment(Long id);
 
 	// get Payment by invoice Id
-	Payment getPaymentByInvoiceId(Long invoiceId);
+	List<PaymentDTO> getPaymentByInvoice(Long invoiceId);
 
 	// add Payment
 	Payment addPayment(Payment payment);

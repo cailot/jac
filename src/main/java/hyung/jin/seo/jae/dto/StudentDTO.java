@@ -7,14 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+// import lombok.ToString;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@ToString
+// @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentDTO implements Serializable{

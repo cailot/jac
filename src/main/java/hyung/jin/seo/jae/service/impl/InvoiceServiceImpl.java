@@ -53,12 +53,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	// find Invoice by id
-	@Override
-	public InvoiceDTO findInvoiceById(Long id) {
-		Invoice invoice = invoiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Enrolment not found"));
-		InvoiceDTO dto = new InvoiceDTO(invoice);
-		return dto;
-	}
+	// @Override
+	// public InvoiceDTO findInvoiceById(Long id) {
+	// 	Invoice invoice = invoiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Enrolment not found"));
+	// 	InvoiceDTO dto = new InvoiceDTO(invoice);
+	// 	return dto;
+	// }
 
 	@Override
 	@Transactional

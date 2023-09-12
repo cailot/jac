@@ -17,7 +17,7 @@
   
 <script>
 $(document).ready(function () {
-    $('#invoiceTable').DataTable({
+    $('#studentInvoiceTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -33,22 +33,6 @@ $(document).ready(function () {
         ],
 		//pageLength: 20
     });
-    
-	// bring up selected invoice
-	// $('#invoiceTable').on('click', 'a', function(e) {
-	// 	e.preventDefault();
-	// 	var invoiceId = $(this).closest('tr').find('td:eq(0)').text();
-	// 	alert(invoiceId);
-	// });
-
-    // if student id is passed by url, retrieve student info
-	var studentId = getParameterByName('studentId');
-	//alert(studentId);
-	if(studentId !==null && studentId !==''){
-		$("#studentKeyword").val(studentId);
-		getInvoice(studentId);
-	}
-
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +52,7 @@ function getInvoice(studentId) {
 		success : function(data) {
 			$.each(data, function(index, value){
 				//console.log(cleanUpJson(value));
-				// update studentListTable
+				// update studentInvoiceTable
 
 
 
@@ -114,7 +98,7 @@ function getInvoice(studentId) {
 				
 				
 				
-				$('#studentListTable > tbody').prepend(row);
+				$('#studentInvoiceTable > tbody').prepend(row);
 
 
 			});	
@@ -123,20 +107,6 @@ function getInvoice(studentId) {
 			console.log('Error : ' + error);
 		}
 	});
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		get Parameter from URL
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Function to get URL parameters by name
-function getParameterByName(name) {
-    var url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,13 +178,14 @@ function displayStudentInvoice(student) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentInfo() {
 	$("#studentKeyword").val('');
-	// document.getElementById("studentInvoice").reset();
+	document.getElementById("studentInvoice").reset();
+	// document.getElementById("studentInfo").innerHTML = '';
 }
 
 </script>
 
 <style>
-	#studentListTable th, tr {
+	#studentInvoiceTable th, tr {
 		padding: 15px;
 	}
 	#studentList .form-row {
@@ -241,8 +212,8 @@ function clearStudentInfo() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<!-- <form id="studentInvoice"> -->
-			<div id="studentInvoice">
+		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history/">
+			<!-- <div id="studentInvoice"> -->
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -297,7 +268,7 @@ function clearStudentInfo() {
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block" onclick="searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Clear</label> 
@@ -305,13 +276,20 @@ function clearStudentInfo() {
 					</div>
 				</div>
 			</div>
+			<!-- Student Info-->
+			<div id="studentInfo">
+				<c:if test="${not empty sessionScope.studentInfo}">
+					<c:set var="student" value="${sessionScope.studentInfo}" />
+					<c:out value="${student.id} ${student.firstName} ${student.lastName} ${student.state} ${student.branch} ${student.gender} ${student.grade}" />
+				</c:if>
+			</div>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
+							<table id="studentInvoiceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
-									<tr>
+									<!-- <tr>
 										<th>Invoice ID</th>
 										<th>Type</th>
 										<th>ID</th>
@@ -320,17 +298,39 @@ function clearStudentInfo() {
 										<th>Payment Date</th>
 										<th data-orderable="false">Note</th>
 										<th data-orderable="false">Receipt</th>
+									</tr> -->
+									<tr>
+										<th>Invoice ID</th>
+										<th>ID</th>
+										<th>Amount</th>
+										<th>Method</th>
+										<th>Payment Date</th>
+										<th data-orderable="false">Note</th>
+										<th data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
-								<tbody id="list-student-body">
-								
+								<tbody>
+
+									<c:if test="${not empty sessionScope.payments}">
+										<c:forEach var="payment" items="${payments}">
+											<tr>
+												<td>${payment.invoiceId}</td>
+												<td>${payment.id}</td>
+												<td>${payment.amount}</td>
+												<td>${payment.method}</td>
+												<td>${payment.registerDate}</td>
+												<td><i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Note" onclick="alert('${payment.info}')"></i></td>
+												<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="alert('${payment.invoiceId}')"></i></td>
+											</tr>
+										</c:forEach>
+									</c:if>
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
-			</div>
-		<!-- </form>  -->
+			<!-- </div> -->
+		</form> 
 		</div>
 	</div>
 </div>

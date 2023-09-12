@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
@@ -29,12 +31,14 @@ import hyung.jin.seo.jae.model.Invoice;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Outstanding;
 import hyung.jin.seo.jae.model.Payment;
+import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
 import hyung.jin.seo.jae.service.PaymentService;
+import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
@@ -59,6 +63,9 @@ public class JaeInvoiceController {
 
 	@Autowired
 	private CycleService cycleService;
+
+	@Autowired
+	private StudentService studentService;
 	
 	// count records number in database
 	@GetMapping("/count")
@@ -326,4 +333,61 @@ public class JaeInvoiceController {
 			session.removeAttribute(name);
 		}
 	}
+
+
+
+
+	// payment history
+	@GetMapping("/history")
+	public String getPayments(@RequestParam("studentKeyword") String studentId, HttpSession session) {
+		// 1. flush session from previous payment
+		clearSession(session);
+		// 2. get student and save it into session
+		long stdId = Long.parseLong(studentId);
+		Student student = studentService.getStudent(stdId);
+		session.setAttribute(JaeConstants.STUDENT_INFO, student);
+
+		// 3. get lastest invoice id by student id
+		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(stdId);
+		if(invoiceId == null) return "studentInvoicePage";
+		
+		// 3. get InvoiceDTO and save it into session
+		InvoiceDTO invoiceDTO = invoiceService.getInvoiceDTOByStudentId(stdId);
+		session.setAttribute(JaeConstants.INVOICE_INFO, invoiceDTO);
+
+		// 4. get payment list and save it into session
+		List<PaymentDTO> paymentDTOs = paymentService.getPaymentByInvoice(invoiceId);
+		session.setAttribute(JaeConstants.PAYMENT_PAYMENTS, paymentDTOs);
+
+		// // 3. set payment elements related to invoice into session
+		// List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
+		// List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
+		// List<OutstandingDTO> outstandings = outstandingService.getOutstandingtByInvoice(invoice.getId());
+		// session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
+		// session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+		// session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
+		// 4. set header
+		// MoneyDTO header = new MoneyDTO();
+		// List<String> headerGrade = new ArrayList<String>();
+		// String headerDueDate = JaeUtils.getToday();
+		// for(EnrolmentDTO enrol : enrolments){
+		// 	String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
+		// 	if(!headerGrade.contains(enrol.getGrade())){
+		// 		headerGrade.add(enrol.getGrade().toUpperCase());
+		// 	}
+		// 	try {
+		// 		if(JaeUtils.isEarlier(start, headerDueDate)){
+		// 			headerDueDate = start;
+		// 		}
+		// 	} catch (ParseException e) {
+		// 		return ResponseEntity.ok("Error - Date parsing error");
+		// 	}
+		// }
+		// header.setRegisterDate(headerDueDate);
+		// header.setInfo(String.join(", ", headerGrade));
+		// session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
+		// 4. return ok
+		return "studentInvoicePage";
+	}
+
 }

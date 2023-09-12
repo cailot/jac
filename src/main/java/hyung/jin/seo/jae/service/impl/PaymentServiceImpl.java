@@ -51,16 +51,18 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public Payment getPaymentByInvoiceId(Long invoiceId) {
-		Payment payment = null;
+	public List<PaymentDTO> getPaymentByInvoice(Long invoiceId) {
+		List<PaymentDTO> dtos = new ArrayList<>();
 		try{
-			payment = paymentRepository.findByInvoiceId(invoiceId);
+			List<Object[]> objs = paymentRepository.findByInvoiceId(invoiceId);
+			for(Object[] obj : objs){
+				PaymentDTO dto = new PaymentDTO(obj);
+				dtos.add(dto);
+			}
 		}catch(Exception e){
 			System.out.println("No payment found");
 		}
-		return payment;
-		// return paymentRepository.findByInvoiceId(invoiceId);
-
+		return dtos;
 	}
 
 	@Override

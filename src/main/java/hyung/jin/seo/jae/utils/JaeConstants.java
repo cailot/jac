@@ -127,8 +127,12 @@ public interface JaeConstants {
 
 	String PAYMENT_MATERIALS = "materials";
 
+	String PAYMENT_PAYMENTS = "payments";
+
 	String PAYMENT_HEADER = "receiptHeader";
 
 	String INVOICE_INFO = "invoiceInfo";
+
+	String STUDENT_INFO = "studentInfo";
 
 }

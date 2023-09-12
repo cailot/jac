@@ -306,6 +306,15 @@ function displayInfoInNewTab(paymentType){
   win.focus();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Payment History in another tab
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function openPaymentHistory(){
+  var studentId = $('#formId').val();
+  var url = '/invoice/history?studentKeyword=' + studentId;  
+  var win = window.open(url, '_blank');
+  win.focus();
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Make Payment
@@ -585,9 +594,8 @@ function addInformation(){
 					<button type="button" class="btn btn-block btn-primary btn-sm"
 						onclick="inactivateStudent()">Email</button>
 				</div>
-
 				<div class="col md-auto">
-					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="displayInfoInNewTab('studentInvoice')">Record</button>
+					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
 				</div>
 			</div>
 		</div>
@@ -621,6 +629,15 @@ function addInformation(){
 		</div>
 	</form>
 </div>
+
+
+
+
+
+
+
+
+
 
 <!-- Payment Dialogue -->
 <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
