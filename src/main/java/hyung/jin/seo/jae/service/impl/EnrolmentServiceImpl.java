@@ -241,4 +241,15 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		return dtos;
 		// return enrolmentRepository.findEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
 	}
+
+	@Override
+	public List<Long> findInvoiceIdByStudent(Long studentId) {
+		List<Long> invoiceIds = new ArrayList<>();
+		try{
+			invoiceIds = enrolmentRepository.findInvoiceIdByStudentId(studentId);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return invoiceIds;
+	}
 }

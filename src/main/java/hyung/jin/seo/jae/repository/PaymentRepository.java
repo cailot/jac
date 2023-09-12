@@ -9,6 +9,6 @@ import hyung.jin.seo.jae.model.Payment;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long>{  
 	
-	@Query(value = "SELECT p.id, p.amount, p.method, p.info, p.registerDate, p.invoiceId FROM Payment p WHERE p.invoiceId = ?1", nativeQuery = true)
+	@Query(value = "SELECT p.id, p.amount, p.method, p.info, p.registerDate, p.invoiceId FROM Payment p WHERE p.invoiceId = ?1 ORDER BY p.id DESC", nativeQuery = true)
 	List<Object[]> findByInvoiceId(Long invoiceId);
 }
