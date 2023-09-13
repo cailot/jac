@@ -31,6 +31,14 @@ $(document).ready(function () {
  	        },
  	        'print'
         ],
+		columnDefs : [
+			{
+				targets: 0,
+				visible: false,
+				orderable: true
+			}
+		],	
+		order : [[0, 'desc'], [1, 'desc']], // order by invoiceId desc, id desc
 		//pageLength: 20
     });
 });
@@ -39,81 +47,24 @@ $(document).ready(function () {
 //		Bring all Invoice by Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function getInvoice(studentId) {
+	$("#studentKeyword").val(studentId);
+	$('#studentListResult').modal('hide');
 	//warn if keyword is empty
 	if (studentId == '') {
 		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
 		$('#warning-alert').modal('toggle');
 		return;
 	}
-	// Send AJAX to server
-	$.ajax({
-		url : '${pageContext.request.contextPath}/enrolment/search/student/' + studentId,
-		type : 'GET',
-		success : function(data) {
-			$.each(data, function(index, value){
-				//console.log(cleanUpJson(value));
-				// update studentInvoiceTable
-
-
-
-				const cleaned = cleanUpJson(value);
-				console.log(cleaned);
-				var row = $("<tr>");
-
-
-				row.append($('<td>').text(value.invoiceId)); // Invoice ID
-
-				if(value.hasOwnProperty('bookId')){ // Book	
-					row.append($('<td><i class="bi bi-book" data-toggle="tooltip" title="Book"></i>')); // Type
-					row.append($('<td>').text(value.id)); // ID
-					row.append($('<td>').text(value.name)); // Name
-					row.append($('<td>').text(parseFloat(value.price).toFixed(2))); // Price
-					row.append($('<td>').text(value.paymentDate)); // Payment Date
-				}else if(value.hasOwnProperty('extra')){ // Enrolment
-					row.append($('<td><i class="bi bi-mortarboard" data-toggle="tooltip" title="Class"></i>')); // Type
-					row.append($('<td>').text(value.id)); // ID
-					row.append($('<td>').text('[' + value.grade.toUpperCase() + '] ' + value.name)); // Name
-					row.append($('<td>').text(parseFloat(value.price).toFixed(2))); // Price
-					row.append($('<td>').text(value.paymentDate)); // Payment Date
-				}else{ // Outstanding
-					row.append($('<td><i class="bi bi-exclamation-circle" data-toggle="tooltip" title="Oustanding"></i>')); // Type
-					row.append($('<td>').text(value.id)); // ID
-					row.append($('<td>').text('Partial Payment')); // Name
-					row.append($('<td>' + parseFloat(value.paid).toFixed(2) + '&nbsp;<i class="bi bi-check2-circle text-danger"data-toggle="tooltip" title="Paid"></i>')); // Paid		
-					row.append($('<td>').text(value.registerDate)); // Payment Date
-				}
-				
-				
-				
-				
-				
-				
-				
-				
-				row.append($('<td><i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Note" onclick="alert(' + value.info + ')"></i>')); // Note
-				row.append($('<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="alert(' + value.invoiceId + ')"></i>')); // Receipt
-				
-				
-				
-				
-				
-				
-				$('#studentInvoiceTable > tbody').prepend(row);
-
-
-			});	
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
+	var form = document.getElementById("studentInvoice");
+	form.submit();
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			Search Student with Keyword	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function searchStudent() {
-	//debugger;
+	// debugger;
 	//warn if keyword is empty
 	if ($("#studentKeyword").val() == '') {
 		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
@@ -138,7 +89,7 @@ function searchStudent() {
 			}
 			$.each(data, function(index, value) {
 				const cleaned = cleanUpJson(value);
-				var row = $("<tr onclick='displayStudentInvoice(" + cleaned + ")'>");		
+				var row = $("<tr onclick='getInvoice(" + value.id + ")'>");		
 				row.append($('<td>').text(value.id));
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
@@ -162,24 +113,14 @@ function searchStudent() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Invoice by User's click	
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayStudentInvoice(student) {
-	$("#studentKeyword").val(student.id);
-	console.log(student.firstName + " " + student.lastName);
-	// $("#studentName").text(student.firstName + " " + student.lastName);
-	$('#studentListResult').modal('hide');
-	getInvoice(student.id);
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear Student Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentInfo() {
 	$("#studentKeyword").val('');
 	document.getElementById("studentInvoice").reset();
-	// document.getElementById("studentInfo").innerHTML = '';
+	document.getElementById("studentInfo").innerHTML = '';
+	//studentInvoiceTable all rows remove
+	$('#studentInvoiceTable').clear();
 }
 
 </script>
@@ -212,7 +153,7 @@ function clearStudentInfo() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history/">
+		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history">
 			<!-- <div id="studentInvoice"> -->
 			<div class="form-group">
 				<div class="form-row">
@@ -268,7 +209,7 @@ function clearStudentInfo() {
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Clear</label> 
