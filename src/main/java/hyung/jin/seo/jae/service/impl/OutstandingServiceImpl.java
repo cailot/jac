@@ -41,7 +41,6 @@ public class OutstandingServiceImpl implements OutstandingService {
 		}catch(Exception e){
 			System.out.println("No outstanding found");
 		}
-		// outstandingRepository.findByInvoiceId(invoiceId);
 		return dtos;
 	}
 
