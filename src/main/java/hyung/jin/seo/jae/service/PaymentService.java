@@ -27,4 +27,7 @@ public interface PaymentService {
 
 	// find Payment by Id
 	Payment findPaymentById(Long id);
+
+	// get Invoice Id by Payment
+	Long getInvoiceIdByPayment(Long id);
 }

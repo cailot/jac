@@ -104,6 +104,78 @@ public class JaeInvoiceController {
 	}
 
 	// make payment and return updated invoice
+	@GetMapping("/receiptInfo")
+	public String receiptHistory(@RequestParam("studentId") String studentId, @RequestParam("invoiceId") String invoiceId, @RequestParam("paymentId") String paymentId, HttpSession session) {
+		// 1. flush session from previous payment
+		clearSession(session);
+		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
+		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
+		List<OutstandingDTO> outstandings = new ArrayList<OutstandingDTO>();
+		
+		// get invoice id by payment id
+		// Long invoId = paymentService.getInvoiceIdByPayment(Long.parseLong(paymentId));
+
+		// 2. get Student
+		// Student student = studentService.getStudent(Long.parseLong(studentId));
+		// session.setAttribute(JaeConstants.STUDENT_INFO, student);
+		
+		// 3. get Payment
+		Payment payment = paymentService.findPaymentById(Long.parseLong(paymentId));
+		double paidAmount = payment.getAmount();
+		String paidDate = payment.getRegisterDate().toString();
+
+		// 6. Create MoneyDTO for header
+		MoneyDTO header = new MoneyDTO();
+		List<String> headerGrade = new ArrayList<String>();
+		String headerDueDate = JaeUtils.getToday();
+		// 8-1. bring to EnrolmentDTO
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(Long.parseLong(invoiceId));
+		for(EnrolmentDTO enrol : enrols){
+			// 9-1. set period of enrolment to extra field
+			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
+			String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
+			enrol.setExtra(start + " ~ " + end);
+
+			// 10-1. set headerGrade
+			if(!headerGrade.contains(enrol.getGrade())){
+				headerGrade.add(enrol.getGrade().toUpperCase());
+			}
+			// 11-1. set earliest start date to headerDueDate
+			try {
+				if(JaeUtils.isEarlier(start, headerDueDate)){
+					headerDueDate = start;
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+			// 12-1. add to dtos
+			enrolments.add(enrol);
+		}	
+		// 13-1. set EnrolmentDTO objects into session for payment receipt
+		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
+		
+		// 17-1. Header Info - Due Date & Grade
+		header.setRegisterDate(headerDueDate);
+		header.setInfo(String.join(", ", headerGrade));
+		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
+		
+		// 14-1. bring to MaterialDTO - bring materials by invoice id from Book_Invoice table
+		materials = materialService.findMaterialByInvoice(Long.parseLong(invoiceId));	
+		// 16-1. set MaterialDTO objects into session for payment receipt
+		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+		
+		
+		// outstandings
+		outstandings = outstandingService.getOutstandingtByInvoice(Long.parseLong(invoiceId));
+		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
+
+		// display receipt page
+		return "receiptPage";
+
+}
+
+	// make payment and return updated invoice
 	@PostMapping("/payment/{studentId}")
 	@ResponseBody
 	public List makePayment(@PathVariable("studentId") Long studentId, @RequestBody PaymentDTO formData, HttpSession session) {
@@ -112,6 +184,7 @@ public class JaeInvoiceController {
 		List dtos = new ArrayList();
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
+		// get lastest invoice id by student id
 		Long invoId = invoiceService.getInvoiceIdByStudentId(studentId);
 		double paidAmount = formData.getAmount();
 		// 2. get Invoice
@@ -189,6 +262,10 @@ public class JaeInvoiceController {
 			outstanding.setPaid(paidAmount);
 			outstanding.setRemaining(invoice.getAmount()-invoice.getPaidAmount());
 			outstanding.setAmount(invoice.getAmount());
+
+			// set paymentId to outstanding
+
+
 			// 9-2. add Outstanding to Invoice
 			invoice.addOutstanding(outstanding);
 			invoiceService.updateInvoice(invoice, invoId);
@@ -333,9 +410,6 @@ public class JaeInvoiceController {
 			session.removeAttribute(name);
 		}
 	}
-
-
-
 
 	// payment history
 	@GetMapping("/history")

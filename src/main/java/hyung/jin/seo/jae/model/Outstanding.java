@@ -47,6 +47,9 @@ public class Outstanding {
     @Column(length = 100)
     private String info;
 
+    @Column
+    private Long paymentId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoiceId")
     private Invoice invoice;

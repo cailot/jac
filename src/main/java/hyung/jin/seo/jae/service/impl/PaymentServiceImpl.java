@@ -108,4 +108,15 @@ public class PaymentServiceImpl implements PaymentService {
 
 	}
 
+	@Override
+	public Long getInvoiceIdByPayment(Long id) {
+		Long invoiceId = 0L;
+		try{
+			invoiceId = paymentRepository.findInvoiceIdById(id);
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return invoiceId;
+	}
+
 }

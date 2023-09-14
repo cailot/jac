@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.repository.Query;
-
 import hyung.jin.seo.jae.model.Outstanding;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +22,8 @@ public class OutstandingDTO extends MoneyDTO{
 
 	private String invoiceId;
 
+	private String paymentId;
+
 	public OutstandingDTO(Outstanding stand){
 		this.id = String.valueOf(stand.getId());
 		this.registerDate = stand.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -33,12 +33,13 @@ public class OutstandingDTO extends MoneyDTO{
 		this.info = stand.getInfo();
 	}
 
-	public OutstandingDTO(long id, double paid, double remaining, double amount, LocalDate registerDate, long invoiceId, String info){
+	public OutstandingDTO(long id, double paid, double remaining, double amount, LocalDate registerDate, long paymentId, long invoiceId, String info){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.paid = paid;
 		this.remaining = remaining;
 		this.amount = amount;
+		this.paymentId = String.valueOf(paymentId);
 		this.invoiceId = String.valueOf(invoiceId);
 		this.info = info;
 	}

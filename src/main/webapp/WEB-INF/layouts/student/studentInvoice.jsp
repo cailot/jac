@@ -43,23 +43,6 @@ $(document).ready(function () {
     });
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Bring all Invoice by Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function getInvoice(studentId) {
-	$("#studentKeyword").val(studentId);
-	$('#studentListResult').modal('hide');
-	//warn if keyword is empty
-	if (studentId == '') {
-		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
-	var form = document.getElementById("studentInvoice");
-	form.submit();
-}
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			Search Student with Keyword	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +96,32 @@ function searchStudent() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Bring all Invoice by Student
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function getInvoice(studentId) {
+	$("#studentKeyword").val(studentId);
+	$('#studentListResult').modal('hide');
+	//warn if keyword is empty
+	if (studentId == '') {
+		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	var form = document.getElementById("studentInvoice");
+	form.submit();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Payment History in another tab
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
+	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear Student Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentInfo() {
@@ -154,7 +163,6 @@ function clearStudentInfo() {
 <div class="row">
 	<div class="modal-body">
 		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history">
-			<!-- <div id="studentInvoice"> -->
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -218,9 +226,15 @@ function clearStudentInfo() {
 				</div>
 			</div>
 			<!-- Student Info-->
+			<c:set var="studentId" value="" />
+			<c:set var="studentFirstName" value="" />
+			<c:set var="studentLastName" value="" />
 			<div id="studentInfo">
 				<c:if test="${not empty sessionScope.studentInfo}">
 					<c:set var="student" value="${sessionScope.studentInfo}" />
+					<c:set var="studentId" value="${student.id}" />
+					<c:set var="studentFirstName" value="${student.firstName}" />
+					<c:set var="studentLastName" value="${student.lastName}" />
 					<c:out value="${student.id} ${student.firstName} ${student.lastName} ${student.state} ${student.branch} ${student.gender} ${student.grade}" />
 				</c:if>
 			</div>
@@ -230,28 +244,16 @@ function clearStudentInfo() {
 						<div class="table-wrap">
 							<table id="studentInvoiceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
-									<!-- <tr>
-										<th>Invoice ID</th>
-										<th>Type</th>
-										<th>ID</th>
-										<th>Name</th>
-										<th>Price</th>
-										<th>Payment Date</th>
-										<th data-orderable="false">Note</th>
-										<th data-orderable="false">Receipt</th>
-									</tr> -->
 									<tr>
 										<th>Invoice ID</th>
 										<th>ID</th>
 										<th>Amount</th>
 										<th>Method</th>
 										<th>Payment Date</th>
-										<th data-orderable="false">Note</th>
 										<th data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
 								<tbody>
-
 									<c:if test="${not empty sessionScope.payments}">
 										<c:forEach var="payment" items="${payments}">
 											<tr>
@@ -260,8 +262,7 @@ function clearStudentInfo() {
 												<td>${payment.amount}</td>
 												<td>${payment.method}</td>
 												<td>${payment.registerDate}</td>
-												<td><i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Note" onclick="alert('${payment.info}')"></i></td>
-												<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="alert('${payment.invoiceId}')"></i></td>
+												<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory(${studentId}, '${studentFirstName}', '${studentLastName}', ${payment.invoiceId}, ${payment.id})"></i></td> 
 											</tr>
 										</c:forEach>
 									</c:if>
@@ -270,8 +271,7 @@ function clearStudentInfo() {
 						</div>
 					</div>
 				</div>
-			<!-- </div> -->
-		</form> 
+			</form> 
 		</div>
 	</div>
 </div>
