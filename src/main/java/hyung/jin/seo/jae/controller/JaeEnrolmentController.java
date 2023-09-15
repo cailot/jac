@@ -68,10 +68,12 @@ public class JaeEnrolmentController {
 	@GetMapping("/search/student/{id}")
 	@ResponseBody
 	public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
-		List dtos = new ArrayList();
+		List dtos = new ArrayList(); 
 		// get lastest invoice id
  		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
-		if((invoiceId==null) || (invoiceId==0L)) return dtos; // return empty list if no invoice
+
+		boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
+		if(isInvoiceAbsent) return dtos; // return empty list if no invoice
 		// 1. get materials by invoice id and add to list dtos
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
 		for(MaterialDTO material : materials){
