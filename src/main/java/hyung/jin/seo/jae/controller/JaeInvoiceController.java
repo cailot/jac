@@ -110,20 +110,8 @@ public class JaeInvoiceController {
 		clearSession(session);
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
-		List<OutstandingDTO> outstandings = new ArrayList<OutstandingDTO>();
+		List<OutstandingDTO> filteredOutstandings = new ArrayList<OutstandingDTO>();
 		
-		// get invoice id by payment id
-		// Long invoId = paymentService.getInvoiceIdByPayment(Long.parseLong(paymentId));
-
-		// 2. get Student
-		// Student student = studentService.getStudent(Long.parseLong(studentId));
-		// session.setAttribute(JaeConstants.STUDENT_INFO, student);
-		
-		// 3. get Payment
-		Payment payment = paymentService.findPaymentById(Long.parseLong(paymentId));
-		double paidAmount = payment.getAmount();
-		String paidDate = payment.getRegisterDate().toString();
-
 		// 6. Create MoneyDTO for header
 		MoneyDTO header = new MoneyDTO();
 		List<String> headerGrade = new ArrayList<String>();
@@ -167,8 +155,18 @@ public class JaeInvoiceController {
 		
 		
 		// outstandings
-		outstandings = outstandingService.getOutstandingtByInvoice(Long.parseLong(invoiceId));
-		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
+		long payId = paymentId != null ? Long.parseLong(paymentId) : 0;
+		List<OutstandingDTO> outstandings = outstandingService.getOutstandingtByInvoice(Long.parseLong(invoiceId));
+		// add only previous outstandings before or equal to payment id
+		for(OutstandingDTO outstanding : outstandings){
+			long outPayId = outstanding.getPaymentId() != null ? Long.parseLong(outstanding.getPaymentId()) : 0;
+			boolean isOutstandingHappen = payId >= outPayId;
+			if(isOutstandingHappen){
+				// System.out.println("outstanding paid " + outPayId + " payment id " + payId);
+				filteredOutstandings.add(outstanding);
+			}
+		}
+		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, filteredOutstandings);
 
 		// display receipt page
 		return "receiptPage";
@@ -209,8 +207,7 @@ public class JaeInvoiceController {
 			// 8-1. bring to EnrolmentDTO
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
-				enrol.setInvoiceId(String.valueOf(invoId));
-				
+				enrol.setInvoiceId(String.valueOf(invoId));				
 				// 9-1. set period of enrolment to extra field
 				String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
 				String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
@@ -228,7 +225,6 @@ public class JaeInvoiceController {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-
 				// 12-1. add to dtos
 				enrolments.add(enrol);
 			}	
@@ -262,10 +258,8 @@ public class JaeInvoiceController {
 			outstanding.setPaid(paidAmount);
 			outstanding.setRemaining(invoice.getAmount()-invoice.getPaidAmount());
 			outstanding.setAmount(invoice.getAmount());
-
 			// set paymentId to outstanding
-
-
+			outstanding.setPaymentId(paid.getId());
 			// 9-2. add Outstanding to Invoice
 			invoice.addOutstanding(outstanding);
 			invoiceService.updateInvoice(invoice, invoId);
@@ -277,7 +271,6 @@ public class JaeInvoiceController {
 				String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
 				String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
 				enrol.setExtra(start + " ~ " + end);
-
 				// 12-2. set headerGrade
 				if(!headerGrade.contains(enrol.getGrade())){
 					headerGrade.add(enrol.getGrade().toUpperCase());
