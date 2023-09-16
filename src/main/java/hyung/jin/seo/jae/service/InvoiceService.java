@@ -34,7 +34,10 @@ public interface InvoiceService {
 	// get Invoice by Id
     Invoice getInvoice(Long id);
 
-	// get Invoice owning amount by Id
-	double getInvoiceAmount(Long id);
+	// get Invoice owing amount by Id
+	double getInvoiceOwingAmount(Long id);
+
+	// get Invoice total amount by Id
+	double getInvoiceTotalAmount(Long id);
 
 }

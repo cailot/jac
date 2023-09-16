@@ -24,8 +24,11 @@ public interface EnrolmentService {
 	// list enrolments by clazz Id and invoice Id
 	List<EnrolmentDTO> findEnrolmentByClazzAndInvoice(Long clazzId, Long invoiceId);
 
-	// list enrolments by invoice Id and student Id
+	// list enrolments by active invoice Id and student Id
 	List<EnrolmentDTO> findEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId);
+
+	// list enrolments by invoice Id and student Id
+	List<EnrolmentDTO> findAllEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId);
 
 	// return total count
 	long checkCount();

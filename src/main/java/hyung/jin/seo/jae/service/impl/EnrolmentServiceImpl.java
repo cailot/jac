@@ -239,8 +239,19 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 			System.out.println("No enrolment found");
 		}
 		return dtos;
-		// return enrolmentRepository.findEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
 	}
+
+	@Override
+	public List<EnrolmentDTO> findAllEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId) {
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = enrolmentRepository.findAllEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
+		}catch(Exception e){
+			System.out.println("No enrolment found");
+		}
+		return dtos;
+	}
+
 
 	@Override
 	public List<Long> findInvoiceIdByStudent(Long studentId) {

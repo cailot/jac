@@ -36,6 +36,11 @@ $(document).ready(function () {
 				targets: 0,
 				visible: false,
 				orderable: true
+			},
+			{
+				targets: 1,
+				visible: false,
+				orderable: true
 			}
 		],	
 		order : [[0, 'desc'], [1, 'desc']], // order by invoiceId desc, id desc
@@ -229,7 +234,7 @@ function clearStudentInfo() {
 			<c:set var="studentId" value="" />
 			<c:set var="studentFirstName" value="" />
 			<c:set var="studentLastName" value="" />
-			<div id="studentInfo">
+			<div id="studentInfo" class="alert alert-info">
 				<c:if test="${not empty sessionScope.studentInfo}">
 					<c:set var="student" value="${sessionScope.studentInfo}" />
 					<c:set var="studentId" value="${student.id}" />
@@ -247,9 +252,12 @@ function clearStudentInfo() {
 									<tr>
 										<th>Invoice ID</th>
 										<th>ID</th>
-										<th>Amount</th>
-										<th>Method</th>
 										<th>Payment Date</th>
+										<th>Method</th>
+										<th>Paid</th>
+										<th>Outstanding</th>
+										<th>Total</th>
+										<th>Course</th>
 										<th data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
@@ -257,11 +265,30 @@ function clearStudentInfo() {
 									<c:if test="${not empty sessionScope.payments}">
 										<c:forEach var="payment" items="${payments}">
 											<tr>
-												<td>${payment.invoiceId}</td>
-												<td>${payment.id}</td>
-												<td>${payment.amount}</td>
-												<td>${payment.method}</td>
-												<td>${payment.registerDate}</td>
+												<td>${payment.invoiceId}</td> <!-- invisible -->
+												<td>${payment.id}</td> <!-- invisible -->
+												<td> <!-- payment date with dd/MM/yyyy format -->
+													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
+													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
+												</td>												
+												<td> <!-- payment method with first letter capitalized -->
+													${fn:toUpperCase(fn:substring(payment.method, 0, 1))}${fn:substring(payment.method, 1, fn:length(payment.method))}
+												</td>
+												<td> <!-- payment amount with 2 decimal places -->
+													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
+												</td>
+												<td> <!-- payment outstanding with 2 decimal places -->
+													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
+												</td>
+												<td> <!-- payment total with 2 decimal places -->
+													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
+												</td>
+												<!-- <td>${payment.enrols}</td> -->
+												<td>
+													<c:forEach var="enrol" items="${payment.enrols}">
+                    									<i class="bi bi-mortarboard" title="class"></i> [${enrol.grade.toUpperCase()}] ${enrol.name} (${enrol.extra})<br/> <!-- Display a property of each object -->
+                									</c:forEach>
+												</td>												
 												<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory(${studentId}, '${studentFirstName}', '${studentLastName}', ${payment.invoiceId}, ${payment.id})"></i></td> 
 											</tr>
 										</c:forEach>
