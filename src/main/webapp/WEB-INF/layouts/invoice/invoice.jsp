@@ -117,7 +117,7 @@
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
                                 <c:out value="${weeks}" />
                             </td>
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${enrolment.price}" /></td>
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${enrolment.price}" pattern="#0.00" /></td>
                             <!-- discount -->
                             <c:set var="discount" value="${enrolment.discount}" />
                             <c:if test="${fn:contains(discount, '%')}">
@@ -125,7 +125,7 @@
                             </c:if>                          
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${discount}" /></td>                    
                             <c:set var="totalPrice" value="${((weeks - enrolment.credit) * (enrolment.price)) - discount}" />
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${totalPrice}" /></td>
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${totalPrice}" pattern="#0.00" /></td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
                             <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
@@ -148,7 +148,7 @@
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><c:out value="${book.price}" /></td>
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${book.price}" pattern="#0.00" /></td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + book.price}" />
                             <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
@@ -186,10 +186,10 @@
                                 <!-- <c:out value="${outstanding.paid}" /> -->
                                 <c:choose>
                                     <c:when test="${outstanding.paid >= 0}">
-                                        <c:out value="-${outstanding.paid}" />
+                                        <fmt:formatNumber value="${- outstanding.paid}" pattern="#0.00" />
                                     </c:when>
                                     <c:otherwise>
-                                        <c:out value="${outstanding.paid}" />
+                                        <fmt:formatNumber value="${outstanding.paid}" pattern="#0.00" />
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -218,7 +218,7 @@
             <tr>
                 <td style="height: 32px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-weight: bold; font-family: 'arial', sans-serif; border: 0;font-weight: 600 !important;">FINAL TOTAL</td>
                 <td style="height: 32px; width: 100px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: center; color: #bdbdbd; font-style: normal; font-family: 'arial', sans-serif; border: 0;">$</td>
-                <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;"><strong><c:out value="${finalTotal}" /></strong></td>
+                <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;"><strong><fmt:formatNumber value="${finalTotal}" pattern="#0.00" /></strong></td>
             </tr>
             <!--<tr>
                 <td style="height: 32px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-weight: bold; font-family: 'arial', sans-serif; border: 0;font-style: italic;">D.S Count</td>
@@ -231,10 +231,10 @@
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <c:choose>
                         <c:when test="${paidTotal >= 0}">
-                            <c:out value="-${paidTotal}" />
+                            <fmt:formatNumber value="${- paidTotal}" pattern="#0.00" />
                         </c:when>
                         <c:otherwise>
-                            <c:out value="${paidTotal}" />
+                            <fmt:formatNumber value="${paidTotal}" pattern="#0.00" />
                         </c:otherwise>
                     </c:choose>
                 </td>
