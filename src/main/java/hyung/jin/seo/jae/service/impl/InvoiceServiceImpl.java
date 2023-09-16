@@ -123,7 +123,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public double getInvoiceAmount(Long id) {
+	public double getInvoiceOwingAmount(Long id) {
 		double amount = 0;
 		try{
 			amount = invoiceRepository.getInvoiceOwingAmount(id);
@@ -131,8 +131,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 			System.out.println("No invoice found");
 		}
 		return amount;
-		// return invoiceRepository.getInvoiceOwningAmount(id);
 	}
 
-
+	@Override
+	public double getInvoiceTotalAmount(Long id) {
+		double amount = 0;
+		try{
+			amount = invoiceRepository.getInvoiceTotalAmount(id);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return amount;
+	}
 }

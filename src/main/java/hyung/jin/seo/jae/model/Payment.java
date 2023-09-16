@@ -37,6 +37,9 @@ public class Payment {
 
     @Column(columnDefinition = "DECIMAL(10,2)")
     private double amount;
+
+    @Column(columnDefinition = "DECIMAL(10,2)")
+    private double total;
     
     @CreationTimestamp
     private LocalDate registerDate;
