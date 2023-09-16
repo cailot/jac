@@ -143,7 +143,7 @@ function clearStudentInfo() {
 	#studentInvoiceTable th, tr {
 		padding: 15px;
 	}
-	#studentList .form-row {
+	#studentInvoice .form-row {
   		margin-top: 20px;
 		margin-bottom: 20px;
 	}
@@ -237,10 +237,19 @@ function clearStudentInfo() {
 			<div id="studentInfo" class="alert alert-info">
 				<c:if test="${not empty sessionScope.studentInfo}">
 					<c:set var="student" value="${sessionScope.studentInfo}" />
-					<c:set var="studentId" value="${student.id}" />
-					<c:set var="studentFirstName" value="${student.firstName}" />
-					<c:set var="studentLastName" value="${student.lastName}" />
-					<c:out value="${student.id} ${student.firstName} ${student.lastName} ${student.state} ${student.branch} ${student.gender} ${student.grade}" />
+					<table style="width: 100%;">
+						<colgroup>
+							<col style="width: 33.33%;" />
+							<col style="width: 33.33%;" />
+							<col style="width: 33.33%;" />
+						</colgroup>
+						<tr>
+							<td class="text-right">Student ID : <span class="font-weight-bold"><c:out value="${student.id}" /></span></td>
+							<td class="text-center">Name : <span class="font-weight-bold"><c:out value="${student.firstName} ${student.lastName}" /></span></td>
+							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${student.grade}" /></span></td>
+						</tr>
+					</table>
+					
 				</c:if>
 			</div>
 			<div class="form-group">
@@ -270,10 +279,16 @@ function clearStudentInfo() {
 												<td> <!-- payment date with dd/MM/yyyy format -->
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
-												</td>												
-												<td> <!-- payment method with first letter capitalized -->
+												</td>
+												<%--												
+												<td> 
 													${fn:toUpperCase(fn:substring(payment.method, 0, 1))}${fn:substring(payment.method, 1, fn:length(payment.method))}
 												</td>
+												--%>
+												<td class="text-capitalize"> <!-- payment method with first letter capitalized -->
+													<c:out value="${payment.method}"/>	
+												</td>
+
 												<td> <!-- payment amount with 2 decimal places -->
 													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
 												</td>
@@ -283,12 +298,19 @@ function clearStudentInfo() {
 												<td> <!-- payment total with 2 decimal places -->
 													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
 												</td>
-												<!-- <td>${payment.enrols}</td> -->
-												<td>
-													<c:forEach var="enrol" items="${payment.enrols}">
-                    									<i class="bi bi-mortarboard" title="class"></i> [${enrol.grade.toUpperCase()}] ${enrol.name} (${enrol.extra})<br/> <!-- Display a property of each object -->
-                									</c:forEach>
-												</td>												
+												<!-- Display a property of each object -->
+												<td style="white-space: nowrap; padding: 0px;">
+													<table style="border-collapse: collapse; border-spacing: 0; border: none; background-color: transparent; margin: 0; padding: 0;">
+														<c:forEach var="enrol" items="${payment.enrols}">
+															<tr>
+																<td><i class="bi bi-mortarboard" title="class"></i> &nbsp;&nbsp;&nbsp;&nbsp;</td>
+																<td style="white-space: nowrap;">[${enrol.grade.toUpperCase()}] ${enrol.name}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+																<td style="white-space: nowrap;">(${enrol.extra})</td>
+															</tr>
+														</c:forEach>
+													</table>
+												</td>
+																						
 												<td><i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory(${studentId}, '${studentFirstName}', '${studentLastName}', ${payment.invoiceId}, ${payment.id})"></i></td> 
 											</tr>
 										</c:forEach>

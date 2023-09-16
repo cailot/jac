@@ -155,7 +155,9 @@
 					row.append($('<td>').text(value.firstName));
 					row.append($('<td>').text(value.lastName));
 					row.append($('<td>').text(value.grade.toUpperCase()));
-					row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
+					// row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
+					row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
+					
 					row.append($('<td>').text(formatDate(value.registerDate)));
 					row.append($('<td>').text(formatDate(value.endDate)));
 					row.append($('<td>').text(value.email1));
