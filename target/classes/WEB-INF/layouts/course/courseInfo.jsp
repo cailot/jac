@@ -511,7 +511,13 @@ async function listElearns(grade) {
 			contentType: 'application/json',
 			success: function(response) {
 				//debugger;
-				removeEnrolmentFromInvoiceList();
+				removeEnrolmentFromInvoiceList();	
+				// need to clear existing Outstanding??
+				removeOutstandingFromInvoiceList();
+
+
+
+
 				if(response.length >0){
 					$.each(response, function(index, value){
 						// if extra is NEW, it requires updating enrolment id in basket table
@@ -607,7 +613,6 @@ async function listElearns(grade) {
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
-						// console.log(value);
 						var row = $('<tr class="d-flex">');
 						row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
