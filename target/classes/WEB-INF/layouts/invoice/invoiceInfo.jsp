@@ -83,9 +83,6 @@ function addEnrolmentToInvoiceList(data) {
 //		Add Outstanding to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOutstandingToInvoiceList(data) {
-	//  console.log('addOutstandingToInvoiceListTable - ' + JSON.stringify(data));
-	// set invoiceId into hiddenInvoiceId
-	//$('#hiddenInvoiceId').val(data.invoiceId);
 	// debugger;
 	var newOS = $('<tr>');
 	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
@@ -113,9 +110,6 @@ function addOutstandingToInvoiceList(data) {
 		}
 	});
 	$('#invoiceListTable > tbody').prepend(newOS);
-
-	// update Outstanding Amount
-	// updateOutstandingAmount();
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -153,8 +147,6 @@ function addBookToInvoiceList(data) {
 	});
 
 	$('#invoiceListTable > tbody').prepend(row);
-	// update Receivable Amount
-	//updateReceivableAmount();
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -173,8 +165,6 @@ function removeEnrolmentFromInvoiceList() {
 			}
 		}
 	});
-	// update Receivable Amount
-	// updateReceivableAmount();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,8 +181,22 @@ function removeBookFromInvoiceList() {
 			}
 		}
 	});
-	// update Receivable Amount
-	// updateReceivableAmount();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Remove Outstanding from invoiceListTable
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function removeOutstandingFromInvoiceList() {
+	$('#invoiceListTable > tbody > tr').each(function() {
+		var hiddens = $(this).find('.outstanding-match').text();
+		if(hiddens.indexOf('|') !== -1){
+			var hiddenValues = hiddens.split('|');
+			//console.log(hiddenValues[1]);
+			if(hiddenValues[0] === OUTSTANDING){
+				$(this).remove();
+			}
+		}
+	});
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
