@@ -44,10 +44,7 @@ $(document).ready(function () {
 			}
 		],	
 		order : [[0, 'desc'], [1, 'desc']], // order by invoiceId desc, id desc
-		
-
-
-
+		// sum for paid
 		footerCallback: function (row, data, start, end, display) {
     		var api = this.api();
 			//console.log(api.column(4).data());
@@ -63,23 +60,10 @@ $(document).ready(function () {
 				return total;
 			};
 			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(4, { search: 'applied' }).data());
+			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
 			// Update footer
 			$(api.column(4).footer()).html('Total Paid $' + totalOutstanding.toFixed(2));
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-		
+		}		
     });
 });
 
@@ -178,6 +162,9 @@ function clearStudentInfo() {
 	#studentInvoiceTable th, tr {
 		padding: 15px;
 	}
+	#studentInvoiceTable tfoot tr th {
+    	border: none !important;
+	}
 	#studentInvoice .form-row {
   		margin-top: 20px;
 		margin-bottom: 20px;
@@ -195,6 +182,7 @@ function clearStudentInfo() {
 		padding-bottom: 10px;
 	}
 	tr { height: 50px } 
+
 
 </style>
 
@@ -299,9 +287,9 @@ function clearStudentInfo() {
 										<th>ID</th>
 										<th>Payment Date</th>
 										<th>Method</th>
-										<th>Paid</th>
-										<th>Outstanding</th>
 										<th>Total</th>
+										<th>Outstanding</th>
+										<th>Paid</th>
 										<th>Enrolled Course Information</th>
 										<th data-orderable="false">Receipt</th>
 									</tr>
@@ -319,14 +307,14 @@ function clearStudentInfo() {
 												<td class="small text-capitalize align-middle"> <!-- payment method with first letter capitalized -->
 													<c:out value="${payment.method}"/>	
 												</td>
-												<td class="small align-middle"> 
-													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
+												<td class="small align-middle text-right"> <!-- payment total with 2 decimal places -->
+													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
 												</td>
-												<td class="small align-middle"> <!-- payment outstanding with 2 decimal places -->
+												<td class="small align-middle text-right"> <!-- payment outstanding with 2 decimal places -->
 													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
 												</td>
-												<td class="small align-middle"> <!-- payment total with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
+												<td class="small align-middle text-right"> 
+													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
 												</td>
 												<!-- Display a property of each object -->
 												<td class="small align-middle" style="white-space: nowrap; padding: 0px;">
@@ -348,8 +336,11 @@ function clearStudentInfo() {
 								</tbody>
 								<tfoot>
 									<tr>
-										<th colspan="5">Total:</th>
 										<th></th>
+										<th></th>
+										<th colspan="2"></th>
+										<th colspan="3" class="text-right small">Total:</th>
+										<th colspan="2"></th>
 									</tr>
 								</tfoot>
 							</table>
