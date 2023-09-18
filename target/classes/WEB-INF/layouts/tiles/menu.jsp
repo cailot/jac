@@ -99,8 +99,7 @@
 			  Teacher
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/classList">Class List</a>
-				<a class="dropdown-item" style="color: #212529;" href="#">Student Invoice</a>
+			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
 			</div>
 		</li>
 

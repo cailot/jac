@@ -36,9 +36,9 @@
 	</definition>
 
 	<!--Teacher -->
-	<definition name="teacherPage" extends="base.definition">
+	<definition name="teacherListPage" extends="base.definition">
 		<put-attribute name="title" value="Teacher List" />
-		<put-attribute name="body" value="/WEB-INF/layouts/teacher.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/teacher/teacherList.jsp" />
 	</definition>
 
 	<!-- Setting -->

@@ -292,7 +292,7 @@ function inactivateTeacher(id) {
 										<th>ID</th>
 										<th>First Name</th>
 										<th>Last Name</th>
-										<th>Gender</th>
+										<th>Title</th>
 										<th>Phone</th>
 										<th>Email</th>
 										<th>Address</th>

@@ -44,7 +44,6 @@ public class TeacherServiceImpl implements TeacherService {
 		}catch(Exception e){
 			System.out.println("No teacher found");
 		}
-		// teacherRepository.findAllByEndDateIsNull();
 		return teachers;
 	}
 
@@ -56,7 +55,6 @@ public class TeacherServiceImpl implements TeacherService {
 		}catch(Exception e){
 			System.out.println("No teacher found");
 		}
-		// teacherRepository.findAllByEndDateIsNotNull();
 		return teachers;
 	}
 
@@ -108,7 +106,6 @@ public class TeacherServiceImpl implements TeacherService {
 		}catch(Exception e){
 			System.out.println("No teacher found");
 		}
-		// teachers = teacherRepository.findAll(spec);
 		return teachers;
 	}
 
@@ -233,7 +230,6 @@ public class TeacherServiceImpl implements TeacherService {
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to delete");
 		}
-
 	}
 
 	
