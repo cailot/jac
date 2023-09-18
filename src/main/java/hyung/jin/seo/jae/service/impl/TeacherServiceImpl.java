@@ -232,6 +232,18 @@ public class TeacherServiceImpl implements TeacherService {
 		}
 	}
 
-	
+	@Override
+	public void updateTeacherMemo(Long id, String memo) {
+		try{
+			Optional<Teacher> teacher = teacherRepository.findById(id);
+			if(teacher.isPresent()){
+				Teacher t = teacher.get();
+				t.setMemo(memo);
+				teacherRepository.save(t);
+			}
+		}catch(Exception e){
+			System.out.println("No teacher found");
+		}
+	}
 
 }

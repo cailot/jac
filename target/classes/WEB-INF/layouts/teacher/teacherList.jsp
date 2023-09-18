@@ -1,22 +1,18 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
+<%@page import="hyung.jin.seo.jae.dto.TeacherDTO"%>
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
 
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"></link>
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css"></link>
-
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables.min.css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/pdfmake.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/vfs_fonts.js"></script>
+<script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
   
 <script>
@@ -214,9 +210,59 @@ function inactivateTeacher(id) {
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Memo Modal
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayMemo(dataId, contents){
+	document.getElementById("infoDataId").value = dataId;
+	document.getElementById("information").value = contents;
+	// display Receivable amount
+    $('#infoModal').modal('toggle');
+}
 
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Memo
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateMemoInformation(){
+	var dataId = $('#infoDataId').val();
+	var memo = $('#information').val();
+	
+	let encodeMemo = encodeDecodeString(memo).encoded;
+	$.ajax({
+		url : '${pageContext.request.contextPath}/teacher/updateMemo/' + dataId,
+		type : 'POST',
+		data : encodeMemo,
+		contentType : 'application/json',
+		success : function(response) {
+			console.log('addInformation response : ' + response);
+			// flush old data in the dialogue
+			document.getElementById('showInformation').reset();
+			// disappear information dialogue
+			$('#infoModal').modal('toggle');
+			//debugger;
+			// // update memo <td> in invoiceListTable 
+			// $('#invoiceListTable > tbody > tr').each(function() {
+			// 		if(dataType === ENROLMENT){
+			// 			if ($(this).find('.enrolment-match').text() === (dataType + '|' + dataId)) {
+			// 				(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'\')"></i>');		
+			// 			}
+			// 		}else if(dataType === OUTSTANDING){
+			// 			if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
+			// 				(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
+			// 			}
+			// 		}else if(dataType === BOOK){
+			// 			if ($(this).find('.book-match').text() === (dataType + '|' + dataId)) {
+			// 				(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
+			// 			}
+			// 		}
+			// 	}
+			// );
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});						
+}
 
 </script>
 
@@ -298,6 +344,8 @@ function inactivateTeacher(id) {
 										<th>Address</th>
 										<th>TFN</th>
 										<th>Start Date</th>
+										<th>End Date</th>
+										<th>Memo</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -306,33 +354,36 @@ function inactivateTeacher(id) {
 									<c:when test="${TeacherList != null}">
 									
 										<c:forEach items="${TeacherList}" var="teacher">
+											<%--<c:out value="${teacher}"/>--%>
 											<tr>
 												<td class="small ellipsis" id="teacherId" name="teacherId"><span><c:out value="${teacher.id}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.firstName}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.lastName}" /></span></td>
-												<td class="center-cell">
-													<c:set var="gender" value="${teacher.title}" />
-													<c:choose>
-														<c:when test="${gender=='mr'}">
-															<i class="fa fa-male text-primary"></i>
-														</c:when>
-														<c:when test="${gender=='other'}">
-															<i class="fa fa-question"></i>
-														</c:when>
-														<c:otherwise>
-															<i class="fa fa-female text-danger"></i>
-														</c:otherwise>
-													</c:choose>
+												<td class="small text-capitalize align-middle">
+													<c:out value="${teacher.title}" />
 												</td>
 												<td class="small ellipsis"><span><c:out value="${teacher.phone}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.email}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.address}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.tfn}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.startDate}" /></span></td>
+												<td class="small ellipsis">
+													<c:out value="${teacher.endDate}" />
+												</td>
+												<td class="small text-center">
+													<c:choose>
+														<c:when test="${not empty teacher.memo}">
+															<i class="bi bi-chat-square-text-fill text-primary" title="Memo" onclick="displayMemo('${teacher.id}', '${teacher.memo}')"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-chat-square-text text-primary" title="Memo" onclick="displayMemo('${teacher.id}', '${teacher.memo}')"></i>
+														</c:otherwise>
+													</c:choose>
+												</td>
 												<td>
-													<i class="fa fa-edit text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
-													<a href="#passwordTeacherModal" class="password" data-toggle="modal"><i class="fa fa-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
-				 									<i class="fa fa-trash text-danger" data-toggle="tooltip" title="Delete" onclick="inactivateTeacher('${teacher.id}')"></i>
+													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
+													<a href="#passwordStudentModal" class="password" data-toggle="modal"><i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
+													<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateTeacher('${teacher.id}')"></i>
 												</td>
 												
 											</tr>
@@ -732,6 +783,34 @@ function inactivateTeacher(id) {
 			<div class="modal-body"></div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Info Dialogue -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="fieldset rounded border-primary">
+				<header class="text-primary font-weight-bold">Teacher Memo</header>
+				<br>
+				Please Add Memo
+				<form id="showInformation">
+					<div class="form-row mt-4">
+						<div class="col-md-12">
+							<textarea class="form-control" id="information" name="information" style="height: 8rem;"></textarea>
+						</div>
+					</div>
+					<input type="hidden" id="infoDataId" name="infoDataId"></input>
+					<div class="d-flex justify-content-end mt-4">
+						<button type="button" class="btn btn-primary" onclick="updateMemoInformation()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="document.getElementById('showInformation').reset();">Cancel</button>
+					</div>
+				</form>	
+				</section>
 			</div>
 		</div>
 	</div>
