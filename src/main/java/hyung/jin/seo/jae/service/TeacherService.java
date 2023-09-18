@@ -32,4 +32,6 @@ public interface TeacherService {
 	void dischargeTeacher(Long id);
 	
 	void deleteTeacher(Long id);
+
+	void updateTeacherMemo(Long id, String memo);
 }

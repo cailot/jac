@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-
 import hyung.jin.seo.jae.model.Teacher;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpecificationExecutor<Teacher>{  
@@ -19,4 +18,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>, JpaSpec
 	Optional<Teacher> findById(Long id);
 	
 	long count();
+
 }
+
