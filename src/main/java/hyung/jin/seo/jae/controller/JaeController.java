@@ -19,7 +19,6 @@ public class JaeController {
 		return "studentListPage";
 	}
 
-
 	@GetMapping("/studentInvoice")
 	public String studentInvoice(HttpSession session) {
 		return "studentInvoicePage";
@@ -35,9 +34,9 @@ public class JaeController {
 		return "classListPage";
 	}
 
-	@GetMapping("/teacher")
+	@GetMapping("/teacherList")
 	public String teacher(HttpSession session) {
-		return "teacherPage";
+		return "teacherListPage";
 	}
 
 	@GetMapping("/setting")

@@ -3,10 +3,20 @@ package hyung.jin.seo.jae.dto;
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
 import hyung.jin.seo.jae.model.Teacher;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class TeacherDTO implements Serializable{
     
     private String id;
@@ -44,163 +54,8 @@ public class TeacherDTO implements Serializable{
     private String startDate;
     
     private String endDate;
-    
-    public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getBranch() {
-		return branch;
-	}
-
-	public void setBranch(String branch) {
-		this.branch = branch;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-
-	public String getBank() {
-		return bank;
-	}
-
-	public void setBank(String bank) {
-		this.bank = bank;
-	}
-
-	public String getBsb() {
-		return bsb;
-	}
-
-	public void setBsb(String bsb) {
-		this.bsb = bsb;
-	}
-
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-
-	public String getSuperannuation() {
-		return superannuation;
-	}
-
-	public void setSuperannuation(String superannuation) {
-		this.superannuation = superannuation;
-	}
-
-	public String getSuperMember() {
-		return superMember;
-	}
-
-	public void setSuperMember(String superMember) {
-		this.superMember = superMember;
-	}
-
-	public String getTfn() {
-		return tfn;
-	}
-
-	public void setTfn(String tfn) {
-		this.tfn = tfn;
-	}
-
-	public String getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-	}
-
-	public String getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
-
-	@Override
-	public String toString() {
-		return "TeacherDTO [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", title=" + title
-				+ ", phone=" + phone + ", email=" + email + ", address=" + address + ", state=" + state + ", branch="
-				+ branch + ", memo=" + memo + ", bank=" + bank + ", bsb=" + bsb + ", accountNumber=" + accountNumber
-				+ ", superannuation=" + superannuation + ", superMember=" + superMember + ", taxNumber=" + tfn
-				+ ", startDate=" + startDate + ", endDate=" + endDate + "]";
-	}
-
-	public TeacherDTO() {}
-
-    public TeacherDTO(Teacher teacher) {
+  
+	public TeacherDTO(Teacher teacher) {
     	this.id = (teacher.getId()!=null) ? teacher.getId().toString() : "";
         this.firstName = (teacher.getFirstName()!=null) ? teacher.getFirstName() : "";
         this.lastName = (teacher.getLastName()!=null) ? teacher.getLastName() : "";

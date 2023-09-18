@@ -27,8 +27,6 @@ import hyung.jin.seo.jae.utils.JaeUtils;
 @RequestMapping("teacher")
 public class JaeTeacherController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JaeTeacherController.class);
-
 	@Autowired
 	private TeacherService teacherService;
 	
@@ -123,12 +121,11 @@ public class JaeTeacherController {
 				dto.setStartDate(JaeUtils.convertToddMMyyyyFormat(dto.getStartDate()));
 				dto.setEndDate(JaeUtils.convertToddMMyyyyFormat(dto.getEndDate()));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			dtos.add(dto);
 		}
 		model.addAttribute(JaeConstants.TEACHER_LIST, dtos);
-		return "teacherPage";
+		return "teacherListPage";
 	}
 }
