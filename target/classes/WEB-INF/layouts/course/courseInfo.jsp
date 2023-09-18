@@ -179,7 +179,11 @@ async function listElearns(grade) {
 	//      Add elearning to basket
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	function addElearningToBasket(value){
-		// console.log(value);
+		// if elearning is already in basket, skip
+		if(isSameRowExisting(ELEARNING, value.id)){
+			showAlertMessage('warningAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' is already in My Lecture</center>');
+			return;
+		}
 		var row = $("<tr class='d-flex'>");
 		row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
 		row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
@@ -196,7 +200,7 @@ async function listElearns(grade) {
 		row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade));
 		$('#basketTable > tbody').prepend(row);
 		// Automatically dismiss the alert after 2 seconds
-		showAlertMessage('addAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
+		showAlertMessage('addAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' added to My Lecture</center>');
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +227,6 @@ async function listElearns(grade) {
 				start_week = 1;
 				end_week = 10;
 			}    
-
 			var row = $('<tr class="d-flex">');
 			// dynamic clazz id assign
 			var dropdown = $('<select class="clazzChoice">');
@@ -379,6 +382,11 @@ async function listElearns(grade) {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	function addBookToBasket(value){
 		//console.log(value);
+		// if book is already in basket, skip
+		if(isSameRowExisting(BOOK, value.id)){
+			showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
+			return;
+		}
 		var row = $('<tr class="d-flex">');
 		row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
 		row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" title="book"></i></td>')); // item
@@ -514,9 +522,6 @@ async function listElearns(grade) {
 				removeEnrolmentFromInvoiceList();	
 				// need to clear existing Outstanding??
 				removeOutstandingFromInvoiceList();
-
-
-
 
 				if(response.length >0){
 					$.each(response, function(index, value){
@@ -803,13 +808,13 @@ async function listElearns(grade) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					// console.log(value);  
+					// console.log(index + ' - ' + value);  
+					// if already exist the same row, skip
+					if(isSameRowExisting(ELEARNING, value.id)){
+						// console.log('existing...');
+						return true;
+					}
 					var row = $("<tr class='d-flex'>");
-					// row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
-					// row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-					// row.append($('<td class="smaller-table-font col-10" colspan="6">').text('[' + value.grade.toUpperCase() +'] ' + value.name));
-					// row.append($("<td class='col-1'>").html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
-					
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
 					row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
 					row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + value.grade.toUpperCase() + '] ' + value.name));
@@ -834,6 +839,24 @@ async function listElearns(grade) {
 			}
 		});
 	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Check same row exists in basketTable
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	function isSameRowExisting(dataType, id) {
+		var isExist = false;
+		$('#basketTable > tbody > tr').each(function() {
+			var exist = $(this).find('.data-type').text();
+			if(exist.indexOf('|') !== -1){
+				var hiddenValues = exist.split('|');
+				//console.log(hiddenValues[1]);
+				if(hiddenValues[0] === dataType && hiddenValues[1] === id){
+					isExist = true;
+				}
+			}
+		});
+		return isExist;
+}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Clean basketTable
@@ -1073,6 +1096,9 @@ async function listElearns(grade) {
 	
 	<!-- Bootstrap Alert (Hidden by default) -->
 	<div id="addAlert" class="alert alert-info alert-dismissible fade" role="alert">
+		This is an alert that pops up when the user clicks the 'OK' button.
+	</div>
+	<div id="warningAlert" class="alert alert-warning alert-dismissible fade" role="alert">
 		This is an alert that pops up when the user clicks the 'OK' button.
 	</div>
 	<div id="deleteAlert" class="alert alert-danger alert-dismissible fade" role="alert">
