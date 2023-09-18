@@ -80,7 +80,7 @@ public class JaeInvoiceController {
 	@ResponseBody
 	public double getInvoiceAmount(@PathVariable("id") Long id) {	
 		double amount = invoiceService.getInvoiceOwingAmount(id);
-		return amount;
+		return (amount<0) ? 0 : amount;
 	}
 
 	// bring all invoices in database

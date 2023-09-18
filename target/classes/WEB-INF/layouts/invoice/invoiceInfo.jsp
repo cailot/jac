@@ -215,10 +215,13 @@ function updateLatestInvoiceId(invoiceId){
 			url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
 			method: 'GET',
 			success: function(response) {
-				// Handle the response
-				// console.log(response);
 				//debugger;
 				$("#rxAmount").text(response.toFixed(2));
+				if(parseFloat(response) > 0){
+					$('#paymentBtn').prop('disabled', false);
+				}else{
+					$('#paymentBtn').prop('disabled', true);
+				}
 			},
 			error: function(xhr, status, error) {
 				// Handle the error
@@ -275,8 +278,10 @@ function clearInvoiceTable(){
 function displayPayment(){
     // display Receivable amount
     var rxAmount = $("#rxAmount").text();
-	$("#payRxAmount").val(parseFloat(rxAmount));
+	$("#payRxAmount").val(parseFloat(rxAmount).toFixed(2));
 	$("#payAmount").val($("#payRxAmount").val());
+	// $("#payAmount").val($("#payRxAmount").val().toFixed(2));
+
   
 	// payAmount
     $("#payAmount").on('input', function(){
