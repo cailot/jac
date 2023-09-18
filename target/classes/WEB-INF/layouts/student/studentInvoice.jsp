@@ -62,7 +62,7 @@ $(document).ready(function () {
 			// Total over all pages
 			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
 			// Update footer
-			$(api.column(4).footer()).html('Total Paid $' + totalOutstanding.toFixed(2));
+			$(api.column(4).footer()).html('Total Paid <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
 		}		
     });
 });
