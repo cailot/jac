@@ -29,6 +29,8 @@ public interface TeacherService {
     
  	Teacher updateTeacher(Teacher newTeacher, Long id);
 
+	void reactivateTeacher(Long id);
+	
 	void dischargeTeacher(Long id);
 	
 	void deleteTeacher(Long id);

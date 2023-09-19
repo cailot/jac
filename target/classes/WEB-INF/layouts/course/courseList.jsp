@@ -59,7 +59,7 @@ function addCourse() {
 		description : $("#addDescription").val(),
 		price : $("#addPrice").val()
 	}
-	console.log(course);
+	// console.log(course);
 	
 	// Send AJAX to server
 	$.ajax({
@@ -69,7 +69,7 @@ function addCourse() {
 		data : JSON.stringify(course),
 		contentType : 'application/json',
 		success : function(response) {
-			console.log(response);
+			// console.log(response);
 			// Display the success alert
             $('#success-alert .modal-body').text('New Class is registered successfully.');
             $('#success-alert').modal('show');
@@ -134,8 +134,7 @@ function updateCourseInfo(){
 		contentType : 'application/json',
 		success : function(value) {
 			// Display success alert
-			$('#success-alert .modal-body').text(
-					'ID : ' + courseId + ' is updated successfully.');
+			$('#success-alert .modal-body').text('ID : ' + courseId + ' is updated successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function(e) {
 				location.reload();

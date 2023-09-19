@@ -211,6 +211,19 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
+	public void reactivateTeacher(Long id) {
+		try {
+			Optional<Teacher> end = teacherRepository.findById(id);
+			if(!end.isPresent()) return; // if not found, terminate.
+			Teacher teacher = end.get();
+			teacher.setEndDate(null);
+			teacherRepository.save(teacher);
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			System.out.println("Nothing to discharge");
+		}
+	}
+
+	@Override
 	public void dischargeTeacher(Long id) {
 		try {
 			Optional<Teacher> end = teacherRepository.findById(id);
