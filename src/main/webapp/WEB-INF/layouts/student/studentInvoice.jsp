@@ -62,7 +62,7 @@ $(document).ready(function () {
 			// Total over all pages
 			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
 			// Update footer
-			$(api.column(4).footer()).html('Total Paid <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
+			$(api.column(8).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
 		}		
     });
 });
@@ -241,11 +241,10 @@ function clearStudentInfo() {
 					</div>
 					<!-- put blank col-md-2 -->
 					<div class="offset-md-2">
-						<div id="studentName"></div>
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Search</label> 
-						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"> <i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Clear</label> 
@@ -339,8 +338,8 @@ function clearStudentInfo() {
 										<th></th>
 										<th></th>
 										<th colspan="2"></th>
-										<th colspan="3" class="text-right small">Total:</th>
-										<th colspan="2"></th>
+										<th colspan="3"></th>
+										<th colspan="2" class="text-right small"></th>
 									</tr>
 								</tfoot>
 							</table>
