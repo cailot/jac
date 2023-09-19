@@ -99,7 +99,14 @@ public class JaeTeacherController {
 		TeacherDTO dto = new TeacherDTO(teacher);
 		return dto;
 	}
-	
+
+	// activate teacher by Id
+	@PutMapping("/activate/{id}")
+	@ResponseBody
+	public void activateTeacher(@PathVariable Long id) {
+		teacherService.reactivateTeacher(id);
+	}
+
 		
 	// de-activate teacher by Id
 	@PutMapping("/inactivate/{id}")

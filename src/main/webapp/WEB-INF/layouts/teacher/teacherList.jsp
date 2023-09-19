@@ -52,7 +52,9 @@ $(document).ready(function () {
     
 });
 
-// Register Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Register Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addTeacher() {
 	// Get from form data
 	var teacher = {
@@ -72,7 +74,7 @@ function addTeacher() {
 		superMember : $("#addSuperMember").val(),
 		memo : $("#addMemo").val(),
 	}
-	console.log(teacher);
+	// console.log(teacher);
 	
 	// Send AJAX to server
 	$.ajax({
@@ -82,10 +84,14 @@ function addTeacher() {
 		data : JSON.stringify(teacher),
 		contentType : 'application/json',
 		success : function(teacher) {
+			
 			// Display the success alert
-			$('#success-alert .modal-body').text(
-					'Your action has been completed successfully.');
-			$('#success-alert').modal('show');
+            $('#success-alert .modal-body').text('New teacher is registered successfully.');
+            $('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -96,15 +102,15 @@ function addTeacher() {
 	document.getElementById("teacherRegister").reset();
 }
 
-
-//Search Student with Keyword	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Get Teacher Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function retreiveTeacherInfo(std) {
 	// send query to controller
 	$.ajax({
 		url : '${pageContext.request.contextPath}/teacher/get/' + std,
 		type : 'GET',
 		success : function(teacher) {
-			$('#editTeacherModal').modal('show');
 			// Update display info
 			$("#editId").val(teacher.id);
 			$("#editFirstName").val(teacher.firstName);
@@ -122,6 +128,8 @@ function retreiveTeacherInfo(std) {
 			$("#editSuperMember").val(teacher.superMember);
 			$("#editTfn").val(teacher.tfn);
 			$("#editMemo").val(teacher.memo);
+			// display modal
+			$('#editTeacherModal').modal('show');
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -129,9 +137,10 @@ function retreiveTeacherInfo(std) {
 	});
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Teacher Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateTeacherInfo(){
-	
 	// get from formData
 	var teacher = {
 		id : $('#editId').val(),
@@ -152,7 +161,6 @@ function updateTeacherInfo(){
 		superMember : $("#editSuperMember").val()
 	}
 	
-	
 	// send query to controller
 	$.ajax({
 		url : '${pageContext.request.contextPath}/teacher/update',
@@ -161,38 +169,40 @@ function updateTeacherInfo(){
 		data : JSON.stringify(teacher),
 		contentType : 'application/json',
 		success : function(value) {
+			// disappear modal
 			$('#editTeacherModal').modal('hide');
-			// flush all registered data
-			document.getElementById("teacherEdit").reset();
-			
-			// Display success alert
-			$('#success-alert .modal-body').text(
-					'ID : ' + value.id + ' is updated successfully.');
-			$('#success-alert').modal('show');
-			
+			// Display the success alert
+            $('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
+            $('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
 		}
 	});
 	
-	
+	// flush all registered data
+	document.getElementById("teacherEdit").reset();			
 }
 
-
-//de-activate teacher
-function inactivateTeacher(id) {
-	if(confirm("Are you sure you want to de-activate this teacher?")){
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Ativate Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function activateTeacher(id) {
+	if(confirm("Are you sure you want to activate this teacher?")){
 		// send query to controller
 		$.ajax({
-			url : '${pageContext.request.contextPath}/teacher/inactivate/' + id,
+			url : '${pageContext.request.contextPath}/teacher/activate/' + id,
 			type : 'PUT',
 			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now inactivated');
+				// Display the success alert
+				$('#success-alert .modal-body').text('ID : ' + id + ' is now activated again.');
 				$('#success-alert').modal('show');
-				//clearStudentForm();
+				$('#success-alert').on('hidden.bs.modal', function(e) {
+					location.reload();
+				});
 			},
 			error : function(xhr, status, error) {
 				console.log('Error : ' + error);
@@ -203,12 +213,36 @@ function inactivateTeacher(id) {
 	}
 }
 
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function inactivateTeacher(id) {
+	if(confirm("Are you sure you want to de-activate this teacher?")){
+		// send query to controller
+		$.ajax({
+			url : '${pageContext.request.contextPath}/teacher/inactivate/' + id,
+			type : 'PUT',
+			success : function(data) {
+				// clear existing form
+				// $('#success-alert .modal-body').text(
+				// 		'ID : ' + id + ' is now inactivated');
+				// $('#success-alert').modal('show');
+				//clearStudentForm();
+				// Display the success alert
+				$('#success-alert .modal-body').text('ID : ' + id + ' is now inactivated.');
+				$('#success-alert').modal('show');
+				$('#success-alert').on('hidden.bs.modal', function(e) {
+					location.reload();
+				});
+			},
+			error : function(xhr, status, error) {
+				console.log('Error : ' + error);
+			}
+		}); 
+	}else{
+		return;
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Memo Modal
@@ -386,12 +420,17 @@ function updateMemoInformation(){
 												<td>
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
 													<a href="#passwordStudentModal" class="password" data-toggle="modal"><i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
-													<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateTeacher('${teacher.id}')"></i>
+													<c:choose>
+														<c:when test="${empty teacher.endDate}">
+															<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateTeacher('${teacher.id}')"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="activateTeacher('${teacher.id}')"></i>
+														</c:otherwise>
+													</c:choose>
 												</td>
-												
 											</tr>
 										</c:forEach>
-									
 									</c:when>
 								</c:choose>
 								</tbody>
@@ -771,26 +810,15 @@ function updateMemoInformation(){
 
 
 
-<!-- Success Message Modal -->
-<div class="modal fade" id="success-alert" tabindex="-1"
-	aria-labelledby="successModalLabel" aria-hidden="true">
+<!-- Success Alert -->
+<div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="successModalLabel">Success!</h5>
-				<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body"></div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
+		<div class="alert alert-block alert-success alert-dialog-display">
+			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
 </div>
-
 
 <!-- Info Dialogue -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
