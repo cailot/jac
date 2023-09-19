@@ -319,11 +319,14 @@ function updateMemoInformation(){
 							<option value="Stopped">Stopped Teachers</option>
 						</select>
 					</div>
-					<div class="col mx-auto">
-						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()">Search</button>
+					<!-- put blank col-md-2 -->
+					<div class="offset-md-2">
 					</div>
-					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerStudentModal">New</button>
+					<div class="col-md-2">
+						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+					</div>
+					<div class="col-md-2">
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;&nbsp;Registration</button>
 					</div>
 				</div>
 			</div>

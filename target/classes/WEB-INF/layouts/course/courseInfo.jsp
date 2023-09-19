@@ -596,10 +596,28 @@ async function listElearns(grade) {
 			}
 		});
 	
-		// reload registered enrolment info
-		// clearEnrolmentBasket();
-		// reloadEnrolment(studentId);
-	
+		// need to check whether any exisiting Outstanding
+		$.ajax({
+			url: '${pageContext.request.contextPath}/enrolment/associateOutstanding/' + studentId,
+			method: 'POST',
+			contentType: 'application/json',
+			success: function(response) {
+				// remove outstandings from invoice table
+				removeOutstandingFromInvoiceList();
+				// Handle the response
+				if(response.length >0){
+					$.each(response, function(index, value){
+						// console.log(value);
+						addOutstandingToInvoiceList(value);
+					});
+				}
+			},
+			error: function(xhr, status, error) {
+				// Handle the error
+				console.error(error);
+			}
+		});
+		
 	}
 	
 	

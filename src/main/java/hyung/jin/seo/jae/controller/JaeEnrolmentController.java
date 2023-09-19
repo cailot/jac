@@ -211,6 +211,23 @@ public class JaeEnrolmentController {
 		return dtos;
 	}
 
+	@PostMapping("/associateOutstanding/{studentId}")
+	@ResponseBody
+	public List<OutstandingDTO> associateOutstanding(@PathVariable Long studentId) {
+		List<OutstandingDTO> dtos = new ArrayList<>();
+		// 1. get Invoice
+		Invoice invo = invoiceService.getInvoiceByStudentId(studentId);
+		// 2. check if invoice has owing amount
+		boolean isValidInvoice = (invo !=null) && (invo.getAmount() > invo.getPaidAmount());
+		// 3. if invoice is already paid or null, return empty list
+		if(!isValidInvoice) return dtos;
+		// 4. bring all related Outstandings
+		dtos = outstandingService.getOutstandingtByInvoice(invo.getId());
+		// 5. return OutstandingDTO list
+		return dtos;
+	}
+
+
 
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
