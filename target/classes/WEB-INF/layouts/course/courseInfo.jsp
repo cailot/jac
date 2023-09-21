@@ -947,7 +947,6 @@ async function listElearns(grade) {
 		#basketTable td:nth-child(13) { width: 4%; } /* delete */
 	</style>
 	
-	</style>
 	<div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 		<form id="courseRegister">
 			<div class="form-group">
@@ -1113,19 +1112,19 @@ async function listElearns(grade) {
 	
 	
 	<!-- Bootstrap Alert (Hidden by default) -->
-	<div id="addAlert" class="alert alert-info alert-dismissible fade" role="alert">
+	<div id="addAlert" class="alert alert-info alert-dismissible fade hide" role="alert">
 		This is an alert that pops up when the user clicks the 'OK' button.
 	</div>
-	<div id="warningAlert" class="alert alert-warning alert-dismissible fade" role="alert">
+	<div id="warningAlert" class="alert alert-warning alert-dismissible fade hide" role="alert">
 		This is an alert that pops up when the user clicks the 'OK' button.
 	</div>
-	<div id="deleteAlert" class="alert alert-danger alert-dismissible fade" role="alert">
+	<div id="deleteAlert" class="alert alert-danger alert-dismissible fade hide" role="alert">
 		This is an alert that pops up when the user clicks the 'OK' button.
 	</div>
 	
 	
 	<!-- Bootstrap Editable Table JavaScript -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.4/bootstrap-table.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
 		
 			
 	

@@ -774,7 +774,3 @@ function addInformation(){
 		</div>
 	</div>
 </div>
-
-<!-- Bootstrap Editable Table JavaScript -->
-<script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
-		

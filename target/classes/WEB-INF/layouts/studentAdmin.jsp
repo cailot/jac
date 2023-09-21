@@ -70,18 +70,10 @@
 					<jsp:include page="course/courseInfo.jsp"></jsp:include>
 				</div>
 			</div>
-			<div class="col-lg-4 bg-secondary">
+			<div class="col-lg-4">
 				<div class="card-body">
 					<h5 class="card-title">Attendance</h5>
-					<div class="modal-body">
-						<form id="">
-							<div class="form-group">
-								<div class="form-row">
-									<textarea class="form-control" rows="15"></textarea>
-								</div>
-							</div>
-						</form>
-					</div>
+					<jsp:include page="attendance/attendanceInfo.jsp"></jsp:include>
 				</div>
 			</div>
     	</div>
@@ -95,8 +87,6 @@
     	</div>
     </div>
  </div>
-
-
 
 
 
