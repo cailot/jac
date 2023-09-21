@@ -64,13 +64,13 @@
 	<div class="col-lg-8">
       	<div class="row">
 			<!-- Course Info -->
-			<div class="col-lg-8 bg-warning" style="padding-left: 1px; padding-right: 1px;">
+			<div class="col-lg-8" style="padding-left: 1px; padding-right: 1px;">
 				<div class="card-body" style="padding-left: 1px; padding-right: 1px;">
 					<h5>Course Registration</h5>
 					<jsp:include page="course/courseInfo.jsp"></jsp:include>
 				</div>
 			</div>
-			<div class="col-lg-4 bg-primary">
+			<div class="col-lg-4">
 				<div class="card-body">
 					<h5 class="card-title">Attendance</h5>
 					<jsp:include page="attendance/attendanceInfo.jsp"></jsp:include>
@@ -87,8 +87,6 @@
     	</div>
     </div>
  </div>
-
-
 
 
 
