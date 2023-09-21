@@ -2,6 +2,8 @@ package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.jni.Local;
+
 import hyung.jin.seo.jae.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -126,7 +128,7 @@ public class StudentDTO implements Serializable{
         this.endDate = (std.getEndDate()!=null) ? std.getEndDate().toString() : ""; 
     }
     
-	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate) {
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -139,9 +141,10 @@ public class StudentDTO implements Serializable{
 		this.state = (state!=null) ? state : "";
         this.branch = (branch!=null) ? branch : "";
         this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.endDate = (endDate!=null) ? endDate.toString() : "";
     }
 
-	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, int startWeek, int endWeek) {
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, int startWeek, int endWeek) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -154,6 +157,7 @@ public class StudentDTO implements Serializable{
 		this.state = (state!=null) ? state : "";
         this.branch = (branch!=null) ? branch : "";
         this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.endDate = (endDate!=null) ? endDate.toString() : "";
 		this.startWeek = startWeek;
 		this.endWeek = endWeek;
     }
