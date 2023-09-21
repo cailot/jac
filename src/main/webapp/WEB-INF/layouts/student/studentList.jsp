@@ -179,6 +179,34 @@ function inactivateStudent(id) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Student
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function activateStudent(id) {
+	if(confirm("Are you sure you want to re-activate this student?")){
+		// send query to controller
+		$.ajax({
+			url : '${pageContext.request.contextPath}/student/activate/' + id,
+			type : 'PUT',
+			success : function(data) {
+				// clear existing form
+				$('#success-alert .modal-body').text(
+						'ID : ' + id + ' is now re-activated');
+				$('#success-alert').modal('show');
+				$('#success-alert').on('hidden.bs.modal', function(e) {
+					location.reload();
+				});
+			},
+			error : function(xhr, status, error) {
+				console.log('Error : ' + error);
+			}
+		}); 
+	}else{
+		return;
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Student by User's click	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function retrieveStudentInfo(std) {
@@ -382,7 +410,14 @@ function retrieveStudentInfo(std) {
 												<td>
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<a href="#passwordStudentModal" class="password" data-toggle="modal"><i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
-				 									<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
+				 									<c:choose>
+														<c:when test="${empty student.endDate}">
+															<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
+														</c:otherwise>
+													</c:choose>
 												</td>
 											</tr>
 										</c:forEach>
