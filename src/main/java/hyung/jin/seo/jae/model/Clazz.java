@@ -78,6 +78,13 @@ public class Clazz{ // bridge table between Course & Cycle
    	})
     private Set<Enrolment> enrolments = new HashSet<>();
 
+	@OneToMany(mappedBy = "clazz", cascade = {
+		CascadeType.PERSIST,
+	   CascadeType.MERGE,
+	   CascadeType.REFRESH,
+	   CascadeType.DETACH
+   	})
+    private Set<Attendance> attendances = new HashSet<>();
 
 
 

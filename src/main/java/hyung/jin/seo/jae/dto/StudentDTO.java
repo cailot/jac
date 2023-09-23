@@ -2,8 +2,6 @@ package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.jni.Local;
-
 import hyung.jin.seo.jae.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
