@@ -1,0 +1,67 @@
+package hyung.jin.seo.jae.dto;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import org.apache.commons.lang3.StringUtils;
+
+import hyung.jin.seo.jae.model.Attendance;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+public class AttendanceDTO {
+    
+	private String id;
+
+	private String attendDate;
+
+	private String status;
+
+	private String week;
+
+	private String info;
+
+	private String studentId;
+
+	private String clazzId;
+
+	private String clazzDay;
+
+
+	public AttendanceDTO(Attendance attend){
+		this.id = String.valueOf(attend.getId());
+		this.attendDate = attend.getAttendDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.status = StringUtils.defaultString(attend.getStatus(), "");
+		this.week = StringUtils.defaultString(attend.getWeek(), "");
+		// this.classDay = StringUtils.defaultString(attend.getClassDay(), "");
+		this.info = StringUtils.defaultString(attend.getInfo(), "");
+	}
+
+	public Attendance convertToAttendance() {
+    	Attendance attendance = new Attendance();
+		if(StringUtils.isNotBlank(id)) attendance.setId(Long.parseLong(id));
+    	if(StringUtils.isNotBlank(attendDate)) attendance.setAttendDate(LocalDate.parse(attendDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
+		attendance.setStatus(status);
+		attendance.setWeek(week);
+		// attendance.setClassDay(classDay);
+		attendance.setInfo(info);		
+		return attendance;
+	}
+
+	public AttendanceDTO(long id, LocalDate attendDate, String status, String week, String info, long studentId, long clazzId, String clazzDay){
+		this.id = String.valueOf(id);
+		this.attendDate = attendDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.status = status;
+		this.week = week;
+		this.info = info;
+		this.studentId = String.valueOf(studentId);
+		this.clazzId = String.valueOf(clazzId);
+		this.clazzDay = clazzDay;
+	}
+
+}
