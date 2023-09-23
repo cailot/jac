@@ -10,12 +10,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -80,5 +87,17 @@ public class Teacher implements Serializable{
     
     @CreatedDate
     private LocalDate endDate;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+		CascadeType.PERSIST,
+		CascadeType.MERGE,
+		CascadeType.REFRESH,
+		CascadeType.DETACH
+	})
+    @JoinTable(name="Teacher_Class",
+    joinColumns = @JoinColumn(name="teacherId"),
+    inverseJoinColumns = @JoinColumn(name="clazzId")
+    )
+    private Set<Clazz> clazzs = new HashSet<>();
     
    }
