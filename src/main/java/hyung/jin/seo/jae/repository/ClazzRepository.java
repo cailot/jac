@@ -39,5 +39,8 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long>{
 	@Query(value = "SELECT cos.price FROM Course cos where cos.id = (SELECT c.courseId FROM Class c WHERE c.id = :clazzId)", nativeQuery = true)
 	double getPrice(Long clazzId);
 
+	// get academic year by class id
+	@Query(value = "SELECT c.cycle.year FROM Clazz c where c.id = ?1")
+	int getYear(Long clazzId);
 
 }
