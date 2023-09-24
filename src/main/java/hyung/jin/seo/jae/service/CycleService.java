@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import hyung.jin.seo.jae.dto.CycleDTO;
@@ -30,6 +31,9 @@ public interface CycleService {
 
 	// get academic end Saturday
 	String academicEndSaturday(int year, int week);
+
+	// get date by week and day
+	LocalDate getDateByWeekAndDay(int year, int week, String day);
 
 	// get Cycle by Id
     Cycle findById(String cycleId);

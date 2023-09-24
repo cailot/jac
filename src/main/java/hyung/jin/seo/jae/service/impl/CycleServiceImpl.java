@@ -272,4 +272,51 @@ public class CycleServiceImpl implements CycleService {
 		return startDate;
 	}
 
+	// @Override
+	// public String getDateByWeekAndDay(int year, int week, String day) {
+	// 	String start = academicStartSunday(year, week);
+	// 	switch(day){
+	// 		// case "Sunday":
+	// 		// 	return start;
+	// 		case "Monday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(1).format(dateFormatter);
+	// 		case "Tuesday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(2).format(dateFormatter);
+	// 		case "Wednesday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(3).format(dateFormatter);
+	// 		case "Thursday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(4).format(dateFormatter);
+	// 		case "Friday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5).format(dateFormatter);
+	// 		case "Saturday":
+	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6).format(dateFormatter);
+	// 		default: // Sunday or All
+	// 			return start;
+	// 	}
+	// }
+
+
+	@Override
+	public LocalDate getDateByWeekAndDay(int year, int week, String day) {
+		String start = academicStartSunday(year, week);
+		switch(day){
+			// case "Sunday":
+			// 	return start;
+			case "Monday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(1);
+			case "Tuesday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(2);
+			case "Wednesday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(3);
+			case "Thursday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(4);
+			case "Friday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5);
+			case "Saturday":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6);
+			default: // Sunday or All
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		}
+	}
+
 }
