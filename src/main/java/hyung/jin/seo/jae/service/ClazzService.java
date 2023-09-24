@@ -33,4 +33,7 @@ public interface ClazzService {
 
 	// get class price
 	double getPrice(Long id);
+
+	// get academic year
+	int getAcademicYear(Long id);
 }

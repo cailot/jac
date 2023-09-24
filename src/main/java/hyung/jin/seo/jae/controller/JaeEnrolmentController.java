@@ -19,6 +19,7 @@ import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.OutstandingDTO;
+import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Elearning;
@@ -26,8 +27,10 @@ import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.AttendanceService;
 import hyung.jin.seo.jae.service.BookService;
 import hyung.jin.seo.jae.service.ClazzService;
+import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.ElearningService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.InvoiceService;
@@ -63,6 +66,12 @@ public class JaeEnrolmentController {
 
 	@Autowired
 	private BookService bookService;
+
+	@Autowired
+	private AttendanceService attendanceService;
+
+	@Autowired
+	private CycleService cycleService;
 
 	// search enrolment by student Id and return mixed list of materials, enrolments, outstandings
 	@GetMapping("/search/student/{id}")
@@ -358,8 +367,10 @@ public class JaeEnrolmentController {
 				// invoiceService.updateInvoice(invoice, invoice.getId());
 				// 3. associate new Enrolment with Clazz,Student,Invoice
 				Enrolment enrolment = new Enrolment();
-				enrolment.setStartWeek(data.getStartWeek());
-				enrolment.setEndWeek(data.getEndWeek());
+				int startWeek = data.getStartWeek();
+				int endWeek = data.getEndWeek();
+				enrolment.setStartWeek(startWeek);
+				enrolment.setEndWeek(endWeek);
 				enrolment.setCredit(data.getCredit());
 				enrolment.setDiscount(data.getDiscount());
 				enrolment.setClazz(clazz);
@@ -372,6 +383,23 @@ public class JaeEnrolmentController {
 				data.setInvoiceId(invoice.getId()+"");
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
+
+
+
+				///////////////// Attendance ////////////////////////
+				int academicYear = clazzService.getAcademicYear(clazz.getId());
+				for(int i = startWeek; i <= endWeek; i++){
+					Attendance attendance = new Attendance();
+					attendance.setWeek(i+"");
+					attendance.setStudent(student);
+					attendance.setClazz(clazz);
+					attendance.setAttendDate(cycleService.getDateByWeekAndDay(academicYear, i, "Monday"));
+					attendance.setInfo(i+"th attendance...");
+					attendanceService.addAttendance(attendance);
+				}
+				//////////////////////////////////////////////////////////
+
+
 			}
 		}// end of loop
 		

@@ -143,4 +143,15 @@ public class ClazzServiceImpl implements ClazzService {
 		return price;
 	}
 
+	@Override
+	public int getAcademicYear(Long id) {
+		int year = 0;
+		try{
+			year = clazzRepository.getYear(id);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return year;
+	}
+
 }
