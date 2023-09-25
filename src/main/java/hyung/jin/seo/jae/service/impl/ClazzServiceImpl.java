@@ -138,7 +138,7 @@ public class ClazzServiceImpl implements ClazzService {
 		try{
 			price = clazzRepository.getPrice(id);
 		}catch(Exception e){
-			System.out.println("No class found");
+			System.out.println("No price found");
 		}
 		return price;
 	}
@@ -149,9 +149,20 @@ public class ClazzServiceImpl implements ClazzService {
 		try{
 			year = clazzRepository.getYear(id);
 		}catch(Exception e){
-			System.out.println("No class found");
+			System.out.println("No academic year found");
 		}
 		return year;
+	}
+
+	@Override
+	public String getDay(Long id) {
+		String day = "";
+		try{
+			day = clazzRepository.getDay(id);
+		}catch(Exception e){
+			System.out.println("No day found");
+		}
+		return day;
 	}
 
 }

@@ -7,6 +7,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
@@ -146,6 +147,15 @@ public class AttendanceServiceImpl implements AttendanceService {
 	public long checkCount() {
 		long count = attendanceRepository.count();
 		return count;
+	}
+
+	@Override
+	public void deleteAttendance(Long id) {
+		try{
+			attendanceRepository.deleteById(id);
+		}catch(EmptyResultDataAccessException e){
+			System.out.println("No attendance to delete");
+		}
 	}
 	
 }

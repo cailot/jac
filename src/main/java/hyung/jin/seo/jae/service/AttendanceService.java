@@ -22,6 +22,9 @@ public interface AttendanceService {
 	// update attendance
 	Attendance updateAttendance(Attendance attendance, Long id);
 
+	// delete attendance
+	void deleteAttendance(Long id);
+
 	// list attendances by student Id
 	List<AttendanceDTO> findAttendanceByStudent(Long studentId);
 

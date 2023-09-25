@@ -36,4 +36,7 @@ public interface ClazzService {
 
 	// get academic year
 	int getAcademicYear(Long id);
+
+	// get day
+	String getDay(Long id);
 }
