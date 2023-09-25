@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.Column;
 
 @Getter
@@ -40,7 +39,7 @@ public class Attendance{ // bridge table between Student & Class
 	@JoinColumn(name = "clazzId")
 	private Clazz clazz;
 
-	@CreationTimestamp
+	@Column
     private LocalDate attendDate;
 
 	@Column(length = 5)

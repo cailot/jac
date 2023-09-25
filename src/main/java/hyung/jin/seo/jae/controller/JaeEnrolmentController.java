@@ -1,5 +1,7 @@
 package hyung.jin.seo.jae.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
@@ -284,8 +287,10 @@ public class JaeEnrolmentController {
 					// invoiceService.updateInvoice(invoice, invoice.getId());
 					// 3. associate new Enrolment with Clazz,Student,Invoice
 					Enrolment enrolment = new Enrolment();
-					enrolment.setStartWeek(data.getStartWeek());
-					enrolment.setEndWeek(data.getEndWeek());
+					int startWeek = data.getStartWeek();
+					int endWeek = data.getEndWeek();
+					enrolment.setStartWeek(startWeek);
+					enrolment.setEndWeek(endWeek);
 					enrolment.setCredit(data.getCredit());
 					enrolment.setDiscount(data.getDiscount());
 					enrolment.setClazz(clazz);
@@ -298,6 +303,21 @@ public class JaeEnrolmentController {
 					data.setId(enrolment.getId()+"");
 					data.setInvoiceId(invoice.getId()+"");
 					dtos.add(data);
+
+					///////////////// Attendance ////////////////////////
+					int academicYear = clazzService.getAcademicYear(clazz.getId());
+					String clazzDay = clazzService.getDay(clazz.getId());
+					for(int i = startWeek; i <= endWeek; i++){
+						Attendance attendance = new Attendance();
+						attendance.setWeek(i+"");
+						attendance.setStudent(student);
+						attendance.setClazz(clazz);
+						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+						attendance.setAttendDate(attendDate);
+						attendanceService.addAttendance(attendance);
+					}
+					//////////////////////////////////////////////////////////
+
 				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
 					// 1. get existing Enrolment
 					Enrolment existing = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
@@ -319,24 +339,24 @@ public class JaeEnrolmentController {
 					invoice.setDiscount(invoice.getDiscount() - existDCAmount);
 					invoice.setAmount(invoice.getAmount() - existTotal);
 					// update with new values <PLUS>
-					int start = data.getStartWeek();
-					int end = data.getEndWeek();
+					int startWeek = data.getStartWeek();
+					int endWeek = data.getEndWeek();
 					int credit = data.getCredit();
 					// check discount is % or amount value
 					String discount =StringUtils.defaultString(data.getDiscount(), "0");
 					double discountAmount = 0;
 					if(discount.contains("%")){
-						discountAmount = (((end-start+1)-credit) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
+						discountAmount = (((endWeek-startWeek+1)-credit) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
 					}else{
 						discountAmount = Double.parseDouble(discount);
 					}
-					double enrolmentPrice = ((((end-start+1)-credit) * data.getPrice()) - discountAmount);
+					double enrolmentPrice = ((((endWeek-startWeek+1)-credit) * data.getPrice()) - discountAmount);
 					invoice.setCredit(invoice.getCredit() + credit);
 					invoice.setDiscount(invoice.getDiscount() + discountAmount);
 					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
 					// 3. update Enrolment - Invoice will be automatically updated
-					existing.setStartWeek(start);
-					existing.setEndWeek(end);
+					existing.setStartWeek(startWeek);
+					existing.setEndWeek(endWeek);
 					existing.setCredit(credit);
 					existing.setDiscount(discount);
 					enrolmentService.updateEnrolment(existing, existing.getId());
@@ -344,6 +364,45 @@ public class JaeEnrolmentController {
 					dtos.add(data);
 					// 5. remove enrolmentId from enrolmentIds
 					registeredIds.remove(existing.getId());
+
+					///////////////// Attendance ////////////////////////
+					Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
+					int academicYear = clazzService.getAcademicYear(clazz.getId());
+					String clazzDay = clazzService.getDay(clazz.getId());
+					List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazz.getId());
+					int minValue = Integer.parseInt(attendances.get(0).getWeek());
+					int maxValue = Integer.parseInt(attendances.get(attendances.size()-1).getWeek());
+
+					LocalDate today = LocalDate.now();
+						
+					for(AttendanceDTO attendance : attendances){
+						// check attendDate is later than today
+						LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+						if(attendDate.isAfter(today)){
+							// update attendance
+							int week = Integer.parseInt(attendance.getWeek());
+							// if week is before startWeek or after endWeek, delete attendance
+							if((week < startWeek) || (week > endWeek)){
+								long attendId = Long.parseLong(attendance.getId());
+								attendanceService.deleteAttendance(attendId);
+							}							
+						}
+					}
+					// add new attendance if not exist
+					for(int i = startWeek; i <= endWeek; i++){
+						// check week does not belong to min/max value, then add attendance
+						if((i < minValue) || (i > maxValue)){
+							Attendance attendance = new Attendance();
+							attendance.setWeek(i+"");
+							attendance.setStudent(student);
+							attendance.setClazz(clazz);
+							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+							attendance.setAttendDate(attendDate);
+							attendanceService.addAttendance(attendance);
+						}
+					}
+					//////////////////////////////////////////////////////////
+
 				}
 
 			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)	
@@ -384,21 +443,19 @@ public class JaeEnrolmentController {
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
 
-
-
 				///////////////// Attendance ////////////////////////
 				int academicYear = clazzService.getAcademicYear(clazz.getId());
+				String clazzDay = clazzService.getDay(clazz.getId());
 				for(int i = startWeek; i <= endWeek; i++){
 					Attendance attendance = new Attendance();
 					attendance.setWeek(i+"");
 					attendance.setStudent(student);
 					attendance.setClazz(clazz);
-					attendance.setAttendDate(cycleService.getDateByWeekAndDay(academicYear, i, "Monday"));
-					attendance.setInfo(i+"th attendance...");
+					LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+					attendance.setAttendDate(attendDate);
 					attendanceService.addAttendance(attendance);
 				}
 				//////////////////////////////////////////////////////////
-
 
 			}
 		}// end of loop
@@ -426,6 +483,21 @@ public class JaeEnrolmentController {
 			// invoiceService.updateInvoice(invoice, invoice.getId());
 			// archive Enrolment - Invoice will be automatically updated
 			enrolmentService.archiveEnrolment(enrolmentId);
+
+			///////////////// Attendance ////////////////////////
+			long clazzId = enrolment.getClazz().getId();
+			List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
+			for(AttendanceDTO attendance : attandances){
+				// check attendDate is later than today
+				LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+				LocalDate today = LocalDate.now();
+				if(attendDate.isAfter(today)){
+					// delete attendance
+					long attendId = Long.parseLong(attendance.getId());
+					attendanceService.deleteAttendance(attendId);
+				}
+			}
+			//////////////////////////////////////////////////////////
 		}
 
 		return dtos;
