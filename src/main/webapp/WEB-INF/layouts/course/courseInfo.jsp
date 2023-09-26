@@ -1082,24 +1082,19 @@ async function listElearns(grade) {
 	</form>
 </div>
 	
-	
-	
-	
-	
-	<!-- Bootstrap Alert (Hidden by default) -->
-	<div id="addAlert" class="alert alert-info alert-dismissible fade hide" role="alert">
-		This is an alert that pops up when the user clicks the 'OK' button.
-	</div>
-	<div id="warningAlert" class="alert alert-warning alert-dismissible fade hide" role="alert">
-		This is an alert that pops up when the user clicks the 'OK' button.
-	</div>
-	<div id="deleteAlert" class="alert alert-danger alert-dismissible fade hide" role="alert">
-		This is an alert that pops up when the user clicks the 'OK' button.
-	</div>
-	
-	
-	<!-- Bootstrap Editable Table JavaScript -->
-	<script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
+<!-- Bootstrap Alert (Hidden by default) -->
+<div id="addAlert" class="alert alert-info alert-dismissible fade hide" role="alert" style="display: none;">
+    This is an alert that pops up when the user clicks the 'OK' button.
+</div>
+<div id="warningAlert" class="alert alert-warning alert-dismissible fade hide" role="alert" style="display: none;">
+    This is an alert that pops up when the user clicks the 'OK' button.
+</div>
+<div id="deleteAlert" class="alert alert-danger alert-dismissible fade hide" role="alert" style="display: none;">
+    This is an alert that pops up when the user clicks the 'OK' button.
+</div>
+
+<!-- Bootstrap Editable Table JavaScript -->
+<script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
 		
 			
 	
