@@ -576,7 +576,7 @@ function addInformation(){
 
 </style>
 <!-- Main Body -->
-<div class="modal-body" style="padding-top: 0.25rem; padding-left: 0rem; padding-right: 0rem;">
+<div class="modal-body" style="padding-left: 0rem; padding-right: 0rem;">
 	<form id="">
 		<div class="form-group">
 			<div class="form-row">
@@ -638,15 +638,6 @@ function addInformation(){
 		</div>
 	</form>
 </div>
-
-
-
-
-
-
-
-
-
 
 <!-- Payment Dialogue -->
 <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

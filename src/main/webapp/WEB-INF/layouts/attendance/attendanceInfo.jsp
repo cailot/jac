@@ -2,6 +2,8 @@
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
 
 <script>
+const ATTENDANCE = 'attendance';
+
 $(document).ready(function() {
     var windowHeight = $(window).height();
     var scrollHeight = windowHeight * 0.35; // Adjust the percentage as needed
@@ -18,6 +20,49 @@ $(document).ready(function() {
 
     $('.dataTables_length').addClass('bs-select');
 });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Retrieve attendace list
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function retrieveAttendance(studentId) {
+	// get the attendance list
+	$.ajax({
+			url: '${pageContext.request.contextPath}/attendance/list/student/' + studentId,
+			method: 'GET',
+			success: function(response) {
+				// Handle the response
+				//debugger;
+				$.each(response, function(index, value){
+					//console.log(index + ' - ' + value);  
+					var row = $("<tr class='d-flex'>");
+					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
+					row.append($('<td class="small" style="width: 20%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
+					row.append($('<td class="small" style="width: 35%;">').text(value.attendDate));
+					row.append($('<td class="small" style="width: 15%;">').text(value.status));
+					row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));
+					$('#attendanceTable > tbody').append(row);  
+	
+				});
+			},
+			error: function(xhr, status, error) {
+				// Handle the error
+				console.error(error);
+			}
+	});
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clean attendace list
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearAttendanceTable() {
+	$('#attendanceTable > tbody').empty();
+}
+
+
+
+
 </script>
 <div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 	<form id="accetandanceForm">
@@ -26,242 +71,15 @@ $(document).ready(function() {
 				<div class="col-md-12">
 					<table class="table" id="attendanceTable" name="attendanceTable" >
 						<thead>
-							<tr>
-								<th class="smaller-table-font text-center">Week</th>
-								<th class="smaller-table-font text-center">Date</th>
-								<th class="smaller-table-font text-center">Status</th>
-								<th class="smaller-table-font text-center">Class</th>
+							<tr class="d-flex">
+								<th class="hidden-column"></th>
+								<th class="smaller-table-font text-center" style="width: 20%;">Week</th>
+								<th class="smaller-table-font text-center" style="width: 35%;">Date</th>
+								<th class="smaller-table-font text-center" style="width: 15%;">Status</th>
+								<th class="smaller-table-font text-center" style="width: 30%;">Class</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
-							<tr>
-								<td class="small">P2-15</td>
-								<td class="small">20/09/2023</td>
-								<td class="small">A</td>
-								<td class="small">Tuesday</td>
-							</tr>
 						</tbody>
 					</table> 
 					

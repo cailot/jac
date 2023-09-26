@@ -1021,90 +1021,65 @@ async function listElearns(grade) {
 										<th class="smaller-table-font text-center hidden-column"></th>
 									</tr>
 								</thead>
-								<tbody>
-									
+								<tbody>	
 								</tbody>
 							</table> 
 						</div>
-				<!-- <script>
-					// Function to check if tbody is empty and enable or disable the button
-					function checkTbodyEmpty() {
-						// Get the tbody element
-						var tbody = document.querySelector('#basketTable tbody');
-						// If tbody is empty, disable the button
-						if (tbody.children.length === 0) {
-						$('#applyEnrolmentBtn').prop('disabled', true);
-						$('#deleteEnrolmentBtn').prop('disabled', true);
-						$('#clearEnrolmentBtn').prop('disabled', true);
-						} else {
-						$('#applyEnrolmentBtn').prop('disabled', false);
-						$('#deleteEnrolmentBtn').prop('disabled', false);
-						$('#clearEnrolmentBtn').prop('disabled', false);
-						}
-					}
-					// Call the checkTbodyEmpty function initially
-					checkTbodyEmpty();
-					// Attach an event listener to the tbody that will trigger the checkTbodyEmpty function whenever its content changes
-					var tbody = document.querySelector('#basketTable tbody');
-					tbody.addEventListener('DOMSubtreeModified', checkTbodyEmpty);
-				</script> -->
-				<!-- e-Learning -->
-				<div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
-					<table class="table" id="elearnTable" name="elearnTable">
-						<thead>
-							<tr class="d-flex">
-								<th class="hidden-column"></th>
-								<th class="smaller-table-font col-1">Item</th>
-								<th class="smaller-table-font col-1">Grade</th>
-								<th class="smaller-table-font col-9" style="padding-left: 20px;">Subjects</th>
-								<th class="col-1"></th>
-							</tr>
-						</thead>
-						<tbody>
-							
-						</tbody>
-					</table>
-				</div>
-				<!-- Course -->
-				<div class="tab-pane fade" id="nav-fee" role="tabpanel" aria-labelledby="nav-fee-tab">
-						<table class="table" id="courseTable" name="courseTable">
-							<thead>
-								<tr class="d-flex">
-									<th class="hidden-column"></th>
-									<th class="smaller-table-font col-1">Item</th>
-									<th class="smaller-table-font col-5" style="padding-left: 20px;">Name</th>
-									<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
-									<th class="smaller-table-font col-1">Price</th>
-									<th class="smaller-table-font col-1"></th>
-								</tr>
-							</thead>
-							<tbody>
-								
-							</tbody>
-						</table>
-					</div>
-					<!-- Book -->
-					<div class="tab-pane fade" id="nav-book" role="tabpanel" aria-labelledby="nav-book-tab">
-						<table class="table" cellspacing="0" id="bookTable" name="bookTable">
-							<thead>
-								<tr class="d-flex">
-									<th class="hidden-column"></th>
-									<th class="smaller-table-font col-1">Item</th>
-									<th class="smaller-table-font col-5" style="padding-left: 20px;">Description</th>
-									<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
-									<th class="smaller-table-font col-1">Price</th>
-									<th class="smaller-table-font col-1"></th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
+						<!-- e-Learning -->
+						<div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
+							<table class="table" id="elearnTable" name="elearnTable">
+								<thead>
+									<tr class="d-flex">
+										<th class="hidden-column"></th>
+										<th class="smaller-table-font col-1">Item</th>
+										<th class="smaller-table-font col-1">Grade</th>
+										<th class="smaller-table-font col-9" style="padding-left: 20px;">Subjects</th>
+										<th class="col-1"></th>
+									</tr>
+								</thead>
+								<tbody>	
+								</tbody>
+							</table>
+						</div>
+						<!-- Course -->
+						<div class="tab-pane fade" id="nav-fee" role="tabpanel" aria-labelledby="nav-fee-tab">
+							<table class="table" id="courseTable" name="courseTable">
+								<thead>
+									<tr class="d-flex">
+										<th class="hidden-column"></th>
+										<th class="smaller-table-font col-1">Item</th>
+										<th class="smaller-table-font col-5" style="padding-left: 20px;">Name</th>
+										<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
+										<th class="smaller-table-font col-1">Price</th>
+										<th class="smaller-table-font col-1"></th>
+									</tr>
+								</thead>
+								<tbody>									
+								</tbody>
+							</table>
+						</div>
+						<!-- Book -->
+						<div class="tab-pane fade" id="nav-book" role="tabpanel" aria-labelledby="nav-book-tab">
+							<table class="table" cellspacing="0" id="bookTable" name="bookTable">
+								<thead>
+									<tr class="d-flex">
+										<th class="hidden-column"></th>
+										<th class="smaller-table-font col-1">Item</th>
+										<th class="smaller-table-font col-5" style="padding-left: 20px;">Description</th>
+										<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
+										<th class="smaller-table-font col-1">Price</th>
+										<th class="smaller-table-font col-1"></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</form>
+	</form>
 </div>
 	
 	
