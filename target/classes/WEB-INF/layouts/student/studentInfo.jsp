@@ -294,6 +294,8 @@
 		readyForCourseRegistration(value['grade']);
 		// 2. trigger 'retrieveEnrolment' in courseInfo.jsp
 		retrieveEnrolment(value['id']);
+		// 3. trigger 'retrievAttenance' in attendanceInfo.jsp
+		retrieveAttendance(value['id']);
 	
 	}
 
@@ -308,6 +310,8 @@
 		clearInvoiceTable();
 		// clear course register section
 		clearCourseRegisteration();
+		// clear attendance table
+		clearAttendanceTable();
 	}
 
 	// date format for datepicker. it changes date format from yyyy-mm-dd to dd/mm/yyyy

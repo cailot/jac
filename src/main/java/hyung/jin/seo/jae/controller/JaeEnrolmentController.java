@@ -372,9 +372,7 @@ public class JaeEnrolmentController {
 					List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazz.getId());
 					int minValue = Integer.parseInt(attendances.get(0).getWeek());
 					int maxValue = Integer.parseInt(attendances.get(attendances.size()-1).getWeek());
-
-					LocalDate today = LocalDate.now();
-						
+					LocalDate today = LocalDate.now();		
 					for(AttendanceDTO attendance : attendances){
 						// check attendDate is later than today
 						LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));

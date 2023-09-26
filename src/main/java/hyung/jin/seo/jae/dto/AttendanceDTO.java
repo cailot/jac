@@ -32,6 +32,8 @@ public class AttendanceDTO {
 
 	private String clazzDay;
 
+	private String clazzGrade;
+
 
 	public AttendanceDTO(Attendance attend){
 		this.id = String.valueOf(attend.getId());
@@ -53,7 +55,7 @@ public class AttendanceDTO {
 		return attendance;
 	}
 
-	public AttendanceDTO(long id, LocalDate attendDate, String status, String week, String info, long studentId, long clazzId, String clazzDay){
+	public AttendanceDTO(long id, LocalDate attendDate, String status, String week, String info, long studentId, long clazzId, String clazzDay, String clazzGrade){
 		this.id = String.valueOf(id);
 		this.attendDate = attendDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.status = status;
@@ -62,6 +64,7 @@ public class AttendanceDTO {
 		this.studentId = String.valueOf(studentId);
 		this.clazzId = String.valueOf(clazzId);
 		this.clazzDay = clazzDay;
+		this.clazzGrade = clazzGrade;
 	}
 
 }
