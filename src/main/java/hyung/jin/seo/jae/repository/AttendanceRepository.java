@@ -11,15 +11,15 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 
 
 	// bring AttendanceDTO by clazz id
-	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day) FROM Attendance a WHERE a.clazz.id = ?1") 
+	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day, a.clazz.course.grade) FROM Attendance a WHERE a.clazz.id = ?1 ORDER BY a.week") 
 	List<AttendanceDTO> findAttendanceByClazzId(long clazzId);
 
 	// bring AttendanceDTO by student id
-	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day) FROM Attendance a WHERE a.student.id = ?1") 
+	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day, a.clazz.course.grade) FROM Attendance a WHERE a.student.id = ?1 ORDER BY a.week") 
 	List<AttendanceDTO> findAttendanceByStudentId(long studentId);
 
 	// bring AttendanceDTO by student id & clazz id
-	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day) FROM Attendance a WHERE a.student.id = ?1 AND a.clazz.id = ?2 ORDER BY a.week") 
+	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.clazz.id, a.clazz.day, a.clazz.course.grade) FROM Attendance a WHERE a.student.id = ?1 AND a.clazz.id = ?2 ORDER BY a.week") 
 	List<AttendanceDTO> findAttendanceByStudentIdAndClazzId(long studentId, long clazzId);	
 
 	// return attendance id by clazz id
