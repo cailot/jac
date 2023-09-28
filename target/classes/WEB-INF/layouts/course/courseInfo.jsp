@@ -581,6 +581,9 @@ async function listElearns(grade) {
 					}
 				});
 	
+				// 3. make sure updating attendance table after updating enrolment
+				retrieveAttendance(studentId);
+
 				// check how many rows in basketTable table
 				var rowCount = $('#basketTable tbody tr').length;
 				// console.log(rowCount);
@@ -617,7 +620,7 @@ async function listElearns(grade) {
 				console.error(error);
 			}
 		});
-		
+
 	}
 	
 	

@@ -26,6 +26,8 @@ $(document).ready(function() {
 //		Retrieve attendace list
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function retrieveAttendance(studentId) {
+	// clear the attendance list
+	clearAttendanceTable();
 	// get the attendance list
 	$.ajax({
 			url: '${pageContext.request.contextPath}/attendance/list/student/' + studentId,
@@ -34,7 +36,7 @@ function retrieveAttendance(studentId) {
 				// Handle the response
 				//debugger;
 				$.each(response, function(index, value){
-					//console.log(index + ' - ' + value);  
+					console.log(index + ' - ' + value.id);  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
 					row.append($('<td class="small" style="width: 20%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
@@ -42,7 +44,6 @@ function retrieveAttendance(studentId) {
 					row.append($('<td class="small" style="width: 15%;">').text(value.status));
 					row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));
 					$('#attendanceTable > tbody').append(row);  
-	
 				});
 			},
 			error: function(xhr, status, error) {
