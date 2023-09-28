@@ -36,7 +36,7 @@ function retrieveAttendance(studentId) {
 				// Handle the response
 				//debugger;
 				$.each(response, function(index, value){
-					console.log(index + ' - ' + value.id);  
+					// console.log(index + ' - ' + value.id);  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
 					row.append($('<td class="small" style="width: 20%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));

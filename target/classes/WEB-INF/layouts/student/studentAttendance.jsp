@@ -1,7 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables.min.css"></link>
@@ -14,10 +13,14 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
+
+
+
+
   
 <script>
 $(document).ready(function () {
-    $('#studentInvoiceTable').DataTable({
+    $('#attendanceTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -43,34 +46,15 @@ $(document).ready(function () {
 				orderable: true
 			}
 		],	
-		order : [[0, 'desc'], [1, 'desc']], // order by invoiceId desc, id desc
-		// sum for paid
-		footerCallback: function (row, data, start, end, display) {
-    		var api = this.api();
-			//console.log(api.column(4).data());
-    		// Custom function to parse and sum values
-			var parseAndSum = function (data) {
-				var total = 0;
-				for (var i = 0; i < data.length; i++) {
-					var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-					if (!isNaN(value)) {
-						total += value;
-					}
-				}
-				return total;
-			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer
-			$(api.column(8).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
-		}		
+		order : [[0, 'desc'], [1, 'desc']] // order by invoiceId desc, id desc
+				
     });
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //			Search Student with Keyword	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-function searchStudent() {
+function searchStudent1() {
 	// debugger;
 	//warn if keyword is empty
 	if ($("#studentKeyword").val() == '') {
@@ -135,44 +119,26 @@ function getInvoice(studentId) {
 	form.submit();
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Payment History in another tab
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId;  
-	var win = window.open(url, '_blank');
-	win.focus();
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Clear Student Info	
+//		Clear Attendance Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function clearStudentInfo() {
-	$("#studentKeyword").val('');
-	document.getElementById("studentInvoice").reset();
+function clearAttendanceInfo() {
+	document.getElementById("studentAttend").reset();
+	// Hide the studentInfo div
 	var studentInfoDiv = document.getElementById("studentInfo");
 	if (studentInfoDiv) {
   		studentInfoDiv.innerHTML = '';
 		studentInfoDiv.style.display = 'none';
 	}
-	//studentInvoiceTable all rows remove
-	$('#studentInvoiceTable > tbody').empty();
-	$('#studentInvoiceTable > tfoot').empty();
+	//attendanceTable all rows remove
+	$('#attendanceTable > tobody').empty();
 }
 
 </script>
 
 <style>
-	#studentInvoiceTable th, tr {
+	#attendanceTable th, tr {
 		padding: 15px;
-	}
-	#studentInvoiceTable tfoot tr th {
-    	border: none !important;
-	}
-	#studentInvoice .form-row {
-  		margin-top: 20px;
-		margin-bottom: 20px;
 	}
 	div.dataTables_filter {
 		padding-top: 35px;
@@ -187,15 +153,13 @@ function clearStudentInfo() {
 		padding-bottom: 10px;
 	}
 	tr { height: 50px } 
-
-
 </style>
 
 
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history">
+		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/invoice/history">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -240,18 +204,44 @@ function clearStudentInfo() {
 							<option value="packenham">Packenham</option>
 						</select>
 					</div>
+					<div class="col-md-1">
+						<label for="listGrade" class="label-form">Grade</label> 
+						<select class="form-control" id="listGrade" name="listGrade">
+							<option value="All">All</option>
+							<option value="p2">P2</option>
+							<option value="p3">P3</option>
+							<option value="p4">P4</option>
+							<option value="p5">P5</option>
+							<option value="p6">P6</option>
+							<option value="s7">S7</option>
+							<option value="s8">S8</option>
+							<option value="s9">S9</option>
+							<option value="s10">S10</option>
+							<option value="s10e">S10E</option>
+							<option value="tt6">TT6</option>
+							<option value="tt8">TT8</option>
+							<option value="tt8e">TT8E</option>
+							<option value="srw4">SRW4</option>
+							<option value="srw5">SRW5</option>
+							<option value="srw6">SRW6</option>
+							<option value="srw8">SRW8</option>
+							<option value="jmss">JMSS</option>
+							<option value="vce">VCE</option>
+						</select>
+					</div>
 					<div class="col-md-2">
-						<label for="studentKeyword" class="label-form">Student Info</label> 
-						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
+						<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder=" Select a date" required>
+					</div>
+					<div class="col-md-2">
+						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder=" Select a date" required>
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-2">
-					</div>
-					<div class="col-md-2">
+					<!-- <div class="offset-md-1">  -->
+					<div class="col max-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
-					<div class="col-md-2">
+					<div class="col max-auto">
 						<label class="label-form-white">Clear</label> 
 						<button type="button" class="btn btn-block btn-success" onclick="clearStudentInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 					</div>
@@ -282,7 +272,7 @@ function clearStudentInfo() {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="studentInvoiceTable" class="table table-striped table-bordered" style="width: 100%;">
+							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
 										<th>Invoice ID</th>
@@ -290,7 +280,7 @@ function clearStudentInfo() {
 										<th>Payment Date</th>
 										<th>Method</th>
 										<th>Total</th>
-										<th>Remaining</th>
+										<th>Outstanding</th>
 										<th>Paid</th>
 										<th>Enrolled Course Information</th>
 										<th data-orderable="false">Receipt</th>
@@ -336,15 +326,6 @@ function clearStudentInfo() {
 										</c:forEach>
 									</c:if>
 								</tbody>
-								<tfoot>
-									<tr>
-										<th></th>
-										<th></th>
-										<th colspan="2"></th>
-										<th colspan="3"></th>
-										<th colspan="2" class="text-right small"></th>
-									</tr>
-								</tfoot>
 							</table>
 						</div>
 					</div>
@@ -374,51 +355,3 @@ function clearStudentInfo() {
 	</div>
 </div>
 
-<!-- Search Result Dialog -->
-<div class="modal fade" id="studentListResult">
-	<div class="modal-dialog modal-xl modal-dialog-centered">
-	  <div class="modal-content">
-		<div class="modal-header bg-primary text-white">
-		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
-		  <button type="button" class="close" data-dismiss="modal">
-			<span>&times;</span>
-		  </button>
-		</div>
-		<div class="modal-body table-wrap">
-		  <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
-			<thead class="thead-light">
-			  <tr>
-				<th data-field="id">ID</th>
-				<th data-field="firstname">First Name</th>
-				<th data-field="lastname">Last Name</th>
-				<th data-field="grade">Grade</th>
-				<th data-field="grade">Gender</th>
-				<th data-field="startdate">Start Date</th>
-				<th data-field="enddate">End Date</th>
-				<th data-field="email">Main Email</th>
-				<th data-field="contact1">Main Contact</th>
-				<th data-field="email">Sub Email</th>
-				<th data-field="contact2">Sub Contact</th>
-				<th data-field="address">Address</th>
-			  </tr>
-			</thead>
-			<tbody>
-			</tbody>
-		  </table>
-		</div>
-		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		</div>
-	  </div>
-	</div>
-  </div>
-  
-<style>
-	.table-wrap {
-	  overflow-x: auto;
-	}
-	#studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-	.form-group{
-		margin-bottom: 30px;
-	}
-</style>
