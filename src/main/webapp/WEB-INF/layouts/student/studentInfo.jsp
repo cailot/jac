@@ -55,7 +55,8 @@
 				var date = new Date(student.registerDate); // Replace with your date value
 				$("#formRegisterDate").datepicker('setDate', date);
 				// clear existing course registration
-				clearCourseRegisteration();
+				// clearCourseRegisteration();
+				clearStudentForm();
 				// ready for course registration
 				readyForCourseRegistration(student.grade);
 			},
@@ -313,18 +314,6 @@
 		// clear attendance table
 		clearAttendanceTable();
 	}
-
-	// date format for datepicker. it changes date format from yyyy-mm-dd to dd/mm/yyyy
-	// function formatDate(dateString) {
-	// 	if (dateString.includes('-')) {
-	// 		const parts = dateString.split('-');
-	// 		const formattedDate = parts.reverse().join('/');
-	// 		return formattedDate;
-	// 	} else {
-	// 		return dateString; // Return the original string if it doesn't contain '-'
-	// 	}
-	// }
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 	Initialise Course Register section
@@ -671,7 +660,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="datepicker" class="label-form">Registration Date</label> <input type="text" class="form-control datepicker" id="formRegisterDate" name="formRegisterDate" placeholder=" Select a date" required>
+				<label for="formRegisterDate" class="label-form">Registration Date</label> <input type="text" class="form-control datepicker" id="formRegisterDate" name="formRegisterDate" placeholder=" Select a date" required>
 			</div>
 		</div>
 		<div class="form-row mt-3">

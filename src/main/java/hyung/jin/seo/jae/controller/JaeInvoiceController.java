@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,7 @@ public class JaeInvoiceController {
 
 	@Autowired
 	private StudentService studentService;
+
 	
 	// count records number in database
 	@GetMapping("/count")
@@ -440,8 +442,8 @@ public class JaeInvoiceController {
 		}
 	}
 
-
-	private void clearSession(HttpSession session){
+	@GetMapping("/clearSession")
+	public void clearSession(HttpSession session){
 		Enumeration<String> names = session.getAttributeNames();
 		while(names.hasMoreElements()){
 			String name = names.nextElement();

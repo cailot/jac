@@ -24,6 +24,11 @@ public class JaeController {
 		return "studentInvoicePage";
 	}
 
+	@GetMapping("/studentAttendance")
+	public String studentAttendance(HttpSession session) {
+		return "studentAttendancePage";
+	}
+
 	@GetMapping("/courseList")
 	public String courseList(HttpSession session) {
 		return "courseListPage";

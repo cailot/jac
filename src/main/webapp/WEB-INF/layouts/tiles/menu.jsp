@@ -78,9 +78,10 @@
 			  Student
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentAdmin">Student Admin</a>
-			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentList">Student List</a>
-				  <a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentInvoice">Student Invoice</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
+			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentList">Enrolment List</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentAttendance">Attendance Book</a>
 			</div>
 		</li>
 
