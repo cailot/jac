@@ -151,9 +151,14 @@ function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymen
 function clearStudentInfo() {
 	$("#studentKeyword").val('');
 	document.getElementById("studentInvoice").reset();
-	document.getElementById("studentInfo").innerHTML = '';
+	var studentInfoDiv = document.getElementById("studentInfo");
+	if (studentInfoDiv) {
+  		studentInfoDiv.innerHTML = '';
+		studentInfoDiv.style.display = 'none';
+	}
 	//studentInvoiceTable all rows remove
-	$('#studentInvoiceTable').clear();
+	$('#studentInvoiceTable > tbody').empty();
+	$('#studentInvoiceTable > tfoot').empty();
 }
 
 </script>
@@ -253,10 +258,8 @@ function clearStudentInfo() {
 				</div>
 			</div>
 			<!-- Student Info-->
-			
-			
-			<div id="studentInfo" class="alert alert-info">
-				<c:if test="${not empty sessionScope.studentInfo}">
+			<c:if test="${not empty sessionScope.studentInfo}">
+				<div id="studentInfo" class="alert alert-info">
 					<c:set var="student" value="${sessionScope.studentInfo}" />
 					<c:set var="studentId" value="${student.id}" />
 					<c:set var="studentFirstName" value="${student.firstName}" />
@@ -272,9 +275,9 @@ function clearStudentInfo() {
 							<td class="text-center">Name : <span class="font-weight-bold"><c:out value="${student.firstName} ${student.lastName}" /></span></td>
 							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${student.grade}" /></span></td>
 						</tr>
-					</table>	
-				</c:if>
-			</div>
+					</table>						
+				</div>
+			</c:if>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
@@ -287,7 +290,7 @@ function clearStudentInfo() {
 										<th>Payment Date</th>
 										<th>Method</th>
 										<th>Total</th>
-										<th>Outstanding</th>
+										<th>Remaining</th>
 										<th>Paid</th>
 										<th>Enrolled Course Information</th>
 										<th data-orderable="false">Receipt</th>
