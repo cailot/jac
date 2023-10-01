@@ -1097,7 +1097,7 @@ async function listElearns(grade) {
 </div>
 
 <!-- Bootstrap Editable Table JavaScript -->
-<script src="${pageContext.request.contextPath}/js/bootstrap-table.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap-table-1.21.4.min.js"></script>
 		
 			
 	
