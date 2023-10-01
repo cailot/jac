@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables.min.css"></link>
-<script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 
 <script>
 const ATTENDANCE = 'attendance';
