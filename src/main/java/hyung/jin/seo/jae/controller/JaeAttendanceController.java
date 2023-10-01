@@ -1,6 +1,9 @@
 package hyung.jin.seo.jae.controller;
 
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,11 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
+import hyung.jin.seo.jae.dto.PaymentDTO;
+import hyung.jin.seo.jae.dto.SearchCriteriaDTO;
 import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.service.AttendanceService;
+import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("attendance")
@@ -38,14 +46,38 @@ public class JaeAttendanceController {
 		return dtos;
 	}
 
-	// register new attendance
-	@PostMapping("/register")
-	@ResponseBody
-	public AttendanceDTO registerAttendance(@RequestBody AttendanceDTO formData) {
-		Attendance attend = formData.convertToAttendance();
-		AttendanceDTO dto = attendanceService.addAttendance(attend);
-		return dto;
+	// search attendance
+	@GetMapping("/search")
+	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+		// 1. clear session
+		JaeUtils.clearSession(session);
+		// 2. set search criteria
+		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+		criteria.setState(state);
+		criteria.setBranch(branch);
+		criteria.setGrade(grade);
+		criteria.setFromDate(fromDate);
+		criteria.setToDate(toDate);
+		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);		
+		// 6. return redirect page
+		return "studentAttendancePage";
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// update existing attendance
 	@PutMapping("/update")

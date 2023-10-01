@@ -1,7 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -13,13 +12,36 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
+<style>
+	#attendanceTable th, tr {
+		padding: 15px;
+	}
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+	div.dataTables_length{
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+	tr { height: 50px } 
 
+	.ui-datepicker {
+            width: 200px; /* Adjust the width as needed */
+            height: 200px; /* Adjust the height as needed */
+            margin: 0; /* Remove any margin */
+            padding: 0; /* Remove any padding */
+        }
+</style>
 
-
-
-  
 <script>
 $(document).ready(function () {
+	// $('#fromDate').datepicker();
+	// $('#toDate').datepicker();
     $('#attendanceTable').DataTable({
     	language: {
     		search: 'Filter:'
@@ -49,58 +71,24 @@ $(document).ready(function () {
 		order : [[0, 'desc'], [1, 'desc']] // order by invoiceId desc, id desc
 				
     });
+
+	// Set default date format
+	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
+
+	$('.datepicker').datepicker({
+		autoclose : true,
+		todayHighlight : true
+	});
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//			Search Student with Keyword	
+//			Check Parameters For Search Attendance	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-function searchStudent1() {
+function searchAttendance() {
 	// debugger;
-	//warn if keyword is empty
-	if ($("#studentKeyword").val() == '') {
-		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
 	// send query to controller
-	$('#studentListResultTable tbody').empty();
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/search',
-		type : 'GET',
-		data : {
-			keyword : $("#studentKeyword").val()
-		},
-		success : function(data) {
-			// console.log('search - ' + data);
-			if (data == '') {
-				$('#warning-alert .modal-body').html('No record found with <b>' + $("#studentKeyword").val() + '</b>');
-				$('#warning-alert').modal('toggle');
-				clearStudentInfo();
-				return;
-			}
-			$.each(data, function(index, value) {
-				const cleaned = cleanUpJson(value);
-				var row = $("<tr onclick='getInvoice(" + value.id + ")'>");		
-				row.append($('<td>').text(value.id));
-				row.append($('<td>').text(value.firstName));
-				row.append($('<td>').text(value.lastName));
-				row.append($('<td>').text(value.grade.toUpperCase()));
-				row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
-				row.append($('<td>').text(formatDate(value.registerDate)));
-				row.append($('<td>').text(formatDate(value.endDate)));
-				row.append($('<td>').text(value.email1));
-				row.append($('<td>').text(value.contactNo1));
-				row.append($('<td>').text(value.email2));
-				row.append($('<td>').text(value.contactNo2));
-				row.append($('<td>').text(value.address));
-				$('#studentListResultTable > tbody').append(row);
-			});
-			$('#studentListResult').modal('show');
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
+	$('#attendanceTable tbody').empty();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,10 +113,10 @@ function getInvoice(studentId) {
 function clearAttendanceInfo() {
 	document.getElementById("studentAttend").reset();
 	// Hide the studentInfo div
-	var studentInfoDiv = document.getElementById("studentInfo");
-	if (studentInfoDiv) {
-  		studentInfoDiv.innerHTML = '';
-		studentInfoDiv.style.display = 'none';
+	var criteriaInfoDiv = document.getElementById("criteriaInfo");
+	if (criteriaInfoDiv) {
+  		criteriaInfoDiv.innerHTML = '';
+		criteriaInfoDiv.style.display = 'none';
 	}
 	//attendanceTable all rows remove
 	$('#attendanceTable > tobody').empty();
@@ -136,30 +124,12 @@ function clearAttendanceInfo() {
 
 </script>
 
-<style>
-	#attendanceTable th, tr {
-		padding: 15px;
-	}
-	div.dataTables_filter {
-		padding-top: 35px;
-		padding-bottom: 35px;
-	}
-	div.dt-buttons {
-		padding-top: 35px;
-		padding-bottom: 10px;
-	}
-	div.dataTables_length{
-		padding-top: 40px;
-		padding-bottom: 10px;
-	}
-	tr { height: 50px } 
-</style>
 
 
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/invoice/history">
+		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -239,31 +209,129 @@ function clearAttendanceInfo() {
 					<!-- <div class="offset-md-1">  -->
 					<div class="col max-auto">
 						<label class="label-form-white">Search</label> 
-						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col max-auto">
 						<label class="label-form-white">Clear</label> 
-						<button type="button" class="btn btn-block btn-success" onclick="clearStudentInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
+						<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 					</div>
 				</div>
 			</div>
-			<!-- Student Info-->
-			<c:if test="${not empty sessionScope.studentInfo}">
-				<div id="studentInfo" class="alert alert-info">
-					<c:set var="student" value="${sessionScope.studentInfo}" />
-					<c:set var="studentId" value="${student.id}" />
-					<c:set var="studentFirstName" value="${student.firstName}" />
-					<c:set var="studentLastName" value="${student.lastName}" />
+			<!-- Search Criteria Info-->
+			<c:if test="${not empty sessionScope.criteriaInfo}">
+				<div id="criteriaInfo" class="alert alert-info">
+					<c:set var="criteria" value="${sessionScope.criteriaInfo}" />
+					<c:set var="criteriaState" value="${criteria.state}" />
+					<c:choose>
+						<c:when test="${criteriaState eq 'vic'}">
+							<c:set var="criteriaState" value="Victoria" />
+						</c:when>
+						<c:when test="${criteriaState eq 'nsw'}">
+							<c:set var="criteriaState" value="New South Wales" />
+						</c:when>
+						<c:when test="${criteriaState eq 'qld'}">
+							<c:set var="criteriaState" value="Queensland" />
+						</c:when>
+						<c:when test="${criteriaState eq 'sa'}">
+							<c:set var="criteriaState" value="South Australia" />
+						</c:when>
+						<c:when test="${criteriaState eq 'tas'}">
+							<c:set var="criteriaState" value="Tasmania" />
+						</c:when>
+						<c:when test="${criteriaState eq 'wa'}">
+							<c:set var="criteriaState" value="Western Australia" />
+						</c:when>
+						<c:when test="${criteriaState eq 'nt'}">
+							<c:set var="criteriaState" value="Northern Territory" />
+						</c:when>
+						<c:when test="${criteriaState eq 'act'}">
+							<c:set var="criteriaState" value="ACT" />
+						</c:when>
+					</c:choose>
+					<c:set var="criteriaBranch" value="${criteria.branch}" />
+					<c:choose>
+						<c:when test="${criteriaBranch eq 'braybrook'}">
+							<c:set var="criteriaBranch" value="Braybrook" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'epping'}">
+							<c:set var="criteriaBranch" value="Epping" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'balwyn'}">
+							<c:set var="criteriaBranch" value="Balwyn" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'bayswater'}">
+							<c:set var="criteriaBranch" value="Bayswater" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'boxhill'}">
+							<c:set var="criteriaBranch" value="Box Hill" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'carolinesprings'}">
+							<c:set var="criteriaBranch" value="Caroline Springs" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'chadstone'}">
+							<c:set var="criteriaBranch" value="Chadstone" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'craigieburn'}">
+							<c:set var="criteriaBranch" value="Craigieburn" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'cranbourne'}">
+							<c:set var="criteriaBranch" value="Cranbourne" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'glenwaverley'}">
+							<c:set var="criteriaBranch" value="Glen Waverley" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'mitcham'}">
+							<c:set var="criteriaBranch" value="Mitcham" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'narrewarren'}">
+							<c:set var="criteriaBranch" value="Narre Warren" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'ormond'}">
+							<c:set var="criteriaBranch" value="Ormond" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'pointcook'}">
+							<c:set var="criteriaBranch" value="Point Cook" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'preston'}">
+							<c:set var="criteriaBranch" value="Preston" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'springvale'}">
+							<c:set var="criteriaBranch" value="Springvale" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'stalbans'}">
+							<c:set var="criteriaBranch" value="St Albans" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'werribee'}">
+							<c:set var="criteriaBranch" value="Werribee" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'mernda'}">
+							<c:set var="criteriaBranch" value="Mernda" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'melton'}">
+							<c:set var="criteriaBranch" value="Melton" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'glenroy'}">
+							<c:set var="criteriaBranch" value="Glenroy" />
+						</c:when>
+						<c:when test="${criteriaBranch eq 'packenham'}">
+							<c:set var="criteriaBranch" value="Packenham" />
+						</c:when>
+					</c:choose>
+					<c:set var="criteriaGrade" value="${criteria.grade}" />
+					<c:set var="criteriaFrom" value="${criteria.fromDate}" />
+					<c:set var="criteriaTo" value="${criteria.toDate}" />
 					<table style="width: 100%;">
 						<colgroup>
-							<col style="width: 33.33%;" />
-							<col style="width: 33.33%;" />
-							<col style="width: 33.33%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 40%;" />
 						</colgroup>
 						<tr>
-							<td class="text-right">Student ID : <span class="font-weight-bold"><c:out value="${student.id}" /></span></td>
-							<td class="text-center">Name : <span class="font-weight-bold"><c:out value="${student.firstName} ${student.lastName}" /></span></td>
-							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${student.grade}" /></span></td>
+							<td class="text-right">State : <span class="font-weight-bold"><c:out value="${criteriaState}" /></span></td>
+							<td class="text-center">Branch : <span class="font-weight-bold"><c:out value="${criteriaBranch}" /></span></td>
+							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${criteriaGrade}" /></span></td>
+							<td class="text-center"><span class="font-weight-bold"><c:out value="${criteriaFrom}" />  ~  <c:out value="${criteriaTo}" /></span></td>							
 						</tr>
 					</table>						
 				</div>
