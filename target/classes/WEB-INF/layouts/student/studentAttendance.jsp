@@ -2,9 +2,9 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables.min.css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
-<script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/pdfmake.min.js"></script>
