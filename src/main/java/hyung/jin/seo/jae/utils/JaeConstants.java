@@ -137,4 +137,6 @@ public interface JaeConstants {
 
 	String STUDENT_INFO = "studentInfo";
 
+	String CRITERIA_INFO = "criteriaInfo";
+
 }

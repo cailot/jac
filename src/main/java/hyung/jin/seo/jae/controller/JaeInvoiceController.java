@@ -108,7 +108,7 @@ public class JaeInvoiceController {
 	@GetMapping("/history")
 	public String getPayments(@RequestParam("studentKeyword") String studentId, HttpSession session) {
 		// 1. flush session from previous payment
-		clearSession(session);
+		JaeUtils.clearSession(session);
 		
 		// 2. get student and save it into session
 		long stdId = Long.parseLong(studentId);
@@ -157,7 +157,7 @@ public class JaeInvoiceController {
 	@GetMapping("/receiptInfo")
 	public String receiptHistory(@RequestParam("studentId") String studentId, @RequestParam("invoiceId") String invoiceId, @RequestParam("paymentId") String paymentId, HttpSession session) {
 		// 1. flush session from previous payment
-		clearSession(session);
+		JaeUtils.clearSession(session);
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
 		List<OutstandingDTO> filteredOutstandings = new ArrayList<OutstandingDTO>();
@@ -224,7 +224,7 @@ public class JaeInvoiceController {
 	@ResponseBody
 	public List makePayment(@PathVariable("studentId") Long studentId, @RequestBody PaymentDTO formData, HttpSession session) {
 		// 1. flush session from previous payment
-		clearSession(session);
+		JaeUtils.clearSession(session);
 		List dtos = new ArrayList();
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
@@ -370,7 +370,7 @@ public class JaeInvoiceController {
 	@ResponseBody
 	public ResponseEntity<String> issueInvoice(@PathVariable("studentId") Long studentId, @RequestBody(required = false) String info, HttpSession session) {
 		// 1. flush session from previous payment
-		clearSession(session);
+		JaeUtils.clearSession(session);
 		// 2. get latest invoice by student id
 		Invoice invoice = invoiceService.getInvoiceByStudentId(studentId);	
 		invoice.setInfo(info);
@@ -442,13 +442,13 @@ public class JaeInvoiceController {
 		}
 	}
 
-	@GetMapping("/clearSession")
-	public void clearSession(HttpSession session){
-		Enumeration<String> names = session.getAttributeNames();
-		while(names.hasMoreElements()){
-			String name = names.nextElement();
-			session.removeAttribute(name);
-		}
-	}
+	// @GetMapping("/clearSession")
+	// public void clearSession(HttpSession session){
+	// 	Enumeration<String> names = session.getAttributeNames();
+	// 	while(names.hasMoreElements()){
+	// 		String name = names.nextElement();
+	// 		session.removeAttribute(name);
+	// 	}
+	// }
 
 }

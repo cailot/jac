@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class JaeUtils {
@@ -248,5 +252,14 @@ public class JaeUtils {
 
         return (comparisonResult < 0);
     }
+
+	// clear all info in session
+	public static void clearSession(HttpSession session){
+		Enumeration<String> names = session.getAttributeNames();
+		while(names.hasMoreElements()){
+			String name = names.nextElement();
+			session.removeAttribute(name);
+		}
+	}
 	
 }
