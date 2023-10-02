@@ -14,6 +14,9 @@ $(document).ready(
 			e.preventDefault();
 			$(this).closest('tr').remove();
 		});
+		$( "#payDate" ).datepicker({
+			dateFormat: 'dd/mm/yy'
+  		});
 	}
 );
 
