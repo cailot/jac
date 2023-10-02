@@ -1,22 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<script>
-	$(document).ready(function() {
-
-		// Set default date format
-		$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-		$('.datepicker').datepicker({
-			//format: 'dd/mm/yyyy',
-			autoclose : true,
-			todayHighlight : true
-		});
-
-
-	});
-</script>
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">

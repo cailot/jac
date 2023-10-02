@@ -38,13 +38,11 @@ $(document).ready(function () {
 		$('#passwordModal #usernamepassword').val(username);
 	});
 	
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		//format: 'dd/mm/yyyy',
-		autoclose : true,
-		todayHighlight : true
+	$("#addStartDate").datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
+	$("#editStartDate").datepicker({
+		dateFormat: 'dd/mm/yy'
 	});
 
     // When the Grade dropdown changes, send an Ajax request to get the corresponding Type
