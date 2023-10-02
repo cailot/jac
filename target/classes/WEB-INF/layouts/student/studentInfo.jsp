@@ -1,4 +1,13 @@
 <script>
+	// initiate datepicker
+	$(function() {
+    	$( "#formRegisterDate" ).datepicker({
+			dateFormat: 'dd/mm/yy'
+		});
+		$( "#addRegisterDate" ).datepicker({
+			dateFormat: 'dd/mm/yy'
+  		});
+	});
 	///////////////////////////////////////////////////////////////////////////
 	// 		Add Student
 	///////////////////////////////////////////////////////////////////////////
@@ -54,9 +63,15 @@
 				// Set date value
 				var date = new Date(student.registerDate); // Replace with your date value
 				$("#formRegisterDate").datepicker('setDate', date);
-				// clear existing course registration
-				// clearCourseRegisteration();
-				clearStudentForm();
+
+				// clear enrolment basket
+				clearEnrolmentBasket();
+				// clear invoice table
+				clearInvoiceTable();
+				// clear course register section
+				clearCourseRegisteration();
+				// clear attendance table
+				clearAttendanceTable();
 				// ready for course registration
 				readyForCourseRegistration(student.grade);
 			},

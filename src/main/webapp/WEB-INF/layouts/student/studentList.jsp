@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
-<script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/pdfmake.min.js"></script>
@@ -39,16 +39,13 @@ $(document).ready(function () {
 		$('#passwordModal #usernamepassword').val(username);
 	});
 	
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		//format: 'dd/mm/yyyy',
-		autoclose : true,
-		todayHighlight : true
+	$("#addRegisterDate").datepicker({
+		dateFormat: 'dd/mm/yy'
 	});
-
-    
+	$("#editRegisterDate").datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
+	
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +117,7 @@ function updateStudentInfo(){
 		branch : $("#editBranch").val(),
 		grade : $("#editGrade").val(),
 		gender : $("#editGender").val(),
-		registerDate : $("#editRegister").val()
+		registerDate : $("#editRegisterDate").val()
 	}
 		
 	// send query to controller
@@ -235,7 +232,7 @@ function retrieveStudentInfo(std) {
 			$("#editGender").val(student.gender);
 			// Set date value
 			var date = new Date(student.registerDate); // Replace with your date value
-			$("#editRegister").datepicker('setDate', date);
+			$("#editRegisterDate").datepicker('setDate', date);
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -246,8 +243,9 @@ function retrieveStudentInfo(std) {
 
 </script>
 
+<!-- Datepicker size change ... -->
 <style>
-	#studentListTable th, tr {
+	/* #studentListTable th, tr {
 		padding: 15px;
 	}
 	#studentList .form-row {
@@ -266,7 +264,7 @@ function retrieveStudentInfo(std) {
 		padding-top: 40px;
 		padding-bottom: 10px;
 	}
-	tr { height: 50px } 
+	tr { height: 50px }  */
 
 </style>
 
@@ -475,7 +473,7 @@ function retrieveStudentInfo(std) {
 							</div>
 							<div class="col-md-3">
 								<label for="addRegisterDate" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="dd/mm/yyyy">
+								<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="Select Date" required>
 							</div>
 							<script>
 								var today = new Date();
@@ -636,8 +634,8 @@ function retrieveStudentInfo(std) {
 								</select>
 							</div>
 							<div class="col-md-3">
-								<label for="editRegister" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="editRegister" name="editRegister" placeholder="dd/mm/yyyy">
+								<label for="editRegisterDate" class="label-form">Registration</label> 
+								<input type="text" class="form-control datepicker" id="editRegisterDate" name="editRegisterDate" placeholder="dd/mm/yyyy">
 							</div>
 						</div>	
 						<div class="form-row mt-2">
