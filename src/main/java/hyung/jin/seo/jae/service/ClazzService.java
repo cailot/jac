@@ -16,6 +16,9 @@ public interface ClazzService {
 	// bring class list base on the condition
 	List<ClazzDTO> listClasses(String state, String branch, String grade, String year, String active);
 
+	// bring class list for dropdown list
+	List<ClazzDTO> filterClasses(String state, String branch, String grade);
+
 	// list all class for grade & year
 	List<ClazzDTO> findClassesForGradeNCycle(String grade, int year);
 	
@@ -39,4 +42,7 @@ public interface ClazzService {
 
 	// get day
 	String getDay(Long id);
+
+	// get name
+	String getName(Long id);
 }

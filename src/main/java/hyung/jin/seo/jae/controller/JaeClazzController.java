@@ -261,4 +261,13 @@ public class JaeClazzController {
 	}
 
 
+	// bring all courses for dropdown list
+	@GetMapping("/filterClass")
+	@ResponseBody
+	public List<ClazzDTO> filterClasses(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade) {
+        System.out.println(state+"\t"+branch+"\t"+grade);
+		List<ClazzDTO> dtos = clazzService.filterClasses(state, branch, grade);
+		return dtos;
+	}
+
 }

@@ -19,6 +19,10 @@ public class SearchCriteriaDTO {
 
 	private String grade;
 
+	private String clazzId;
+
+	private String clazzName;
+	
 	private String fromDate;
 
 	private String toDate;

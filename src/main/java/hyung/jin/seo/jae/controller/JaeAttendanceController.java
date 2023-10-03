@@ -2,13 +2,13 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
-import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.dto.SearchCriteriaDTO;
 import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.service.AttendanceService;
+import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
@@ -29,6 +29,9 @@ public class JaeAttendanceController {
 
 	@Autowired
 	private AttendanceService attendanceService;
+
+	@Autowired
+	private ClazzService clazzService;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -46,23 +49,43 @@ public class JaeAttendanceController {
 		return dtos;
 	}
 
+	// // search attendance
+	// @GetMapping("/search")
+	// public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazzId, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+	// 	// 1. clear session
+	// 	JaeUtils.clearSession(session);
+	// 	// 2. set search criteria
+	// 	SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+	// 	criteria.setState(state);
+	// 	criteria.setBranch(branch);
+	// 	criteria.setGrade(grade);
+	// 	criteria.setFromDate(fromDate);
+	// 	criteria.setToDate(toDate);
+	// 	session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);		
+	// 	// 6. return redirect page
+	// 	return "studentAttendancePage";
+	// }
+
 	// search attendance
 	@GetMapping("/search")
-	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+	public String searchAttendance(HttpServletRequest request, HttpSession session) {
 		// 1. clear session
 		JaeUtils.clearSession(session);
 		// 2. set search criteria
 		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-		criteria.setState(state);
-		criteria.setBranch(branch);
-		criteria.setGrade(grade);
-		criteria.setFromDate(fromDate);
-		criteria.setToDate(toDate);
+		criteria.setState(request.getParameter("listState"));
+		criteria.setBranch(request.getParameter("listBranch"));
+		criteria.setGrade(request.getParameter("listGrade"));
+		String clazzId = request.getParameter("listClass");
+		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
+		criteria.setClazzId(clazzId);
+		criteria.setClazzName(clazzName);
+		criteria.setFromDate(request.getParameter("fromDate"));
+		criteria.setToDate(request.getParameter("toDate"));
 		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);		
 		// 6. return redirect page
 		return "studentAttendancePage";
 	}
-
 
 
 
