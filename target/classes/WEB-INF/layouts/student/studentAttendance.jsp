@@ -12,7 +12,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
-<style>
+<!-- <style>
 	#attendanceTable th, tr {
 		padding: 15px;
 	}
@@ -36,7 +36,7 @@
             margin: 0; /* Remove any margin */
             padding: 0; /* Remove any padding */
         }
-</style>
+</style> -->
 
 <script>
 $(document).ready(function () {
@@ -71,40 +71,45 @@ $(document).ready(function () {
 		order : [[0, 'desc'], [1, 'desc']] // order by invoiceId desc, id desc
 				
     });
-
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		autoclose : true,
-		todayHighlight : true
+	$("#fromDate").datepicker({
+		dateFormat: 'dd/mm/yy',
+		onClose : function(selectedDate) {
+				$("#toDate").datepicker("option", "minDate", selectedDate);
+		}
 	});
+	$("#toDate").datepicker({
+		dateFormat: 'dd/mm/yy',
+		onClose : function(selectedDate) {
+			$("#fromDate").datepicker("option", "maxDate", selectedDate);
+		}
+	});
+	
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//			Check Parameters For Search Attendance	
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-function searchAttendance() {
-	// debugger;
-	// send query to controller
-	$('#attendanceTable tbody').empty();
-
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Bring all Invoice by Student
+//		fetch dropdown list options
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function getInvoice(studentId) {
-	$("#studentKeyword").val(studentId);
-	$('#studentListResult').modal('hide');
-	//warn if keyword is empty
-	if (studentId == '') {
-		$('#warning-alert .modal-body').text('Please fill in Student Info before search');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
-	var form = document.getElementById("studentInvoice");
-	form.submit();
+function fetchOptions() {
+	var stateVal = $("#listState").val();
+	var branchVal = $("#listBranch").val();
+	var gradeVal = $("#listGrade").val();
+	// clear all options for listClass
+	$('#listClass').empty();
+	// ajax call to get options for listClass
+	$.ajax({
+        url : '${pageContext.request.contextPath}/class/filterClass?listState=' + stateVal + '&listBranch=' + branchVal + '&listGrade=' + gradeVal,
+        type : 'GET',
+        success : function(data) {
+			$('#listClass').append($('<option>').text('All').attr('value', 'All'));
+			$.each(data, function(index, value) {
+				$('#listClass').append($('<option>').text(value.name).attr('value', value.id));
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+    });
+	
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,10 +137,10 @@ function clearAttendanceInfo() {
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
+						<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
+							<option value="All">All</option>
 							<option value="vic">Victoria</option>
 							<option value="nsw">New South Wales</option>
 							<option value="qld">Queensland</option>
@@ -148,8 +153,8 @@ function clearAttendanceInfo() {
 					</div>
 					<div class="col-md-2">
 						<label for="listBranch" class="label-form">Branch</label> 
-						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
+						<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
+							<option value="All">All</option>
 							<option value="braybrook">Braybrook</option>
 							<option value="epping">Epping</option>
 							<option value="balwyn">Balwyn</option>
@@ -176,7 +181,7 @@ function clearAttendanceInfo() {
 					</div>
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label> 
-						<select class="form-control" id="listGrade" name="listGrade">
+						<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
 							<option value="All">All</option>
 							<option value="p2">P2</option>
 							<option value="p3">P3</option>
@@ -200,13 +205,19 @@ function clearAttendanceInfo() {
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder=" Select a date" required>
+						<label for="listClass" class="label-form">Class</label> 
+						<select class="form-control" id="listClass" name="listClass">
+							<option value="All">All</option>
+						</select>
 					</div>
-					<div class="col-md-2">
-						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder=" Select a date" required>
+					<div class="col-md-1">
+						<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
 					</div>
-					<!-- put blank col-md-2 -->
-					<!-- <div class="offset-md-1">  -->
+					<div class="col-md-1">
+						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+					</div>
+					<!-- put blank col-md-1 -->
+					<div class="offset-md-1"></div>
 					<div class="col max-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
@@ -318,19 +329,22 @@ function clearAttendanceInfo() {
 						</c:when>
 					</c:choose>
 					<c:set var="criteriaGrade" value="${criteria.grade}" />
+					<c:set var="criteriaClazz" value="${criteria.clazzName}" />
 					<c:set var="criteriaFrom" value="${criteria.fromDate}" />
 					<c:set var="criteriaTo" value="${criteria.toDate}" />
 					<table style="width: 100%;">
 						<colgroup>
 							<col style="width: 20%;" />
 							<col style="width: 20%;" />
+							<col style="width: 10%;" />
 							<col style="width: 20%;" />
-							<col style="width: 40%;" />
+							<col style="width: 30%;" />
 						</colgroup>
 						<tr>
 							<td class="text-right">State : <span class="font-weight-bold"><c:out value="${criteriaState}" /></span></td>
 							<td class="text-center">Branch : <span class="font-weight-bold"><c:out value="${criteriaBranch}" /></span></td>
 							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${criteriaGrade}" /></span></td>
+							<td class="text-left">Class : <span class="font-weight-bold text-capitalize"><c:out value="${criteriaClazz}" /></span></td>
 							<td class="text-center"><span class="font-weight-bold"><c:out value="${criteriaFrom}" />  ~  <c:out value="${criteriaTo}" /></span></td>							
 						</tr>
 					</table>						

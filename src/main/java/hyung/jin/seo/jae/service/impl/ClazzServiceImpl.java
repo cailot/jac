@@ -133,6 +133,17 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
+	public List<ClazzDTO> filterClasses(String state, String branch, String grade) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
+	@Override
 	public double getPrice(Long id) {
 		double price = 0;
 		try{
@@ -163,6 +174,17 @@ public class ClazzServiceImpl implements ClazzService {
 			System.out.println("No day found");
 		}
 		return day;
+	}
+
+	@Override
+	public String getName(Long id) {
+		String name = "";
+		try{
+			name = clazzRepository.getName(id);
+		}catch(Exception e){
+			System.out.println("No name found");
+		}
+		return name;
 	}
 
 }
