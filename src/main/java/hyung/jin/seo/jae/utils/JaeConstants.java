@@ -139,4 +139,6 @@ public interface JaeConstants {
 
 	String CRITERIA_INFO = "criteriaInfo";
 
+	String ATTENDANCE_INFO = "attendanceInfo";
+
 }
