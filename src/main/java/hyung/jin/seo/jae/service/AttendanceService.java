@@ -43,5 +43,7 @@ public interface AttendanceService {
 	// find attendance Id by student Id & clazz Id
 	List<Long> findAttendanceIdByStudentAndClazz(Long studentId, long clazzId);
 
+	// find stduent Id by clazz Id
+	List<Long> findStudentIdByClazz(Long clazzId);
 	
 }

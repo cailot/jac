@@ -40,8 +40,6 @@
 
 <script>
 $(document).ready(function () {
-	// $('#fromDate').datepicker();
-	// $('#toDate').datepicker();
     $('#attendanceTable').DataTable({
     	language: {
     		search: 'Filter:'
@@ -57,18 +55,18 @@ $(document).ready(function () {
  	        'print'
         ],
 		columnDefs : [
-			{
-				targets: 0,
-				visible: false,
-				orderable: true
-			},
-			{
-				targets: 1,
-				visible: false,
-				orderable: true
-			}
+			// {
+			// 	targets: 0,
+			// 	visible: false,
+			// 	orderable: true
+			// },
+			// {
+			// 	targets: 1,
+			// 	visible: false,
+			// 	orderable: true
+			// }
 		],	
-		order : [[0, 'desc'], [1, 'desc']] // order by invoiceId desc, id desc
+		order : [[1, 'asc'],[2, 'asc'], [6, 'asc']] // order by class Id, studentId, week
 				
     });
 	$("#fromDate").datepicker({
@@ -357,23 +355,31 @@ function clearAttendanceInfo() {
 							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>Invoice ID</th>
-										<th>ID</th>
-										<th>Payment Date</th>
-										<th>Method</th>
-										<th>Total</th>
-										<th>Outstanding</th>
-										<th>Paid</th>
-										<th>Enrolled Course Information</th>
-										<th data-orderable="false">Receipt</th>
+										<th>Attend ID</th>
+										<th>Class ID</th>
+										<th>Student ID</th>
+										<th>Student Name</th>
+										<th>Class Day</th>
+										<th>Class Grade</th>
+										<th>Week</th>
+										<th>Status</th>
+										<th>Attend Date</th>
 									</tr>
 								</thead>
 								<tbody>
-									<c:if test="${not empty sessionScope.payments}">
-										<c:forEach var="payment" items="${payments}">
+									<c:if test="${not empty sessionScope.attendanceInfo}">
+										<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
 											<tr>
-												<td>${payment.invoiceId}</td> <!-- invisible -->
-												<td>${payment.id}</td> <!-- invisible -->
+												<td>${attend.id}</td> <!-- invisible -->
+												<td>${attend.clazzId}</td>
+												<td>${attend.studentId}</td> <!-- invisible -->
+												<td>${attend.studentName}</td>
+												<td>${attend.clazzDay}</td>
+												<td>${attend.clazzGrade}</td>
+												<td>${attend.week}</td>
+												<td>${attend.status}</td>
+												<td>${attend.attendDate}</td>
+												<%--
 												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
@@ -404,6 +410,7 @@ function clearAttendanceInfo() {
 												<td class="text-center align-middle">
 													<i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
 												</td> 
+												--%>
 											</tr>
 										</c:forEach>
 									</c:if>

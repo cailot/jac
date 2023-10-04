@@ -157,5 +157,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 			System.out.println("No attendance to delete");
 		}
 	}
+
+	@Override
+	public List<Long> findStudentIdByClazz(Long clazzId) {
+		List<Long> studentIds = new ArrayList<>();
+		try{
+			studentIds = attendanceRepository.findStudentIdByClazzId(clazzId);	
+		}catch(Exception e){
+			System.out.println("No attendance found");
+		}
+		return studentIds;
+	}
 	
 }

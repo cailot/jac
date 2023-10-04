@@ -19,6 +19,9 @@ public interface ClazzService {
 	// bring class list for dropdown list
 	List<ClazzDTO> filterClasses(String state, String branch, String grade);
 
+	// bring class Ids
+	List<Long> filterClassIds(String state, String branch, String grade);
+
 	// list all class for grade & year
 	List<ClazzDTO> findClassesForGradeNCycle(String grade, int year);
 	

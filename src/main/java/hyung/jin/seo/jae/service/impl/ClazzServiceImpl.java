@@ -187,4 +187,15 @@ public class ClazzServiceImpl implements ClazzService {
 		return name;
 	}
 
+	@Override
+	public List<Long> filterClassIds(String state, String branch, String grade) {
+		List<Long> ids = new ArrayList<>();
+		try{
+			ids = clazzRepository.findClassIdsForStateNBranchNGrade(state, branch, grade);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return ids;
+	}
+
 }
