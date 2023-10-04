@@ -1,10 +1,12 @@
 package hyung.jin.seo.jae.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.checkerframework.checker.units.qual.g;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,17 +74,36 @@ public class JaeAttendanceController {
 		// 1. clear session
 		JaeUtils.clearSession(session);
 		// 2. set search criteria
+		String state = request.getParameter("listState");
+		String branch = request.getParameter("listBranch");
+		String grade = request.getParameter("listGrade");
 		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-		criteria.setState(request.getParameter("listState"));
-		criteria.setBranch(request.getParameter("listBranch"));
-		criteria.setGrade(request.getParameter("listGrade"));
+		criteria.setState(state);
+		criteria.setBranch(branch);
+		criteria.setGrade(grade);
 		String clazzId = request.getParameter("listClass");
 		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
 		criteria.setClazzId(clazzId);
 		criteria.setClazzName(clazzName);
 		criteria.setFromDate(request.getParameter("fromDate"));
 		criteria.setToDate(request.getParameter("toDate"));
-		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);		
+		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
+		// 3. search AttendanceDTO by class Id
+		List<AttendanceDTO> dtos = new ArrayList<>();
+		// 3-1. if clazzId is "All", then search all clazz Ids
+		if(clazzId.equalsIgnoreCase(JaeConstants.ALL)) {
+			List<Long> clazzIds = clazzService.filterClassIds(state, branch, grade);	
+			for(Long id : clazzIds) {
+				List<AttendanceDTO> attends = attendanceService.findAttendanceByClazz(id);	
+				dtos.addAll(attends);
+			}
+		}else{
+			// 3-2. if clazzId is not "All", then search only the clazz
+			List<AttendanceDTO> attends = attendanceService.findAttendanceByClazz(Long.parseLong(clazzId));	
+			dtos.addAll(attends);
+		}
+		// 4. save AttendanceDTOs in session
+		session.setAttribute(JaeConstants.ATTENDANCE_INFO, dtos);
 		// 6. return redirect page
 		return "studentAttendancePage";
 	}
