@@ -375,7 +375,9 @@ function clearAttendanceInfo() {
 												<td>${attend.studentId}</td> <!-- invisible -->
 												<td>${attend.studentName}</td>
 												<td>${attend.clazzDay}</td>
-												<td>${attend.clazzGrade}</td>
+												<td class="text-uppercase">
+													<c:out value="${attend.clazzGrade}" />
+												</td>
 												<td>${attend.week}</td>
 												<td>${attend.status}</td>
 												<td>${attend.attendDate}</td>
