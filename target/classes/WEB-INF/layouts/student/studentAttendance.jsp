@@ -55,16 +55,16 @@ $(document).ready(function () {
  	        'print'
         ],
 		columnDefs : [
-			// {
-			// 	targets: 0,
-			// 	visible: false,
-			// 	orderable: true
-			// },
-			// {
-			// 	targets: 1,
-			// 	visible: false,
-			// 	orderable: true
-			// }
+			{
+				targets: 0,
+				visible: false,
+				orderable: true
+			},
+			{
+				targets: 1,
+				visible: false,
+				orderable: true
+			}
 		],	
 		order : [[1, 'asc'],[2, 'asc'], [6, 'asc']] // order by class Id, studentId, week
 				
@@ -355,15 +355,15 @@ function clearAttendanceInfo() {
 							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>Attend ID</th>
-										<th>Class ID</th>
+										<th>Attend ID</th> <!-- invisible -->
+										<th>Class ID</th> <!-- invisible -->
 										<th>Student ID</th>
 										<th>Student Name</th>
+										<th>Class Name</th>
 										<th>Class Day</th>
 										<th>Class Grade</th>
 										<th>Week</th>
 										<th>Status</th>
-										<th>Attend Date</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -371,16 +371,21 @@ function clearAttendanceInfo() {
 										<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
 											<tr>
 												<td>${attend.id}</td> <!-- invisible -->
-												<td>${attend.clazzId}</td>
-												<td>${attend.studentId}</td> <!-- invisible -->
+												<td>${attend.clazzId}</td> <!-- invisible -->
+												<td>${attend.studentId}</td> 
 												<td>${attend.studentName}</td>
-												<td>${attend.clazzDay}</td>
+												<td title="${attend.attendDate}">
+													<span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
+												</td>
+												<td title="${attend.attendDate}">
+													<c:out value="${attend.clazzDay}" />
+												</td>
 												<td class="text-uppercase">
 													<c:out value="${attend.clazzGrade}" />
 												</td>
 												<td>${attend.week}</td>
 												<td>${attend.status}</td>
-												<td>${attend.attendDate}</td>
+												
 												<%--
 												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
