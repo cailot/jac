@@ -209,13 +209,11 @@ function updateLatestInvoiceId(invoiceId){
 	// debugger;
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
-	// compare hiddenInvoiceId with invoiceId
-	if(invoiceId >= hiddenInvoiceId){
-		// update invoiceId to hiddenInvoiceId
-		$("#hiddenInvoiceId").val(invoiceId);
-		// update 'rxAmount' via ajax call
-		$.ajax({
-			url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
+
+	if (typeof invoiceId === "undefined") {
+    	// if invoiceId is undefined, use hiddenInvoiceId
+    	$.ajax({
+			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
 			method: 'GET',
 			success: function(response) {
 				//debugger;
@@ -232,16 +230,31 @@ function updateLatestInvoiceId(invoiceId){
 				$("#rxAmount").text(0);
 			}
 		});	
+  	} else {
+    	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
+		if(invoiceId >= hiddenInvoiceId){
+			// update invoiceId to hiddenInvoiceId
+			$("#hiddenInvoiceId").val(invoiceId);
+			$.ajax({
+				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
+				method: 'GET',
+				success: function(response) {
+					//debugger;
+					$("#rxAmount").text(response.toFixed(2));
+					if(parseFloat(response) > 0){
+						$('#paymentBtn').prop('disabled', false);
+					}else{
+						$('#paymentBtn').prop('disabled', true);
+					}
+				},
+				error: function(xhr, status, error) {
+					// Handle the error
+					console.error(error);
+					$("#rxAmount").text(0);
+				}
+			});	
+		}
 	}
-
-	// var rxAmount = parseFloat($("#rxAmount").text());
-	// if (rxAmount <= 0) {
-	// 	$('#paymentBtn').prop('disabled', true);
-	// }else{
-	// 	$('#paymentBtn').prop('disabled', false);
-	// }
-
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
