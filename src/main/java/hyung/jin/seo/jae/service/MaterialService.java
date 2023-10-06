@@ -24,8 +24,11 @@ public interface MaterialService {
 	// update Material
 	Material updateMaterial(Material stand, Long id);
 
-	// delete Material
-	void deleteMaterial(Long invoiceId, Long bookId);
+	// delete Material by Id
+	void deleteMaterial(Long id);
+
+	// delete Material by invoice Id and book Id
+	void deleteMaterialByInvoiceAndBook(Long invoiceId, Long bookId);
 
 	// return total count
 	long checkCount();

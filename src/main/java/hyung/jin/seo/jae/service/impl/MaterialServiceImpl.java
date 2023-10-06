@@ -96,7 +96,7 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	@Transactional
-	public void deleteMaterial(Long invoiceId, Long bookId) {
+	public void deleteMaterialByInvoiceAndBook(Long invoiceId, Long bookId) {
 		//materialRepository.deleteMaterial(invoiceId, bookId);
 		materialRepository.deleteMaterialByInvoiceIdAndBookId(invoiceId, bookId);
 	}
@@ -135,5 +135,10 @@ public class MaterialServiceImpl implements MaterialService {
 		}
 		return dto;
 		// return materialRepository.findMaterialByInvoiceIdAndBookId(invoiceId, bookId);
+	}
+
+	@Override
+	public void deleteMaterial(Long id) {
+		materialRepository.deleteById(id);
 	}
 }

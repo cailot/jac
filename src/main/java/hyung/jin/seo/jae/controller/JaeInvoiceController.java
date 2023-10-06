@@ -97,7 +97,7 @@ public class JaeInvoiceController {
 	@ResponseBody
 	public String retrieveInvoiceInfo(@PathVariable("studentId") Long studentId) {	
 		// 1. get latest invoice by student id
-		Invoice invoice = invoiceService.getInvoiceByStudentId(studentId);
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		// 2. get invoice info
 		String info = invoice.getInfo();
 		// 3. return info
@@ -372,7 +372,7 @@ public class JaeInvoiceController {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 		// 2. get latest invoice by student id
-		Invoice invoice = invoiceService.getInvoiceByStudentId(studentId);	
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);	
 		invoice.setInfo(info);
 		invoiceService.updateInvoice(invoice, invoice.getId());
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
