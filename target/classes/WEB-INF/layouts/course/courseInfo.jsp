@@ -559,14 +559,14 @@ async function listElearns(grade) {
 					});
 				}else{
 					// simply update balance for invoice table as Enrolment is deleted
-					if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
+					// if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
 						updateLatestInvoiceId(enrolData.invoiceId);
-					}
+					// }
 				}
 				
 				//debugger;
 				// nested ajax for book after creating or updating invoice
-				// 2. Make the AJAX enrolment for book
+				// 2. Make the AJAX for book
 				$.ajax({
 					url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
 					method: 'POST',
@@ -594,9 +594,9 @@ async function listElearns(grade) {
 							});
 						}else{
 							// simply update balance for invoice table as Book is deleted
-							if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
-								updateLatestInvoiceId(enrolData.invoiceId);
-							}
+							// if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
+								updateLatestInvoiceId(bookData.invoiceId);
+							// }
 						}
 					},
 					error: function(xhr, status, error) {
