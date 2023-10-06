@@ -402,6 +402,9 @@ async function listElearns(grade) {
 		row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(Number(value.price).toFixed(2)));
 		row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 		row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
+		row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
+		row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
+			
 		$('#basketTable > tbody').prepend(row);
 		
 		// Automatically dismiss the alert after 2 seconds
@@ -425,7 +428,7 @@ async function listElearns(grade) {
 	
 		var elearnings = [];
 		var enrolData = [];
-		var books = [];
+		var bookData = [];
 	
 		$('#basketTable tbody tr').each(function() {
 			// in case of update, enrolId is not null
@@ -440,74 +443,83 @@ async function listElearns(grade) {
 					elearnings.push(hiddenValues[1]);
 					return true;
 				}else if(hiddenValues[0] === BOOK){
-					books.push(hiddenValues[1]);
-					return true;
+					bookId = hiddenValues[1];
+					var materialId = $(this).find('.materialId').text();
+					var invoiceId = $(this).find('.invoiceId').text();
+					var book = {
+						"id" : materialId,
+						"invoiceId" : invoiceId,
+						"bookId" : bookId
+					};
+					bookData.push(book);
+					//return true;
 				}else if(hiddenValues[0] === CLASS){
 					clazzId = hiddenValues[1];
+					enrolData.id = $(this).find('.enrolId').text();
+					enrolData.startWeek = $(this).find('.start-week').text();
+					enrolData.endWeek = $(this).find('.end-week').text();
+					enrolData.price = $(this).find('.price').text();
+					enrolData.grade = $(this).find('.grade').text();
+					enrolData.year = $(this).find('.year').text();
+					enrolData.name = $(this).find('.name').text();
+					enrolData.invoiceId = $(this).find('.invoiceId').text();
+					enrolData.amount = $(this).find('.amount').text();
+					enrolData.discount = $(this).find('.discount').text();
+					enrolData.credit = $(this).find('.credit').text();
+					enrolData.weeks = $(this).find('.weeks').text();
+					enrolData.day = $(this).find('.clazzChoice option:selected').text();
+					if(enrolData.day === ""){ // if day is not selected from dropdown
+						enrolData.day = $(this).find('.day').text()
+					}	
+					var clazz = {
+						"id" : enrolData.id,
+						"startWeek" : enrolData.startWeek,
+						"endWeek" : enrolData.endWeek,
+						"clazzId" : clazzId,
+						"price" : enrolData.price,
+						"grade" : enrolData.grade,
+						"year" : enrolData.year,
+						"name" : enrolData.name,
+						"invoiceId" : enrolData.invoiceId,
+						"amount" : enrolData.amount,
+						"discount" : enrolData.discount,
+						"credit" : enrolData.credit,
+						"weeks" : enrolData.weeks,
+						"day" : enrolData.day,
+						"studentId" : studentId
+					};
+					enrolData.push(clazz);
 				}
 			}
 	
-			enrolData.id = $(this).find('.enrolId').text();
-			enrolData.startWeek = $(this).find('.start-week').text();
-			enrolData.endWeek = $(this).find('.end-week').text();
-			enrolData.price = $(this).find('.price').text();
-			enrolData.grade = $(this).find('.grade').text();
-			enrolData.year = $(this).find('.year').text();
-			enrolData.name = $(this).find('.name').text();
-			enrolData.invoiceId = $(this).find('.invoiceId').text();
-			enrolData.amount = $(this).find('.amount').text();
-			enrolData.discount = $(this).find('.discount').text();
-			enrolData.credit = $(this).find('.credit').text();
-			enrolData.weeks = $(this).find('.weeks').text();
-			enrolData.day = $(this).find('.clazzChoice option:selected').text();
-			if(enrolData.day === ""){ // if day is not selected from dropdown
-				enrolData.day = $(this).find('.day').text()
-			}	
-	
-			var clazz = {
-				"id" : enrolData.id,
-				"startWeek" : enrolData.startWeek,
-				"endWeek" : enrolData.endWeek,
-				"clazzId" : clazzId,
-				"price" : enrolData.price,
-				"grade" : enrolData.grade,
-				"year" : enrolData.year,
-				"name" : enrolData.name,
-				"invoiceId" : enrolData.invoiceId,
-				"amount" : enrolData.amount,
-				"discount" : enrolData.discount,
-				"credit" : enrolData.credit,
-				"weeks" : enrolData.weeks,
-				"day" : enrolData.day,
-				"studentId" : studentId
-			};
-			enrolData.push(clazz);
+			
+
 			// how to jump to next <tr>             
 			return true;    
 		});
 	
-		var elearningData = elearnings.map(function(id) {
-			return parseInt(id);
-		});
-		var bookData = books.map(function(id){
-			return parseInt(id);
-		});
+		// var elearningData = elearnings.map(function(id) {
+		// 	return parseInt(id);
+		// });
+		// var bookData = books.map(function(id){
+		// 	return parseInt(id);
+		// });
 	
 		// Make the AJAX enrolment for eLearning
-		$.ajax({
-			url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
-			method: 'POST',
-			data: JSON.stringify(elearningData),
-			contentType: 'application/json',
-			success: function(response) {
-				// Handle the response
-				// console.log(response);
-			},
-			error: function(xhr, status, error) {
-				// Handle the error
-				console.error(error);
-			}
-		});
+		// $.ajax({
+		// 	url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
+		// 	method: 'POST',
+		// 	data: JSON.stringify(elearningData),
+		// 	contentType: 'application/json',
+		// 	success: function(response) {
+		// 		// Handle the response
+		// 		// console.log(response);
+		// 	},
+		// 	error: function(xhr, status, error) {
+		// 		// Handle the error
+		// 		console.error(error);
+		// 	}
+		// });
 		
 		//console.log(enrolData);
 	
@@ -552,6 +564,7 @@ async function listElearns(grade) {
 					}
 				}
 				
+				//debugger;
 				// nested ajax for book after creating or updating invoice
 				// 2. Make the AJAX enrolment for book
 				$.ajax({
@@ -565,7 +578,18 @@ async function listElearns(grade) {
 						// Handle the response
 						if(response.length >0){
 							$.each(response, function(index, value){
-								// console.log(value);
+								// update exsiting BOOK by adding invoiceId & materialId
+								$('#basketTable > tbody > tr').each(function() {
+									var hiddens = $(this).find('.data-type').text();
+									if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
+										var hiddenValues = hiddens.split('|');
+										if(hiddenValues[1]===value.bookId){
+											// console.log(hiddens + ' - ' + value.clazzId);
+											$(this).find('.materialId').text(value.id);
+											$(this).find('.invoiceId').text(value.invoiceId);
+										}
+									}
+								});
 								addBookToInvoiceList(value);
 							});
 						}else{
@@ -586,12 +610,13 @@ async function listElearns(grade) {
 
 				// check how many rows in basketTable table
 				var rowCount = $('#basketTable tbody tr').length;
-				// console.log(rowCount);
 	
-				// Handle the response
 				// console.log(response);
 				$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
 				$('#success-alert').modal('toggle');
+
+				// update balance
+				
 			},
 			error: function(xhr, status, error) {
 				// Handle the error

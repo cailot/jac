@@ -118,7 +118,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public Invoice getInvoiceByStudentId(Long studentId) {
+	public Invoice getLastActiveInvoiceByStudentId(Long studentId) {
 		return invoiceRepository.findInvoiceByStudentId(studentId);
 	}
 
@@ -142,5 +142,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			System.out.println("No invoice found");
 		}
 		return amount;
+	}
+
+	@Override
+	public Invoice getLastInvoiceByStudentId(Long studentId) {
+		return invoiceRepository.findLastInvoiceByStudentId(studentId);
 	}
 }
