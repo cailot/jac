@@ -137,6 +137,7 @@ function addBookToInvoiceList(data) {
 	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price).toFixed(2)));// Amount	
 	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate));// payment date
 	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + data.bookId)); // 0
+	row.append($('<td>').addClass('hidden-column').addClass('material-match').text(BOOK + '|' + data.id));
 	row.append($('<td class="hidden-column materialId">').text(data.id)); 
 	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId)); 
 						
@@ -534,7 +535,7 @@ function addInformation(){
 			document.getElementById('showInformation').reset();
 			// disappear information dialogue
 			$('#infoModal').modal('toggle');
-			//debugger;
+			// debugger;
 			// update memo <td> in invoiceListTable 
 			$('#invoiceListTable > tbody > tr').each(function() {
 					if(dataType === ENROLMENT){
@@ -546,7 +547,7 @@ function addInformation(){
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
 						}
 					}else if(dataType === BOOK){
-						if ($(this).find('.book-match').text() === (dataType + '|' + dataId)) {
+						if ($(this).find('.material-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
 						}
 					}
