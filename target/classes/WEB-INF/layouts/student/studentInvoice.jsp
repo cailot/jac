@@ -157,8 +157,7 @@ function clearStudentInfo() {
 		studentInfoDiv.style.display = 'none';
 	}
 	//studentInvoiceTable all rows remove
-	$('#studentInvoiceTable > tbody').empty();
-	$('#studentInvoiceTable > tfoot').empty();
+	$('#studentInvoiceTable').DataTable().clear().draw();
 }
 
 </script>
