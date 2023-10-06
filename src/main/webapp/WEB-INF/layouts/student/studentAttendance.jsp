@@ -122,12 +122,10 @@ function clearAttendanceInfo() {
 		criteriaInfoDiv.style.display = 'none';
 	}
 	//attendanceTable all rows remove
-	$('#attendanceTable > tobody').empty();
+	$('#attendanceTable').DataTable().clear().draw();
 }
 
 </script>
-
-
 
 <!-- List Body -->
 <div class="row">
