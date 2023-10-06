@@ -20,11 +20,10 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	@Query("SELECT new hyung.jin.seo.jae.dto.MaterialDTO(m.id, m.registerDate, m.paymentDate, m.info, m.book.id, m.book.name, m.book.price, m.invoice.id) FROM Material m WHERE m.invoice.id = ?1 AND m.book.id = ?2") 
 	MaterialDTO findMaterialByInvoiceIdAndBookId(Long invoiceId, Long bookId);
 
-	// delete material by invoice id and book id
-	// @Query("DELETE FROM Material m WHERE m.invoice.id = ?1 AND m.book.id = ?2")
-	// void deleteMaterial(Long invoiceId, Long bookId);
-
 	@Modifying
+    @Query("DELETE FROM Material m WHERE m.id = :id")
+    void deleteMaterial(@Param("id") Long id);
+
     @Query("DELETE FROM Material m WHERE m.invoice.id = :invoiceId AND m.book.id = :bookId")
     void deleteMaterialByInvoiceIdAndBookId(@Param("invoiceId") Long invoiceId, @Param("bookId") Long bookId);
 
@@ -35,7 +34,6 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	// return Book ids by invoice id
 	@Query("SELECT m.book.id FROM Material m WHERE m.invoice.id = ?1")
 	List<Long> findBookIdByInvoiceId(long invoiceId);
-
 
 	long count();
 }

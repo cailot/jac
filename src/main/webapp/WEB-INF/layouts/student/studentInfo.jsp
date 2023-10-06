@@ -1,13 +1,23 @@
 <script>
-	// initiate datepicker
 	$(function() {
+		// initiate datepicker
     	$( "#formRegisterDate" ).datepicker({
 			dateFormat: 'dd/mm/yy'
 		});
 		$( "#addRegisterDate" ).datepicker({
 			dateFormat: 'dd/mm/yy'
   		});
+		// key enter event for 'formKeyword' field
+		$('#formKeyword').keypress(function(event){
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if(keycode == '13'){
+				searchStudent();
+			}
+		});
 	});
+	
+
+
 	///////////////////////////////////////////////////////////////////////////
 	// 		Add Student
 	///////////////////////////////////////////////////////////////////////////
