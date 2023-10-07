@@ -79,6 +79,9 @@ public class Teacher implements Serializable{
     @Column(length = 20, nullable = true)
     private String superMember;
     
+    @Column(length = 20, nullable = true)
+    private String vitNumber;
+    
     @Column(length = 15, nullable = true)
     private Long tfn;
     

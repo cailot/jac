@@ -46,6 +46,8 @@ public class TeacherDTO implements Serializable{
     private String accountNumber;
     
     private String superannuation;
+
+    private String vitNumber;
     
     private String superMember;
     
@@ -70,6 +72,7 @@ public class TeacherDTO implements Serializable{
         this.bsb = (teacher.getBsb()!=null) ? teacher.getBsb() : "";
         this.accountNumber = (teacher.getAccountNumber()!=null) ? teacher.getAccountNumber().toString() : "";
         this.superannuation = (teacher.getSuperannuation()!=null) ? teacher.getSuperannuation() : "";
+        this.vitNumber = (teacher.getVitNumber()!=null) ? teacher.getVitNumber() : "";
         this.superMember = (teacher.getSuperMember()!=null) ? teacher.getSuperMember() : "";
         this.tfn = (teacher.getTfn()!=null) ? teacher.getTfn().toString() : "";
         this.startDate = (teacher.getStartDate()!=null) ? teacher.getStartDate().toString() : "";
@@ -92,6 +95,7 @@ public class TeacherDTO implements Serializable{
     	if(StringUtils.isNotBlank(bsb)) teacher.setBsb(this.bsb);
     	if(StringUtils.isNotBlank(accountNumber)) teacher.setAccountNumber(Long.parseLong(this.accountNumber));
     	if(StringUtils.isNotBlank(superannuation)) teacher.setSuperannuation(this.superannuation);
+        if(StringUtils.isNotBlank(vitNumber)) teacher.setVitNumber(this.vitNumber);        
     	if(StringUtils.isNotBlank(superMember)) teacher.setSuperMember(this.superMember);
     	if(StringUtils.isNotBlank(tfn)) teacher.setTfn(Long.parseLong(this.tfn));
     	if(StringUtils.isNotBlank(startDate)) teacher.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));

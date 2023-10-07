@@ -4,7 +4,7 @@
 	var academicWeek;
 	
 	const ENROLMENT = 'enrolment';
-	const ELEARNING = 'eLearning';
+	// const ELEARNING = 'eLearning';
 	const CLASS = 'class';
 	const BOOK = 'book';
 	const ETC = 'etc';
@@ -21,7 +21,7 @@
 				// save the response into the variable
 				academicYear = response[0];
 				academicWeek = response[1];
-				// console.log(response);
+				// console.log(response[1]);
 			  },
 			  error: function(jqXHR, textStatus, errorThrown) {
 				console.log('Error : ' + errorThrown);
@@ -30,7 +30,7 @@
 	
 			$('#registerGrade').on('change',function() {
 				var grade = $(this).val();
-				listElearns(grade);
+				// listElearns(grade);
 				listCourses(grade);
 				listBooks(grade);
 			});
@@ -44,69 +44,38 @@
 		}
 	);
 	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//      Search e-Learning based on Grade    
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	// function listElearns(grade) {
-	// 	// clear 'elearnTable' table body
-	// 	$('#elearnTable tbody').empty();
-	// 	$.ajax({
-	// 		url : '${pageContext.request.contextPath}/elearning/grade',
-	// 		type : 'GET',
-	// 		data : {
-	// 			grade : grade,
-	// 		},
-	// 		success : function(data) {
-	// 			$.each(data, function(index, value) {
-	// 				const cleaned = cleanUpJson(value);
-	// 				// console.log(cleaned);
-	// 				var row = $("<tr class='d-flex'>");
-	// 				row.append($('<td>').addClass('hidden-column').text(value.id));
-	// 				row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-	// 				row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
-	// 				row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
-	// 				row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
-	// 				$('#elearnTable > tbody').append(row);
-	// 			});
-	// 		},
-	// 		error : function(xhr, status, error) {
-	// 			console.log('Error : ' + error);
-	// 		}
-	// 	});
-	// }
-
 // change to async function to make sure 'readyForCourseRegistration() in studentInfo.jsp' executes after 'listElearns()' is completed
-async function listElearns(grade) {
-    return new Promise(function(resolve, reject) {
-        // clear 'elearnTable' table body
-        $('#elearnTable tbody').empty();
-        $.ajax({
-            url: '${pageContext.request.contextPath}/elearning/grade',
-            type: 'GET',
-            data: {
-                grade: grade,
-            },
-            success: function(data) {
-                $.each(data, function(index, value) {
-                    const cleaned = cleanUpJson(value);
-                    // console.log(cleaned);
-                    var row = $("<tr class='d-flex'>");
-                    row.append($('<td>').addClass('hidden-column').text(value.id));
-                    row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-                    row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
-                    row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
-                    row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
-                    $('#elearnTable > tbody').append(row);
-                });
-                resolve();
-            },
-            error: function(xhr, status, error) {
-                console.log('Error : ' + error);
-                reject(error);
-            }
-        });
-    });
-}
+// async function listElearns(grade) {
+//     return new Promise(function(resolve, reject) {
+//         // clear 'elearnTable' table body
+//         $('#elearnTable tbody').empty();
+//         $.ajax({
+//             url: '${pageContext.request.contextPath}/elearning/grade',
+//             type: 'GET',
+//             data: {
+//                 grade: grade,
+//             },
+//             success: function(data) {
+//                 $.each(data, function(index, value) {
+//                     const cleaned = cleanUpJson(value);
+//                     // console.log(cleaned);
+//                     var row = $("<tr class='d-flex'>");
+//                     row.append($('<td>').addClass('hidden-column').text(value.id));
+//                     row.append($('<td class="col-1"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+//                     row.append($('<td class="smaller-table-font text-center col-1">').text(value.grade.toUpperCase()));
+//                     row.append($('<td class="smaller-table-font col-9" style="padding-left: 20px;">').text(value.name));
+//                     row.append($("<td onclick='addElearningToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add eLearning"><i class="bi bi-plus-circle"></i></a>'));
+//                     $('#elearnTable > tbody').append(row);
+//                 });
+//                 resolve();
+//             },
+//             error: function(xhr, status, error) {
+//                 console.log('Error : ' + error);
+//                 reject(error);
+//             }
+//         });
+//     });
+// }
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,9 +97,9 @@ async function listElearns(grade) {
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').text(value.id));
 					row.append($('<td class="col-1"><i class="bi bi-mortarboard" title="class"></i></td>'));
-					row.append($('<td class="smaller-table-font col-5" style="padding-left: 20px;">').text(value.description));
+					row.append($('<td class="smaller-table-font col-5" style="padding-left: 20px;">').text(value.name + ' - ' + value.description));
 					row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
-					row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
+					row.append($('<td class="smaller-table-font col-1 text-right pr-3">').text(Number(value.price).toFixed(2)));
 					row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 					$('#courseTable > tbody').append(row);
 				});
@@ -178,30 +147,30 @@ async function listElearns(grade) {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Add elearning to basket
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addElearningToBasket(value){
-		// if elearning is already in basket, skip
-		if(isSameRowExisting(ELEARNING, value.id)){
-			showAlertMessage('warningAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' is already in My Lecture</center>');
-			return;
-		}
-		var row = $("<tr class='d-flex'>");
-		row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
-		row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-		row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + value.grade.toUpperCase() + '] ' + value.name));
-		row.append($('<td style="width: 7%;">'));
-		row.append($('<td style="width: 6%;">'));
-		row.append($('<td style="width: 6%;">'));
-		row.append($('<td style="width: 6%;">'));
-		row.append($('<td style="width: 4%;">'));
-		row.append($('<td style="width: 7%;">'));
-		row.append($('<td style="width: 8%;">'));   
-		row.append($('<td style="width: 11%;">'));
-		row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
-		row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade));
-		$('#basketTable > tbody').prepend(row);
-		// Automatically dismiss the alert after 2 seconds
-		showAlertMessage('addAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' added to My Lecture</center>');
-	}
+	// function addElearningToBasket(value){
+	// 	// if elearning is already in basket, skip
+	// 	if(isSameRowExisting(ELEARNING, value.id)){
+	// 		showAlertMessage('warningAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' is already in My Lecture</center>');
+	// 		return;
+	// 	}
+	// 	var row = $("<tr class='d-flex'>");
+	// 	row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
+	// 	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+	// 	row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + value.grade.toUpperCase() + '] ' + value.name));
+	// 	row.append($('<td style="width: 7%;">'));
+	// 	row.append($('<td style="width: 6%;">'));
+	// 	row.append($('<td style="width: 6%;">'));
+	// 	row.append($('<td style="width: 6%;">'));
+	// 	row.append($('<td style="width: 4%;">'));
+	// 	row.append($('<td style="width: 7%;">'));
+	// 	row.append($('<td style="width: 8%;">'));   
+	// 	row.append($('<td style="width: 11%;">'));
+	// 	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
+	// 	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade));
+	// 	$('#basketTable > tbody').prepend(row);
+	// 	// Automatically dismiss the alert after 2 seconds
+	// 	showAlertMessage('addAlert', '<center><i class="bi bi-laptop"></i> &nbsp;&nbsp[' + value.grade.toUpperCase()+ '] ' + value.name +' added to My Lecture</center>');
+	// }
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Add class to basket
@@ -245,6 +214,7 @@ async function listElearns(grade) {
 			});
 			row.append(hiddenColumn);
 			row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+			// row.append($('<td class="smaller-table-font name">').text('[' + value.grade.toUpperCase() + '] ' + value.name)); // name
 			row.append($('<td class="smaller-table-font name">').text(value.name)); // name
 			row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 			row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
@@ -405,7 +375,7 @@ async function listElearns(grade) {
 		row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
 		row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
 			
-		$('#basketTable > tbody').prepend(row);
+		$('#basketTable > tbody').append(row);
 		
 		// Automatically dismiss the alert after 2 seconds
 		showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
@@ -426,7 +396,7 @@ async function listElearns(grade) {
 			return; 
 		}
 	
-		var elearnings = [];
+		// var elearnings = [];
 		var enrolData = [];
 		var bookData = [];
 	
@@ -439,10 +409,11 @@ async function listElearns(grade) {
 			if(hiddens.indexOf('|') !== -1){
 				var hiddenValues = hiddens.split('|');
 				// if hiddenValues[0] is ELEARNING, push hiddenValues[1] to elearnings array
-				if(hiddenValues[0] === ELEARNING){
-					elearnings.push(hiddenValues[1]);
-					return true;
-				}else if(hiddenValues[0] === BOOK){
+				// if(hiddenValues[0] === ELEARNING){
+				// 	elearnings.push(hiddenValues[1]);
+				// 	return true;
+				// }else 
+				if(hiddenValues[0] === BOOK){
 					bookId = hiddenValues[1];
 					var materialId = $(this).find('.materialId').text();
 					var invoiceId = $(this).find('.invoiceId').text();
@@ -491,38 +462,11 @@ async function listElearns(grade) {
 					enrolData.push(clazz);
 				}
 			}
-	
-			
-
 			// how to jump to next <tr>             
 			return true;    
 		});
 	
-		// var elearningData = elearnings.map(function(id) {
-		// 	return parseInt(id);
-		// });
-		// var bookData = books.map(function(id){
-		// 	return parseInt(id);
-		// });
-	
-		// Make the AJAX enrolment for eLearning
-		// $.ajax({
-		// 	url: '${pageContext.request.contextPath}/enrolment/associateElearning/' + studentId,
-		// 	method: 'POST',
-		// 	data: JSON.stringify(elearningData),
-		// 	contentType: 'application/json',
-		// 	success: function(response) {
-		// 		// Handle the response
-		// 		// console.log(response);
-		// 	},
-		// 	error: function(xhr, status, error) {
-		// 		// Handle the error
-		// 		console.error(error);
-		// 	}
-		// });
 		
-		//console.log(enrolData);
-	
 		// 1. Make the AJAX enrolment for class
 		$.ajax({
 			url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
@@ -848,42 +792,42 @@ async function listElearns(grade) {
 			}
 		});
 		// get the elearning
-		$.ajax({
-			url: '${pageContext.request.contextPath}/elearning/search/student/' + studentId,
-			method: 'GET',
-			success: function(response) {
-				// Handle the response
-				$.each(response, function(index, value){
-					// console.log(index + ' - ' + value);  
-					// if already exist the same row, skip
-					if(isSameRowExisting(ELEARNING, value.id)){
-						// console.log('existing...');
-						return true;
-					}
-					var row = $("<tr class='d-flex'>");
-					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
-					row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
-					row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + value.grade.toUpperCase() + '] ' + value.name));
-					row.append($('<td style="width: 7%;">'));
-					row.append($('<td style="width: 6%;">'));
-					row.append($('<td style="width: 6%;">'));
-					row.append($('<td style="width: 6%;">'));
-					row.append($('<td style="width: 4%;">'));
-					row.append($('<td style="width: 7%;">'));
-					row.append($('<td style="width: 8%;">'));   
-					row.append($('<td style="width: 11%;">'));
-					row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
-					row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade));
+		// $.ajax({
+		// 	url: '${pageContext.request.contextPath}/elearning/search/student/' + studentId,
+		// 	method: 'GET',
+		// 	success: function(response) {
+		// 		// Handle the response
+		// 		$.each(response, function(index, value){
+		// 			// console.log(index + ' - ' + value);  
+		// 			// if already exist the same row, skip
+		// 			if(isSameRowExisting(ELEARNING, value.id)){
+		// 				// console.log('existing...');
+		// 				return true;
+		// 			}
+		// 			var row = $("<tr class='d-flex'>");
+		// 			row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ELEARNING + '|' + value.id));
+		// 			row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-laptop" title="e-learning"></i></td>'));
+		// 			row.append($('<td class="smaller-table-font" style="width: 36%;">').text('[' + value.grade.toUpperCase() + '] ' + value.name));
+		// 			row.append($('<td style="width: 7%;">'));
+		// 			row.append($('<td style="width: 6%;">'));
+		// 			row.append($('<td style="width: 6%;">'));
+		// 			row.append($('<td style="width: 6%;">'));
+		// 			row.append($('<td style="width: 4%;">'));
+		// 			row.append($('<td style="width: 7%;">'));
+		// 			row.append($('<td style="width: 8%;">'));   
+		// 			row.append($('<td style="width: 11%;">'));
+		// 			row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete e-learning"><i class="bi bi-trash"></i></a>'));
+		// 			row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade));
 	
-					$('#basketTable > tbody').append(row);  
+		// 			$('#basketTable > tbody').append(row);  
 	
-				});
-			},
-			error: function(xhr, status, error) {
-				// Handle the error
-				console.error(error);
-			}
-		});
+		// 		});
+		// 	},
+		// 	error: function(xhr, status, error) {
+		// 		// Handle the error
+		// 		console.error(error);
+		// 	}
+		// });
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1021,10 +965,10 @@ async function listElearns(grade) {
 					<div class="col-md-12">
 						<nav>
 							  <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-									<a class="nav-item nav-link active" id="nav-basket-tab" data-toggle="tab" href="#nav-basket" role="tab" aria-controls="nav-basket" aria-selected="true">Lecture</a>
-									<a class="nav-item nav-link" id="nav-elearn-tab" data-toggle="tab" href="#nav-elearn" role="tab" aria-controls="nav-elearn" aria-selected="true">e-Learning</a>
-									<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Course</a>
-									<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books</a>
+									<a class="nav-item nav-link active" id="nav-basket-tab" data-toggle="tab" href="#nav-basket" role="tab" aria-controls="nav-basket" aria-selected="true">Purchased Items</a>
+									<!-- <a class="nav-item nav-link" id="nav-elearn-tab" data-toggle="tab" href="#nav-elearn" role="tab" aria-controls="nav-elearn" aria-selected="true">e-Learning</a> -->
+									<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Course To Choose</a>
+									<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books To Purchase</a>
 									<!-- <a class="nav-item nav-link" id="nav-etc-tab" data-toggle="tab" href="#nav-etc" role="tab" aria-controls="nav-etc" aria-selected="false">Etc</a> -->
 							  </div>
 						</nav>                  
@@ -1054,7 +998,7 @@ async function listElearns(grade) {
 							</table> 
 						</div>
 						<!-- e-Learning -->
-						<div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
+						<!-- <div class="tab-pane fade" id="nav-elearn" role="tabpanel" aria-labelledby="nav-elearn-tab">
 							<table class="table" id="elearnTable" name="elearnTable">
 								<thead>
 									<tr class="d-flex">
@@ -1068,7 +1012,7 @@ async function listElearns(grade) {
 								<tbody>	
 								</tbody>
 							</table>
-						</div>
+						</div> -->
 						<!-- Course -->
 						<div class="tab-pane fade" id="nav-fee" role="tabpanel" aria-labelledby="nav-fee-tab">
 							<table class="table" id="courseTable" name="courseTable">
