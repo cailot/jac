@@ -190,6 +190,12 @@ public class TeacherServiceImpl implements TeacherService {
 		if (StringUtils.isNotBlank(newsuperannuation)) {
 			existing.setSuperannuation(newsuperannuation);
 		}
+
+		String newVitNumber = StringUtils.defaultString(newVal.getVitNumber());
+		if (StringUtils.isNotBlank(newVitNumber)) {
+			existing.setVitNumber(newVitNumber);
+		}
+
 		String newSuperMember = StringUtils.defaultString(newVal.getSuperMember());
 		if (StringUtils.isNotBlank(newSuperMember)) {
 			existing.setSuperMember(newSuperMember);
