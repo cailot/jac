@@ -9,6 +9,9 @@
 	const BOOK = 'book';
 	const ETC = 'etc';
 	const NEW = 'NEW';
+
+	const ONSITE = 'ONSITE';
+	const ONLINE = 'ONLINE';
 	
 	$(document).ready(
 		function() {
@@ -97,7 +100,7 @@
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').text(value.id));
 					row.append($('<td class="col-1"><i class="bi bi-mortarboard" title="class"></i></td>'));
-					row.append($('<td class="smaller-table-font col-5" style="padding-left: 20px;">').text(value.name + ' - ' + value.description));
+					row.append($('<td class="smaller-table-font course-title col-5" style="padding-left: 20px;">').text(value.name + ' - ' + value.description));
 					row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
 					row.append($('<td class="smaller-table-font col-1 text-right pr-3">').text(Number(value.price).toFixed(2)));
 					row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
@@ -132,7 +135,6 @@
 					row.append($('<td class="smaller-table-font col-5">').text(value.name));
 					row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
 					row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
-					//row.append($("<td class='col-1' onclick='addBookToInvoice(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 					row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 					$('#bookTable > tbody').append(row);
 				});
@@ -342,6 +344,55 @@
 			row.append($('<td class="hidden-column description">').text(value.description)); // description
 			$('#basketTable > tbody').prepend(row);
 			
+
+			// check if value.name contains 'Online'
+			if(value.name.toUpperCase().indexOf(ONSITE) !== -1){
+				console.log('Online needs');
+				// check other rows' name
+				$('#courseTable > tbody > tr').each(function() {
+					var title = $(this).find('.course-title').text();
+					if(title.toUpperCase().indexOf(ONLINE) !== -1){
+						// how to know hidden-column data-type is CLASS
+						var clazzId = $(this).find('.hidden-column').text();
+						var clazzName = '';
+						var clazzDescription = '';
+						if(title.indexOf('-') !== -1){
+							clazzName = title.split('-')[0].trim();
+							clazzDescription = title.split('-')[1].trim();
+						}
+						// console.log(clazzId + ' ' + clazzName);
+						var row = $('<tr class="d-flex">');
+						row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
+						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+						row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
+						row.append($('<td class="smaller-table-font day">').text('All')); // day
+						row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
+						var onlineStartWeek = startWeekCell.clone().text(start_week);
+						row.append(onlineStartWeek);
+						var onlineEndWeek = endWeekCell.clone().text(end_week);
+						row.append(onlineEndWeek);
+						var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
+						row.append(onlineWeeks);
+						row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
+						row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(0));
+						row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
+						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
+						row.append($('<td>'));
+						row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
+						row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+						row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
+						row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
+						$('#basketTable > tbody').append(row);	
+					}
+				});
+			}	
+
+
+
+
+
+
+
 			showAlertMessage('addAlert', '<center><i class="bi bi-mortarboard"></i> &nbsp;&nbsp' + value.description + ' added to My Lecture</center>');
 		}
 	  });
