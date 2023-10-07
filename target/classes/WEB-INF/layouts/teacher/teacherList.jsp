@@ -40,15 +40,6 @@ $(document).ready(function () {
 		$('#passwordModal #usernamepassword').val(username);
 	});
 	
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		//format: 'dd/mm/yyyy',
-		autoclose : true,
-		todayHighlight : true
-	});
-
     
 });
 
@@ -71,6 +62,7 @@ function addTeacher() {
 		accountNumber : $("#addAccountNumber").val(),
 		tfn : $("#addTfn").val(),
 		superannuation : $("#addSuperannuation").val(),
+		vitNumber : $("#addVitNumber").val(),
 		superMember : $("#addSuperMember").val(),
 		memo : $("#addMemo").val(),
 	}
@@ -97,7 +89,7 @@ function addTeacher() {
 			console.log('Error : ' + error);
 		}
 	});
-	$('#registerStudentModal').modal('hide');
+	$('#registerModal').modal('hide');
 	// flush all registered data
 	document.getElementById("teacherRegister").reset();
 }
@@ -125,11 +117,12 @@ function retreiveTeacherInfo(std) {
 			$("#editBsb").val(teacher.bsb);
 			$("#editAccountNumber").val(teacher.accountNumber);
 			$("#editSuperannuation").val(teacher.superannuation);
+			$("#editVitNumber").val(teacher.vitNumber);
 			$("#editSuperMember").val(teacher.superMember);
 			$("#editTfn").val(teacher.tfn);
 			$("#editMemo").val(teacher.memo);
 			// display modal
-			$('#editTeacherModal').modal('show');
+			$('#editModal').modal('show');
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -158,6 +151,7 @@ function updateTeacherInfo(){
 		accountNumber : $("#editAccountNumber").val(),
 		tfn : $("#editTfn").val(),
 		superannuation : $("#editSuperannuation").val(),
+		vitNumber : $("#editVitNumber").val(),
 		superMember : $("#editSuperMember").val()
 	}
 	
@@ -170,7 +164,7 @@ function updateTeacherInfo(){
 		contentType : 'application/json',
 		success : function(value) {
 			// disappear modal
-			$('#editTeacherModal').modal('hide');
+			$('#editModal').modal('hide');
 			// Display the success alert
             $('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
             $('#success-alert').modal('show');
@@ -242,16 +236,6 @@ function inactivateTeacher(id) {
 	}else{
 		return;
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Memo Modal
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayMemo(dataId, contents){
-	document.getElementById("infoDataId").value = dataId;
-	document.getElementById("information").value = contents;
-	// display Receivable amount
-    $('#infoModal').modal('toggle');
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,12 +344,10 @@ function updateMemoInformation(){
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;&nbsp;Registration</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus"></i>&nbsp;&nbsp;Registration</button>
 					</div>
 				</div>
 			</div>
-
-
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
@@ -380,9 +362,9 @@ function updateMemoInformation(){
 										<th>Email</th>
 										<th>Address</th>
 										<th>TFN</th>
+										<th>VIT/WWCC</th>
 										<th>Start Date</th>
 										<th>End Date</th>
-										<th>Memo</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -391,7 +373,7 @@ function updateMemoInformation(){
 									<c:when test="${TeacherList != null}">
 									
 										<c:forEach items="${TeacherList}" var="teacher">
-											<%--<c:out value="${teacher}"/>--%>
+										
 											<tr>
 												<td class="small ellipsis" id="teacherId" name="teacherId"><span><c:out value="${teacher.id}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.firstName}" /></span></td>
@@ -403,19 +385,14 @@ function updateMemoInformation(){
 												<td class="small ellipsis"><span><c:out value="${teacher.email}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.address}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${teacher.tfn}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${teacher.startDate}" /></span></td>
+												<td class="small ellipsis">
+													<span><c:out value="${teacher.vitNumber}" /></span>
+												</td>
+												<td class="small ellipsis">
+													<span><c:out value="${teacher.startDate}" /></span>
+												</td>
 												<td class="small ellipsis">
 													<c:out value="${teacher.endDate}" />
-												</td>
-												<td class="small text-center">
-													<c:choose>
-														<c:when test="${not empty teacher.memo}">
-															<i class="bi bi-chat-square-text-fill text-primary" title="Memo" onclick="displayMemo('${teacher.id}', '${teacher.memo}')"></i>
-														</c:when>
-														<c:otherwise>
-															<i class="bi bi-chat-square-text text-primary" title="Memo" onclick="displayMemo('${teacher.id}', '${teacher.memo}')"></i>
-														</c:otherwise>
-													</c:choose>
 												</td>
 												<td>
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
@@ -445,147 +422,136 @@ function updateMemoInformation(){
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="myModalLabel">Teacher Register</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			</div>
 			<div class="modal-body">
+				<section class="fieldset rounded border-primary">
+				<header class="text-primary font-weight-bold">Teacher Registration</header>	
 				<form id="teacherRegister">
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-4">
-								<label for="selectOption">State</label> <select
-									class="form-control" id="addState" name="addState">
-									<option value="vic">Victoria</option>
-									<option value="nsw">New South Wales</option>
-									<option value="qld">Queensland</option>
-									<option value="sa">South Australia</option>
-									<option value="tas">Tasmania</option>
-									<option value="wa">Western Australia</option>
-									<option value="nt">Northern Territory</option>
-									<option value="act">ACT</option>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<label for="selectOption">Branch</label> <select
-									class="form-control" id="addBranch" name="addBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
-								</select>
-							</div>
-							<div class="col-md-2">
-								<label for="selectOption">Title</label>
-								<select class="form-control" id="addTitle" name="addTitle">
-									<option value="mr">Mr</option>
-									<option value="mrs">Mrs</option>
-									<option value="ms">Ms</option>
-									<option value="miss">Miss</option>
-									<option value="other">Other</option>
-								</select>
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-4">
+							<label for="addState" class="label-form">State</label>
+							<select class="form-control" id="addState" name="addState">
+								<option value="vic">Victoria</option>
+								<option value="nsw">New South Wales</option>
+								<option value="qld">Queensland</option>
+								<option value="sa">South Australia</option>
+								<option value="tas">Tasmania</option>
+								<option value="wa">Western Australia</option>
+								<option value="nt">Northern Territory</option>
+								<option value="act">ACT</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label for="addBranch" class="label-form">Branch</label> 
+							<select class="form-control" id="addBranch" name="addBranch">
+								<option value="braybrook">Braybrook</option>
+								<option value="epping">Epping</option>
+								<option value="balwyn">Balwyn</option>
+								<option value="bayswater">Bayswater</option>
+								<option value="boxhill">Box Hill</option>
+								<option value="carolinesprings">Caroline Springs</option>
+								<option value="chadstone">Chadstone</option>
+								<option value="craigieburn">Craigieburn</option>
+								<option value="cranbourne">Cranbourne</option>
+								<option value="glenwaverley">Glen Waverley</option>
+								<option value="mitcha">Mitcham</option>
+								<option value="narrewarren">Narre Warren</option>
+								<option value="ormond">Ormond</option>
+								<option value="pointcook">Point Cook</option>
+								<option value="preston">Preston</option>
+								<option value="springvale">Springvale</option>
+								<option value="stalbans">St Albans</option>
+								<option value="werribee">Werribee</option>
+								<option value="mernda">Mernda</option>
+								<option value="melton">Melton</option>
+								<option value="glenroy">Glenroy</option>
+								<option value="packenham">Packenham</option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<label for="addTitle" class="label-form">Title</label>
+							<select class="form-control" id="addTitle" name="addTitle">
+								<option value="mr">Mr</option>
+								<option value="mrs">Mrs</option>
+								<option value="ms">Ms</option>
+								<option value="miss">Miss</option>
+								<option value="other">Other</option>
+							</select>
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-6">
-								<label for="name">First Name:</label> <input type="text"
-									class="form-control" id="addFirstName" name="addFirstName">
-							</div>
-							<div class="col-md-6">
-								<label for="name">Last Name:</label> <input type="text"
-									class="form-control" id="addLastName" name="addLastName">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-6">
+							<label for="addFirstName" class="label-form">First Name:</label> 
+							<input type="text" class="form-control" id="addFirstName" name="addFirstName">
+						</div>
+						<div class="col-md-6">
+							<label for="addLastName" class="label-form">Last Name:</label> 
+							<input type="text" class="form-control" id="addLastName" name="addLastName">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-5">
-								<label for="name">Email</label>
-								<input type="text" class="form-control" id="addEmail" name="addEmail">
-							</div>
-							<div class="col-md-6">
-								<label for="name">Phone</label>
-								<input type="text" class="form-control" id="addPhone" name="addPhone">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-6">
+							<label for="addEmail" class="label-form">Email</label>
+							<input type="text" class="form-control" id="addEmail" name="addEmail">
+						</div>
+						<div class="col-md-6">
+							<label for="addPhone" class="label-form">Phone</label>
+							<input type="number" class="form-control" id="addPhone" name="addPhone">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-12">
-								<label for="name">Address</label> 
-								<input type="text" class="form-control" id="addAddress" name="addAddress">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-9">
+							<label for="addAddress" class="label-form">Address</label> 
+							<input type="text" class="form-control" id="addAddress" name="addAddress">
+						</div>
+						<div class="col-md-3">
+							<label for="addVitNumber" class="label-form">VIT/WWCC</label> 
+							<input type="text" class="form-control" id="addVitNumber" name="addVitNumber">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-4">
-								<label for="name">Bank</label> 
-								<input type="text" class="form-control" id="addBank" name="addBank">
-							</div>
-							<div class="col-md-3">
-								<label for="name">Bsb</label> 
-								<input type="text" class="form-control" id="addBsb" name="addBsb">
-							</div>
-							<div class="col-md-5">
-								<label for="name">Account #</label> 
-								<input type="text" class="form-control" id="addAccountNumber" name="addAccountNumber">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-4">
+							<label for="addBank" class="label-form">Bank</label> 
+							<input type="text" class="form-control" id="addBank" name="addBank">
+						</div>
+						<div class="col-md-3">
+							<label for="addBsb" class="label-form">Bsb</label> 
+							<input type="text" class="form-control" id="addBsb" name="addBsb">
+						</div>
+						<div class="col-md-5">
+							<label for="addAccountNumber" class="label-form">Account #</label> 
+							<input type="number" class="form-control" id="addAccountNumber" name="addAccountNumber">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-5">
-								<label for="name">TFN</label> 
-								<input type="text" class="form-control" id="addTfn" name="addTfnr">
-							</div>
-							<div class="col-md-4">
-								<label for="name">Superannuation</label> 
-								<input type="text" class="form-control" id="addSuperannuation" name="addSuperannuation">
-							</div>
-							<div class="col-md-3">
-								<label for="name"> Membership #</label> 
-								<input type="text" class="form-control" id="addSuperMember" name="addSuperMember">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-5">
+							<label for="addTfn" class="label-form">TFN</label> 
+							<input type="number" class="form-control" id="addTfn" name="addTfnr">
+						</div>
+						<div class="col-md-4">
+							<label for="addSuperannuation" class="label-form">Superannuation</label> 
+							<input type="text" class="form-control" id="addSuperannuation" name="addSuperannuation">
+						</div>
+						<div class="col-md-3">
+							<label for="addSuperMember" class="label-form"> Membership #</label> 
+							<input type="text" class="form-control" id="addSuperMember" name="addSuperMember">
 						</div>
 					</div>
-
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-12">
-								<label for="message">Memo</label>
-								<textarea class="form-control" id="addMemo" name="addMemo"></textarea>
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-12">
+							<label for="addMemo" class="label-form">Memo</label>
+							<textarea class="form-control" id="addMemo" name="addMemo"></textarea>
 						</div>
 					</div>
+					
 				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary" onclick="addTeacher()">Register</button>
+				<div class="d-flex justify-content-end">
+    				<button type="submit" class="btn btn-primary" onclick="addTeacher()">Register</button>&nbsp;&nbsp;
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>	
+				</section>
 			</div>
 		</div>
 		<!-- /.modal-content -->
@@ -595,154 +561,139 @@ function updateMemoInformation(){
 <!-- /.modal -->
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editTeacherModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="modalEditLabel">Teacher Edit</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			</div>
 			<div class="modal-body">
+				<section class="fieldset rounded border-primary">
+				<header class="text-primary font-weight-bold">Teacher Edit</header>	
 				<form id="teacherEdit">
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-4">
-								<label for="selectOption">State</label> <select
-									class="form-control" id="editState" name="editState">
-									<option value="vic">Victoria</option>
-									<option value="nsw">New South Wales</option>
-									<option value="qld">Queensland</option>
-									<option value="sa">South Australia</option>
-									<option value="tas">Tasmania</option>
-									<option value="wa">Western Australia</option>
-									<option value="nt">Northern Territory</option>
-									<option value="act">ACT</option>
-								</select>
-							</div>
-							<div class="col-md-6">
-								<label for="selectOption">Branch</label> <select
-									class="form-control" id="editBranch" name="editBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
-								</select>
-							</div>
-							<div class="col-md-2">
-								<label for="selectOption">Title</label>
-								<select class="form-control" id="editTitle" name="editTitle">
-									<option value="mr">Mr</option>
-									<option value="mrs">Mrs</option>
-									<option value="ms">Ms</option>
-									<option value="miss">Miss</option>
-									<option value="other">Other</option>
-								</select>
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-4">
+							<label for="editState" class="label-form">State</label> 
+							<select class="form-control" id="editState" name="editState">
+								<option value="vic">Victoria</option>
+								<option value="nsw">New South Wales</option>
+								<option value="qld">Queensland</option>
+								<option value="sa">South Australia</option>
+								<option value="tas">Tasmania</option>
+								<option value="wa">Western Australia</option>
+								<option value="nt">Northern Territory</option>
+								<option value="act">ACT</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<label for="editBranch" class="label-form">Branch</label> 
+							<select class="form-control" id="editBranch" name="editBranch">
+								<option value="braybrook">Braybrook</option>
+								<option value="epping">Epping</option>
+								<option value="balwyn">Balwyn</option>
+								<option value="bayswater">Bayswater</option>
+								<option value="boxhill">Box Hill</option>
+								<option value="carolinesprings">Caroline Springs</option>
+								<option value="chadstone">Chadstone</option>
+								<option value="craigieburn">Craigieburn</option>
+								<option value="cranbourne">Cranbourne</option>
+								<option value="glenwaverley">Glen Waverley</option>
+								<option value="mitcha">Mitcham</option>
+								<option value="narrewarren">Narre Warren</option>
+								<option value="ormond">Ormond</option>
+								<option value="pointcook">Point Cook</option>
+								<option value="preston">Preston</option>
+								<option value="springvale">Springvale</option>
+								<option value="stalbans">St Albans</option>
+								<option value="werribee">Werribee</option>
+								<option value="mernda">Mernda</option>
+								<option value="melton">Melton</option>
+								<option value="glenroy">Glenroy</option>
+								<option value="packenham">Packenham</option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<label for="editTitle" class="label-form">Title</label>
+							<select class="form-control" id="editTitle" name="editTitle">
+								<option value="mr">Mr</option>
+								<option value="mrs">Mrs</option>
+								<option value="ms">Ms</option>
+								<option value="miss">Miss</option>
+								<option value="other">Other</option>
+							</select>
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-2">
-							<label for="name">Id:</label> <input type="text"
-								class="form-control" id="editId" name="editId" readonly>
-							</div>
-							<div class="col-md-5">
-								<label for="name">First Name:</label> <input type="text"
-									class="form-control" id="editFirstName" name="editFirstName">
-							</div>
-							<div class="col-md-5">
-								<label for="name">Last Name:</label> <input type="text"
-									class="form-control" id="editLastName" name="editLastName">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-2">
+						<label for="editId" class="label-form">Id:</label> 
+						<input type="text" class="form-control" id="editId" name="editId" readonly>
+						</div>
+						<div class="col-md-5">
+							<label for="editFirstName" class="label-form">First Name:</label> 
+							<input type="text" class="form-control" id="editFirstName" name="editFirstName">
+						</div>
+						<div class="col-md-5">
+							<label for="editLastName" class="label-form">Last Name:</label> 
+							<input type="text" class="form-control" id="editLastName" name="editLastName">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-5">
-								<label for="name">Email</label>
-								<input type="text" class="form-control" id="editEmail" name="editEmail">
-							</div>
-							<div class="col-md-6">
-								<label for="name">Phone</label>
-								<input type="text" class="form-control" id="editPhone" name="editPhone">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-5">
+							<label for="editEmail" class="label-form">Email</label>
+							<input type="text" class="form-control" id="editEmail" name="editEmail">
+						</div>
+						<div class="col-md-6">
+							<label for="editPhone" class="label-form">Phone</label>
+							<input type="number" class="form-control" id="editPhone" name="editPhone">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-12">
-								<label for="name">Address</label> 
-								<input type="text" class="form-control" id="editAddress" name="editAddress">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-9">
+							<label for="editAddress" class="label-form">Address</label> 
+							<input type="text" class="form-control" id="editAddress" name="editAddress">
+						</div>
+						<div class="col-md-3">
+							<label for="editVitNumber" class="label-form">VIT/WWCC</label> 
+							<input type="text" class="form-control" id="editVitNumber" name="editVitNumber">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-4">
-								<label for="name">Bank</label> 
-								<input type="text" class="form-control" id="editBank" name="editBank">
-							</div>
-							<div class="col-md-3">
-								<label for="name">Bsb</label> 
-								<input type="text" class="form-control" id="editBsb" name="editBsb">
-							</div>
-							<div class="col-md-5">
-								<label for="name">Account #</label> 
-								<input type="text" class="form-control" id="editAccountNumber" name="editAccountNumber">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-4">
+							<label for="editBank" class="label-form">Bank</label> 
+							<input type="text" class="form-control" id="editBank" name="editBank">
+						</div>
+						<div class="col-md-3">
+							<label for="editBsb" class="label-form">Bsb</label> 
+							<input type="text" class="form-control" id="editBsb" name="editBsb">
+						</div>
+						<div class="col-md-5">
+							<label for="editAccountNumber" class="label-form">Account #</label> 
+							<input type="number" class="form-control" id="editAccountNumber" name="editAccountNumber">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-5">
-								<label for="name">TFN</label> 
-								<input type="text" class="form-control" id="editTfn" name="editTfn">
-							</div>
-							<div class="col-md-4">
-								<label for="name">Superannuation</label> 
-								<input type="text" class="form-control" id="editSuperannuation" name="editSuperannuation">
-							</div>
-							<div class="col-md-3">
-								<label for="name"> Membership #</label> 
-								<input type="text" class="form-control" id="editSuperMember" name="editSuperMember">
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-5">
+							<label for="editTfn" class="label-form">TFN</label> 
+							<input type="number" class="form-control" id="editTfn" name="editTfn">
+						</div>
+						<div class="col-md-4">
+							<label for="editSuperannuation" class="label-form">Superannuation</label> 
+							<input type="text" class="form-control" id="editSuperannuation" name="editSuperannuation">
+						</div>
+						<div class="col-md-3">
+							<label for="editSuperMember" class="label-form"> Membership #</label> 
+							<input type="text" class="form-control" id="editSuperMember" name="editSuperMember">
 						</div>
 					</div>
-		
-					<div class="form-group">
-						<div class="form-row">
-							<div class="col-md-12">
-								<label for="message">Memo</label>
-								<textarea class="form-control" id="editMemo" name="editMemo"></textarea>
-							</div>
+					<div class="form-row mt-2">
+						<div class="col-md-12">
+							<label for="editMemo" class="label-form">Memo</label>
+							<textarea class="form-control" id="editMemo" name="editMemo"></textarea>
 						</div>
 					</div>
-				
-				
-				
 				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" class="btn btn-primary" onclick="updateTeacherInfo()">Save</button>
+				<div class="d-flex justify-content-end">
+    				<button type="submit" class="btn btn-primary" onclick="updateTeacherInfo()">Save</button>&nbsp;&nbsp;
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>	
+				</section>
 			</div>
 		</div>
 		<!-- /.modal-content -->

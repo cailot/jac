@@ -85,19 +85,19 @@ public class Student {
     @CreatedDate
     private LocalDate endDate;
 
-    // Unidirectional ManyToMany
-    // @ManyToMany(cascade=CascadeType.ALL)
-     @ManyToMany(fetch = FetchType.LAZY, cascade = {
-		CascadeType.PERSIST,
-		CascadeType.MERGE,
-		CascadeType.REFRESH,
-		CascadeType.DETACH
-	})
-    @JoinTable(name="Student_Elearning",
-    	joinColumns = @JoinColumn(name="studentId"),
-    	inverseJoinColumns = @JoinColumn(name="elearningId")
-    )
-    private Set<Elearning> elearnings = new HashSet<>();
+    // // Unidirectional ManyToMany
+    // // @ManyToMany(cascade=CascadeType.ALL)
+    //  @ManyToMany(fetch = FetchType.LAZY, cascade = {
+	// 	CascadeType.PERSIST,
+	// 	CascadeType.MERGE,
+	// 	CascadeType.REFRESH,
+	// 	CascadeType.DETACH
+	// })
+    // @JoinTable(name="Student_Elearning",
+    // 	joinColumns = @JoinColumn(name="studentId"),
+    // 	inverseJoinColumns = @JoinColumn(name="elearningId")
+    // )
+    // private Set<Elearning> elearnings = new HashSet<>();
 
     //@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "student", cascade = {

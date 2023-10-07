@@ -162,18 +162,18 @@ public class JaeEnrolmentController {
 	@PostMapping("/associateElearning/{studentId}")
 	@ResponseBody
 	public ResponseEntity<String> associateElearning(@PathVariable Long studentId, @RequestBody Long[] elearningIds) {
-		// 1. get student
-		Student std = studentService.getStudent(studentId);
-		// 2. empty elearning list
-		Set<Elearning> elearningSet = std.getElearnings();
-		elearningSet.clear();
-		// 3. associate elearnings
-		for(Long elearningId : elearningIds) {
-			Elearning elearning = elearningService.getElearning(elearningId);
-			elearningSet.add(elearning);
-		}
-		// 4. update student
-		studentService.updateStudent(std, studentId);
+		// // 1. get student
+		// Student std = studentService.getStudent(studentId);
+		// // 2. empty elearning list
+		// Set<Elearning> elearningSet = std.getElearnings();
+		// elearningSet.clear();
+		// // 3. associate elearnings
+		// for(Long elearningId : elearningIds) {
+		// 	Elearning elearning = elearningService.getElearning(elearningId);
+		// 	elearningSet.add(elearning);
+		// }
+		// // 4. update student
+		// studentService.updateStudent(std, studentId);
 		// 5. return success
 		return ResponseEntity.ok("eLearning Success");
 	}
