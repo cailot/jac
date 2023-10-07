@@ -36,14 +36,9 @@ $(document).ready(function () {
 				targets: 0,
 				visible: false,
 				orderable: true
-			},
-			{
-				targets: 1,
-				visible: false,
-				orderable: true
 			}
 		],	
-		order : [[0, 'desc'], [1, 'desc']], // order by invoiceId desc, id desc
+		order : [[1, 'desc'], [0, 'desc']], // order by invoiceId desc, id desc
 		// sum for paid
 		footerCallback: function (row, data, start, end, display) {
     		var api = this.api();
@@ -284,8 +279,8 @@ function clearStudentInfo() {
 							<table id="studentInvoiceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>Invoice ID</th>
 										<th>ID</th>
+										<th>Invoice ID</th>
 										<th>Payment Date</th>
 										<th>Method</th>
 										<th>Total</th>
@@ -299,8 +294,8 @@ function clearStudentInfo() {
 									<c:if test="${not empty sessionScope.payments}">
 										<c:forEach var="payment" items="${payments}">
 											<tr>
-												<td>${payment.invoiceId}</td> <!-- invisible -->
 												<td>${payment.id}</td> <!-- invisible -->
+												<td>${payment.invoiceId}</td>
 												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
