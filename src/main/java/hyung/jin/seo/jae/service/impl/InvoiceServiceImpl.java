@@ -148,4 +148,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 	public Invoice getLastInvoiceByStudentId(Long studentId) {
 		return invoiceRepository.findLastInvoiceByStudentId(studentId);
 	}
+
+	@Override
+	public boolean isPaidInvoice(Long id) {
+		double balance =0;
+		try{
+			balance = invoiceRepository.isPaidInvoice(id);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return (balance <= 0) ? true : false;
+	}
 }
