@@ -13,6 +13,8 @@
 	const ONSITE = 'ONSITE';
 	const ONLINE = 'ONLINE';
 	
+	const OVERDUE = 'Overdue';
+	
 	$(document).ready(
 		function() {
 			// make an AJAX call on page load
@@ -655,13 +657,18 @@
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					//debugger;
+					debugger;
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
 						var row = $('<tr class="d-flex">');
 						row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
-						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+						if(value.extra === OVERDUE){
+							row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" title="Overdue"></i></td>')); // item
+						}else{
+							row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+						}
+						//row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 						row.append($('<td class="smaller-table-font name">').text(value.name)); // name
 						row.append($('<td class="smaller-table-font day">').text(value.day)); // day
 						row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
@@ -805,7 +812,7 @@
 						row.append($('<td class="hidden-column invoiceAmount">').text(value.amount)); // invoice amount	
 						row.append($('<td class="hidden-column paid">').text(value.paid)); // paid	
 		
-						$('#basketTable > tbody').prepend(row);
+						$('#basketTable > tbody').append(row);
 
 						// update invoice table with Enrolment
 						addEnrolmentToInvoiceList(value);
@@ -831,7 +838,7 @@
 						row.append($('<td class="hidden-column materialId">').text(value.id)); 
 						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); 
 						
-						$('#basketTable > tbody').prepend(row);
+						$('#basketTable > tbody').append(row);
 						// update invoice table with Book
 						addBookToInvoiceList(value);
 					}

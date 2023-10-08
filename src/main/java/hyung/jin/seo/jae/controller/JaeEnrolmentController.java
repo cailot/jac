@@ -56,9 +56,6 @@ public class JaeEnrolmentController {
 	private StudentService studentService;
 
 	@Autowired
-	private ElearningService elearningService;
-
-	@Autowired
 	private OutstandingService outstandingService;
 
 	@Autowired
@@ -122,6 +119,8 @@ public class JaeEnrolmentController {
 		
 		for(Long invoiceId : invoiceIds){
 			boolean isStillActive = false;
+			boolean isInvoicePaid = invoiceService.isPaidInvoice(invoiceId);
+
 			// 1. get enrolments by invoice id
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
 			for(EnrolmentDTO enrol : enrols){
@@ -129,6 +128,13 @@ public class JaeEnrolmentController {
 				if((currentYear >= Integer.parseInt(enrol.getYear())) && (currentWeek <= enrol.getEndWeek())){
 					isStillActive = true;
 					dtos.add(enrol);
+				}else{ // if not active, check if fully paid or not
+					// 2-1. if not fully paid, set Overdue to extra
+					if(!isInvoicePaid){
+						enrol.setExtra(JaeConstants.OVERDUE);
+						dtos.add(enrol);
+					}
+
 				}
 			}
 			if(isStillActive){

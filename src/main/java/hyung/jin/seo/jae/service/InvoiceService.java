@@ -43,4 +43,7 @@ public interface InvoiceService {
 	// get Invoice total amount by Id
 	double getInvoiceTotalAmount(Long id);
 
+	// check Invoice paid or not by Id
+	boolean isPaidInvoice(Long id);
+
 }

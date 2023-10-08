@@ -40,4 +40,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 	@Query("SELECT i.amount FROM Invoice i WHERE i.id = ?1")
 	double getInvoiceTotalAmount(long id);
 
+	// return invoice balance by id
+	@Query("SELECT (i.amount - i.paidAmount) FROM Invoice i WHERE i.id = ?1")
+	double isPaidInvoice(long id);
+
 }

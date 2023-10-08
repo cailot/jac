@@ -111,6 +111,8 @@ public interface JaeConstants {
 
 	String FULL_PAID = "Full";
 
+	String OVERDUE = "Overdue";
+
 	String PARTIAL_PAID = "Partial";
 
 	String ENROLMENT = "Enrolment";
