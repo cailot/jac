@@ -77,30 +77,73 @@ public class JaeEnrolmentController {
 	private CycleService cycleService;
 
 	// search enrolment by student Id and return mixed list of materials, enrolments, outstandings
+	// @GetMapping("/search/student/{id}")
+	// @ResponseBody
+	// public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
+	// 	List dtos = new ArrayList(); 
+	// 	// get lastest invoice id
+ 	// 	Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
+
+	// 	boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
+	// 	if(isInvoiceAbsent) return dtos; // return empty list if no invoice
+	// 	// 1. get materials by invoice id and add to list dtos
+	// 	List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
+	// 	for(MaterialDTO material : materials){
+	// 		dtos.add(material);
+	// 	}
+	// 	// 2. get enrolments by invoice id and add to list dtos
+	// 	List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
+	// 	for(EnrolmentDTO enrol : enrols){
+	// 		dtos.add(enrol);
+	// 	}
+	// 	// 3. get outstandings by invoice id and add to list dtos
+	// 	List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
+	// 	for(OutstandingDTO stand : stands){
+	// 		dtos.add(stand);
+	// 	}
+	// 	// 4. return dtos mixed by enrolments and outstandings
+	// 	return dtos;
+	// }
+
 	@GetMapping("/search/student/{id}")
 	@ResponseBody
-	public List searchLatestEnrolmentByStudent(@PathVariable Long id) {
+	public List searchEnrolmentByStudent(@PathVariable Long id) {
 		List dtos = new ArrayList(); 
 		// get lastest invoice id
- 		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
+ 		List<Long> invoiceIds = enrolmentService.findInvoiceIdByStudent(id);
 
-		boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
+		boolean isInvoiceAbsent = ((invoiceIds==null) || (invoiceIds.size()==0));
 		if(isInvoiceAbsent) return dtos; // return empty list if no invoice
-		// 1. get materials by invoice id and add to list dtos
-		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
-		for(MaterialDTO material : materials){
-			dtos.add(material);
-		}
-		// 2. get enrolments by invoice id and add to list dtos
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
-		for(EnrolmentDTO enrol : enrols){
-			dtos.add(enrol);
-		}
-		// 3. get outstandings by invoice id and add to list dtos
-		List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
-		for(OutstandingDTO stand : stands){
-			dtos.add(stand);
-		}
+
+		// check current academic year and week
+		int currentYear = cycleService.academicYear();
+		int currentWeek = cycleService.academicWeeks();
+
+		
+		for(Long invoiceId : invoiceIds){
+			boolean isStillActive = false;
+			// 1. get enrolments by invoice id
+			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
+			for(EnrolmentDTO enrol : enrols){
+				// 2. check if enrolment is active or not
+				if((currentYear >= Integer.parseInt(enrol.getYear())) && (currentWeek <= enrol.getEndWeek())){
+					isStillActive = true;
+					dtos.add(enrol);
+				}
+			}
+			if(isStillActive){
+				// 3. get materials by invoice id and add to list dtos
+				List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
+				for(MaterialDTO material : materials){
+					dtos.add(material);
+				}
+				// 4. get outstandings by invoice id and add to list dtos
+				List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
+				for(OutstandingDTO stand : stands){
+					dtos.add(stand);
+				}
+			}
+		}		
 		// 4. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}
