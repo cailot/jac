@@ -46,7 +46,7 @@ public class JaeClazzController {
 	List<ClazzDTO> searchClasses(@RequestParam("grade") String grade) {
 		int year = cycleService.academicYear();
 		// int week = cycleService.academicWeeks();
-		List<ClazzDTO> dtos = clazzService.findClassesForGradeNCycle(grade, year);
+		List<ClazzDTO> dtos = clazzService.findClazzForGradeNCycle(grade, year);
 		// if new academic year is going to start, display next year classes
 		// if(week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
 		// 	// display next year classes
@@ -77,11 +77,19 @@ public class JaeClazzController {
 		return count;
 	}
 
+	// count records number in database
+	@GetMapping("/id")
+	@ResponseBody
+	Long getId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
+		Long id = clazzService.getOnlineId(grade, year);
+		return id;
+	}
+
 	// bring all courses in database
 	@GetMapping("/listClass")
 	public String listClasses(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
         System.out.println(state+"\t"+branch+"\t"+grade+"\t"+year+"\t"+active+"\t");
-		List<ClazzDTO> dtos = clazzService.listClasses(state, branch, grade, year, active);//clazzService.allClasses();
+		List<ClazzDTO> dtos = clazzService.listClazz(state, branch, grade, year, active);//clazzService.allClasses();
 		model.addAttribute(JaeConstants.CLASS_LIST, dtos);
 		return "classListPage";
 	}
@@ -151,7 +159,7 @@ public class JaeClazzController {
 	@GetMapping("/classesByCourse")
 	@ResponseBody
 	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year) {
-		List<ClazzDTO> dtos = clazzService.findClassesForCourseIdNCycle(courseId, year);
+		List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId, year);
 		return dtos;
 	}
 
@@ -209,7 +217,7 @@ public class JaeClazzController {
 			clazz.setCourse(course);
 			clazz.setCycle(cycle);
 			// 6. add Class
-			clazzService.addClass(clazz);
+			clazzService.addClazz(clazz);
 			// 3. return success;
 			return ResponseEntity.ok("\"Class register success\"");
 		} catch (Exception e) {
@@ -266,7 +274,7 @@ public class JaeClazzController {
 	@ResponseBody
 	public List<ClazzDTO> filterClasses(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade) {
         System.out.println(state+"\t"+branch+"\t"+grade);
-		List<ClazzDTO> dtos = clazzService.filterClasses(state, branch, grade);
+		List<ClazzDTO> dtos = clazzService.filterClazz(state, branch, grade);
 		return dtos;
 	}
 

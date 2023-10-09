@@ -29,7 +29,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> allClasses() {
+	public List<ClazzDTO> allClazz() {
 		List<Clazz> crs = new ArrayList<>();
 		try{
 			crs = clazzRepository.findAll();
@@ -46,7 +46,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> findClassesForGradeNCycle(String grade, int year) {
+	public List<ClazzDTO> findClazzForGradeNCycle(String grade, int year) {
 		// 1. get classes
 		List<ClazzDTO> dtos = new ArrayList<>();
 		try{
@@ -59,7 +59,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> findClassesForCourseIdNCycle(Long id, int year) {
+	public List<ClazzDTO> findClazzForCourseIdNCycle(Long id, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		try{
 			dtos = clazzRepository.findClassForCourseIdNCycle(id, year);
@@ -71,7 +71,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public ClazzDTO addClass(Clazz clazz) {
+	public ClazzDTO addClazz(Clazz clazz) {
 		Clazz cla = clazzRepository.save(clazz);
 		ClazzDTO dto = new ClazzDTO(cla);
 		return dto;
@@ -122,7 +122,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> listClasses(String state, String branch, String grade, String year, String active) {
+	public List<ClazzDTO> listClazz(String state, String branch, String grade, String year, String active) {
 		List<ClazzDTO> dtos = null;
 		if(StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))){
 			dtos = clazzRepository.findClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
@@ -133,7 +133,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> filterClasses(String state, String branch, String grade) {
+	public List<ClazzDTO> filterClazz(String state, String branch, String grade) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		try{
 			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
@@ -188,7 +188,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<Long> filterClassIds(String state, String branch, String grade) {
+	public List<Long> filterClazzIds(String state, String branch, String grade) {
 		List<Long> ids = new ArrayList<>();
 		try{
 			ids = clazzRepository.findClassIdsForStateNBranchNGrade(state, branch, grade);
@@ -196,6 +196,17 @@ public class ClazzServiceImpl implements ClazzService {
 			System.out.println("No class found");
 		}
 		return ids;
+	}
+
+	@Override
+	public Long getOnlineId(String grade, int year) {
+		Long id = 0L;
+		try{
+			id = clazzRepository.getOnlineClazzId(grade, year);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return id;
 	}
 
 }

@@ -11,28 +11,28 @@ public interface ClazzService {
 	Clazz getClazz(Long id);
 
 	// list all class
-	List<ClazzDTO> allClasses();
+	List<ClazzDTO> allClazz();
 
 	// bring class list base on the condition
-	List<ClazzDTO> listClasses(String state, String branch, String grade, String year, String active);
+	List<ClazzDTO> listClazz(String state, String branch, String grade, String year, String active);
 
 	// bring class list for dropdown list
-	List<ClazzDTO> filterClasses(String state, String branch, String grade);
+	List<ClazzDTO> filterClazz(String state, String branch, String grade);
 
 	// bring class Ids
-	List<Long> filterClassIds(String state, String branch, String grade);
+	List<Long> filterClazzIds(String state, String branch, String grade);
 
 	// list all class for grade & year
-	List<ClazzDTO> findClassesForGradeNCycle(String grade, int year);
+	List<ClazzDTO> findClazzForGradeNCycle(String grade, int year);
 	
 	// list all class for courseId & year
-	List<ClazzDTO> findClassesForCourseIdNCycle(Long id, int year);
+	List<ClazzDTO> findClazzForCourseIdNCycle(Long id, int year);
 
 	// return total count
 	long checkCount();
 
 	// add class
-	ClazzDTO addClass(Clazz clazz);
+	ClazzDTO addClazz(Clazz clazz);
 
 	// update class
 	ClazzDTO updateClazz(Clazz clazz);
@@ -48,4 +48,7 @@ public interface ClazzService {
 
 	// get name
 	String getName(Long id);
+
+	// get class id by grade and year
+	Long getOnlineId(String grade, int year);
 }

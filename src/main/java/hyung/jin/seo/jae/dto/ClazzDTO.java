@@ -44,9 +44,11 @@ public class ClazzDTO implements Serializable{
 
 	private String grade; // Course.grade
 
+	private boolean online; // Course.online
+
 	private String year; // Cycle.year
 
-	public ClazzDTO(long id, String state, String branch, double fee, String day, String name, LocalDate startDate, boolean active, long courseId, long cycleId, String grade, String description, int year) {
+	public ClazzDTO(long id, String state, String branch, double fee, String day, String name, LocalDate startDate, boolean active, long courseId, long cycleId, String grade, boolean online, String description, int year) {
 		this.id = Long.toString(id);
 		this.state = state;
 		this.branch = branch;

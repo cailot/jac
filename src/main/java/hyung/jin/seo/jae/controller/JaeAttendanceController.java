@@ -92,7 +92,7 @@ public class JaeAttendanceController {
 		List<AttendanceDTO> dtos = new ArrayList<>();
 		// 3-1. if clazzId is "All", then search all clazz Ids
 		if(clazzId.equalsIgnoreCase(JaeConstants.ALL)) {
-			List<Long> clazzIds = clazzService.filterClassIds(state, branch, grade);	
+			List<Long> clazzIds = clazzService.filterClazzIds(state, branch, grade);	
 			for(Long id : clazzIds) {
 				List<AttendanceDTO> attends = attendanceService.findAttendanceByClazz(id);	
 				dtos.addAll(attends);
