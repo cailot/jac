@@ -190,8 +190,8 @@ function addClassToBasket(value) {
 		  year: year
 		},
 		success: function(data) {
-			console.log(data);
-			console.log(value);
+			// console.log(data);
+			// console.log(value);
 			var start_week, end_week;        
 			if (value.year == academicYear) {
 				start_week = parseInt(academicWeek);
@@ -351,8 +351,9 @@ function addClassToBasket(value) {
 			
 
 			// check if value.name contains 'Online'
-			if(value.name.toUpperCase().indexOf(ONSITE) !== -1){
-				console.log('Online needs');
+			//if(value.name.toUpperCase().indexOf(ONSITE) !== -1){
+			if(!value.online){
+				// console.log('Online needs');
 				var clazzId = 0;
 				$.ajax({
 					url: '${pageContext.request.contextPath}/class/id',
@@ -363,7 +364,7 @@ function addClassToBasket(value) {
 					},
 					success: function(data) {
 						// if any online course is found with grade & year
-						debugger;
+						//debugger;
 						if((data !== '') && (data > 0)){
 							clazzId = data;
 							$('#courseTable > tbody > tr').each(function() {
@@ -388,7 +389,7 @@ function addClassToBasket(value) {
 									var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
 									row.append(onlineWeeks);
 									row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
-									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
 									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
 									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
 									row.append($('<td>'));
@@ -712,7 +713,7 @@ function addClassToBasket(value) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					debugger;
+					// debugger;
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
