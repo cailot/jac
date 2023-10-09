@@ -95,6 +95,9 @@ public class CourseServiceImpl implements CourseService {
 		// update price
 		double newPrice = course.getPrice();
 		existing.setPrice(newPrice);
+		// update online
+		boolean newOnline = course.isOnline();
+		existing.setOnline(newOnline);
 		// update description
 		String newDescription = course.getDescription();
 		existing.setDescription(newDescription);

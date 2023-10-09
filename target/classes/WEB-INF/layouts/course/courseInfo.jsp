@@ -179,16 +179,19 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	//      Add class to basket
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addClassToBasket(value) {
-	  $.ajax({
+function addClassToBasket(value) {
+	let grade = value.grade;	  
+	let year = value.year;	
+	$.ajax({
 		url: '${pageContext.request.contextPath}/class/classesByCourse',
 		type: 'GET',
 		data: {
 		  courseId: value.id,
-		  year: value.year
+		  year: year
 		},
 		success: function(data) {
-			//console.log(data);
+			console.log(data);
+			console.log(value);
 			var start_week, end_week;        
 			if (value.year == academicYear) {
 				start_week = parseInt(academicWeek);
@@ -350,43 +353,95 @@
 			// check if value.name contains 'Online'
 			if(value.name.toUpperCase().indexOf(ONSITE) !== -1){
 				console.log('Online needs');
-				// check other rows' name
-				$('#courseTable > tbody > tr').each(function() {
-					var title = $(this).find('.course-title').text();
-					if(title.toUpperCase().indexOf(ONLINE) !== -1){
-						// how to know hidden-column data-type is CLASS
-						var clazzId = $(this).find('.hidden-column').text();
-						var clazzName = '';
-						var clazzDescription = '';
-						if(title.indexOf('-') !== -1){
-							clazzName = title.split('-')[0].trim();
-							clazzDescription = title.split('-')[1].trim();
+				var clazzId = 0;
+				$.ajax({
+					url: '${pageContext.request.contextPath}/class/id',
+					type: 'GET',
+					data: {
+						grade: grade,
+						year: year
+					},
+					success: function(data) {
+						// if any online course is found with grade & year
+						debugger;
+						if((data !== '') && (data > 0)){
+							clazzId = data;
+							$('#courseTable > tbody > tr').each(function() {
+								var title = $(this).find('.course-title').text();
+								if(title.toUpperCase().indexOf(ONLINE) !== -1){
+									var clazzName = '';
+									var clazzDescription = '';
+									if(title.indexOf('-') !== -1){
+										clazzName = title.split('-')[0].trim();
+										clazzDescription = title.split('-')[1].trim();
+									}
+									var row = $('<tr class="d-flex">');
+									row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
+									row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
+									row.append($('<td class="smaller-table-font day">').text('All')); // day
+									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
+									var onlineStartWeek = startWeekCell.clone().text(start_week);
+									row.append(onlineStartWeek);
+									var onlineEndWeek = endWeekCell.clone().text(end_week);
+									row.append(onlineEndWeek);
+									var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
+									row.append(onlineWeeks);
+									row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
+									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
+									row.append($('<td>'));
+									row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
+									row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+									row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
+									row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
+									$('#basketTable > tbody').append(row);	
+								}
+							});
 						}
-						// console.log(clazzId + ' ' + clazzName);
-						var row = $('<tr class="d-flex">');
-						row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
-						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
-						row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
-						row.append($('<td class="smaller-table-font day">').text('All')); // day
-						row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-						var onlineStartWeek = startWeekCell.clone().text(start_week);
-						row.append(onlineStartWeek);
-						var onlineEndWeek = endWeekCell.clone().text(end_week);
-						row.append(onlineEndWeek);
-						var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
-						row.append(onlineWeeks);
-						row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
-						row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(0));
-						row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
-						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
-						row.append($('<td>'));
-						row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
-						row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
-						row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
-						row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
-						$('#basketTable > tbody').append(row);	
+					},
+					error: function(xhr, status, error) {
+						console.log('Error : ' + error);
 					}
-				});
+				});	
+				// check other rows' name
+				// $('#courseTable > tbody > tr').each(function() {
+				// 	var title = $(this).find('.course-title').text();
+				// 	if(title.toUpperCase().indexOf(ONLINE) !== -1){
+				// 		// how to know hidden-column data-type is CLASS
+				// 		// var clazzId = $(this).find('.hidden-column').text(); ////////
+				// 		var clazzName = '';
+				// 		var clazzDescription = '';
+				// 		if(title.indexOf('-') !== -1){
+				// 			clazzName = title.split('-')[0].trim();
+				// 			clazzDescription = title.split('-')[1].trim();
+				// 		}
+				// 		// console.log(clazzId + ' ' + clazzName);
+				// 		var row = $('<tr class="d-flex">');
+				// 		row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
+				// 		row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+				// 		row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
+				// 		row.append($('<td class="smaller-table-font day">').text('All')); // day
+				// 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
+				// 		var onlineStartWeek = startWeekCell.clone().text(start_week);
+				// 		row.append(onlineStartWeek);
+				// 		var onlineEndWeek = endWeekCell.clone().text(end_week);
+				// 		row.append(onlineEndWeek);
+				// 		var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
+				// 		row.append(onlineWeeks);
+				// 		row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
+				// 		row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(0));
+				// 		row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
+				// 		row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
+				// 		row.append($('<td>'));
+				// 		row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
+				// 		row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+				// 		row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
+				// 		row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
+				// 		$('#basketTable > tbody').append(row);	
+				// 	}
+				// });
 			}	
 
 
