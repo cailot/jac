@@ -24,8 +24,12 @@ $(document).ready(
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
-
-	// console.log(data);
+	//debugger;
+	//console.log(data);
+	if((data.online)&&(data.discount === '100%')){
+		console.log('online');
+		return;
+	}
 	var row = $('<tr>');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;

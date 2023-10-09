@@ -113,6 +113,8 @@ public interface JaeConstants {
 
 	String OVERDUE = "Overdue";
 
+	String DISCOUNT_FREE = "100%";
+
 	String PARTIAL_PAID = "Partial";
 
 	String ENROLMENT = "Enrolment";

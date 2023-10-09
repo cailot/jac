@@ -378,16 +378,16 @@ public class JaeInvoiceController {
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
 		// 3. set payment elements related to invoice into session
 		List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
+		List<EnrolmentDTO> filteredEnrols = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
 		List<OutstandingDTO> outstandings = outstandingService.getOutstandingtByInvoice(invoice.getId());
-		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
-		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
-		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
 		// 4. set header
 		MoneyDTO header = new MoneyDTO();
 		List<String> headerGrade = new ArrayList<String>();
 		String headerDueDate = JaeUtils.getToday();
 		for(EnrolmentDTO enrol : enrolments){
+			// 4-1. if free online course, no need to add to invoice
+			if(enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE)) continue;
 			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
@@ -399,10 +399,17 @@ public class JaeInvoiceController {
 			} catch (ParseException e) {
 				return ResponseEntity.ok("Error - Date parsing error");
 			}
+			filteredEnrols.add(enrol);
 		}
+
 		header.setRegisterDate(headerDueDate);
 		header.setInfo(String.join(", ", headerGrade));
 		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
+
+		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, filteredEnrols);
+		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
+		
 		// 4. return ok
 		return ResponseEntity.ok("Invoice page launched");
 	}
