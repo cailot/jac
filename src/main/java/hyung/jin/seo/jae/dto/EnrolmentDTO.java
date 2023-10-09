@@ -57,6 +57,8 @@ public class EnrolmentDTO extends MoneyDTO{
 
 	private String extra;
 
+	private boolean online;
+
 	// private String info;
 
 	public EnrolmentDTO(Enrolment enrol){
@@ -89,7 +91,7 @@ public class EnrolmentDTO extends MoneyDTO{
     	return enrolement;
     }
 
-	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, int year, String grade, String day){
+	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, boolean online, int year, String grade, String day){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.cancelled = cancelled;
@@ -107,12 +109,13 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.clazzId = String.valueOf(clazzId);
 		this.name = name;
 		this.price = price;
+		this.online = online;
 		this.year = String.valueOf(year);
 		this.grade = grade;
 		this.day = day;
 	}
 
-	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, long studentId, long clazzId, String name, double price, int year, String grade, String day){
+	public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, long studentId, long clazzId, String name, double price, boolean online, int year, String grade, String day){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.cancelled = cancelled;
@@ -128,6 +131,7 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.clazzId = String.valueOf(clazzId);
 		this.name = name;
 		this.price = price;
+		this.online = online;
 		this.year = String.valueOf(year);
 		this.grade = grade;
 		this.day = day;
@@ -153,8 +157,9 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.clazzId = (obj[14]!=null) ? String.valueOf(obj[14]) : "0";
 		this.name = (obj[15]!=null) ? (String)obj[15] : null;
 		this.price = (obj[16]!=null) ? Double.parseDouble(String.valueOf(obj[16])) : 0;
-		this.year = (obj[17]!=null) ? String.valueOf(obj[17]) : null;
-		this.grade = (obj[18]!=null) ? (String)obj[18] : null;
-		this.day = (obj[19]!=null) ? (String)obj[19] : null;
+		this.online = (obj[17]!=null) ? (boolean)obj[17] : false;
+		this.year = (obj[18]!=null) ? String.valueOf(obj[18]) : null;
+		this.grade = (obj[19]!=null) ? (String)obj[19] : null;
+		this.day = (obj[20]!=null) ? (String)obj[20] : null;
 	}
 }
