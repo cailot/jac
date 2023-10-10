@@ -613,7 +613,7 @@ function addClassToBasket(value) {
 						}
 						// update the invoice table 
 						let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-						console.log('isFreeOnline : ' + isFreeOnline);
+						// console.log('isFreeOnline : ' + isFreeOnline);
 						if(!isFreeOnline){
 							addEnrolmentToInvoiceList(value);
 						}
