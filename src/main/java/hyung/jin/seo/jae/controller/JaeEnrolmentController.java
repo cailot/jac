@@ -115,8 +115,6 @@ public class JaeEnrolmentController {
 		// check current academic year and week
 		int currentYear = cycleService.academicYear();
 		int currentWeek = cycleService.academicWeeks();
-
-		
 		
 		for(Long invoiceId : invoiceIds){
 			boolean isStillActive = false;
@@ -152,8 +150,6 @@ public class JaeEnrolmentController {
 				}
 			}
 		}
-
-
 
 		// 4. return dtos mixed by enrolments and outstandings
 		return dtos;
@@ -412,38 +408,32 @@ public class JaeEnrolmentController {
 					enrolment.setClazz(clazz);
 					enrolment.setStudent(student);
 					enrolment.setInvoice(invoice);
+
 					// 4. save new Enrolment - Invoice will be automatically updated
 					enrolmentService.addEnrolment(enrolment);
-					// 5.  put into List<EnrolmentDTO>
 					data.setExtra(JaeConstants.NEW_ENROLMENT);
 					data.setId(enrolment.getId()+"");
 					data.setInvoiceId(invoice.getId()+"");
 
-
-					// 5. check if online class or not
-					// Long onlineId = clazzService.getOnlineId(data.getGrade(), Integer.parseInt(data.getYear()));
-					// boolean isFreeOnline = data.isOnline() && data.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
-					// if(isFreeOnline){
-					// 	data.setOnline(true);
-					// }
-
-
+					// 5. put into List<EnrolmentDTO>
 					dtos.add(data);
 
-					///////////////// Attendance ////////////////////////
-					int academicYear = clazzService.getAcademicYear(clazz.getId());
-					String clazzDay = clazzService.getDay(clazz.getId());
-					for(int i = startWeek; i <= endWeek; i++){
-						Attendance attendance = new Attendance();
-						attendance.setWeek(i+"");
-						attendance.setStudent(student);
-						attendance.setClazz(clazz);
-						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-						attendance.setAttendDate(attendDate);
-						attendanceService.addAttendance(attendance);
+					// 6. if onlline class, skip attendance; otherwise create attendance	
+					if(!data.isOnline()){
+						///////////////// Attendance ////////////////////////
+						int academicYear = clazzService.getAcademicYear(clazz.getId());
+						String clazzDay = clazzService.getDay(clazz.getId());
+						for(int i = startWeek; i <= endWeek; i++){
+							Attendance attendance = new Attendance();
+							attendance.setWeek(i+"");
+							attendance.setStudent(student);
+							attendance.setClazz(clazz);
+							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+							attendance.setAttendDate(attendDate);
+							attendanceService.addAttendance(attendance);
+						}
+						//////////////////////////////////////////////////////////
 					}
-					//////////////////////////////////////////////////////////
-
 				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
 					// 1. get existing Enrolment
 					Enrolment existing = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
@@ -491,41 +481,44 @@ public class JaeEnrolmentController {
 					// 5. remove enrolmentId from enrolmentIds
 					registeredIds.remove(existing.getId());
 
-					///////////////// Attendance ////////////////////////
-					Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-					int academicYear = clazzService.getAcademicYear(clazz.getId());
-					String clazzDay = clazzService.getDay(clazz.getId());
-					List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazz.getId());
-					int minValue = Integer.parseInt(attendances.get(0).getWeek());
-					int maxValue = Integer.parseInt(attendances.get(attendances.size()-1).getWeek());
-					LocalDate today = LocalDate.now();		
-					for(AttendanceDTO attendance : attendances){
-						// check attendDate is later than today
-						LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-						if(attendDate.isAfter(today)){
-							// update attendance
-							int week = Integer.parseInt(attendance.getWeek());
-							// if week is before startWeek or after endWeek, delete attendance
-							if((week < startWeek) || (week > endWeek)){
-								long attendId = Long.parseLong(attendance.getId());
-								attendanceService.deleteAttendance(attendId);
-							}							
+					// 6. if onlline class, skip attendance; otherwise update attendance
+					if(!data.isOnline()){
+						///////////////// Attendance ////////////////////////
+						Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
+						int academicYear = clazzService.getAcademicYear(clazz.getId());
+						String clazzDay = clazzService.getDay(clazz.getId());
+						List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazz.getId());
+						int minValue = Integer.parseInt(attendances.get(0).getWeek());
+						int maxValue = Integer.parseInt(attendances.get(attendances.size()-1).getWeek());
+						LocalDate today = LocalDate.now();		
+						for(AttendanceDTO attendance : attendances){
+							// check attendDate is later than today
+							LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+							if(attendDate.isAfter(today)){
+								// update attendance
+								int week = Integer.parseInt(attendance.getWeek());
+								// if week is before startWeek or after endWeek, delete attendance
+								if((week < startWeek) || (week > endWeek)){
+									long attendId = Long.parseLong(attendance.getId());
+									attendanceService.deleteAttendance(attendId);
+								}							
+							}
 						}
-					}
-					// add new attendance if not exist
-					for(int i = startWeek; i <= endWeek; i++){
-						// check week does not belong to min/max value, then add attendance
-						if((i < minValue) || (i > maxValue)){
-							Attendance attendance = new Attendance();
-							attendance.setWeek(i+"");
-							attendance.setStudent(student);
-							attendance.setClazz(clazz);
-							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-							attendance.setAttendDate(attendDate);
-							attendanceService.addAttendance(attendance);
+						// add new attendance if not exist
+						for(int i = startWeek; i <= endWeek; i++){
+							// check week does not belong to min/max value, then add attendance
+							if((i < minValue) || (i > maxValue)){
+								Attendance attendance = new Attendance();
+								attendance.setWeek(i+"");
+								attendance.setStudent(student);
+								attendance.setClazz(clazz);
+								LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+								attendance.setAttendDate(attendDate);
+								attendanceService.addAttendance(attendance);
+							}
 						}
+						//////////////////////////////////////////////////////////
 					}
-					//////////////////////////////////////////////////////////
 
 				}
 
@@ -565,29 +558,25 @@ public class JaeEnrolmentController {
 				data.setId(added.getId());
 				data.setInvoiceId(invoice.getId()+"");
 
-				// 5. check if free online class or not
-				// boolean isFreeOnline = data.isOnline() && data.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
-				// if(isFreeOnline){
-				// 	data.setOnline(true);
-				// }
-
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
-
-				///////////////// Attendance ////////////////////////
-				int academicYear = clazzService.getAcademicYear(clazz.getId());
-				String clazzDay = clazzService.getDay(clazz.getId());
-				for(int i = startWeek; i <= endWeek; i++){
-					Attendance attendance = new Attendance();
-					attendance.setWeek(i+"");
-					attendance.setStudent(student);
-					attendance.setClazz(clazz);
-					LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-					attendance.setAttendDate(attendDate);
-					attendanceService.addAttendance(attendance);
+				
+				// 5. if onlline class, skip attendance; otherwise create attendance
+				if(!data.isOnline()){	
+					///////////////// Attendance ////////////////////////
+					int academicYear = clazzService.getAcademicYear(clazz.getId());
+					String clazzDay = clazzService.getDay(clazz.getId());
+					for(int i = startWeek; i <= endWeek; i++){
+						Attendance attendance = new Attendance();
+						attendance.setWeek(i+"");
+						attendance.setStudent(student);
+						attendance.setClazz(clazz);
+						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+						attendance.setAttendDate(attendDate);
+						attendanceService.addAttendance(attendance);
+					}
+					//////////////////////////////////////////////////////////
 				}
-				//////////////////////////////////////////////////////////
-
 			}
 		}// end of loop
 		
@@ -615,6 +604,9 @@ public class JaeEnrolmentController {
 			// archive Enrolment - Invoice will be automatically updated
 			enrolmentService.archiveEnrolment(enrolmentId);
 
+			// remove enrolmentId from registeredIds
+			// registeredIds.remove(enrolmentId);
+
 			///////////////// Attendance ////////////////////////
 			long clazzId = enrolment.getClazz().getId();
 			List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
@@ -629,6 +621,26 @@ public class JaeEnrolmentController {
 				}
 			}
 			//////////////////////////////////////////////////////////
+		}
+
+		// 7. if only one left and it is online free course, then remove (DELETE)
+		List<Long> finalIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
+		if(finalIds.size()==1){
+			Long lastEnrolmentId = finalIds.get(0);
+			EnrolmentDTO lastEnrol = enrolmentService.getActiveEnrolment(lastEnrolmentId);
+			boolean isFreeOnline = lastEnrol.isOnline() && lastEnrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			
+			if(isFreeOnline){
+				// archive Enrolment - Invoice will be automatically updated
+				enrolmentService.archiveEnrolment(lastEnrolmentId);
+				// remove EnrolmentDTO from dtos
+				for(EnrolmentDTO dto : dtos){
+					if(dto.getId().equalsIgnoreCase(lastEnrolmentId+"")){
+						dtos.remove(dto);
+						break;
+					}
+				}
+			}
 		}
 
 		return dtos;

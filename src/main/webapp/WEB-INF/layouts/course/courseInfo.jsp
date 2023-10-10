@@ -617,13 +617,12 @@ function addClassToBasket(value) {
 						if(!isFreeOnline){
 							addEnrolmentToInvoiceList(value);
 						}
-						// addEnrolmentToInvoiceList(value);
 					});
 				}else{
+					// clean up enrolments in basket table
+					clearEnrolmentBasket();
 					// simply update balance for invoice table as Enrolment is deleted
-					// if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
-						updateLatestInvoiceId(enrolData.invoiceId);
-					// }
+					updateLatestInvoiceId(enrolData.invoiceId);
 				}
 				
 				//debugger;
@@ -1025,28 +1024,28 @@ function addClassToBasket(value) {
 	
 		#basketTable th:nth-child(1) { width: 0%; } /* hidden id */
 		#basketTable th:nth-child(2) { width: 5%; }  /* item */
-		#basketTable th:nth-child(3) { width: 23%; } /* name */
+		#basketTable th:nth-child(3) { width: 18%; } /* name */
 		#basketTable th:nth-child(4) { width: 13%; } /* day */
 		#basketTable th:nth-child(5) { width: 7%; } /* year */
-		#basketTable th:nth-child(6) { width: 6%; } /* start */
-		#basketTable th:nth-child(7) { width: 6%; } /* end */
+		#basketTable th:nth-child(6) { width: 7%; } /* start */
+		#basketTable th:nth-child(7) { width: 7%; } /* end */
 		#basketTable th:nth-child(8) { width: 6%; } /* weeks */
 		#basketTable th:nth-child(9) { width: 4%; } /* credit % */
-		#basketTable th:nth-child(10) { width: 7%; } /* discount % */
+		#basketTable th:nth-child(10) { width: 10%; } /* discount % */
 		#basketTable th:nth-child(11) { width: 8%; } /* price */
 		#basketTable th:nth-child(12) { width: 11%; } /* amount */
 		#basketTable th:nth-child(13) { width: 4%; } /* delete */
 	
 		#basketTable td:nth-child(1) { width: 0%; } /* hidden id */
 		#basketTable td:nth-child(2) { width: 5%; }  /* item */
-		#basketTable td:nth-child(3) { width: 23%; } /* name */
+		#basketTable td:nth-child(3) { width: 18%; } /* name */
 		#basketTable td:nth-child(4) { width: 13%; } /* day */
 		#basketTable td:nth-child(5) { width: 7%; } /* year */
-		#basketTable td:nth-child(6) { width: 6%; } /* start */
-		#basketTable td:nth-child(7) { width: 6%; } /* end */
+		#basketTable td:nth-child(6) { width: 7%; } /* start */
+		#basketTable td:nth-child(7) { width: 7%; } /* end */
 		#basketTable td:nth-child(8) { width: 6%; } /* weeks */
 		#basketTable td:nth-child(9) { width: 4%; } /* credit % */
-		#basketTable td:nth-child(10) { width: 7%; } /* discount % */
+		#basketTable td:nth-child(10) { width: 10%; } /* discount % */
 		#basketTable td:nth-child(11) { width: 8%; } /* price */
 		#basketTable td:nth-child(12) { width: 11%; } /* amount */
 		#basketTable td:nth-child(13) { width: 4%; } /* delete */
