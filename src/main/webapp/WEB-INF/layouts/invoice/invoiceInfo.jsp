@@ -26,8 +26,8 @@ $(document).ready(
 function addEnrolmentToInvoiceList(data) {
 	//debugger;
 	//console.log(data);
-	if((data.online)&&(data.discount === '100%')){
-		console.log('online');
+	if((data.online)&&(data.discount === DISCOUNT_FREE)){
+		// console.log('online');
 		return;
 	}
 	var row = $('<tr>');
@@ -155,7 +155,7 @@ function addBookToInvoiceList(data) {
 		}
 	});
 
-	$('#invoiceListTable > tbody').prepend(row);
+	$('#invoiceListTable > tbody').append(row);
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }

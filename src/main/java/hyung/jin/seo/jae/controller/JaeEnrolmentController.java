@@ -117,6 +117,7 @@ public class JaeEnrolmentController {
 		int currentWeek = cycleService.academicWeeks();
 
 		
+		
 		for(Long invoiceId : invoiceIds){
 			boolean isStillActive = false;
 			boolean isInvoicePaid = invoiceService.isPaidInvoice(invoiceId);
@@ -125,7 +126,9 @@ public class JaeEnrolmentController {
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
 			for(EnrolmentDTO enrol : enrols){
 				// 2. check if enrolment is active or not
-				if((currentYear >= Integer.parseInt(enrol.getYear())) && (currentWeek <= enrol.getEndWeek())){
+				boolean isActive = currentYear >= Integer.parseInt(enrol.getYear()) && currentWeek <= enrol.getEndWeek();
+				
+				if(isActive){
 					isStillActive = true;
 					dtos.add(enrol);
 				}else{ // if not active, check if fully paid or not
@@ -134,10 +137,9 @@ public class JaeEnrolmentController {
 						enrol.setExtra(JaeConstants.OVERDUE);
 						dtos.add(enrol);
 					}
-
 				}
 			}
-			if(isStillActive){
+			if((isStillActive) || (!isInvoicePaid)){
 				// 3. get materials by invoice id and add to list dtos
 				List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
 				for(MaterialDTO material : materials){
@@ -149,7 +151,10 @@ public class JaeEnrolmentController {
 					dtos.add(stand);
 				}
 			}
-		}		
+		}
+
+
+
 		// 4. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}
