@@ -14,6 +14,7 @@
 	const ONLINE = 'ONLINE';
 	
 	const OVERDUE = 'Overdue';
+	const DISCOUNT_FREE = '100%';
 	
 	$(document).ready(
 		function() {
@@ -345,6 +346,7 @@ function addClassToBasket(value) {
 			row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
 			row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
 			row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+			row.append($('<td class="hidden-column online">').text(false)); // online			
 			row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 			row.append($('<td class="hidden-column description">').text(value.description)); // description
 			$('#basketTable > tbody').prepend(row);
@@ -395,6 +397,7 @@ function addClassToBasket(value) {
 									row.append($('<td>'));
 									row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
 									row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+									row.append($('<td class="hidden-column online">').text(true)); // online				
 									row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 									row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
 									$('#basketTable > tbody').append(row);	
@@ -547,6 +550,7 @@ function addClassToBasket(value) {
 					enrolData.discount = $(this).find('.discount').text();
 					enrolData.credit = $(this).find('.credit').text();
 					enrolData.weeks = $(this).find('.weeks').text();
+					enrolData.online = $(this).find('.online').text();
 					enrolData.day = $(this).find('.clazzChoice option:selected').text();
 					if(enrolData.day === ""){ // if day is not selected from dropdown
 						enrolData.day = $(this).find('.day').text()
@@ -566,6 +570,7 @@ function addClassToBasket(value) {
 						"credit" : enrolData.credit,
 						"weeks" : enrolData.weeks,
 						"day" : enrolData.day,
+						"online" : enrolData.online,
 						"studentId" : studentId
 					};
 					enrolData.push(clazz);
@@ -605,10 +610,14 @@ function addClassToBasket(value) {
 									}
 								}
 							});
-
 						}
 						// update the invoice table 
-						addEnrolmentToInvoiceList(value);
+						let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
+						console.log('isFreeOnline : ' + isFreeOnline);
+						if(!isFreeOnline){
+							addEnrolmentToInvoiceList(value);
+						}
+						// addEnrolmentToInvoiceList(value);
 					});
 				}else{
 					// simply update balance for invoice table as Enrolment is deleted
@@ -717,7 +726,9 @@ function addClassToBasket(value) {
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
-						console.log(value);
+						
+						//console.log(value);
+						// debugger;
 						var row = $('<tr class="d-flex">');
 						row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 						if(value.extra === OVERDUE){
@@ -861,8 +872,13 @@ function addClassToBasket(value) {
 						}
 
 						row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalEnrolPrice.toFixed(2))); // amount				
-						row.append($("<td>").html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
+						
+						let freeOnline = value.online && value.discount === DISCOUNT_FREE;	
+						var deleteIcon =(freeOnline) ? $("<td>") : $("<td>").html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>');
+						row.append(deleteIcon);
+						
 						row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
+						row.append($('<td class="hidden-column online">').text(value.online)); // online	
 						row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 						row.append($('<td class="hidden-column description">').text(value.description)); // description
 						row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
@@ -871,8 +887,10 @@ function addClassToBasket(value) {
 		
 						$('#basketTable > tbody').append(row);
 
-						// update invoice table with Enrolment
-						addEnrolmentToInvoiceList(value);
+						// update invoice table with Enrolment unless free online class
+						if(!freeOnline){
+							addEnrolmentToInvoiceList(value);
+						}
 					} else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
 						// update invoice table with Outstanding
 						addOutstandingToInvoiceList(value);
