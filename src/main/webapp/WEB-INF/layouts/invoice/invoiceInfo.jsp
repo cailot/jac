@@ -371,7 +371,10 @@ function makePayment(){
 				// debugger;
 				if (value.hasOwnProperty('extra')) {
 					// It is an EnrolmentDTO object
-					addEnrolmentToInvoiceList(value);
+					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
+					if(!isFreeOnline){
+						addEnrolmentToInvoiceList(value);
+					}
 				}else if (value.hasOwnProperty('remaining')) {
 					// It is an OutstandingDTO object
 					addOutstandingToInvoiceList(value);
@@ -614,11 +617,9 @@ function addInformation(){
 					</div>
 				</div>
 				<div class="col md-auto">
-					<!-- <button type="button" class="btn btn-block btn-primary btn-sm"  data-toggle="modal" data-target="#paymentModal">Payment</button> -->
 					<button type="button" class="btn btn-block btn-primary btn-sm" id="paymentBtn" onclick="displayPayment()">Payment</button>
 				</div>
 				<div class="col md-auto">
-					<!-- <button type="button" class="btn btn-block btn-primary btn-sm"  data-toggle="modal" data-target="#invoiceModal">Invoice</button>  -->
 					<button type="button" class="btn btn-block btn-primary btn-sm" id="invoiceBtn" onclick="displayInvoiceInformation()">Invoice</button>
 				</div>
 				<div class="col md-auto">

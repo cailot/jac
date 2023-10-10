@@ -254,6 +254,11 @@ public class JaeInvoiceController {
 			// 8-1. bring to EnrolmentDTO
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
+			
+				// if free online course, skip it
+				boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+				if(isFreeOnline) continue;
+			
 				enrol.setInvoiceId(String.valueOf(invoId));				
 				// 9-1. set period of enrolment to extra field
 				String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
@@ -313,6 +318,11 @@ public class JaeInvoiceController {
 			// 10-2. bring to EnrolmentDTO
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
+
+				// if free online course, skip it
+				boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+				if(isFreeOnline) continue;
+			
 				enrol.setInvoiceId(String.valueOf(invoId));
 				// 11-2. set period of enrolment to extra field
 				String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
@@ -387,7 +397,9 @@ public class JaeInvoiceController {
 		String headerDueDate = JaeUtils.getToday();
 		for(EnrolmentDTO enrol : enrolments){
 			// 4-1. if free online course, no need to add to invoice
-			if(enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE)) continue;
+			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			if(isFreeOnline) continue;
+			
 			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());

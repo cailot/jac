@@ -413,6 +413,16 @@ public class JaeEnrolmentController {
 					data.setExtra(JaeConstants.NEW_ENROLMENT);
 					data.setId(enrolment.getId()+"");
 					data.setInvoiceId(invoice.getId()+"");
+
+
+					// 5. check if online class or not
+					// Long onlineId = clazzService.getOnlineId(data.getGrade(), Integer.parseInt(data.getYear()));
+					// boolean isFreeOnline = data.isOnline() && data.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+					// if(isFreeOnline){
+					// 	data.setOnline(true);
+					// }
+
+
 					dtos.add(data);
 
 					///////////////// Attendance ////////////////////////
@@ -549,6 +559,13 @@ public class JaeEnrolmentController {
 				data.setExtra(JaeConstants.NEW_ENROLMENT);
 				data.setId(added.getId());
 				data.setInvoiceId(invoice.getId()+"");
+
+				// 5. check if free online class or not
+				// boolean isFreeOnline = data.isOnline() && data.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+				// if(isFreeOnline){
+				// 	data.setOnline(true);
+				// }
+
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
 
