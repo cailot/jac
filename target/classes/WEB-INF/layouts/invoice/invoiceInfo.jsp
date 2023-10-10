@@ -36,7 +36,8 @@ function addEnrolmentToInvoiceList(data) {
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
 
     row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>'));
-    row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
+    // row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
+	row.append($('<td class="smaller-table-font">').text(data.name));
     row.append($('<td class="smaller-table-font text-center">').text(data.year));
 	row.append($('<td class="smaller-table-font text-center">').text(data.day));
     

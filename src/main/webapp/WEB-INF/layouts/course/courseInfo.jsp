@@ -717,6 +717,7 @@ function addClassToBasket(value) {
 					// It is an EnrolmentDTO object     
 					if (value.hasOwnProperty('extra')) {
 						// update my lecture table
+						console.log(value);
 						var row = $('<tr class="d-flex">');
 						row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 						if(value.extra === OVERDUE){
