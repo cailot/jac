@@ -170,6 +170,12 @@ public class JaeInvoiceController {
 		//3. bring to EnrolmentDTO
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(Long.parseLong(invoiceId));
 		for(EnrolmentDTO enrol : enrols){
+
+
+			// if free online course, skip it
+			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			if(isFreeOnline) continue;
+			
 			// 3-1. set period of enrolment to extra field
 			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
 			String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
