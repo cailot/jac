@@ -34,9 +34,9 @@
             <input data-val="true" data-val-number="The field JobIdx must be a number." data-val-required="The JobIdx field is required." id="JobIdx" name="JobIdx" type="hidden" value="0" />
             <input id="InvoiceNumber" name="InvoiceNumber" type="hidden" value="98994" />
             <input id="Desc" name="Desc" type="hidden" value="" />                
-            <button id="emailInvoice" class="btn btn-primary" type="button"><i class="fa fa-envelope"></i> Email</button>
-            <button id="printInvoice" class="btn btn-success" type="button"><i class="fa fa-print"></i> Print</button>
-            <button class="btn btn-warning" type="button" id="btnPdf"><i class="fa fa-file-pdf-o"></i> Export as PDF</button>
+            <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
+            <button id="printInvoice" class="btn btn-success" type="button"><i class="bi bi-printer"></i> Print</button>
+            <button class="btn btn-warning" type="button" id="btnPdf"><i class="bi bi-file-pdf"></i> Export as PDF</button>
         </form>
     </div>
 </div>
