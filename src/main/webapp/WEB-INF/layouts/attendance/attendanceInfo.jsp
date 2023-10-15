@@ -1,13 +1,18 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
+<script src="${pageContext.request.contextPath}/js/moment-2.29.1.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/datetime-moment.js"></script>
 
 <script>
 const ATTENDANCE = 'attendance';
 
 $(document).ready(function() {
+
+
     var windowHeight = $(window).height();
     var scrollHeight = windowHeight * 0.35; // Adjust the percentage as needed
 
+	$.fn.dataTable.moment('DD/MM/YYYY');
     $('#attendanceTable').DataTable({
         "scrollY": scrollHeight + "px",
         "scrollCollapse": true,
@@ -15,10 +20,11 @@ $(document).ready(function() {
 		"searching": false,
 		"paging": false,
 		"info": false,
-		"ordering": false
+		"ordering": false,
+		"order": [[ 2, "asc" ]]
     });
 
-    $('.dataTables_length').addClass('bs-select');
+    // $('.dataTables_length').addClass('bs-select');
 });
 
 
@@ -59,8 +65,6 @@ function retrieveAttendance(studentId) {
 function clearAttendanceTable() {
 	$('#attendanceTable > tbody').empty();
 }
-
-
 
 
 </script>

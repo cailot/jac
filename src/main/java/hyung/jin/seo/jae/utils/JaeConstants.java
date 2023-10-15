@@ -145,4 +145,22 @@ public interface JaeConstants {
 
 	String ATTENDANCE_INFO = "attendanceInfo";
 
+	String TYPE_USER = "user";
+
+	String TYPE_HEADER = "header";
+	
+	String TYPE_LIST = "list";
+
+	String ATTEND_LIST_STUDENT_ID = "Student ID";
+
+	String ATTEND_LIST_STUDENT_NAME = "Student Name";
+
+	String ATTEND_LIST_CLASS_ID = "Class ID";
+
+	String ATTEND_LIST_CLASS_NAME = "Class Name";
+
+	String ATTEND_LIST_CLASS_DAY = "Class Day";
+
+	String ATTEND_LIST_CLASS_GRADE = "Grade";
+
 }

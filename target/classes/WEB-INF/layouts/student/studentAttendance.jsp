@@ -40,35 +40,35 @@
 
 <script>
 $(document).ready(function () {
-    $('#attendanceTable').DataTable({
-    	language: {
-    		search: 'Filter:'
-    	},
-    	dom: 'Blfrtip',	
-    	buttons: [
-    		'excelHtml5', 
-            {
- 	            extend: 'pdfHtml5',
- 	            download: 'open',
- 	            pageSize: 'A0'
- 	        },
- 	        'print'
-        ],
-		columnDefs : [
-			{
-				targets: 0,
-				visible: false,
-				orderable: true
-			},
-			{
-				targets: 1,
-				visible: false,
-				orderable: true
-			}
-		],	
-		order : [[1, 'asc'],[2, 'asc'], [6, 'asc']] // order by class Id, studentId, week
-				
-    });
+    // $('#attendanceTable').DataTable({
+    // 	language: {
+    // 		search: 'Filter:'
+    // 	},
+    // 	dom: 'Blfrtip',	
+    // 	buttons: [
+    // 		'excelHtml5', 
+    //         {
+ 	//             extend: 'pdfHtml5',
+ 	//             download: 'open',
+ 	//             pageSize: 'A0'
+ 	//         },
+ 	//         'print'
+    //     ],
+	// 	columns : [${columns}]
+    // });
+
+	$('#attendanceTable').DataTable({
+	// 	// data : ['a','b','c'],
+		"columns" : [
+			{ data : "id", title : "Attend Id" },
+			{ data : "clazzId" },
+			{ data : "studentId" },
+			{ data : "studentName" },
+			{ data : "clazzName" },
+			{ data : "clazzDay" }
+		]	
+	});
+
 	$("#fromDate").datepicker({
 		dateFormat: 'dd/mm/yy',
 		onClose : function(selectedDate) {
@@ -83,6 +83,111 @@ $(document).ready(function () {
 	});
 	
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Search Attend Roll	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function searchAttendance(){
+	var stateVal = $("#listState").val();
+	var branchVal = $("#listBranch").val();
+	var gradeVal = $("#listGrade").val();
+	var classVal = $("#listClass").val();
+	var fromDateVal = $("#fromDate").val();
+	var toDateVal = $("#toDate").val();
+
+	var columnData = [
+		{ data : "clazzId", title : "Class ID" },
+		{ data : "studentId", title : "Student ID" },
+		{ data : "studentName", title : "Student Name" },
+		{ data : "clazzName", title : "Class Name" },
+		{ data : "clazzDay", title : "Class Day" },
+		{ data : "clazzGrade", title : "Grade" }
+	];
+	var rowData = [];
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/attendance/search2',
+		type : 'GET',
+		data : {
+			state : stateVal,
+			branch : branchVal,
+			grade : gradeVal,
+			clazz : classVal,
+			fromDate : fromDateVal,
+			toDate : toDateVal
+		},
+		success : function(data) {
+			// console.log(data);
+			$.each(data, function(index, value) {
+				
+				if(value.type === 'user'){
+					console.log('user : '  + value.state + ' ' + value.branch + ' ' + value.grade + ' ' + value.clazzName + ' ' + value.fromDate + ' ' + value.toDate);
+				}else if(value.type === 'header'){
+					//console.log('header : ' + value.week);
+					value.week.forEach(function(we){
+						//console.log(we);
+						columnData.push({ data : we, title : we });
+					});
+				}else if(value.type === 'list'){
+					// console.log('list : ' + value);
+					var dto = {
+						clazzId : value.clazzId,
+						studentId : value.studentId,
+						studentName : value.studentName,
+						clazzName : value.clazzName,
+						clazzDay : value.clazzDay,
+						clazzGrade : value.clazzGrade
+					};
+					// add week & status
+					for(var i = 0; i < value.week.length; i++){
+    					dto[value.week[i]] = value.status[i];
+  					}
+
+					rowData.push(dto);
+				}
+			}); // end of iteration
+
+			console.log(columnData);
+			console.log(rowData);
+
+			 // Destroy the existing DataTable
+			//  $('#attendanceTable').DataTable().destroy();
+
+			// Redraw the table with new columns and data
+			//intialiseAttendTable(newColumns, newData);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Initialise Attend Table	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function intialiseAttendTable(columnData, bodyData) {
+	$('#attendanceTable').DataTable({
+    	language: {
+    		search: 'Filter:'
+    	},
+    	dom: 'Blfrtip',	
+    	buttons: [
+    		'excelHtml5', 
+            {
+ 	            extend: 'pdfHtml5',
+ 	            download: 'open',
+ 	            pageSize: 'A0'
+ 	        },
+ 	        'print'
+        ],
+		columns : columnData,
+		data : bodyData,	
+		scrollX: true,
+		order : [[1, 'asc'],[2, 'asc'], [6, 'asc']] // order by class Id, studentId, week
+				
+    });
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		fetch dropdown list options
@@ -126,102 +231,100 @@ function clearAttendanceInfo() {
 }
 
 </script>
-
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-1">
-						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
-							<option value="All">All</option>
-							<option value="vic">Victoria</option>
-							<option value="nsw">New South Wales</option>
-							<option value="qld">Queensland</option>
-							<option value="sa">South Australia</option>
-							<option value="tas">Tasmania</option>
-							<option value="wa">Western Australia</option>
-							<option value="nt">Northern Territory</option>
-							<option value="act">ACT</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listBranch" class="label-form">Branch</label> 
-						<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
-							<option value="All">All</option>
-							<option value="braybrook">Braybrook</option>
-							<option value="epping">Epping</option>
-							<option value="balwyn">Balwyn</option>
-							<option value="bayswater">Bayswater</option>
-							<option value="boxhill">Box Hill</option>
-							<option value="carolinesprings">Caroline Springs</option>
-							<option value="chadstone">Chadstone</option>
-							<option value="craigieburn">Craigieburn</option>
-							<option value="cranbourne">Cranbourne</option>
-							<option value="glenwaverley">Glen Waverley</option>
-							<option value="mitcha">Mitcham</option>
-							<option value="narrewarren">Narre Warren</option>
-							<option value="ormond">Ormond</option>
-							<option value="pointcook">Point Cook</option>
-							<option value="preston">Preston</option>
-							<option value="springvale">Springvale</option>
-							<option value="stalbans">St Albans</option>
-							<option value="werribee">Werribee</option>
-							<option value="mernda">Mernda</option>
-							<option value="melton">Melton</option>
-							<option value="glenroy">Glenroy</option>
-							<option value="packenham">Packenham</option>
-						</select>
-					</div>
-					<div class="col-md-1">
-						<label for="listGrade" class="label-form">Grade</label> 
-						<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
-							<option value="All">All</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="srw4">SRW4</option>
-							<option value="srw5">SRW5</option>
-							<option value="srw6">SRW6</option>
-							<option value="srw8">SRW8</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listClass" class="label-form">Class</label> 
-						<select class="form-control" id="listClass" name="listClass">
-							<option value="All">All</option>
-						</select>
-					</div>
-					<div class="col-md-1">
-						<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
-					</div>
-					<div class="col-md-1">
-						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
-					</div>
-					<!-- put blank col-md-1 -->
-					<div class="offset-md-1"></div>
-					<div class="col max-auto">
-						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
-					</div>
-					<div class="col max-auto">
-						<label class="label-form-white">Clear</label> 
-						<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
-					</div>
+		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search0">
+			<div class="form-row">
+				<div class="col-md-1">
+					<label for="listState" class="label-form">State</label> 
+					<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
+						<option value="All">All</option>
+						<option value="vic">Victoria</option>
+						<option value="nsw">New South Wales</option>
+						<option value="qld">Queensland</option>
+						<option value="sa">South Australia</option>
+						<option value="tas">Tasmania</option>
+						<option value="wa">Western Australia</option>
+						<option value="nt">Northern Territory</option>
+						<option value="act">ACT</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="listBranch" class="label-form">Branch</label> 
+					<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
+						<option value="All">All</option>
+						<option value="braybrook">Braybrook</option>
+						<option value="epping">Epping</option>
+						<option value="balwyn">Balwyn</option>
+						<option value="bayswater">Bayswater</option>
+						<option value="boxhill">Box Hill</option>
+						<option value="carolinesprings">Caroline Springs</option>
+						<option value="chadstone">Chadstone</option>
+						<option value="craigieburn">Craigieburn</option>
+						<option value="cranbourne">Cranbourne</option>
+						<option value="glenwaverley">Glen Waverley</option>
+						<option value="mitcha">Mitcham</option>
+						<option value="narrewarren">Narre Warren</option>
+						<option value="ormond">Ormond</option>
+						<option value="pointcook">Point Cook</option>
+						<option value="preston">Preston</option>
+						<option value="springvale">Springvale</option>
+						<option value="stalbans">St Albans</option>
+						<option value="werribee">Werribee</option>
+						<option value="mernda">Mernda</option>
+						<option value="melton">Melton</option>
+						<option value="glenroy">Glenroy</option>
+						<option value="packenham">Packenham</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<label for="listGrade" class="label-form">Grade</label> 
+					<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
+						<option value="All">All</option>
+						<option value="p2">P2</option>
+						<option value="p3">P3</option>
+						<option value="p4">P4</option>
+						<option value="p5">P5</option>
+						<option value="p6">P6</option>
+						<option value="s7">S7</option>
+						<option value="s8">S8</option>
+						<option value="s9">S9</option>
+						<option value="s10">S10</option>
+						<option value="s10e">S10E</option>
+						<option value="tt6">TT6</option>
+						<option value="tt8">TT8</option>
+						<option value="tt8e">TT8E</option>
+						<option value="srw4">SRW4</option>
+						<option value="srw5">SRW5</option>
+						<option value="srw6">SRW6</option>
+						<option value="srw8">SRW8</option>
+						<option value="jmss">JMSS</option>
+						<option value="vce">VCE</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="listClass" class="label-form">Class</label> 
+					<select class="form-control" id="listClass" name="listClass">
+						<option value="All">All</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
+				</div>
+				<div class="col-md-1">
+					<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+				</div>
+				<!-- put blank col-md-1 -->
+				<div class="offset-md-1"></div>
+				<div class="col max-auto">
+					<label class="label-form-white">Search</label> 
+					<button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+					<!-- <button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
+				</div>
+				<div class="col max-auto">
+					<label class="label-form-white">Clear</label> 
+					<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 				</div>
 			</div>
 			<!-- Search Criteria Info-->
@@ -346,88 +449,68 @@ function clearAttendanceInfo() {
 					</table>						
 				</div>
 			</c:if>
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-12">
-						<div class="table-wrap">
-							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
-								<thead class="table-primary">
-									<tr>
-										<th>Attend ID</th> <!-- invisible -->
-										<th>Class ID</th> <!-- invisible -->
-										<th>Student ID</th>
-										<th>Student Name</th>
-										<th>Class Name</th>
-										<th>Class Day</th>
-										<th>Class Grade</th>
-										<th>Week</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:if test="${not empty sessionScope.attendanceInfo}">
-										<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
-											<tr>
-												<td>${attend.id}</td> <!-- invisible -->
-												<td>${attend.clazzId}</td> <!-- invisible -->
-												<td>${attend.studentId}</td> 
-												<td>${attend.studentName}</td>
-												<td title="${attend.attendDate}">
-													<span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
-												</td>
-												<td title="${attend.attendDate}">
-													<c:out value="${attend.clazzDay}" />
-												</td>
-												<td class="text-uppercase">
-													<c:out value="${attend.clazzGrade}" />
-												</td>
-												<td>${attend.week}</td>
-												<td>${attend.status}</td>
-												
-												<%--
-												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
-													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
-													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
-												</td>
-												<td class="small text-capitalize align-middle"> <!-- payment method with first letter capitalized -->
-													<c:out value="${payment.method}"/>	
-												</td>
-												<td class="small align-middle text-right"> <!-- payment total with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
-												</td>
-												<td class="small align-middle text-right"> <!-- payment outstanding with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
-												</td>
-												<td class="small align-middle text-right"> 
-													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
-												</td>
-												<!-- Display a property of each object -->
-												<td class="small align-middle" style="white-space: nowrap; padding: 0px;">
-													<table class="table-borderless">
-														<c:forEach var="enrol" items="${payment.enrols}">
-															<tr style="background-color : transparent !important;">
-																<td class="small align-middle" style="white-space: nowrap;">[${enrol.grade.toUpperCase()}] ${enrol.name}&nbsp;</td>
-																<td class="small align-middle" style="white-space: nowrap;">(${enrol.extra})</td>
-															</tr>
-														</c:forEach>
-													</table>
-												</td>																						
-												<td class="text-center align-middle">
-													<i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
-												</td> 
-												--%>
-											</tr>
-										</c:forEach>
-									</c:if>
-								</tbody>
-							</table>
-						</div>
+			<div class="form-row">
+				<div class="col-md-12">
+
+					<div class="table-container">						
+						<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
+							<%-- <thead class="table-primary">
+								<tr>
+									<th rowspan="2">Attend ID</th> <!-- invisible -->
+									<th rowspan="2">Class ID</th> <!-- invisible -->
+									<th rowspan="2">Student ID</th>
+									<th rowspan="2">Student Name</th>
+									<th rowspan="2">Class Name</th>
+									<th rowspan="2">Class Day</th>
+									<th rowspan="2">Class Grade</th>
+									<th colspan="5">Week</th>
+									<th rowspan="2">Status</th>
+								</tr>
+								<tr>	
+									<th>1</th>
+									<th>2</th>
+									<th>3</th>
+									<th>4</th>
+									<th>5</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:if test="${not empty sessionScope.attendanceInfo}">
+									<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
+										<tr>
+											<td>${attend.id}</td> <!-- invisible -->
+											<td>${attend.clazzId}</td> <!-- invisible -->
+											<td>${attend.studentId}</td> 
+											<td>${attend.studentName}</td>
+											<td title="${attend.attendDate}">
+												<span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
+											</td>
+											<td title="${attend.attendDate}">
+												<c:out value="${attend.clazzDay}" />
+											</td>
+											<td class="text-uppercase">
+												<c:out value="${attend.clazzGrade}" />
+											</td>
+											<td>${attend.week}</td>
+											<td>${attend.status}</td>
+											
+											<td>${attend.studentId}</td>
+											<td>${attend.studentId}</td>
+											<td>${attend.studentId}</td>
+											<td>${attend.studentId}</td>
+										</tr>
+									</c:forEach>
+								</c:if>
+							</tbody> --%>
+						</table>
 					</div>
+
 				</div>
-			</form> 
-		</div>
+			</div>
+		</form> 
 	</div>
 </div>
+
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
@@ -448,4 +531,3 @@ function clearAttendanceInfo() {
 		</div>
 	</div>
 </div>
-
