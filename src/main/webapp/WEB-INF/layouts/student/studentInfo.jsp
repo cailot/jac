@@ -471,9 +471,10 @@
 				<form id="studentRegister">
 					<div class="form-row mt-2">
 						<div class="col-md-4">
-							<label for="addState" class="label-form">State</label> <select class="form-control" id="addState" name="addState">
+							<label for="addState" class="label-form">State</label> 
+							<select class="form-control" id="addState" name="addState">
 								<option value="vic">Victoria</option>
-								</select>
+							</select>
 						</div>
 						<div class="col-md-5">
 							<label for="addBranch" class="label-form">Branch</label> <select class="form-control" id="addBranch" name="addBranch">
