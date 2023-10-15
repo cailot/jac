@@ -2,11 +2,11 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.checkerframework.checker.units.qual.g;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
+import hyung.jin.seo.jae.dto.AttendanceListDTO;
+import hyung.jin.seo.jae.dto.RollBook;
 import hyung.jin.seo.jae.dto.SearchCriteriaDTO;
 import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.service.AttendanceService;
@@ -50,23 +52,6 @@ public class JaeAttendanceController {
  		List<AttendanceDTO> dtos = attendanceService.allAttendances();
 		return dtos;
 	}
-
-	// // search attendance
-	// @GetMapping("/search")
-	// public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazzId, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
-	// 	// 1. clear session
-	// 	JaeUtils.clearSession(session);
-	// 	// 2. set search criteria
-	// 	SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-	// 	criteria.setState(state);
-	// 	criteria.setBranch(branch);
-	// 	criteria.setGrade(grade);
-	// 	criteria.setFromDate(fromDate);
-	// 	criteria.setToDate(toDate);
-	// 	session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);		
-	// 	// 6. return redirect page
-	// 	return "studentAttendancePage";
-	// }
 
 	// search attendance
 	@GetMapping("/search")
@@ -108,8 +93,206 @@ public class JaeAttendanceController {
 		return "studentAttendancePage";
 	}
 
+		// search attendance
+	@GetMapping("/search0")
+	public String searchAttendance0(HttpServletRequest request, HttpSession session) {
+		// 1. clear session
+		JaeUtils.clearSession(session);
+		// 2. set search criteria
+		String state = request.getParameter("listState");
+		String branch = request.getParameter("listBranch");
+		String grade = request.getParameter("listGrade");
+		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+		criteria.setState(state);
+		criteria.setBranch(branch);
+		criteria.setGrade(grade);
+		String clazzId = request.getParameter("listClass");
+		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
+		criteria.setClazzId(clazzId);
+		criteria.setClazzName(clazzName);
+		criteria.setFromDate(request.getParameter("fromDate"));
+		criteria.setToDate(request.getParameter("toDate"));
+		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
+		// 3. search AttendanceDTO by class Id
+
+		int x = new Random().nextInt(10)+1; 
+		String columns[] = {"Student ID", "Student Name", "Class Name", "Class Day", "Grade"};
+		String updatedColumns[] = new String[columns.length + x];
+		System.arraycopy(columns, 0, updatedColumns, 0, columns.length);
+
+		for(int i = columns.length ; i<updatedColumns.length; i++){
+			updatedColumns[i] = (i - columns.length + 1) + "";
+		}
+		session.setAttribute("columns", updatedColumns);
+
+		List<String[]> rows = new ArrayList<>();
+		for(int i=0; i<3; i++){
+			String[] row = new String[updatedColumns.length];
+			for(int j=0; j<columns.length; j++){
+				row[j] = columns[j];
+			}
+			for(int j=columns.length; j<updatedColumns.length; j++){
+				row[j] = "Present";
+			}
+			rows.add(row);
+		}
+		session.setAttribute("rows", rows);
+		// List<AttendanceDTO> dtos = new ArrayList<>();
+		// // 3-1. if clazzId is "All", then search all clazz Ids
+		// if(clazzId.equalsIgnoreCase(JaeConstants.ALL)) {
+		// 	List<Long> clazzIds = clazzService.filterClazzIds(state, branch, grade);	
+		// 	for(Long id : clazzIds) {
+		// 		List<AttendanceDTO> attends = attendanceService.findAttendanceByClazz(id);	
+		// 		dtos.addAll(attends);
+		// 	}
+		// }else{
+		// 	// 3-2. if clazzId is not "All", then search only the clazz
+		// 	List<AttendanceDTO> attends = attendanceService.findAttendanceByClazz(Long.parseLong(clazzId));	
+		// 	dtos.addAll(attends);
+		// }
+		// // 4. save AttendanceDTOs in session
+		// session.setAttribute(JaeConstants.ATTENDANCE_INFO, dtos);
+		// 6. return redirect page
+		return "studentAttendancePage";
+	}
 
 
+	// search attendance
+	@GetMapping("/search1")
+	public String searchAttendance1(@RequestParam("state") String state, @RequestParam("branch") String branch, @RequestParam("grade") String grade, @RequestParam("clazz") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+		
+		// 1. clear session
+		JaeUtils.clearSession(session);
+		
+		List<RollBook> dtos = new ArrayList<>();
+		
+		// 2. set search criteria
+		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+		criteria.setType(JaeConstants.TYPE_USER);
+		criteria.setState(state);
+		criteria.setBranch(branch);
+		criteria.setGrade(grade);
+		String clazzId = clazz;
+		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
+		criteria.setClazzId(clazzId);
+		criteria.setClazzName(clazzName);
+		criteria.setFromDate(fromDate);
+		criteria.setToDate(toDate);
+		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
+
+
+
+		int x = new Random().nextInt(5)+1; 
+
+		// 3. header info
+		AttendanceListDTO header = new AttendanceListDTO();
+		List<Integer> headerWks = header.getWeek();
+		for(int i=0; i<x; i++){
+			headerWks.add(i);
+		}
+		header.setType(JaeConstants.TYPE_HEADER);
+		dtos.add(header);
+
+		// 3. search AttendanceListDTO
+		AttendanceListDTO list = new AttendanceListDTO();
+		list.setType(JaeConstants.TYPE_LIST);
+		list.setStudentId("130365");
+		list.setStudentName("Liz Hooper");
+		list.setClazzId("12345");
+		list.setClazzDay("Monday");
+		list.setClazzGrade("P2");
+		list.setClazzName("My Clazz");
+		List<Long> ids = list.getId();
+		List<String> dates = list.getAttendDate();
+		List<String> statuses = list.getStatus();
+		List<Integer> weeks = list.getWeek();
+		for(int i=0; i<x; i++){
+			// ids.add((long)i);
+			dates.add(i+"/01/2023");
+			statuses.add("Present");
+			// weeks.add(i);
+		}
+		list.setId(ids);
+		list.setAttendDate(dates);
+		list.setStatus(statuses);
+		list.setWeek(weeks);
+
+		dtos.add(list);
+
+		session.setAttribute(JaeConstants.ATTENDANCE_INFO, dtos);	
+
+		// 6. return redirect page
+		return "studentAttendancePage";
+	}
+
+// search attendance
+	@GetMapping("/search2")
+	@ResponseBody
+	public List<RollBook> searchAttendance2(@RequestParam("state") String state, @RequestParam("branch") String branch, @RequestParam("grade") String grade, @RequestParam("clazz") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+		
+		// 1. clear session
+		// JaeUtils.clearSession(session);
+		
+		List<RollBook> dtos = new ArrayList<>();
+		
+		// 2. set search criteria
+		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+		criteria.setType(JaeConstants.TYPE_USER);
+		criteria.setState(state);
+		criteria.setBranch(branch);
+		criteria.setGrade(grade);
+		String clazzId = clazz;
+		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
+		criteria.setClazzId(clazzId);
+		criteria.setClazzName(clazzName);
+		criteria.setFromDate(fromDate);
+		criteria.setToDate(toDate);
+		// session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
+		dtos.add(criteria);
+
+		int x = new Random().nextInt(5)+1; 
+
+		// 3. header info
+		AttendanceListDTO header = new AttendanceListDTO();
+		List<Integer> headerWks = header.getWeek();
+		for(int i=1; i<x; i++){
+			headerWks.add(i);
+		}
+		header.setType(JaeConstants.TYPE_HEADER);
+		dtos.add(header);
+	
+		
+		// 3. search AttendanceListDTO
+		AttendanceListDTO list = new AttendanceListDTO();
+		list.setType(JaeConstants.TYPE_LIST);
+		list.setStudentId("130365");
+		list.setStudentName("Liz Hooper");
+		list.setClazzId("12345");
+		list.setClazzDay("Monday");
+		list.setClazzGrade("P2");
+		list.setClazzName("My Clazz");
+		List<Long> ids = list.getId();
+		List<String> dates = list.getAttendDate();
+		List<String> statuses = list.getStatus();
+		List<Integer> weeks = list.getWeek();
+		for(int i=1; i<=x; i++){
+			// ids.add((long)i);
+			dates.add(i+"/01/2023");
+			statuses.add("Present");
+			weeks.add(i);
+		}
+		list.setId(ids);
+		list.setAttendDate(dates);
+		list.setStatus(statuses);
+		list.setWeek(weeks);
+
+		dtos.add(list);
+
+		// session.setAttribute(JaeConstants.ATTENDANCE_INFO, dtos);	
+
+		// 6. return redirect page
+		return dtos;
+	}
 
 
 
@@ -150,6 +333,9 @@ public class JaeAttendanceController {
 	@ResponseBody
 	public List<AttendanceDTO> listAttendancesByStudent(@PathVariable Long id) {
 		List<AttendanceDTO> dtos = attendanceService.findAttendanceByStudent(id);
+		// how to sort dtos by attendDate?
+		// dtos.sort(Comparator.comparing(AttendanceDTO::getAttendDate));
+		
 		return dtos;
 	}
 

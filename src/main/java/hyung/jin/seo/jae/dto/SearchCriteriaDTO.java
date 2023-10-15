@@ -9,7 +9,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class SearchCriteriaDTO {
+public class SearchCriteriaDTO extends RollBook{
     
 	private String id;
 
