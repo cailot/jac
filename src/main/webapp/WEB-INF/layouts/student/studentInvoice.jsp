@@ -31,13 +31,13 @@ $(document).ready(function () {
  	        },
  	        'print'
         ],
-		columnDefs : [
-			{
-				targets: 0,
-				visible: false,
-				orderable: true
-			}
-		],	
+		// columnDefs : [
+		// 	{
+		// 		targets: 0,
+		// 		visible: false,
+		// 		orderable: true
+		// 	}
+		// ],	
 		order : [[1, 'desc'], [0, 'desc']], // order by invoiceId desc, id desc
 		// sum for paid
 		footerCallback: function (row, data, start, end, display) {
@@ -57,7 +57,7 @@ $(document).ready(function () {
 			// Total over all pages
 			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
 			// Update footer
-			$(api.column(8).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
+			$(api.column(6).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
 		}		
     });
 });
@@ -139,6 +139,50 @@ function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymen
 	win.focus();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Add Modal
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayAddInfo(dataId, dataInfo){
+    // console.log('displayAddInfo dataType : ' + dataType + ', dataId : ' + dataId);
+	// document.getElementById("infoDataType").value = dataType;
+	document.getElementById("infoDataId").value = dataId;
+	document.getElementById("information").value = dataInfo;
+	// display Receivable amount
+    $('#infoModal').modal('toggle');
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Add Information
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function addInformation(){
+	var dataId = $('#infoDataId').val();
+	var info = $('#information').val();
+	
+	let encodeInfo = encodeDecodeString(info).encoded;
+	// console.log('addInformation check : ' + encodeInfo);
+
+	$.ajax({
+		url : '${pageContext.request.contextPath}/invoice/updateInfo/Payment/' + dataId,
+		type : 'POST',
+		data : encodeInfo,
+		contentType : 'application/json',
+		success : function(response) {
+			// flush old data in the dialogue
+			document.getElementById('showInformation').reset();
+			// disappear information dialogue
+			$('#infoModal').modal('toggle');
+			// update memo <td> in invoiceListTable 
+			$('#studentInvoiceTable > tbody > tr').each(function() {
+				if ($(this).find('.payment-id').text() === dataId) {
+					(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'\')"></i>');		
+				}
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});						
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear Student Info	
@@ -279,23 +323,24 @@ function clearStudentInfo() {
 							<table id="studentInvoiceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>ID</th>
-										<th>Invoice ID</th>
-										<th>Payment Date</th>
-										<th>Method</th>
-										<th>Total</th>
-										<th>Remaining</th>
-										<th>Paid</th>
-										<th>Enrolled Course Information</th>
-										<th data-orderable="false">Receipt</th>
+										<th style="display: none;">ID</th>
+										<th class="small align-middle text-center">Invoice ID</th>
+										<th class="small align-middle text-center">Payment Date</th>
+										<th class="small align-middle text-center">Method</th>
+										<th class="small align-middle text-center">Total</th>
+										<th class="small align-middle text-center">Remaining</th>
+										<th class="small align-middle text-center">Paid</th>
+										<th class="small align-middle text-center">Enrolled Course Information</th>
+										<th class="small align-middle text-center" data-orderable="false">Note</th>
+										<th class="small align-middle text-center" data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
 								<tbody>
 									<c:if test="${not empty sessionScope.payments}">
 										<c:forEach var="payment" items="${payments}">
 											<tr>
-												<td>${payment.id}</td> <!-- invisible -->
-												<td>${payment.invoiceId}</td>
+												<td class="payment-id" style="display: none;">${payment.id}</td> <!-- invisible -->
+												<td class="small align-middle text-center">${payment.invoiceId}</td>
 												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
@@ -322,6 +367,18 @@ function clearStudentInfo() {
 															</tr>
 														</c:forEach>
 													</table>
+												</td>
+												<c:set var="info" value="${payment.info}" />
+												<td class="text-center align-middle memo">
+													<!--check ${payment.info} is empty or not -->
+													<c:choose>
+														<c:when test="${not empty info}">
+															<i class="bi bi-chat-square-text-fill text-primary" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-chat-square-text text-primary" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+														</c:otherwise>
+													</c:choose>
 												</td>																						
 												<td class="text-center align-middle">
 													<i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
@@ -335,7 +392,7 @@ function clearStudentInfo() {
 										<th></th>
 										<th></th>
 										<th colspan="2"></th>
-										<th colspan="3"></th>
+										<th colspan="3" class="text-right small"></th>
 										<th colspan="2" class="text-right small"></th>
 									</tr>
 								</tfoot>
@@ -405,8 +462,39 @@ function clearStudentInfo() {
 		</div>
 	  </div>
 	</div>
-  </div>
-  
+</div>
+
+<!-- Info Dialogue -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="fieldset rounded border-primary">
+				<header class="text-primary font-weight-bold">Information</header>
+				<br>
+				Please Add Internal Information
+				<form id="showInformation">
+					<div class="form-row mt-4">
+						<div class="col-md-12">
+							<textarea class="form-control" id="information" name="information" style="height: 8rem;"></textarea>
+						</div>
+					</div>
+					<!-- <input type="hidden" id="infoDataType" name="infoDataType"></input> -->
+					<input type="hidden" id="infoDataId" name="infoDataId"></input>
+					<div class="d-flex justify-content-end mt-4">
+						<button type="button" class="btn btn-primary" onclick="addInformation()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="document.getElementById('showInformation').reset();">Cancel</button>
+					</div>
+				</form>	
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
 <style>
 	.table-wrap {
 	  overflow-x: auto;

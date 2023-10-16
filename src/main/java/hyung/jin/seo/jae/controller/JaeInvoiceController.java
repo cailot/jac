@@ -3,10 +3,8 @@ package hyung.jin.seo.jae.controller;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -445,7 +443,7 @@ public class JaeInvoiceController {
 			// 3-1. update Enrolment
 			enrolmentService.updateEnrolment(enrolment, dataId);
 			// 4-1. return flag
-			return ResponseEntity.ok("Enrolment Success");
+			return ResponseEntity.ok("Enrolment Info Update Success");
 		}else if(JaeConstants.OUTSTANDING.equalsIgnoreCase(dataType)){
 			// 2-2. get Outstanding
 			Outstanding outstanding = outstandingService.getOutstanding(dataId);
@@ -453,7 +451,7 @@ public class JaeInvoiceController {
 			outstanding.setInfo(info);
 			outstandingService.updateOutstanding(outstanding, dataId);
 			// 4-2. return flag
-			return ResponseEntity.ok("Outstanding Success");
+			return ResponseEntity.ok("Outstanding Info Update Success");
 		}else if(JaeConstants.BOOK.equalsIgnoreCase(dataType)){
 			// 2-3. get Material
 			Material material = materialService.getMaterial(dataId);
@@ -461,7 +459,15 @@ public class JaeInvoiceController {
 			material.setInfo(info);
 			materialService.updateMaterial(material, dataId);
 			// 4-2. return flag
-			return ResponseEntity.ok("Material Success");
+			return ResponseEntity.ok("Material Info Update Success");
+		}else if(JaeConstants.PAYMENT.equalsIgnoreCase(dataType)){
+			// 2-3. get Payment
+			Payment payment = paymentService.findPaymentById(dataId);
+			// 3-3. update Payment
+			payment.setInfo(info);
+			paymentService.updatePayment(payment, dataId);
+			// 4-2. return flag
+			return ResponseEntity.ok("Payment Info Update Success");
 		}else{
 			return ResponseEntity.ok("Error");
 		}

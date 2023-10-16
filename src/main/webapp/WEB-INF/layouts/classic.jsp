@@ -31,7 +31,7 @@
 			<tiles:insertAttribute name="body" />
 		</div>
 		<footer class="mt-auto">
-			<div class="row dhhs-color" style="padding: 15px 20px;">
+			<div class="row" style="padding: 15px 20px;">
 				2018 -
 				<%=new java.util.Date().getYear() + 1900%>
 				&copy;&nbsp; All rights reserved.&nbsp;&nbsp;

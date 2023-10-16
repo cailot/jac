@@ -125,6 +125,8 @@ public interface JaeConstants {
 
 	String MATERIAL = "Material";
 
+	String PAYMENT = "Payment";
+
 	String PAYMENT_INVOICES = "invoices";
 
 	String PAYMENT_ENROLMENTS = "enrolments";
@@ -142,6 +144,8 @@ public interface JaeConstants {
 	String STUDENT_INFO = "studentInfo";
 
 	String CRITERIA_INFO = "criteriaInfo";
+
+	String ATTENDANCE_HEADER = "attendanceHeader";
 
 	String ATTENDANCE_INFO = "attendanceInfo";
 

@@ -40,34 +40,21 @@
 
 <script>
 $(document).ready(function () {
-    // $('#attendanceTable').DataTable({
-    // 	language: {
-    // 		search: 'Filter:'
-    // 	},
-    // 	dom: 'Blfrtip',	
-    // 	buttons: [
-    // 		'excelHtml5', 
-    //         {
- 	//             extend: 'pdfHtml5',
- 	//             download: 'open',
- 	//             pageSize: 'A0'
- 	//         },
- 	//         'print'
-    //     ],
-	// 	columns : [${columns}]
-    // });
-
-	$('#attendanceTable').DataTable({
-	// 	// data : ['a','b','c'],
-		"columns" : [
-			{ data : "id", title : "Attend Id" },
-			{ data : "clazzId" },
-			{ data : "studentId" },
-			{ data : "studentName" },
-			{ data : "clazzName" },
-			{ data : "clazzDay" }
-		]	
-	});
+    $('#attendanceTable').DataTable({
+    	language: {
+    		search: 'Filter:'
+    	},
+    	dom: 'Blfrtip',	
+    	buttons: [
+    		'excelHtml5', 
+            {
+ 	            extend: 'pdfHtml5',
+ 	            download: 'open',
+ 	            pageSize: 'A0'
+ 	        },
+ 	        'print'
+        ]
+    });
 
 	$("#fromDate").datepicker({
 		dateFormat: 'dd/mm/yy',
@@ -106,7 +93,7 @@ function searchAttendance(){
 	var rowData = [];
 	// send query to controller
 	$.ajax({
-		url : '${pageContext.request.contextPath}/attendance/search2',
+		url : '${pageContext.request.contextPath}/attendance/search1',
 		type : 'GET',
 		data : {
 			state : stateVal,
@@ -118,43 +105,47 @@ function searchAttendance(){
 		},
 		success : function(data) {
 			// console.log(data);
-			$.each(data, function(index, value) {
+			// $.each(data, function(index, value) {
 				
-				if(value.type === 'user'){
-					console.log('user : '  + value.state + ' ' + value.branch + ' ' + value.grade + ' ' + value.clazzName + ' ' + value.fromDate + ' ' + value.toDate);
-				}else if(value.type === 'header'){
-					//console.log('header : ' + value.week);
-					value.week.forEach(function(we){
-						//console.log(we);
-						columnData.push({ data : we, title : we });
-					});
-				}else if(value.type === 'list'){
-					// console.log('list : ' + value);
-					var dto = {
-						clazzId : value.clazzId,
-						studentId : value.studentId,
-						studentName : value.studentName,
-						clazzName : value.clazzName,
-						clazzDay : value.clazzDay,
-						clazzGrade : value.clazzGrade
-					};
-					// add week & status
-					for(var i = 0; i < value.week.length; i++){
-    					dto[value.week[i]] = value.status[i];
-  					}
+			// 	if(value.type === 'user'){
+			// 		console.log('user : '  + value.state + ' ' + value.branch + ' ' + value.grade + ' ' + value.clazzName + ' ' + value.fromDate + ' ' + value.toDate);
+			// 	}else if(value.type === 'header'){
+			// 		//console.log('header : ' + value.week);
+			// 		value.week.forEach(function(we){
+			// 			//console.log(we);
+			// 			// columnData.push({ data : we.toString(), title : we.toString() });
+			// 			columnData.push({ data : we, title : we });
 
-					rowData.push(dto);
-				}
-			}); // end of iteration
+			// 		});
+			// 	}else if(value.type === 'list'){
+			// 		// console.log('list : ' + value);
+			// 		var dto = {
+			// 			clazzId : value.clazzId,
+			// 			studentId : value.studentId,
+			// 			studentName : value.studentName,
+			// 			clazzName : value.clazzName,
+			// 			clazzDay : value.clazzDay,
+			// 			clazzGrade : value.clazzGrade
+			// 		};
+			// 		// add week & status
+			// 		for(var i = 0; i < value.week.length; i++){
+    		// 			dto[value.week[i]] = value.status[i];
+  			// 		}
 
-			console.log(columnData);
-			console.log(rowData);
+			// 		rowData.push(dto);
+			// 	}
+			// }); // end of iteration
 
-			 // Destroy the existing DataTable
-			//  $('#attendanceTable').DataTable().destroy();
+			// console.log(columnData);
+			// // console.log(rowData);
 
-			// Redraw the table with new columns and data
-			//intialiseAttendTable(newColumns, newData);
+
+			//  // Destroy the existing DataTable
+			// // $('#attendanceTable').DataTable().destroy();
+			// $('#attendanceTable').DataTable().ajax.reload();
+
+			// // Redraw the table with new columns and data
+			// intialiseAttendTable(columnData, rowData);
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -167,25 +158,13 @@ function searchAttendance(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function intialiseAttendTable(columnData, bodyData) {
 	$('#attendanceTable').DataTable({
-    	language: {
-    		search: 'Filter:'
-    	},
-    	dom: 'Blfrtip',	
-    	buttons: [
-    		'excelHtml5', 
-            {
- 	            extend: 'pdfHtml5',
- 	            download: 'open',
- 	            pageSize: 'A0'
- 	        },
- 	        'print'
-        ],
-		columns : columnData,
-		data : bodyData,	
-		scrollX: true,
-		order : [[1, 'asc'],[2, 'asc'], [6, 'asc']] // order by class Id, studentId, week
-				
-    });
+		"data" : ['a','b','c'],
+		"columns" : [
+			{ data : "id", title : " Id" },
+			{ data : 11, title : 123 },
+			{ data : 12, title : 85 }
+		]	
+	});
 }
 
 
@@ -234,7 +213,7 @@ function clearAttendanceInfo() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search0">
+		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search1">
 			<div class="form-row">
 				<div class="col-md-1">
 					<label for="listState" class="label-form">State</label> 
@@ -319,8 +298,8 @@ function clearAttendanceInfo() {
 				<div class="offset-md-1"></div>
 				<div class="col max-auto">
 					<label class="label-form-white">Search</label> 
-					<button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
-					<!-- <button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
+					<!-- <button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
+					<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 				</div>
 				<div class="col max-auto">
 					<label class="label-form-white">Clear</label> 
@@ -452,19 +431,24 @@ function clearAttendanceInfo() {
 			<div class="form-row">
 				<div class="col-md-12">
 
-					<div class="table-container">						
+					<c:choose>
+					<c:when test="${empty sessionScope.attendanceInfo}">
+						No attendance data is available.
+					</c:when>
+					<c:otherwise>
+						<c:set var="header" value="${sessionScope.attendanceHeader}" />
+						<c:set var="weekCount" value="${fn:length(header.week)}" />
+						<c:out value="${weekCount}" />
 						<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
-							<%-- <thead class="table-primary">
+							<thead>
 								<tr>
-									<th rowspan="2">Attend ID</th> <!-- invisible -->
-									<th rowspan="2">Class ID</th> <!-- invisible -->
+									<th rowspan="2">Class ID</th>
 									<th rowspan="2">Student ID</th>
 									<th rowspan="2">Student Name</th>
 									<th rowspan="2">Class Name</th>
 									<th rowspan="2">Class Day</th>
-									<th rowspan="2">Class Grade</th>
+									<th rowspan="2">Grade</th>
 									<th colspan="5">Week</th>
-									<th rowspan="2">Status</th>
 								</tr>
 								<tr>	
 									<th>1</th>
@@ -473,38 +457,13 @@ function clearAttendanceInfo() {
 									<th>4</th>
 									<th>5</th>
 								</tr>
-							</thead>
+							</thead>	
 							<tbody>
-								<c:if test="${not empty sessionScope.attendanceInfo}">
-									<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
-										<tr>
-											<td>${attend.id}</td> <!-- invisible -->
-											<td>${attend.clazzId}</td> <!-- invisible -->
-											<td>${attend.studentId}</td> 
-											<td>${attend.studentName}</td>
-											<td title="${attend.attendDate}">
-												<span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
-											</td>
-											<td title="${attend.attendDate}">
-												<c:out value="${attend.clazzDay}" />
-											</td>
-											<td class="text-uppercase">
-												<c:out value="${attend.clazzGrade}" />
-											</td>
-											<td>${attend.week}</td>
-											<td>${attend.status}</td>
-											
-											<td>${attend.studentId}</td>
-											<td>${attend.studentId}</td>
-											<td>${attend.studentId}</td>
-											<td>${attend.studentId}</td>
-										</tr>
-									</c:forEach>
-								</c:if>
-							</tbody> --%>
+								
+							</tbody>
 						</table>
-					</div>
-
+					</c:otherwise>
+					</c:choose>
 				</div>
 			</div>
 		</form> 
