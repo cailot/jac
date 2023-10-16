@@ -159,7 +159,7 @@ public class JaeAttendanceController {
 
 	// search attendance
 	@GetMapping("/search1")
-	public String searchAttendance1(@RequestParam("state") String state, @RequestParam("branch") String branch, @RequestParam("grade") String grade, @RequestParam("clazz") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+	public String searchAttendance1(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
 		
 		// 1. clear session
 		JaeUtils.clearSession(session);
@@ -187,11 +187,12 @@ public class JaeAttendanceController {
 		// 3. header info
 		AttendanceListDTO header = new AttendanceListDTO();
 		List<Integer> headerWks = header.getWeek();
-		for(int i=0; i<x; i++){
+		for(int i=1; i<=x; i++){
 			headerWks.add(i);
 		}
 		header.setType(JaeConstants.TYPE_HEADER);
-		dtos.add(header);
+		//dtos.add(header);
+		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
 
 		// 3. search AttendanceListDTO
 		AttendanceListDTO list = new AttendanceListDTO();
@@ -206,7 +207,7 @@ public class JaeAttendanceController {
 		List<String> dates = list.getAttendDate();
 		List<String> statuses = list.getStatus();
 		List<Integer> weeks = list.getWeek();
-		for(int i=0; i<x; i++){
+		for(int i=1; i<=x; i++){
 			// ids.add((long)i);
 			dates.add(i+"/01/2023");
 			statuses.add("Present");
@@ -251,11 +252,12 @@ public class JaeAttendanceController {
 		dtos.add(criteria);
 
 		int x = new Random().nextInt(5)+1; 
+		// System.out.println("x = " + x);
 
 		// 3. header info
 		AttendanceListDTO header = new AttendanceListDTO();
 		List<Integer> headerWks = header.getWeek();
-		for(int i=1; i<x; i++){
+		for(int i=1; i<=x; i++){
 			headerWks.add(i);
 		}
 		header.setType(JaeConstants.TYPE_HEADER);
