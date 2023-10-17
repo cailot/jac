@@ -145,7 +145,7 @@ public interface JaeConstants {
 
 	String CRITERIA_INFO = "criteriaInfo";
 
-	String ATTENDANCE_HEADER = "attendanceHeader";
+	String WEEK_HEADER = "weekHeader";
 
 	String ATTENDANCE_INFO = "attendanceInfo";
 

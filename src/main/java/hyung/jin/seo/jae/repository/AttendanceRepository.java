@@ -22,6 +22,10 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 	@Query("SELECT new hyung.jin.seo.jae.dto.AttendanceDTO(a.id, a.attendDate, a.status, a.week, a.info, a.student.id, a.student.firstName, a.student.lastName, a.clazz.id, a.clazz.day, a.clazz.course.grade, a.clazz.name) FROM Attendance a WHERE a.student.id = ?1 AND a.clazz.id = ?2 ORDER BY a.attendDate") 
 	List<AttendanceDTO> findAttendanceByStudentIdAndClazzId(long studentId, long clazzId);	
 
+	// return attendance by student id, clazz id and week
+	@Query("SELECT a FROM Attendance a WHERE a.student.id = ?1 AND a.clazz.id = ?2 AND a.week = ?3")
+	Attendance getAttendanceByStudentIdAndClazzIdAndWeek(long studentId, long clazzId, String week);
+
 	// return attendance id by clazz id
 	@Query("SELECT a.id FROM Attendance a WHERE a.clazz.id = ?1")
 	List<Long> findAttendanceIdByClazzId(long clazzId);

@@ -263,4 +263,15 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		}
 		return invoiceIds;
 	}
+
+	@Override
+	public List<Long> findStudentIdByClazzId(Long clazzId) {
+		List<Long> studentIds = new ArrayList<>();
+		try{
+			studentIds = enrolmentRepository.findStudentIdByClazzId(clazzId);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return studentIds;
+	}
 }
