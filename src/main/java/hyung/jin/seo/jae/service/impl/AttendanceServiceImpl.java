@@ -168,5 +168,16 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}
 		return studentIds;
 	}
+
+	@Override
+	public Attendance getAttendanceByStudentAndClazzAndWeek(Long studentId, Long clazzId, int week) {
+		Attendance attend = null;
+		try{
+			attend = attendanceRepository.getAttendanceByStudentIdAndClazzIdAndWeek(studentId, clazzId, week+"");
+		}catch(Exception e){
+			System.out.println("No attendance found");
+		}
+		return attend;
+	}
 	
 }

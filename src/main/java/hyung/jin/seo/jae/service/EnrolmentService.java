@@ -45,6 +45,9 @@ public interface EnrolmentService {
 	// find clazz Id by student Id
 	List<Long> findClazzIdByStudentId(Long studentId);
 
+	// find student Id by clazz Id
+	List<Long> findStudentIdByClazzId(Long clazzId);
+
 	// find enrolment Id by student Id
 	List<Long> findEnrolmentIdByStudentId(Long studentId);
 

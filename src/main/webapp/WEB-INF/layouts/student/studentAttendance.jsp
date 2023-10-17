@@ -38,6 +38,24 @@
         }
 </style> -->
 
+<style>
+	/* Set a fixed width for non-scrolling columns */
+	.dataTables_scrollHeadInner thead th {
+		width: 100px; /* Adjust the width as needed */
+	}
+	
+	/* Allow the Week columns to scroll */
+	.dataTables_scrollBody tbody td {
+		width: 100px; /* Adjust the width as needed */
+	}
+	
+	/* Hide the horizontal scrollbar */
+	.dataTables_scrollBody {
+		overflow-x: hidden;
+	}
+	</style>
+	
+
 <script>
 $(document).ready(function () {
     $('#attendanceTable').DataTable({
@@ -53,7 +71,8 @@ $(document).ready(function () {
  	            pageSize: 'A0'
  	        },
  	        'print'
-        ]
+        ],
+		scrollX: true
     });
 
 	$("#fromDate").datepicker({
@@ -70,103 +89,6 @@ $(document).ready(function () {
 	});
 	
 });
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Search Attend Roll	
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function searchAttendance(){
-	var stateVal = $("#listState").val();
-	var branchVal = $("#listBranch").val();
-	var gradeVal = $("#listGrade").val();
-	var classVal = $("#listClass").val();
-	var fromDateVal = $("#fromDate").val();
-	var toDateVal = $("#toDate").val();
-
-	var columnData = [
-		{ data : "clazzId", title : "Class ID" },
-		{ data : "studentId", title : "Student ID" },
-		{ data : "studentName", title : "Student Name" },
-		{ data : "clazzName", title : "Class Name" },
-		{ data : "clazzDay", title : "Class Day" },
-		{ data : "clazzGrade", title : "Grade" }
-	];
-	var rowData = [];
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/attendance/search1',
-		type : 'GET',
-		data : {
-			state : stateVal,
-			branch : branchVal,
-			grade : gradeVal,
-			clazz : classVal,
-			fromDate : fromDateVal,
-			toDate : toDateVal
-		},
-		success : function(data) {
-			// console.log(data);
-			// $.each(data, function(index, value) {
-				
-			// 	if(value.type === 'user'){
-			// 		console.log('user : '  + value.state + ' ' + value.branch + ' ' + value.grade + ' ' + value.clazzName + ' ' + value.fromDate + ' ' + value.toDate);
-			// 	}else if(value.type === 'header'){
-			// 		//console.log('header : ' + value.week);
-			// 		value.week.forEach(function(we){
-			// 			//console.log(we);
-			// 			// columnData.push({ data : we.toString(), title : we.toString() });
-			// 			columnData.push({ data : we, title : we });
-
-			// 		});
-			// 	}else if(value.type === 'list'){
-			// 		// console.log('list : ' + value);
-			// 		var dto = {
-			// 			clazzId : value.clazzId,
-			// 			studentId : value.studentId,
-			// 			studentName : value.studentName,
-			// 			clazzName : value.clazzName,
-			// 			clazzDay : value.clazzDay,
-			// 			clazzGrade : value.clazzGrade
-			// 		};
-			// 		// add week & status
-			// 		for(var i = 0; i < value.week.length; i++){
-    		// 			dto[value.week[i]] = value.status[i];
-  			// 		}
-
-			// 		rowData.push(dto);
-			// 	}
-			// }); // end of iteration
-
-			// console.log(columnData);
-			// // console.log(rowData);
-
-
-			//  // Destroy the existing DataTable
-			// // $('#attendanceTable').DataTable().destroy();
-			// $('#attendanceTable').DataTable().ajax.reload();
-
-			// // Redraw the table with new columns and data
-			// intialiseAttendTable(columnData, rowData);
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Initialise Attend Table	
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function intialiseAttendTable(columnData, bodyData) {
-	$('#attendanceTable').DataTable({
-		"data" : ['a','b','c'],
-		"columns" : [
-			{ data : "id", title : " Id" },
-			{ data : 11, title : 123 },
-			{ data : 12, title : 85 }
-		]	
-	});
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		fetch dropdown list options
@@ -213,7 +135,7 @@ function clearAttendanceInfo() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search1">
+		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
 			<div class="form-row">
 				<div class="col-md-1">
 					<label for="listState" class="label-form">State</label> 
@@ -436,9 +358,8 @@ function clearAttendanceInfo() {
 						No attendance data is available.
 					</c:when>
 					<c:otherwise>
-						<c:set var="header" value="${sessionScope.attendanceHeader}" />
-						<c:set var="weekCount" value="${fn:length(header.week)}" />
-						<c:out value="${weekCount}" />
+						<c:set var="weekSize" value="${fn:length(weekHeader)}" />
+						
 						<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 							<thead>
 								<tr>
@@ -448,18 +369,42 @@ function clearAttendanceInfo() {
 									<th rowspan="2">Class Name</th>
 									<th rowspan="2">Class Day</th>
 									<th rowspan="2">Grade</th>
-									<th colspan="5">Week</th>
+									<th colspan="${weekSize}">Week</th>
+									<th rowspan="2">Update</th>
 								</tr>
-								<tr>	
-									<th>1</th>
-									<th>2</th>
-									<th>3</th>
-									<th>4</th>
-									<th>5</th>
+								<tr>
+									<c:forEach items="${weekHeader}" var="week">
+										<th data-orderable="false"><c:out value="${week}" /></th>
+									</c:forEach>	
 								</tr>
 							</thead>	
 							<tbody>
 								
+								    <c:forEach var="attend" items="${sessionScope.attendanceInfo}">
+                                        <tr>
+                                            <td>${attend.clazzId}</td>
+                                            <td>${attend.studentId}</td> 
+                                            <td>${attend.studentName}</td>
+                                            <td>
+                                                <span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
+                                            </td>
+                                            <td>
+                                                <c:out value="${attend.clazzDay}" />
+                                            </td>
+                                            <td class="text-uppercase">
+                                                <c:out value="${attend.clazzGrade}" />
+                                            </td>
+											<c:forEach items="${attend.status}" var="status" varStatus="loop">
+												<td title="${attend.attendDate[loop.index]}"><c:out value="${status}" /></td>
+											</c:forEach>
+											<td>
+												<i class="bi bi-plus-circle"></i>	
+											</td>
+                                        </tr>
+                                    </c:forEach>
+                                
+
+
 							</tbody>
 						</table>
 					</c:otherwise>
