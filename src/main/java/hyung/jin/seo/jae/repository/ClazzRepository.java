@@ -47,6 +47,10 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long>{
 	@Query(value = "SELECT c.cycle.year FROM Clazz c where c.id = ?1")
 	int getYear(Long clazzId);
 
+	// get grade by class id
+	@Query(value = "SELECT c.course.grade FROM Clazz c where c.id = ?1")
+	String getGrade(Long clazzId);
+
 	// get day by class id
 	@Query(value = "SELECT c.day FROM Clazz c where c.id = ?1")
 	String getDay(Long clazzId);

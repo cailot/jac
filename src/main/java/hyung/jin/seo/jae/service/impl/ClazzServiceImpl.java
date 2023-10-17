@@ -209,4 +209,15 @@ public class ClazzServiceImpl implements ClazzService {
 		return id;
 	}
 
+	@Override
+	public String getGrade(Long id) {
+		String grade = "";
+		try{
+			grade = clazzRepository.getGrade(id);
+		}catch(Exception e){
+			System.out.println("No grade found");
+		}
+		return grade;
+	}
+
 }
