@@ -178,15 +178,18 @@ public class JaeAttendanceController {
 
 				List<String> statues = dto.getStatus();
 				List<String> dates = dto.getAttendDate();
+				List<Integer> weeks = dto.getWeek();
 				// 4-2-5. get status by student id, clazz id & week
 				for(int i=startWeek; i<=endWeek; i++){
 					Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeek(studentId, clazId, i);
 					if(attend != null){
 						statues.add(attend.getStatus());
 						dates.add(attend.getAttendDate()+"");
+						weeks.add(i);
 					}else{
 						statues.add("");
 						dates.add("");
+						weeks.add(0);
 					}
 				}
 				dto.setStatus(statues);
