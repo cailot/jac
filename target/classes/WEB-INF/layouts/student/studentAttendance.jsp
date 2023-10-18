@@ -395,10 +395,24 @@ function clearAttendanceInfo() {
                                                 <c:out value="${attend.clazzGrade}" />
                                             </td>
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
-												<td title="${attend.attendDate[loop.index]}"><c:out value="${status}" /></td>
+												<td class="text-center align-middle" title="${attend.attendDate[loop.index]}">
+													<!-- <c:out value="${status}" /> -->
+													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
+													<c:choose>
+														<c:when test="${status eq 'P'}">
+															<input type="checkbox" name="statusCheckbox" checked />
+														</c:when>
+														<c:when test="${status eq 'A'}">
+															<input type="checkbox" name="statusCheckbox" />
+														</c:when>
+														<c:otherwise>
+															<!-- Leave it as blank -->
+														</c:otherwise>
+													</c:choose>
+												</td>
 											</c:forEach>
 											<td>
-												<i class="bi bi-plus-circle"></i>	
+												<i class="bi bi-plus-circle" onclick="updateAttendance('${attend}')"></i>	
 											</td>
                                         </tr>
                                     </c:forEach>
