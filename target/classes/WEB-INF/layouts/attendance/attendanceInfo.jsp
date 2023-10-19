@@ -73,7 +73,7 @@ function clearAttendanceTable() {
 		<div class="form-group">
 			<div class="form-row">
 				<div class="col-md-12">
-					<table class="table" id="attendanceTable" name="attendanceTable" >
+					<table class="table" id="attendanceTable" name="attendanceTable" style="display: none;">
 						<thead>
 							<tr class="d-flex">
 								<th class="hidden-column"></th>

@@ -125,7 +125,34 @@ public class JaeEnrolmentController {
 			for(EnrolmentDTO enrol : enrols){
 				// 2. check if enrolment is active or not
 				boolean isActive = currentYear >= Integer.parseInt(enrol.getYear()) && currentWeek <= enrol.getEndWeek();
-				
+
+
+
+
+
+
+
+
+				// if full paid, set extra as paid
+				if(isInvoicePaid){
+					enrol.setExtra(JaeConstants.FULL_PAID);
+				}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 				if(isActive){
 					isStillActive = true;
 					dtos.add(enrol);
@@ -522,7 +549,16 @@ public class JaeEnrolmentController {
 
 				}
 
-			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)	
+			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)
+				
+				///////// check if enrolment is fully paid from previous invoice ///////////
+				boolean isAlreadyFullPaid = StringUtils.equalsIgnoreCase(data.getExtra(), JaeConstants.FULL_PAID);
+				// if so, no need to create new enrolment, skip it
+				if(isAlreadyFullPaid) continue;
+				/////////////
+
+
+
 				// 1. create new Enrolment
 				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
 				// 2. update Invoice amount

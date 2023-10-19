@@ -259,6 +259,17 @@ public class JaeInvoiceController {
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
 			
+
+
+				// set enrolment to old
+				//Long enrolId = Long.parseLong(enrol.getId());
+				//enrolmentService.archiveEnrolment(enrolId);
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 				// if free online course, skip it
 				boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
 				if(isFreeOnline) continue;
