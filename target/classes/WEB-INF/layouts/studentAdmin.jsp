@@ -55,14 +55,15 @@
 				</div>
 			</div>
 			
-			<div class="col-lg-4">
+			
+			<div class="col-lg-4 bg-secondary">
 				<div class="card-body">
 					<h5 class="card-title">Attendance</h5>
 					<jsp:include page="attendance/attendanceInfo.jsp"></jsp:include>
 				</div>
 			</div>
-			
-    	</div>
+		
+		</div>
       	<div class="row">
       		<div class="col-lg-12">
       			<div class="card-body">

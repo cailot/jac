@@ -349,6 +349,8 @@ function addClassToBasket(value) {
 			row.append($('<td class="hidden-column online">').text(false)); // online			
 			row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 			row.append($('<td class="hidden-column description">').text(value.description)); // description
+			// row.append($('<td class="hidden-column paid">').text(value.paid)); // paid
+			// row.append($('<td class="hidden-column extra">').text(value.extra)); // extra
 			$('#basketTable > tbody').prepend(row);
 			
 
@@ -551,6 +553,8 @@ function addClassToBasket(value) {
 					enrolData.credit = $(this).find('.credit').text();
 					enrolData.weeks = $(this).find('.weeks').text();
 					enrolData.online = $(this).find('.online').text();
+					enrolData.paid = $(this).find('.paid').text();
+					enrolData.extra = $(this).find('.extra').text();
 					enrolData.day = $(this).find('.clazzChoice option:selected').text();
 					if(enrolData.day === ""){ // if day is not selected from dropdown
 						enrolData.day = $(this).find('.day').text()
@@ -571,6 +575,8 @@ function addClassToBasket(value) {
 						"weeks" : enrolData.weeks,
 						"day" : enrolData.day,
 						"online" : enrolData.online,
+						"paid" : enrolData.paid,
+						"extra" : enrolData.extra,
 						"studentId" : studentId
 					};
 					enrolData.push(clazz);
@@ -883,7 +889,8 @@ function addClassToBasket(value) {
 						row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
 						row.append($('<td class="hidden-column invoiceAmount">').text(value.amount)); // invoice amount	
 						row.append($('<td class="hidden-column paid">').text(value.paid)); // paid	
-		
+						row.append($('<td class="hidden-column extra">').text(value.extra)); // extra	
+			
 						$('#basketTable > tbody').append(row);
 
 						// update invoice table with Enrolment unless free online class
@@ -1079,17 +1086,14 @@ function addClassToBasket(value) {
 							<option value="vce">VCE</option>
 						</select>
 					</div>
-					<div class="offset-md-6">
+					<div class="offset-md-8">
 					</div>
 					<div class="col-md-2">
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
 					</div>
 					<!-- <div class="col-md-2">
-						<button id="deleteEnrolmentBtn" type="button" class="btn btn-block btn-danger btn-sm" data-toggle="modal" onclick="deleteRegistration()">Delete</button>
-					</div> -->
-					<div class="col-md-2">
 						<button id="clearEnrolmentBtn" type="button" class="btn btn-block btn-success btn-sm" data-toggle="modal" onclick="clearEnrolmentBasket()">Clear</button>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="form-group">
