@@ -557,8 +557,6 @@ public class JaeEnrolmentController {
 				if(isAlreadyFullPaid) continue;
 				/////////////
 
-
-
 				// 1. create new Enrolment
 				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
 				// 2. update Invoice amount
