@@ -212,11 +212,12 @@ public class JaeAttendanceController {
 	@ResponseBody
 	public AttendanceListDTO updateAttendanceList(@RequestBody AttendanceListDTO formData) {
 		System.out.println(formData);
+		
 		// Attendance attend = formData.convertToAttendance();
 		// // 1. update Attendance
 		// attend = attendanceService.updateAttendance(attend, attend.getId());
 		// 2. convert Attendance to AttendanceDTO
-		AttendanceListDTO dto = new AttendanceListDTO();
+		AttendanceListDTO dto = formData.convertToAttendanceListDTO();
 		return dto;
 	}
 
