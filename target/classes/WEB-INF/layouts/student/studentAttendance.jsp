@@ -119,10 +119,28 @@ function fetchOptions() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Attendance	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateAttendanceInfo(attend) {
-	// var clazzId = data.clazzId;
-	// var studentId = data.studentId;
-	console.log(attend);
+function updateAttendanceInfo(data) {
+	// // parse data string
+	// var attendance = JSON.parse(data.replace(/(\w+)=/g, "\"$1\":"));
+
+  // Access the studentId property and log it
+  console.log(attendance.studentId);
+
+  // Rest of the code...
+  var attend = {
+    studentId: attendance.studentId,
+    studentName: attendance.studentName,
+    clazzId: attendance.clazzId,
+    clazzName: attendance.clazzName,
+    clazzDay: attendance.clazzDay,
+    clazzGrade: attendance.clazzGrade,
+    week: attendance.week,
+    attendDate: attendance.attendDate,
+    status: attendance.status
+  };
+
+  console.log(attend);
+
 	//debugger;
 	$.ajax({
 		url : '${pageContext.request.contextPath}/attendance/updateList',
@@ -393,7 +411,7 @@ function clearAttendanceInfo() {
 									<th rowspan="2">Class Day</th>
 									<th rowspan="2">Grade</th>
 									<th colspan="${weekSize}">Week</th>
-									<th rowspan="2">Update</th>
+									<th rowspan="2" data-orderable="false">Update</th>
 								</tr>
 								<tr>
 									<c:forEach items="${weekHeader}" var="week">
@@ -422,10 +440,10 @@ function clearAttendanceInfo() {
 													<!-- <c:out value="${status}" /> -->
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 													<c:choose>
-														<c:when test="${status eq 'P'}">
+														<c:when test="${status eq 'Y'}">
 															<input type="checkbox" name="statusCheckbox" checked />
 														</c:when>
-														<c:when test="${status eq 'A'}">
+														<c:when test="${status eq 'N'}">
 															<input type="checkbox" name="statusCheckbox" />
 														</c:when>
 														<c:otherwise>
@@ -434,8 +452,8 @@ function clearAttendanceInfo() {
 													</c:choose>
 												</td>
 											</c:forEach>
-											<td>
-												<i class="bi bi-plus-circle" onclick="updateAttendanceInfo('${attend}')"></i>	
+											<td class="text-center">
+												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend}')"></i>	
 											</td>
                                         </tr>
                                     </c:forEach>

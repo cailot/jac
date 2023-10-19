@@ -44,10 +44,16 @@ function retrieveAttendance(studentId) {
 					//console.log(index + ' - ' + value.id);  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
-					row.append($('<td class="small" style="width: 20%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
-					row.append($('<td class="small" style="width: 35%;">').text(value.attendDate));
-					row.append($('<td class="small" style="width: 15%;">').text(value.status));
-					row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));
+					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
+					row.append($('<td class="small text-center" style="width: 50%;">').text(value.attendDate));
+					var status = '';	
+					if(value.status === 'Y'){
+						status = '<i class="bi bi-check-circle"></i>';
+					}else if(value.status === 'N'){
+						status = '<i class="bi bi-circle"></i>';
+					}	
+					row.append($('<td class="small text-center" style="width: 15%;">').html(status));
+					// row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));
 					$('#attendanceTable > tbody').append(row);  
 				});
 			},
@@ -73,14 +79,14 @@ function clearAttendanceTable() {
 		<div class="form-group">
 			<div class="form-row">
 				<div class="col-md-12">
-					<table class="table" id="attendanceTable" name="attendanceTable" style="display: none;">
+					<table class="table" id="attendanceTable" name="attendanceTable">
 						<thead>
 							<tr class="d-flex">
 								<th class="hidden-column"></th>
-								<th class="smaller-table-font text-center" style="width: 20%;">Week</th>
-								<th class="smaller-table-font text-center" style="width: 35%;">Date</th>
+								<th class="smaller-table-font text-center" style="width: 35%;">Week</th>
+								<th class="smaller-table-font text-center" style="width: 50%;">Date</th>
 								<th class="smaller-table-font text-center" style="width: 15%;">Status</th>
-								<th class="smaller-table-font text-center" style="width: 30%;">Class</th>
+								<!-- <th class="smaller-table-font text-center" style="width: 30%;">Class</th> -->
 							</tr>
 						</thead>
 						<tbody>
