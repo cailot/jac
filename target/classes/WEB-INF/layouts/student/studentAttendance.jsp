@@ -117,6 +117,29 @@ function fetchOptions() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Attendance	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateAttendanceInfo(attend) {
+	// var clazzId = data.clazzId;
+	// var studentId = data.studentId;
+	console.log(attend);
+	//debugger;
+	$.ajax({
+		url : '${pageContext.request.contextPath}/attendance/updateList',
+		type : 'PUT',
+		dataType : 'json',
+		data : JSON.stringify(attend),
+		contentType : 'application/json',
+		success : function(data) {
+			// console.log(data);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear Attendance Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearAttendanceInfo() {
@@ -412,7 +435,7 @@ function clearAttendanceInfo() {
 												</td>
 											</c:forEach>
 											<td>
-												<i class="bi bi-plus-circle" onclick="updateAttendance('${attend}')"></i>	
+												<i class="bi bi-plus-circle" onclick="updateAttendanceInfo('${attend}')"></i>	
 											</td>
                                         </tr>
                                     </c:forEach>

@@ -207,7 +207,18 @@ public class JaeAttendanceController {
 		return "studentAttendancePage";
 	}
 
-
+	// update existing attendance list
+	@PutMapping("/updateList")
+	@ResponseBody
+	public AttendanceListDTO updateAttendanceList(@RequestBody AttendanceListDTO formData) {
+		System.out.println(formData);
+		// Attendance attend = formData.convertToAttendance();
+		// // 1. update Attendance
+		// attend = attendanceService.updateAttendance(attend, attend.getId());
+		// 2. convert Attendance to AttendanceDTO
+		AttendanceListDTO dto = new AttendanceListDTO();
+		return dto;
+	}
 
 
 
