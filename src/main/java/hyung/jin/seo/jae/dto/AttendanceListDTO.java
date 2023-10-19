@@ -3,6 +3,10 @@ package hyung.jin.seo.jae.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,27 +15,28 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class AttendanceListDTO {
     
-	private List<Long> id = new ArrayList<>();
-
 	private List<String> attendDate = new ArrayList<>();
 
 	private List<String> status = new ArrayList<>();
 
 	private List<Integer> week = new ArrayList<>();
 
-	private String studentId;// = JaeConstants.ATTEND_LIST_STUDENT_ID;
+	private String studentId;
 
-	private String studentName;// = JaeConstants.ATTEND_LIST_STUDENT_NAME;
+	private String studentName;
 
-	private String clazzId;// = JaeConstants.ATTEND_LIST_CLASS_ID;
+	private String clazzId;
 
-	private String clazzDay;// = JaeConstants.ATTEND_LIST_CLASS_DAY;
+	private String clazzDay;
 
-	private String clazzGrade;// = JaeConstants.ATTEND_LIST_CLASS_GRADE;
+	private String clazzGrade;
 
-	private String clazzName;// = JaeConstants.ATTEND_LIST_CLASS_NAME;
-
+	private String clazzName;
 }
+
+
+
