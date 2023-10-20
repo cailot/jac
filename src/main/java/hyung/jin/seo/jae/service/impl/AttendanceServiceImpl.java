@@ -179,5 +179,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 		}
 		return attend;
 	}
+
+	@Override
+	public void updateStatus(Long studentId, Long clazzId, int week, String status) {
+		try{
+			attendanceRepository.updateStatusByStudentIdAndClazzIdAndWeek(studentId, clazzId, week+"", status);
+		}catch(Exception e){
+			System.out.println("No attendance found");
+		}
+	}
 	
 }

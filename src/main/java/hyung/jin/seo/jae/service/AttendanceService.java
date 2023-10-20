@@ -25,6 +25,9 @@ public interface AttendanceService {
 	// update attendance
 	Attendance updateAttendance(Attendance attendance, Long id);
 
+	// update status
+	void updateStatus(Long studentId, Long clazzId, int week, String status);
+
 	// delete attendance
 	void deleteAttendance(Long id);
 

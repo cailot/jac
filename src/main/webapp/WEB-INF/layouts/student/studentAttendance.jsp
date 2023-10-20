@@ -119,29 +119,27 @@ function fetchOptions() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Attendance	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateAttendanceInfo(data) {
-	// // parse data string
-	// var attendance = JSON.parse(data.replace(/(\w+)=/g, "\"$1\":"));
+function updateAttendanceInfo(clazzId, studentId, weeks) {
+  
+	var dropdownValues = [];  // An array to store the dropdown values
 
-  // Access the studentId property and log it
-  console.log(attendance.studentId);
+	// Get all dropdowns with the name "statusDropdown"
+	var dropdowns = document.querySelectorAll('select[name="statusDropdown"]');
 
-  // Rest of the code...
-  var attend = {
-    studentId: attendance.studentId,
-    studentName: attendance.studentName,
-    clazzId: attendance.clazzId,
-    clazzName: attendance.clazzName,
-    clazzDay: attendance.clazzDay,
-    clazzGrade: attendance.clazzGrade,
-    week: attendance.week,
-    attendDate: attendance.attendDate,
-    status: attendance.status
-  };
+	dropdowns.forEach(function (dropdown) {
+		var status = dropdown.value;
+		dropdownValues.push(status);
+	});
 
-  console.log(attend);
+	var attend = {
+		studentId: studentId,
+		clazzId: clazzId,
+		week: weeks,
+		status: dropdownValues
+	};
+    
+	// console.log(attend);
 
-	//debugger;
 	$.ajax({
 		url : '${pageContext.request.contextPath}/attendance/updateList',
 		type : 'PUT',
@@ -149,7 +147,8 @@ function updateAttendanceInfo(data) {
 		data : JSON.stringify(attend),
 		contentType : 'application/json',
 		success : function(data) {
-			// console.log(data);
+			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> attendance updated successfully');
+			$('#success-alert').modal('toggle');
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -404,18 +403,18 @@ function clearAttendanceInfo() {
 						<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 							<thead>
 								<tr>
-									<th rowspan="2">Class ID</th>
-									<th rowspan="2">Student ID</th>
-									<th rowspan="2">Student Name</th>
-									<th rowspan="2">Class Name</th>
-									<th rowspan="2">Class Day</th>
-									<th rowspan="2">Grade</th>
-									<th colspan="${weekSize}">Week</th>
-									<th rowspan="2" data-orderable="false">Update</th>
+									<th class="text-center align-middle" rowspan="2">Class ID</th>
+									<th class="text-center align-middle" rowspan="2">Student ID</th>
+									<th class="text-center align-middle" rowspan="2">Student Name</th>
+									<th class="text-center align-middle" rowspan="2">Class Name</th>
+									<th class="text-center align-middle" rowspan="2">Class Day</th>
+									<th class="text-center align-middle" rowspan="2">Grade</th>
+									<th class="text-center align-middle" colspan="${weekSize}">Week</th>
+									<th class="text-center align-middle" rowspan="2" data-orderable="false">Update</th>
 								</tr>
 								<tr>
 									<c:forEach items="${weekHeader}" var="week">
-										<th data-orderable="false"><c:out value="${week}" /></th>
+										<th data-orderable="false" class="text-center align-middle"><c:out value="${week}" /></th>
 									</c:forEach>	
 								</tr>
 							</thead>	
@@ -437,28 +436,20 @@ function clearAttendanceInfo() {
                                             </td>
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
 												<td class="text-center align-middle" title="${attend.attendDate[loop.index]}">
-													<!-- <c:out value="${status}" /> -->
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
-													<c:choose>
-														<c:when test="${status eq 'Y'}">
-															<input type="checkbox" name="statusCheckbox" checked />
-														</c:when>
-														<c:when test="${status eq 'N'}">
-															<input type="checkbox" name="statusCheckbox" />
-														</c:when>
-														<c:otherwise>
-															<!-- Leave it as blank -->
-														</c:otherwise>
-													</c:choose>
+													<select name="statusDropdown" ${status ne 'Y' && status ne 'N' ? 'disabled' : ''}>
+ 														<option value="Y" <c:if test="${status eq 'Y'}">selected</c:if>>Yes</option>
+														<option value="N" <c:if test="${status eq 'N'}">selected</c:if>>No</option>
+														<!-- if no other values, select 'Other' and make 'select' disable -->
+														<option value="O" <c:if test="${status ne 'Y' && status ne 'N'}">selected disabled</c:if>>Other</option>
+													</select>
 												</td>
 											</c:forEach>
 											<td class="text-center">
-												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend}')"></i>	
+												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week})"></i>  
 											</td>
                                         </tr>
                                     </c:forEach>
-                                
-
 
 							</tbody>
 						</table>
@@ -489,4 +480,19 @@ function clearAttendanceInfo() {
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
+</div>
+
+<!-- Delete Alert -->
+<div id="confirm-alert" class="modal fade" >
+    <div class="modal-dialog">
+    	<div class="alert alert-block alert-danger">
+    		<div class="alert-dialog-display">
+    			<i class="fa fa-minus-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+    		</div>
+			<div style="text-align: right;">
+				<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-sm btn-danger" id="deactivateAction">Delete</button>
+			</div>
+		</div>
+    </div>
 </div>
