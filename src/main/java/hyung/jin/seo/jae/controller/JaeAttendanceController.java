@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -210,15 +213,33 @@ public class JaeAttendanceController {
 	// update existing attendance list
 	@PutMapping("/updateList")
 	@ResponseBody
-	public AttendanceListDTO updateAttendanceList(@RequestBody AttendanceListDTO formData) {
-		System.out.println(formData);
-		
-		// Attendance attend = formData.convertToAttendance();
-		// // 1. update Attendance
-		// attend = attendanceService.updateAttendance(attend, attend.getId());
-		// 2. convert Attendance to AttendanceDTO
-		AttendanceListDTO dto = formData.convertToAttendanceListDTO();
-		return dto;
+	public ResponseEntity<String> updateAttendanceList(@RequestBody AttendanceListDTO formData) {
+		try{
+			// 1. get student id & clazz id
+			Long stdId = Long.parseLong(StringUtils.defaultString(formData.getStudentId(),"0"));
+			Long clzId = Long.parseLong(StringUtils.defaultString(formData.getClazzId(),"0"));
+
+			// 2. get size of arrays
+			int size = formData.getWeek().size();
+			for(int i=0; i<size; i++){
+				// 3. get week
+				int week = formData.getWeek().get(i);
+				// 4. get status
+				String status = formData.getStatus().get(i);
+				// System.out.println(week + " - " + StringUtils.defaultString(status));
+				// 5. check if it needs to update or not
+				String updateStats = StringUtils.defaultString(status);
+				if(updateStats.equalsIgnoreCase("Y") || updateStats.equalsIgnoreCase("N")){
+					// 6. update attendance
+					attendanceService.updateStatus(stdId, clzId, week, status);
+				}
+			}
+			// 7. return success;
+			return ResponseEntity.ok("\"Attendance update success\"");
+		}catch(Exception e){
+			String message = "Error updating Attendance: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
 	}
 
 
