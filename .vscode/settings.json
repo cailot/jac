@@ -29,5 +29,11 @@
         }
     ],
     "liveServer.settings.port": 5501,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.debug.settings.exceptionBreakpoint.skipClasses": [
+
+    ],
+    "typescript.validate.enable": false,
+    "javascript.validate.enable": false,
+    "javascript.format.enable": false
 }
