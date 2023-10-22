@@ -119,23 +119,34 @@ function fetchOptions() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Attendance	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateAttendanceInfo(clazzId, studentId, weeks) {
-  
-	var dropdownValues = [];  // An array to store the dropdown values
+function updateAttendanceInfo(clazzId, studentId, weeks, rowId) {
 
-	// Get all dropdowns with the name "statusDropdown"
-	var dropdowns = document.querySelectorAll('select[name="statusDropdown"]');
 
-	dropdowns.forEach(function (dropdown) {
-		var status = dropdown.value;
-		dropdownValues.push(status);
+	var row = document.querySelector('tr[data-row-id="' + rowId + '"]');
+	if(!row) {
+		console.log('row not found');
+		return;
+	}
+	
+  	var rollValues = [];
+	var rollElements = row.querySelectorAll('td.roll');
+
+	rollElements.forEach(function (element) {
+		var select = element.querySelector('select[name="statusDropdown"]');
+		if (select) {
+			rollValues.push(select.value);
+		} else {
+			rollValues.push('');
+		}
 	});
+
+	console.log('rollValues : ' + rollValues);
 
 	var attend = {
 		studentId: studentId,
 		clazzId: clazzId,
 		week: weeks,
-		status: dropdownValues
+		status: rollValues
 	};
     
 	// console.log(attend);
@@ -408,7 +419,7 @@ function clearAttendanceInfo() {
 									<th class="text-center align-middle" rowspan="2">Student Name</th>
 									<th class="text-center align-middle" rowspan="2">Class Name</th>
 									<th class="text-center align-middle" rowspan="2">Class Day</th>
-									<th class="text-center align-middle" rowspan="2">Grade</th>
+									<!-- <th class="text-center align-middle" rowspan="2">Grade</th> -->
 									<th class="text-center align-middle" colspan="${weekSize}">Week</th>
 									<th class="text-center align-middle" rowspan="2" data-orderable="false">Update</th>
 								</tr>
@@ -421,7 +432,8 @@ function clearAttendanceInfo() {
 							<tbody>
 								
 								    <c:forEach var="attend" items="${sessionScope.attendanceInfo}">
-                                        <tr>
+										<!-- <c:out value="${attend}" /> -->
+                                        <tr data-row-id="${attend.clazzId}-${attend.studentId}">
                                             <td>${attend.clazzId}</td>
                                             <td>${attend.studentId}</td> 
                                             <td>${attend.studentName}</td>
@@ -431,22 +443,43 @@ function clearAttendanceInfo() {
                                             <td>
                                                 <c:out value="${attend.clazzDay}" />
                                             </td>
-                                            <td class="text-uppercase">
-                                                <c:out value="${attend.clazzGrade}" />
-                                            </td>
+
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
-												<td class="text-center align-middle" title="${attend.attendDate[loop.index]}">
+												<td class="text-center align-middle roll" title="${attend.attendDate[loop.index]}">
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
-													<select name="statusDropdown" ${status ne 'Y' && status ne 'N' ? 'disabled' : ''}>
- 														<option value="Y" <c:if test="${status eq 'Y'}">selected</c:if>>Yes</option>
-														<option value="N" <c:if test="${status eq 'N'}">selected</c:if>>No</option>
-														<!-- if no other values, select 'Other' and make 'select' disable -->
-														<option value="O" <c:if test="${status ne 'Y' && status ne 'N'}">selected disabled</c:if>>Other</option>
-													</select>
+													<c:choose>
+														<c:when test="${status eq 'Y'}">
+															<select name="statusDropdown">
+																<option value="Y" selected>Yes</option>
+																<option value="N">No</option>
+																<option value="O">Other</option>
+															</select>
+														</c:when>
+														<c:when test="${status eq 'N'}">
+															<select name="statusDropdown">
+																<option value="Y">Yes</option>
+																<option value="N" selected>No</option>
+																<option value="O">Other</option>
+															</select>
+														</c:when>
+														<c:when test="${status eq 'O'}">
+															<select name="statusDropdown">
+																<option value="Y">Yes</option>
+																<option value="N">No</option>
+																<option value="O" selected>Other</option>
+															</select>
+														</c:when>
+														<c:otherwise>
+														</c:otherwise>
+													</c:choose>
 												</td>
 											</c:forEach>
+
+
+
+
 											<td class="text-center">
-												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week})"></i>  
+												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week}, '${attend.clazzId}-${attend.studentId}')"></i>  
 											</td>
                                         </tr>
                                     </c:forEach>

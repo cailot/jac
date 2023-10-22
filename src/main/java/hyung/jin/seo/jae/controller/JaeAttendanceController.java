@@ -198,8 +198,18 @@ public class JaeAttendanceController {
 				dto.setStatus(statues);
 				dto.setAttendDate(dates);
 
-				// 4-2-6. add AttendanceListDTO to lists
-				dtos.add(dto);
+				// 4-2-6. add AttendanceListDTO to lists unless statues contains all empty
+				boolean allEmpty = true;
+				for(String status : statues){
+					if(StringUtils.isNotBlank(status)){
+						allEmpty = false;
+						break;
+					}
+				}
+				if(!allEmpty){
+					dtos.add(dto);
+				}
+				//dtos.add(dto);
 			}			
 		}
 
@@ -226,10 +236,13 @@ public class JaeAttendanceController {
 				int week = formData.getWeek().get(i);
 				// 4. get status
 				String status = formData.getStatus().get(i);
-				// System.out.println(week + " - " + StringUtils.defaultString(status));
+
+				if((week==0) || StringUtils.isBlank(status)) continue;
+				
+				System.out.println(week + " - " + StringUtils.defaultString(status));
 				// 5. check if it needs to update or not
 				String updateStats = StringUtils.defaultString(status);
-				if(updateStats.equalsIgnoreCase("Y") || updateStats.equalsIgnoreCase("N")){
+				if(updateStats.equalsIgnoreCase(JaeConstants.ATTEND_YES) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_NO) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_OTHER)){
 					// 6. update attendance
 					attendanceService.updateStatus(stdId, clzId, week, status);
 				}

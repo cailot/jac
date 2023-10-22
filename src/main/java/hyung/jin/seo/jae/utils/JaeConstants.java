@@ -167,4 +167,10 @@ public interface JaeConstants {
 
 	String ATTEND_LIST_CLASS_GRADE = "Grade";
 
+	String ATTEND_YES = "Y";
+
+	String ATTEND_NO = "N";
+
+	String ATTEND_OTHER = "O";
+
 }
