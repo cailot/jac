@@ -33,7 +33,20 @@
     "java.debug.settings.exceptionBreakpoint.skipClasses": [
 
     ],
+
+
+    "eslint.validate": [ "javascript" ],
+    "eslint.options": {
+        "rules": {
+            "semi": "error"
+        }
+    },
+
+
     "typescript.validate.enable": false,
     "javascript.validate.enable": false,
     "javascript.format.enable": false
 }
+
+
+
