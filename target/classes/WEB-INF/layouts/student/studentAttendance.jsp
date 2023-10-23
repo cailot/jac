@@ -479,7 +479,7 @@ function clearAttendanceInfo() {
 
 
 											<td class="text-center">
-												<i class="bi bi-person-check" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week}, '${attend.clazzId}-${attend.studentId}')"></i>  
+												<i class="bi bi-person-check text-primary" title="Update attendance" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week}, '${attend.clazzId}-${attend.studentId}')"></i>  
 											</td>
                                         </tr>
                                     </c:forEach>

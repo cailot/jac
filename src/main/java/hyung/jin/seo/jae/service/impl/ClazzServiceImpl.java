@@ -220,4 +220,15 @@ public class ClazzServiceImpl implements ClazzService {
 		return grade;
 	}
 
+	@Override
+	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
 }

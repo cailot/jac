@@ -107,7 +107,7 @@ public class JaeAttendanceController {
 		// 4. search AttendanceListDTO
 		// 4-1. if clazzId is "All", then search all clazz Ids
 		if(criteria.getClazzId().equalsIgnoreCase(JaeConstants.ALL)) {
-			List<ClazzDTO> clazzs = clazzService.filterClazz(criteria.getState(), criteria.getBranch(), criteria.getGrade());	
+			List<ClazzDTO> clazzs = clazzService.filterOnSiteClazz(criteria.getState(), criteria.getBranch(), criteria.getGrade()); // except online class	
 			for(ClazzDTO claz : clazzs) {
 				
 				// 4-1-1. get clazz id
@@ -125,9 +125,9 @@ public class JaeAttendanceController {
 
 					// 4-1-4. Create AttendanceListDTO
 					AttendanceListDTO dto = new AttendanceListDTO();
+					dto.setClazzId(clazId+"");
 					dto.setStudentId(studentId+"");
 					dto.setStudentName(std.getFirstName() + " " + std.getLastName());
-					dto.setClazzId(clazzId+"");
 					dto.setClazzName(clazName);
 					dto.setClazzDay(clazDay);
 					dto.setClazzGrade(clazGrade);
@@ -135,22 +135,35 @@ public class JaeAttendanceController {
 
 					List<String> statues = dto.getStatus();
 					List<String> dates = dto.getAttendDate();
+					List<Integer> weeks = dto.getWeek();
 					// 4-1-5. get status by student id, clazz id & week
 					for(int i=startWeek; i<=endWeek; i++){
-						Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeek(studentId, clazId, endWeek);
+						Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeek(studentId, clazId, i);
 						if(attend != null){
 							statues.add(attend.getStatus());
 							dates.add(attend.getAttendDate()+"");
+							weeks.add(i);
 						}else{
 							statues.add("");
 							dates.add("");
+							weeks.add(0);
 						}
 					}
 					dto.setStatus(statues);
 					dto.setAttendDate(dates);
 						
-					// 4-1-6. add AttendanceListDTO to lists
-					dtos.add(dto);
+					// dtos.add(dto);
+					// 4-2-6. add AttendanceListDTO to lists unless statues contains all empty
+					boolean allEmpty = true;
+					for(String status : statues){
+						if(StringUtils.isNotBlank(status)){
+							allEmpty = false;
+							break;
+						}
+					}
+					if(!allEmpty){
+						dtos.add(dto);
+					}
 				}
 			}
 		}else{

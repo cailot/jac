@@ -19,6 +19,10 @@ public interface ClazzService {
 	// bring class list for dropdown list
 	List<ClazzDTO> filterClazz(String state, String branch, String grade);
 
+
+	// bring on-site class list for dropdown list
+	List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade);
+
 	// bring class Ids
 	List<Long> filterClazzIds(String state, String branch, String grade);
 
