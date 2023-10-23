@@ -231,4 +231,15 @@ public class ClazzServiceImpl implements ClazzService {
 		return dtos;
 	}
 
+	@Override
+	public List<ClazzDTO> findClazzForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.findClassForCourseIdNCycleNStateNBranch(id, year, state, branch);
+		}catch(Exception e){
+			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
 }
