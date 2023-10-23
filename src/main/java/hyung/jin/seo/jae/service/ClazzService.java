@@ -32,6 +32,9 @@ public interface ClazzService {
 	// list all class for courseId & year
 	List<ClazzDTO> findClazzForCourseIdNCycle(Long id, int year);
 
+	// list class for courseId & year & state & branch
+	List<ClazzDTO> findClazzForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch);
+
 	// return total count
 	long checkCount();
 
