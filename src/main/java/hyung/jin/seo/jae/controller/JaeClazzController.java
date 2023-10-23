@@ -155,11 +155,12 @@ public class JaeClazzController {
 	}
 
 
-	// search classes by grade & year
+	// search classes by id & year & state & branch
 	@GetMapping("/classesByCourse")
 	@ResponseBody
-	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year) {
-		List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId, year);
+	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
+		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId, year);
+		List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycleNStateNBranch(courseId, year, state, branch);
 		return dtos;
 	}
 
