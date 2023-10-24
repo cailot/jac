@@ -19,7 +19,7 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentList.jsp" />
 	</definition>
 	<definition name="studentInvoicePage" extends="base.definition">
-		<put-attribute name="title" value="Student Invoice" />
+		<put-attribute name="title" value="Student Payment History" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentInvoice.jsp" />
 	</definition>
 	<definition name="studentAttendancePage" extends="base.definition">
