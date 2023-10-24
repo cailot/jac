@@ -43,7 +43,45 @@ $(document).ready(
 		// remove records from basket when click on delete icon
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
-			$(this).closest('tr').remove();
+			var tr = $(this).closest('tr');
+    		var year = tr.find('.year').text(); // Get the text content of the <td class="year"> elements within the <tr>
+    		var grade = tr.find('.grade').text(); // Get the value of the <td class="grade"> elements within the <tr>
+			// if year & grade is not empty, remove enrolment from basketTable
+			if(year !== '' && grade !== ''){
+				var clazzId = '0';
+				// find relavant free online class and remove it from basket
+				$.ajax({
+					url: '${pageContext.request.contextPath}/class/id',
+					type: 'GET',
+					data: {
+						grade: grade,
+						year: year
+					},
+					success: function(data) {
+						// if any online course is found with grade & year
+						if((data !== '') && (data > 0)){
+							// find and remove free online class from basket
+							$('#basketTable > tbody > tr').each(function() {
+								var exist = $(this).find('.data-type').text();
+								if(exist.indexOf('|') !== -1){
+									var hiddenValues = exist.split('|');
+									//console.log(hiddenValues[1]);
+									if(hiddenValues[0] === CLASS && parseInt(hiddenValues[1]) === data){
+										// remove row from basket
+										$(this).remove();
+										console.log('object :>> ', hiddenValues);
+									}
+								}
+							});
+						}
+					},
+					error : function(xhr, status, error) {
+						console.log('Error : ' + error);
+					}
+				});
+			}	
+			// remove row from basket
+			tr.remove();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
 	}
@@ -296,8 +334,7 @@ function addClassToBasket(value) {
 			$('#basketTable > tbody').prepend(row);
 			
 
-			// check if value.name contains 'Online'
-			//if(value.name.toUpperCase().indexOf(ONSITE) !== -1){
+			// check if it is 'Online'
 			if(!value.online){
 				// console.log('Online needs');
 				var clazzId = 0;
