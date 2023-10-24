@@ -31,18 +31,10 @@ $(document).ready(function () {
  	        },
  	        'print'
         ],
-		// columnDefs : [
-		// 	{
-		// 		targets: 0,
-		// 		visible: false,
-		// 		orderable: true
-		// 	}
-		// ],	
 		order : [[1, 'desc'], [0, 'desc']], // order by invoiceId desc, id desc
 		// sum for paid
 		footerCallback: function (row, data, start, end, display) {
     		var api = this.api();
-			//console.log(api.column(4).data());
     		// Custom function to parse and sum values
 			var parseAndSum = function (data) {
 				var total = 0;
@@ -361,10 +353,13 @@ function clearStudentInfo() {
 												<td class="small align-middle" style="white-space: nowrap; padding: 0px;">
 													<table class="table-borderless">
 														<c:forEach var="enrol" items="${payment.enrols}">
+														<!-- if enrol is not free online, then display -->
+														<c:if test="${enrol.online != true and enrol.discount != '100%'}">		
 															<tr style="background-color : transparent !important;">
 																<td class="small align-middle" style="white-space: nowrap;">[${enrol.grade.toUpperCase()}] ${enrol.name}&nbsp;</td>
 																<td class="small align-middle" style="white-space: nowrap;">(${enrol.extra})</td>
 															</tr>
+														</c:if>
 														</c:forEach>
 													</table>
 												</td>
