@@ -46,7 +46,7 @@ $(document).ready(
 			var tr = $(this).closest('tr');
     		var year = tr.find('.year').text(); // Get the text content of the <td class="year"> elements within the <tr>
     		var grade = tr.find('.grade').text(); // Get the value of the <td class="grade"> elements within the <tr>
-			// if year & grade is not empty, remove enrolment from basketTable
+			// if year & grade is not empty, remove assocaited free online class from basketTable
 			if(year !== '' && grade !== ''){
 				var clazzId = '0';
 				// find relavant free online class and remove it from basket
