@@ -77,7 +77,7 @@ public class JaeClazzController {
 		return count;
 	}
 
-	// count records number in database
+	// get online course Id
 	@GetMapping("/id")
 	@ResponseBody
 	Long getId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
