@@ -12,49 +12,6 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
-<!-- <style>
-	#attendanceTable th, tr {
-		padding: 15px;
-	}
-	div.dataTables_filter {
-		padding-top: 35px;
-		padding-bottom: 35px;
-	}
-	div.dt-buttons {
-		padding-top: 35px;
-		padding-bottom: 10px;
-	}
-	div.dataTables_length{
-		padding-top: 40px;
-		padding-bottom: 10px;
-	}
-	tr { height: 50px } 
-
-	.ui-datepicker {
-            width: 200px; /* Adjust the width as needed */
-            height: 200px; /* Adjust the height as needed */
-            margin: 0; /* Remove any margin */
-            padding: 0; /* Remove any padding */
-        }
-</style> -->
-
-<style>
-	/* Set a fixed width for non-scrolling columns */
-	.dataTables_scrollHeadInner thead th {
-		width: 100px; /* Adjust the width as needed */
-	}
-	
-	/* Allow the Week columns to scroll */
-	.dataTables_scrollBody tbody td {
-		width: 100px; /* Adjust the width as needed */
-	}
-	
-	/* Hide the horizontal scrollbar */
-	.dataTables_scrollBody {
-		overflow-x: hidden;
-	}
-	</style>
-	
 
 <script>
 $(document).ready(function () {
@@ -71,8 +28,7 @@ $(document).ready(function () {
  	            pageSize: 'A0'
  	        },
  	        'print'
-        ],
-		scrollX: true
+        ]
     });
 
 	$("#fromDate").datepicker({
@@ -183,100 +139,133 @@ function clearAttendanceInfo() {
 }
 
 </script>
+
+<style>
+	#attendanceTable th, tr {
+		padding: 15px;
+	}
+	#attendanceTable tfoot tr th {
+    	border: none !important;
+	}
+	#studentAttend .form-row {
+  		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+	div.dataTables_length{
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+	/* tr { height: 50px }  */
+
+	.hidden-column {
+    	display: none;
+	}
+</style>
+
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
-			<div class="form-row">
-				<div class="col-md-1">
-					<label for="listState" class="label-form">State</label> 
-					<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
-						<option value="All">All</option>
-						<option value="vic">Victoria</option>
-						<option value="nsw">New South Wales</option>
-						<option value="qld">Queensland</option>
-						<option value="sa">South Australia</option>
-						<option value="tas">Tasmania</option>
-						<option value="wa">Western Australia</option>
-						<option value="nt">Northern Territory</option>
-						<option value="act">ACT</option>
-					</select>
-				</div>
-				<div class="col-md-2">
-					<label for="listBranch" class="label-form">Branch</label> 
-					<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
-						<option value="All">All</option>
-						<option value="braybrook">Braybrook</option>
-						<option value="epping">Epping</option>
-						<option value="balwyn">Balwyn</option>
-						<option value="bayswater">Bayswater</option>
-						<option value="boxhill">Box Hill</option>
-						<option value="carolinesprings">Caroline Springs</option>
-						<option value="chadstone">Chadstone</option>
-						<option value="craigieburn">Craigieburn</option>
-						<option value="cranbourne">Cranbourne</option>
-						<option value="glenwaverley">Glen Waverley</option>
-						<option value="mitcha">Mitcham</option>
-						<option value="narrewarren">Narre Warren</option>
-						<option value="ormond">Ormond</option>
-						<option value="pointcook">Point Cook</option>
-						<option value="preston">Preston</option>
-						<option value="springvale">Springvale</option>
-						<option value="stalbans">St Albans</option>
-						<option value="werribee">Werribee</option>
-						<option value="mernda">Mernda</option>
-						<option value="melton">Melton</option>
-						<option value="glenroy">Glenroy</option>
-						<option value="packenham">Packenham</option>
-					</select>
-				</div>
-				<div class="col-md-1">
-					<label for="listGrade" class="label-form">Grade</label> 
-					<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
-						<option value="All">All</option>
-						<option value="p2">P2</option>
-						<option value="p3">P3</option>
-						<option value="p4">P4</option>
-						<option value="p5">P5</option>
-						<option value="p6">P6</option>
-						<option value="s7">S7</option>
-						<option value="s8">S8</option>
-						<option value="s9">S9</option>
-						<option value="s10">S10</option>
-						<option value="s10e">S10E</option>
-						<option value="tt6">TT6</option>
-						<option value="tt8">TT8</option>
-						<option value="tt8e">TT8E</option>
-						<option value="srw4">SRW4</option>
-						<option value="srw5">SRW5</option>
-						<option value="srw6">SRW6</option>
-						<option value="srw8">SRW8</option>
-						<option value="jmss">JMSS</option>
-						<option value="vce">VCE</option>
-					</select>
-				</div>
-				<div class="col-md-2">
-					<label for="listClass" class="label-form">Class</label> 
-					<select class="form-control" id="listClass" name="listClass">
-						<option value="All">All</option>
-					</select>
-				</div>
-				<div class="col-md-1">
-					<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
-				</div>
-				<div class="col-md-1">
-					<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
-				</div>
-				<!-- put blank col-md-1 -->
-				<div class="offset-md-1"></div>
-				<div class="col max-auto">
-					<label class="label-form-white">Search</label> 
-					<!-- <button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
-					<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
-				</div>
-				<div class="col max-auto">
-					<label class="label-form-white">Clear</label> 
-					<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
+			<div class="form-group">
+				<div class="form-row">
+					<div class="col-md-1">
+						<label for="listState" class="label-form">State</label> 
+						<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
+							<option value="All">All</option>
+							<option value="vic">Victoria</option>
+							<option value="nsw">New South Wales</option>
+							<option value="qld">Queensland</option>
+							<option value="sa">South Australia</option>
+							<option value="tas">Tasmania</option>
+							<option value="wa">Western Australia</option>
+							<option value="nt">Northern Territory</option>
+							<option value="act">ACT</option>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label for="listBranch" class="label-form">Branch</label> 
+						<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
+							<option value="All">All</option>
+							<option value="braybrook">Braybrook</option>
+							<option value="epping">Epping</option>
+							<option value="balwyn">Balwyn</option>
+							<option value="bayswater">Bayswater</option>
+							<option value="boxhill">Box Hill</option>
+							<option value="carolinesprings">Caroline Springs</option>
+							<option value="chadstone">Chadstone</option>
+							<option value="craigieburn">Craigieburn</option>
+							<option value="cranbourne">Cranbourne</option>
+							<option value="glenwaverley">Glen Waverley</option>
+							<option value="mitcha">Mitcham</option>
+							<option value="narrewarren">Narre Warren</option>
+							<option value="ormond">Ormond</option>
+							<option value="pointcook">Point Cook</option>
+							<option value="preston">Preston</option>
+							<option value="springvale">Springvale</option>
+							<option value="stalbans">St Albans</option>
+							<option value="werribee">Werribee</option>
+							<option value="mernda">Mernda</option>
+							<option value="melton">Melton</option>
+							<option value="glenroy">Glenroy</option>
+							<option value="packenham">Packenham</option>
+						</select>
+					</div>
+					<div class="col-md-1">
+						<label for="listGrade" class="label-form">Grade</label> 
+						<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
+							<option value="All">All</option>
+							<option value="p2">P2</option>
+							<option value="p3">P3</option>
+							<option value="p4">P4</option>
+							<option value="p5">P5</option>
+							<option value="p6">P6</option>
+							<option value="s7">S7</option>
+							<option value="s8">S8</option>
+							<option value="s9">S9</option>
+							<option value="s10">S10</option>
+							<option value="s10e">S10E</option>
+							<option value="tt6">TT6</option>
+							<option value="tt8">TT8</option>
+							<option value="tt8e">TT8E</option>
+							<option value="srw4">SRW4</option>
+							<option value="srw5">SRW5</option>
+							<option value="srw6">SRW6</option>
+							<option value="srw8">SRW8</option>
+							<option value="jmss">JMSS</option>
+							<option value="vce">VCE</option>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label for="listClass" class="label-form">Class</label> 
+						<select class="form-control" id="listClass" name="listClass">
+							<option value="All">All</option>
+						</select>
+					</div>
+					<div class="col-md-1">
+						<label for="fromDate" class="label-form">From Date</label> <input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
+					</div>
+					<div class="col-md-1">
+						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+					</div>
+					<!-- put blank col-md-1 -->
+					<div class="offset-md-1"></div>
+					<div class="col max-auto">
+						<label class="label-form-white">Search</label> 
+						<!-- <button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
+						<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+					</div>
+					<div class="col max-auto">
+						<label class="label-form-white">Clear</label> 
+						<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
+					</div>
 				</div>
 			</div>
 			<!-- Search Criteria Info-->
@@ -401,51 +390,47 @@ function clearAttendanceInfo() {
 					</table>						
 				</div>
 			</c:if>
-			<div class="form-row">
+			<div class="form-group">
+				<div class="form-row">
 				<div class="col-md-12">
-
-					<c:choose>
+				<c:choose>
 					<c:when test="${empty sessionScope.attendanceInfo}">
 						No attendance data is available.
 					</c:when>
 					<c:otherwise>
 						<c:set var="weekSize" value="${fn:length(weekHeader)}" />
-						
-						<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
-							<thead>
-								<tr>
-									<th class="text-center align-middle" rowspan="2">Class ID</th>
-									<th class="text-center align-middle" rowspan="2">Student ID</th>
-									<th class="text-center align-middle" rowspan="2">Student Name</th>
-									<th class="text-center align-middle" rowspan="2">Class Name</th>
-									<th class="text-center align-middle" rowspan="2">Class Day</th>
-									<!-- <th class="text-center align-middle" rowspan="2">Grade</th> -->
-									<th class="text-center align-middle" colspan="${weekSize}">Week</th>
-									<th class="text-center align-middle" rowspan="2" data-orderable="false">Update</th>
-								</tr>
-								<tr>
-									<c:forEach items="${weekHeader}" var="week">
-										<th data-orderable="false" class="text-center align-middle"><c:out value="${week}" /></th>
-									</c:forEach>	
-								</tr>
-							</thead>	
-							<tbody>
-								
-								    <c:forEach var="attend" items="${sessionScope.attendanceInfo}">
-										<!-- <c:out value="${attend}" /> -->
-                                        <tr data-row-id="${attend.clazzId}-${attend.studentId}">
-                                            <td>${attend.clazzId}</td>
-                                            <td>${attend.studentId}</td> 
-                                            <td>${attend.studentName}</td>
-                                            <td>
-                                                <span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
-                                            </td>
-                                            <td>
-                                                <c:out value="${attend.clazzDay}" />
-                                            </td>
-
+						<div class="table-wrap">
+							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
+								<thead class="table-primary">
+									<tr>
+										<th class="text-center align-middle hidden-column" rowspan="2">Class ID</th>
+										<th class="small text-center align-middle" rowspan="2">Student ID</th>
+										<th class="small text-center align-middle" rowspan="2">Student Name</th>
+										<th class="small text-center align-middle" rowspan="2">Class Name</th>
+										<th class="small text-center align-middle" rowspan="2">Class Day</th>
+										<th class="small text-center align-middle" colspan="${weekSize}">Week</th>
+										<th class="small text-center align-middle" rowspan="2" data-orderable="false">Update</th>
+									</tr>
+									<tr>
+										<c:forEach items="${weekHeader}" var="week">
+											<th data-orderable="false" class="small text-center align-middle"><c:out value="${week}" /></th>
+										</c:forEach>	
+									</tr>
+								</thead>	
+								<tbody>
+									<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
+										<tr data-row-id="${attend.clazzId}-${attend.studentId}">
+											<td class="hidden-column">${attend.clazzId}</td>
+											<td class="small align-middle text-center">${attend.studentId}</td> 
+											<td class="small align-middle text-left">${attend.studentName}</td>
+											<td class="small align-middle text-left">
+												<span class="text-uppercase">[<c:out value="${attend.clazzGrade}"/>]</span> <c:out value="${attend.clazzName}" />
+											</td>
+											<td class="small align-middle text-center">
+												<c:out value="${attend.clazzDay}" />
+											</td>
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
-												<td class="text-center align-middle roll" title="${attend.attendDate[loop.index]}">
+												<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 													<c:choose>
 														<c:when test="${status eq 'Y'}">
@@ -474,20 +459,17 @@ function clearAttendanceInfo() {
 													</c:choose>
 												</td>
 											</c:forEach>
-
-
-
-
-											<td class="text-center">
+											<td class="text-center align-middle">
 												<i class="bi bi-person-check text-primary" title="Update attendance" style="font-size: 150%;" onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week}, '${attend.clazzId}-${attend.studentId}')"></i>  
 											</td>
-                                        </tr>
-                                    </c:forEach>
-
-							</tbody>
-						</table>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</div>
 					</c:otherwise>
 					</c:choose>
+				</div>
 				</div>
 			</div>
 		</form> 

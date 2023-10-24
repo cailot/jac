@@ -52,20 +52,19 @@
 	</definition>
 
 
-
 	<!-- Payment Base -->
 	<definition name="payment.definition" template="/WEB-INF/layouts/payment.jsp">
 		<put-attribute name="title" value="" />
 		<put-attribute name="body" value="" />
 	</definition>
 
-	<!-- Receipt -->
+	<!-- Receipt from Payment Base -->
 	<definition name="receiptPage" extends="payment.definition">
 		<put-attribute name="title" value="James An College Receipt Page" />
 		<put-attribute name="body" value="/WEB-INF/layouts/invoice/receipt.jsp" />
 	</definition>
 	
-	<!-- Invoice -->
+	<!-- Invoice from Payment Base -->
 	<definition name="invoicePage" extends="payment.definition">
 		<put-attribute name="title" value="James An College Invoice Page" />
 		<put-attribute name="body" value="/WEB-INF/layouts/invoice/invoice.jsp" />
