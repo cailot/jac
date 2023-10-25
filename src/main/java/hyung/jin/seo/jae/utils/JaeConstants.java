@@ -171,6 +171,8 @@ public interface JaeConstants {
 
 	String ATTEND_NO = "N";
 
+	String ATTEND_PAUSE = "P";
+
 	String ATTEND_OTHER = "O";
 
 }
