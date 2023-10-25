@@ -51,6 +51,8 @@ function retrieveAttendance(studentId) {
 						status = '<i class="bi bi-check-circle" title="Present"></i>';
 					}else if(value.status === 'N'){
 						status = '<i class="bi bi-circle" title="Absent"></i>';
+					}else if(value.status === 'P'){
+						status = '<i class="bi bi-pause-circle" title="Pause"></i>';
 					}	
 					row.append($('<td class="small text-center" style="width: 15%;">').html(status));
 					// row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));

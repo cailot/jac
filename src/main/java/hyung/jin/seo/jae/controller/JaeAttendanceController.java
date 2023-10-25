@@ -255,7 +255,7 @@ public class JaeAttendanceController {
 				System.out.println(week + " - " + StringUtils.defaultString(status));
 				// 5. check if it needs to update or not
 				String updateStats = StringUtils.defaultString(status);
-				if(updateStats.equalsIgnoreCase(JaeConstants.ATTEND_YES) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_NO) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_OTHER)){
+				if(updateStats.equalsIgnoreCase(JaeConstants.ATTEND_YES) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_NO) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_PAUSE) || updateStats.equalsIgnoreCase(JaeConstants.ATTEND_OTHER)){
 					// 6. update attendance
 					attendanceService.updateStatus(stdId, clzId, week, status);
 				}

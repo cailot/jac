@@ -168,10 +168,25 @@ function clearAttendanceInfo() {
 	.hidden-column {
     	display: none;
 	}
+
+	
+	#attendanceTableContainer {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+
+  #attendanceTable {
+    width: 100%; /* Occupy full container width */
+  }
+
+  .week-sub-columns td {
+    min-width: 75px; /* Minimum width for 'Week' columns */
+  }
+
 </style>
 
 <!-- List Body -->
-<div class="row">
+<div class="row" style="max-width: 80%;">
 	<div class="modal-body">
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
 			<div class="form-group">
@@ -399,19 +414,19 @@ function clearAttendanceInfo() {
 					</c:when>
 					<c:otherwise>
 						<c:set var="weekSize" value="${fn:length(weekHeader)}" />
-						<div class="table-wrap">
+						<div class="attendanceTableContainer">
 							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
 										<th class="text-center align-middle hidden-column" rowspan="2">Class ID</th>
-										<th class="small text-center align-middle" rowspan="2">Student ID</th>
-										<th class="small text-center align-middle" rowspan="2">Student Name</th>
-										<th class="small text-center align-middle" rowspan="2">Class Name</th>
-										<th class="small text-center align-middle" rowspan="2">Class Day</th>
-										<th class="small text-center align-middle" colspan="${weekSize}">Week</th>
-										<th class="small text-center align-middle" rowspan="2" data-orderable="false">Update</th>
+										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Student ID</th>
+										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Student Name</th>
+										<th class="small text-center align-middle" rowspan="2" style="width: 15%;">Class Name</th>
+										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Class Day</th>
+										<th class="small text-center align-middle" colspan="${weekSize}" style="width: 50%;">Week</th>
+										<th class="small text-center align-middle" rowspan="2" data-orderable="false" style="width: 5%;">Update</th>
 									</tr>
-									<tr>
+									<tr class="week-sub-columns">
 										<c:forEach items="${weekHeader}" var="week">
 											<th data-orderable="false" class="small text-center align-middle"><c:out value="${week}" /></th>
 										</c:forEach>	
@@ -430,27 +445,38 @@ function clearAttendanceInfo() {
 												<c:out value="${attend.clazzDay}" />
 											</td>
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
-												<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">
+												<td class="small text-center align-middle roll week-sub-columns" title="${attend.attendDate[loop.index]}"><!-- style="min-width: 60px;"-->
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 													<c:choose>
 														<c:when test="${status eq 'Y'}">
-															<select name="statusDropdown">
+															<select name="statusDropdown" class="custom-select custom-select-sm">
 																<option value="Y" selected>Yes</option>
 																<option value="N">No</option>
+																<option value="P">Pause</option>
 																<option value="O">Other</option>
 															</select>
 														</c:when>
 														<c:when test="${status eq 'N'}">
-															<select name="statusDropdown">
+															<select name="statusDropdown" class="custom-select custom-select-sm">
 																<option value="Y">Yes</option>
 																<option value="N" selected>No</option>
+																<option value="P">Pause</option>
+																<option value="O">Other</option>
+															</select>
+														</c:when>
+														<c:when test="${status eq 'P'}">
+															<select name="statusDropdown" class="custom-select custom-select-sm">
+																<option value="Y">Yes</option>
+																<option value="N">No</option>
+																<option value="P" selected>Pause</option>
 																<option value="O">Other</option>
 															</select>
 														</c:when>
 														<c:when test="${status eq 'O'}">
-															<select name="statusDropdown">
+															<select name="statusDropdown" class="custom-select custom-select-sm">
 																<option value="Y">Yes</option>
 																<option value="N">No</option>
+																<option value="P">Pause</option>
 																<option value="O" selected>Other</option>
 															</select>
 														</c:when>
