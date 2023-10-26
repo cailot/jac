@@ -3,8 +3,11 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/fixedColumns.dataTables.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/dataTables.fixedColumns.min.js"></script>
+
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/pdfmake.min.js"></script>
@@ -28,7 +31,22 @@ $(document).ready(function () {
  	            pageSize: 'A0'
  	        },
  	        'print'
-        ]
+        ],
+		// fixedColumns: true,
+		columnDefs : [
+			{ targets: 0, width: '10%' },
+			{ targets: 1, width: '15%' },
+			{ targets: 2, width: '15%' },
+			{ targets: 3, width: '10%' },
+			{ targets: 4, width: '45%' },
+			{ targets: 5, width: '5%'}
+		],
+		fixedColumns: {
+			leftColumns: 4,
+			rightColumns: 1
+		},
+		paging: true,
+		scrollX: true
     });
 
 	$("#fromDate").datepicker({
@@ -141,7 +159,7 @@ function clearAttendanceInfo() {
 </script>
 
 <style>
-	#attendanceTable th, tr {
+	#attendanceTable tr {
 		padding: 15px;
 	}
 	#attendanceTable tfoot tr th {
@@ -163,27 +181,42 @@ function clearAttendanceInfo() {
 		padding-top: 40px;
 		padding-bottom: 10px;
 	}
-	/* tr { height: 50px }  */
 
-	.hidden-column {
-    	display: none;
+	#attendanceTable th,
+	#attendanceTable td {
+  		white-space: nowrap;
+  		padding-left: 10px !important;
+  		padding-right: 10px !important;
 	}
+	/* #attendanceTable th,
+    #attendanceTable td {
+        white-space: nowrap;
+        padding: 0 !important;
+        box-sizing: border-box; 
+        width: 10%;
+    } */
 
-	
-	#attendanceTableContainer {
-    width: 100%;
-    overflow-x: auto; /* Enable horizontal scrolling */
-  }
+    div.dataTables_wrapper {
+        width: 1200px;
+        margin: 0 auto;
+    }
 
-  #attendanceTable {
-    width: 100%; /* Occupy full container width */
-  }
+	#attendanceTable .roll {
+        white-space: nowrap;
+        padding: 0 !important;
+        box-sizing: border-box; /* Include padding in the specified width */
+        min-width: 50px; /* Set a fixed width, adjust as needed */
+    }
 
-  .week-sub-columns td {
-    min-width: 75px; /* Minimum width for 'Week' columns */
-  }
-
-</style>
+	#attendanceTable .no-gap{
+		padding-top: 0px !important;
+		padding-bottom: 0px !important;
+		border-top-width: 0px !important;
+		border-bottom-width: 0px !important;
+		border-right-width: 0px !important;
+		border-left-width: 0px !important;
+	}
+	</style>
 
 <!-- List Body -->
 <div class="row" style="max-width: 80%;">
@@ -414,28 +447,26 @@ function clearAttendanceInfo() {
 					</c:when>
 					<c:otherwise>
 						<c:set var="weekSize" value="${fn:length(weekHeader)}" />
-						<div class="attendanceTableContainer">
+						
 							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle hidden-column" rowspan="2">Class ID</th>
-										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Student ID</th>
-										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Student Name</th>
-										<th class="small text-center align-middle" rowspan="2" style="width: 15%;">Class Name</th>
-										<th class="small text-center align-middle" rowspan="2" style="width: 10%;">Class Day</th>
-										<th class="small text-center align-middle" colspan="${weekSize}" style="width: 50%;">Week</th>
-										<th class="small text-center align-middle" rowspan="2" data-orderable="false" style="width: 5%;">Update</th>
+										<th class="small text-center align-middle" rowspan="2">ID</th>
+										<th class="small text-center align-middle" rowspan="2">Student Name</th>
+										<th class="small text-center align-middle" rowspan="2">Class Name</th>
+										<th class="small text-center align-middle" rowspan="2">Day</th>
+										<th class="small text-center align-middle" colspan="${weekSize}">Week</th>
+										<th class="small text-center align-middle" rowspan="2" data-orderable="false">Update</th>
 									</tr>
 									<tr class="week-sub-columns">
 										<c:forEach items="${weekHeader}" var="week">
-											<th data-orderable="false" class="small text-center align-middle"><c:out value="${week}" /></th>
+											<th data-orderable="false" class="small text-center align-middle" style="min-width: 60px;"><c:out value="${week}" /></th>
 										</c:forEach>	
 									</tr>
 								</thead>	
 								<tbody>
 									<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
 										<tr data-row-id="${attend.clazzId}-${attend.studentId}">
-											<td class="hidden-column">${attend.clazzId}</td>
 											<td class="small align-middle text-center">${attend.studentId}</td> 
 											<td class="small align-middle text-left">${attend.studentName}</td>
 											<td class="small align-middle text-left">
@@ -445,11 +476,18 @@ function clearAttendanceInfo() {
 												<c:out value="${attend.clazzDay}" />
 											</td>
 											<c:forEach items="${attend.status}" var="status" varStatus="loop">
-												<td class="small text-center align-middle roll week-sub-columns" title="${attend.attendDate[loop.index]}"><!-- style="min-width: 60px;"-->
+												<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 													<c:choose>
 														<c:when test="${status eq 'Y'}">
-															<select name="statusDropdown" class="custom-select custom-select-sm">
+															<select name="statusDropdown" class="custom-select custom-select-sm" style="
+															padding-top: 0px;
+															padding-bottom: 0px;
+															border-top-width: 0px;
+															border-bottom-width: 0px;
+															border-right-width: 0px;
+															border-left-width: 0px;
+														">
 																<option value="Y" selected>Yes</option>
 																<option value="N">No</option>
 																<option value="P">Pause</option>
@@ -457,7 +495,7 @@ function clearAttendanceInfo() {
 															</select>
 														</c:when>
 														<c:when test="${status eq 'N'}">
-															<select name="statusDropdown" class="custom-select custom-select-sm">
+															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
 																<option value="Y">Yes</option>
 																<option value="N" selected>No</option>
 																<option value="P">Pause</option>
@@ -465,7 +503,7 @@ function clearAttendanceInfo() {
 															</select>
 														</c:when>
 														<c:when test="${status eq 'P'}">
-															<select name="statusDropdown" class="custom-select custom-select-sm">
+															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
 																<option value="Y">Yes</option>
 																<option value="N">No</option>
 																<option value="P" selected>Pause</option>
@@ -473,7 +511,7 @@ function clearAttendanceInfo() {
 															</select>
 														</c:when>
 														<c:when test="${status eq 'O'}">
-															<select name="statusDropdown" class="custom-select custom-select-sm">
+															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
 																<option value="Y">Yes</option>
 																<option value="N">No</option>
 																<option value="P">Pause</option>
@@ -492,7 +530,7 @@ function clearAttendanceInfo() {
 									</c:forEach>
 								</tbody>
 							</table>
-						</div>
+						
 					</c:otherwise>
 					</c:choose>
 				</div>
