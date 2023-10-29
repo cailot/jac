@@ -216,6 +216,12 @@ function clearAttendanceInfo() {
 		border-right-width: 0px !important;
 		border-left-width: 0px !important;
 	}
+
+	/* test...*/
+	#attendanceTable .th-background{
+		background-color: #007bff !important;
+	}
+	
 	</style>
 
 <!-- List Body -->
@@ -456,7 +462,7 @@ function clearAttendanceInfo() {
 										<th class="small text-center align-middle" rowspan="2">Class Name</th>
 										<th class="small text-center align-middle" rowspan="2">Day</th>
 										<th class="small text-center align-middle" colspan="${weekSize}">Week</th>
-										<th class="small text-center align-middle" rowspan="2" data-orderable="false">Update</th>
+										<th class="small text-center align-middle th-background" rowspan="2" data-orderable="false">Update</th>
 									</tr>
 									<tr class="week-sub-columns">
 										<c:forEach items="${weekHeader}" var="week">
@@ -480,14 +486,7 @@ function clearAttendanceInfo() {
 													<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 													<c:choose>
 														<c:when test="${status eq 'Y'}">
-															<select name="statusDropdown" class="custom-select custom-select-sm" style="
-															padding-top: 0px;
-															padding-bottom: 0px;
-															border-top-width: 0px;
-															border-bottom-width: 0px;
-															border-right-width: 0px;
-															border-left-width: 0px;
-														">
+															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
 																<option value="Y" selected>Yes</option>
 																<option value="N">No</option>
 																<option value="P">Pause</option>
