@@ -223,7 +223,7 @@ function clearAttendanceInfo() {
 	
 	</style>
 
-<!-- List Body -->
+<!-- ## List Body -->
 <div class="row" style="max-width: 80%;">
 	<div class="modal-body">
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
