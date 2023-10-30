@@ -217,7 +217,6 @@ function clearAttendanceInfo() {
 		border-left-width: 0px !important;
 	}
 
-	/* test...*/
 	#attendanceTable .th-background{
 		background-color: #007bff !important;
 	}
