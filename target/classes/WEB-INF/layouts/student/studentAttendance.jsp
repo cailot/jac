@@ -22,6 +22,7 @@ $(document).ready(function () {
     	language: {
     		search: 'Filter:'
     	},
+		ordering : false,
     	dom: 'Blfrtip',	
     	buttons: [
     		'excelHtml5', 
@@ -188,6 +189,17 @@ function clearAttendanceInfo() {
   		padding-left: 10px !important;
   		padding-right: 10px !important;
 	}
+
+/* 
+	#attendanceTable thead>tr>th.sorting,
+#attendanceTable thead>tr>th.sorting_asc,
+#attendanceTable thead>tr>th.sorting_desc {
+	white-space: nowrap;	
+  background-color: #ea0f0f; 
+  padding-right: 0 !important; 
+} */
+
+
 	/* #attendanceTable th,
     #attendanceTable td {
         white-space: nowrap;
@@ -456,16 +468,16 @@ function clearAttendanceInfo() {
 							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="small text-center align-middle" rowspan="2">ID</th>
-										<th class="small text-center align-middle" rowspan="2">Student Name</th>
-										<th class="small text-center align-middle" rowspan="2">Class Name</th>
-										<th class="small text-center align-middle" rowspan="2">Day</th>
-										<th class="small text-center align-middle" colspan="${weekSize}">Week</th>
-										<th class="small text-center align-middle th-background" rowspan="2" data-orderable="false">Update</th>
+										<th class="small text-center align-middle" rowspan="2" style="background-color: #b8daff !important;">ID</th>
+										<th class="small text-center align-middle" rowspan="2" style="background-color: #b8daff !important;">Student Name</th>
+										<th class="small text-center align-middle" rowspan="2" style="background-color: #b8daff !important;">Class Name</th>
+										<th class="small text-center align-middle" rowspan="2" style="background-color: #b8daff !important;">Day</th>
+										<th class="small text-center align-middle" colspan="${weekSize}" >Week</th>
+										<th class="small text-center align-middle th-background" rowspan="2" style="background-color: #b8daff !important;">Update</th>
 									</tr>
 									<tr class="week-sub-columns">
 										<c:forEach items="${weekHeader}" var="week">
-											<th data-orderable="false" class="small text-center align-middle" style="min-width: 60px;"><c:out value="${week}" /></th>
+											<th data-orderable="false" class="small text-center align-middle" style="min-width: 60px !important; max-width: 65px !important;"><c:out value="${week}" /></th>
 										</c:forEach>	
 									</tr>
 								</thead>	
