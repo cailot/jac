@@ -346,4 +346,19 @@ public class JaeAttendanceController {
 		return dtos;
 	}
 
+	// update attendance day
+	@PutMapping("/updateDay/{attendanceId}/{day}")
+	@ResponseBody
+	public ResponseEntity<String> updateAttendanceDay(@PathVariable("attendanceId") Long attendanceId, @PathVariable("day") String day) {
+		try{
+			// 1. get student id & clazz id
+			attendanceService.updateDay(attendanceId, day);
+			// 7. return success;
+			return ResponseEntity.ok("\"Attendance day update success\"");
+		}catch(Exception e){
+			String message = "Error updating Attendance day : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
 }

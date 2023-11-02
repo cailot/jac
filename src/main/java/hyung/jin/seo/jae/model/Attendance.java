@@ -45,6 +45,9 @@ public class Attendance{ // bridge table between Student & Class
 	@Column(length = 5)
     private String status;
 
+	@Column(length = 10)
+    private String day;
+
 	@Column(length = 7)
     private String week;
 
