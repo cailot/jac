@@ -453,6 +453,7 @@ public class JaeEnrolmentController {
 							attendance.setWeek(i+"");
 							attendance.setStudent(student);
 							attendance.setClazz(clazz);
+							attendance.setDay(clazzDay);
 							attendance.setStatus(JaeConstants.ATTEND_OTHER);
 							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
 							attendance.setAttendDate(attendDate);
@@ -538,6 +539,7 @@ public class JaeEnrolmentController {
 								attendance.setWeek(i+"");
 								attendance.setStudent(student);
 								attendance.setClazz(clazz);
+								attendance.setDay(clazzDay);
 								attendance.setStatus(JaeConstants.ATTEND_OTHER);
 								LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
 								attendance.setAttendDate(attendDate);
@@ -605,6 +607,7 @@ public class JaeEnrolmentController {
 						attendance.setWeek(i+"");
 						attendance.setStudent(student);
 						attendance.setClazz(clazz);
+						attendance.setDay(clazzDay);
 						attendance.setStatus(JaeConstants.ATTEND_OTHER);
 						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
 						attendance.setAttendDate(attendDate);
