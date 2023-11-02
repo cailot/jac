@@ -41,9 +41,10 @@ function retrieveAttendance(studentId) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					// console.log(index + ' - ' + value);  
+					// console.log(index + ' - ' + value);
+					var id = value.id;  
 					var row = $("<tr class='d-flex'>");
-					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
+					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
 					var dropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
 					var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -56,6 +57,17 @@ function retrieveAttendance(studentId) {
 						}
   						dropdown.append(option);
 					}
+
+
+					// Attach an event listener to the element
+					dropdown.on('change', function() {
+						var selectedValue = $(this).val();
+						updateAttendanceDay(id, selectedValue);
+					});
+
+
+
+
 					row.append($('<td>').append(dropdown));
 					var status = '';	
 					if(value.status === 'Y'){
@@ -78,12 +90,31 @@ function retrieveAttendance(studentId) {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update attendace day
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateAttendanceDay(id, day) {
+	// get the attendance list
+	console.log('updateAttendanceDay: ' + id + ' - ' + day);
+	$.ajax({
+			url: '${pageContext.request.contextPath}/attendance/updateDay/' + id + '/' + day,
+			method: 'PUT',
+			success: function(response) {
+				// Handle the response
+				console.log(response);
+			},
+			error: function(xhr, status, error) {
+				// Handle the error
+				console.error(error);
+			}
+	});
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clean attendace list
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearAttendanceTable() {
 	$('#attendanceTable > tbody').empty();
 }
-
 
 </script>
 <div class="modal-body" style="padding-left: 0px; padding-right: 5px;">

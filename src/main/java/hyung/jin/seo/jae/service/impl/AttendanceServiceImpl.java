@@ -188,5 +188,14 @@ public class AttendanceServiceImpl implements AttendanceService {
 			System.out.println("No attendance found");
 		}
 	}
+
+	@Override
+	public void updateDay(Long id, String day) {
+		try{
+			attendanceRepository.updateDay(id, day);
+		}catch(Exception e){
+			System.out.println("No attendance found");
+		}
+	}
 	
 }
