@@ -235,7 +235,7 @@ function clearAttendanceInfo() {
 	
 	</style>
 
-<!-- ## List Body -->
+<!-- List Body -->
 <div class="row" style="max-width: 80%;">
 	<div class="modal-body">
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
@@ -465,7 +465,7 @@ function clearAttendanceInfo() {
 					<c:otherwise>
 						<c:set var="weekSize" value="${fn:length(weekHeader)}" />
 						
-							<table id="attendanceTable" class="table table-striped table-bordered" style="width: 100%;">
+							<table id="attendanceTable" class="table table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
 										<th class="small text-center align-middle" rowspan="2" style="background-color: #b8daff !important;">ID</th>
@@ -498,36 +498,36 @@ function clearAttendanceInfo() {
 													<c:choose>
 														<c:when test="${status eq 'Y'}">
 															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
-																<option value="Y" selected>Yes</option>
-																<option value="N">No</option>
+																<option value="Y" selected>Attended</option>
+																<option value="N">Absent</option>
 																<option value="P">Pause</option>
-																<option value="O">Other</option>
+																<!-- <option value="O">Other</option> -->
 															</select>
 														</c:when>
 														<c:when test="${status eq 'N'}">
 															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
-																<option value="Y">Yes</option>
-																<option value="N" selected>No</option>
+																<option value="Y">Attended</option>
+																<option value="N" selected>Absent</option>
 																<option value="P">Pause</option>
-																<option value="O">Other</option>
+																<!-- <option value="O">Other</option> -->
 															</select>
 														</c:when>
 														<c:when test="${status eq 'P'}">
 															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
-																<option value="Y">Yes</option>
-																<option value="N">No</option>
+																<option value="Y">Attended</option>
+																<option value="N">Absent</option>
 																<option value="P" selected>Pause</option>
-																<option value="O">Other</option>
+																<!-- <option value="O">Other</option> -->
 															</select>
 														</c:when>
-														<c:when test="${status eq 'O'}">
+														<%-- <c:when test="${status eq 'O'}">
 															<select name="statusDropdown" class="custom-select custom-select-sm no-gap">
 																<option value="Y">Yes</option>
 																<option value="N">No</option>
 																<option value="P">Pause</option>
 																<option value="O" selected>Other</option>
 															</select>
-														</c:when>
+														</c:when> --%>
 														<c:otherwise>
 														</c:otherwise>
 													</c:choose>
