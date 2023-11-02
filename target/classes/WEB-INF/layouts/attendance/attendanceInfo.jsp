@@ -41,21 +41,31 @@ function retrieveAttendance(studentId) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					//console.log(index + ' - ' + value.id);  
+					// console.log(index + ' - ' + value);  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + value.id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
-					row.append($('<td class="small text-center" style="width: 50%;">').text(value.attendDate));
+					var dropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
+					var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+					// Loop through the daysOfWeek array
+					for (var i = 0; i < daysOfWeek.length; i++) {
+  						var option = $('<option>').text(daysOfWeek[i]);
+						// Set the selected attribute for the corresponding day
+						if (value.clazzDay === daysOfWeek[i]) {
+							option.attr('selected', 'selected');
+						}
+  						dropdown.append(option);
+					}
+					row.append($('<td>').append(dropdown));
 					var status = '';	
 					if(value.status === 'Y'){
-						status = '<i class="bi bi-check-circle" title="Present"></i>';
+						status = '<i class="bi bi-check-circle text-success" title="Attended"></i>';
 					}else if(value.status === 'N'){
-						status = '<i class="bi bi-circle" title="Absent"></i>';
+						status = '<i class="bi bi-x-circle text-danger" title="Absent"></i>';
 					}else if(value.status === 'P'){
-						status = '<i class="bi bi-pause-circle" title="Pause"></i>';
+						status = '<i class="bi bi-pause-circle text-warning" title="Pause"></i>';
 					}	
 					row.append($('<td class="small text-center" style="width: 15%;">').html(status));
-					// row.append($('<td class="small text-right mr-2" style="width: 30%;">').text(value.clazzDay));
 					$('#attendanceTable > tbody').append(row);  
 				});
 			},
@@ -86,7 +96,7 @@ function clearAttendanceTable() {
 							<tr class="d-flex">
 								<th class="hidden-column"></th>
 								<th class="smaller-table-font text-center" style="width: 35%;">Week</th>
-								<th class="smaller-table-font text-center" style="width: 50%;">Date</th>
+								<th class="smaller-table-font text-center" style="width: 50%;">Day</th>
 								<th class="smaller-table-font text-center" style="width: 15%;">Status</th>
 								<!-- <th class="smaller-table-font text-center" style="width: 30%;">Class</th> -->
 							</tr>
