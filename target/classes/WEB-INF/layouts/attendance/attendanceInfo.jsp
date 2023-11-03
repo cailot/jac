@@ -5,6 +5,8 @@
 
 <script>
 const ATTENDANCE = 'attendance';
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+					
 
 $(document).ready(function() {
 
@@ -47,7 +49,7 @@ function retrieveAttendance(studentId) {
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
 					var dropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
-					var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+					// var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					// Loop through the daysOfWeek array
 					for (var i = 0; i < daysOfWeek.length; i++) {
   						var option = $('<option>').text(daysOfWeek[i]);
@@ -57,18 +59,12 @@ function retrieveAttendance(studentId) {
 						}
   						dropdown.append(option);
 					}
-
-
 					// Attach an event listener to the element
 					dropdown.on('change', function() {
 						var selectedValue = $(this).val();
 						updateAttendanceDay(id, selectedValue);
 					});
-
-
-
-
-					row.append($('<td>').append(dropdown));
+					row.append($('<td class="day-select">').append(dropdown));
 					var status = '';	
 					if(value.status === 'Y'){
 						status = '<i class="bi bi-check-circle text-success" title="Attended"></i>';
@@ -77,7 +73,13 @@ function retrieveAttendance(studentId) {
 					}else if(value.status === 'P'){
 						status = '<i class="bi bi-pause-circle text-warning" title="Pause"></i>';
 					}	
-					row.append($('<td class="small text-center" style="width: 15%;">').html(status));
+					row.append($('<td class="small text-center status-select" style="width: 15%;">').html(status));
+
+
+
+
+
+						
 					$('#attendanceTable > tbody').append(row);  
 				});
 			},
