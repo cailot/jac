@@ -32,7 +32,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 	// upate day
 	@Modifying
     @Transactional
-    @Query("UPDATE Attendance a SET a.day = ?2 WHERE a.id = ?1")
+    @Query("UPDATE Attendance a SET a.day = ?2, a.status = 'Y' WHERE a.id = ?1")
     void updateDay(long id, String day);
 
 	@Modifying
