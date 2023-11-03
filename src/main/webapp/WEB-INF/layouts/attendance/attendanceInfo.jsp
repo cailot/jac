@@ -48,7 +48,7 @@ function retrieveAttendance(studentId) {
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
-					var dropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
+					var dayDropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
 					// var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					// Loop through the daysOfWeek array
 					for (var i = 0; i < daysOfWeek.length; i++) {
@@ -57,14 +57,18 @@ function retrieveAttendance(studentId) {
 						if (value.clazzDay === daysOfWeek[i]) {
 							option.attr('selected', 'selected');
 						}
-  						dropdown.append(option);
+  						dayDropdown.append(option);
 					}
 					// Attach an event listener to the element
-					dropdown.on('change', function() {
+					dayDropdown.on('change', function() {
 						var selectedValue = $(this).val();
 						updateAttendanceDay(id, selectedValue);
+						// update status-select column with <i class="bi bi-check-circle text-success" title="Attended"></i>
+						var row = $(this).closest('tr'); // Get the closest <tr> element
+						var statusSelect = row.find('.status-select');		
+						statusSelect.html('<i class="bi bi-check-circle text-success" title="Attended"></i>');								
 					});
-					row.append($('<td class="day-select">').append(dropdown));
+					row.append($('<td class="day-select">').append(dayDropdown));
 					var status = '';	
 					if(value.status === 'Y'){
 						status = '<i class="bi bi-check-circle text-success" title="Attended"></i>';
@@ -74,12 +78,7 @@ function retrieveAttendance(studentId) {
 						status = '<i class="bi bi-pause-circle text-warning" title="Pause"></i>';
 					}	
 					row.append($('<td class="small text-center status-select" style="width: 15%;">').html(status));
-
-
-
-
-
-						
+			
 					$('#attendanceTable > tbody').append(row);  
 				});
 			},
@@ -96,7 +95,7 @@ function retrieveAttendance(studentId) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateAttendanceDay(id, day) {
 	// get the attendance list
-	console.log('updateAttendanceDay: ' + id + ' - ' + day);
+	// console.log('updateAttendanceDay: ' + id + ' - ' + day);
 	$.ajax({
 			url: '${pageContext.request.contextPath}/attendance/updateDay/' + id + '/' + day,
 			method: 'PUT',
