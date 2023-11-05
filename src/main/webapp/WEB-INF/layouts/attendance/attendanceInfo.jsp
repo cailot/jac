@@ -48,7 +48,7 @@ function retrieveAttendance(studentId) {
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
-					var dayDropdown = $('<select class="small text-center" style="width: 100%; border: none;" title="' + value.attendDate + '">');
+					var dayDropdown = $('<select class="small text-center dayChoice" style="width: 100%; border: none;" title="' + value.attendDate + '">');
 					// var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					// Loop through the daysOfWeek array
 					for (var i = 0; i < daysOfWeek.length; i++) {
@@ -68,7 +68,7 @@ function retrieveAttendance(studentId) {
 						var statusSelect = row.find('.status-select');		
 						statusSelect.html('<i class="bi bi-check-circle text-success" title="Attended"></i>');								
 					});
-					row.append($('<td class="day-select">').append(dayDropdown));
+					row.append($('<td class="day-select" style="width: 50%;">').append(dayDropdown));
 					var status = '';	
 					if(value.status === 'Y'){
 						status = '<i class="bi bi-check-circle text-success" title="Attended"></i>';
@@ -118,6 +118,19 @@ function clearAttendanceTable() {
 }
 
 </script>
+
+<style>
+	/* select.dayChoice {
+		-webkit-appearance: none; 
+		-moz-appearance: none; 
+		appearance: none; 
+		background: transparent; 
+		background-image: none; 
+		background-repeat: no-repeat;
+		background-position: right center;
+		padding-right: 20px; 
+	} */
+</style>
 <div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 	<form id="accetandanceForm">
 		<div class="form-group">
@@ -129,7 +142,7 @@ function clearAttendanceTable() {
 								<th class="hidden-column"></th>
 								<th class="smaller-table-font text-center" style="width: 35%;">Week</th>
 								<th class="smaller-table-font text-center" style="width: 50%;">Day</th>
-								<th class="smaller-table-font text-center" style="width: 15%;">Status</th>
+								<th class="smaller-table-font text-left" style="width: 15%;">Status</th>
 								<!-- <th class="smaller-table-font text-center" style="width: 30%;">Class</th> -->
 							</tr>
 						</thead>
