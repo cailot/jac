@@ -27,21 +27,21 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public List<Teacher> allTeachers() {
 		List<Teacher> teachers = new ArrayList<>();
-		try{
+		try {
 			teachers = teacherRepository.findAll();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
 		// teacherRepository.findAll();
 		return teachers;
 	}
-	
+
 	@Override
 	public List<Teacher> currentTeachers() {
 		List<Teacher> teachers = new ArrayList<>();
-		try{
+		try {
 			teachers = teacherRepository.findAllByEndDateIsNull();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
 		return teachers;
@@ -50,9 +50,9 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public List<Teacher> stoppedTeachers() {
 		List<Teacher> teachers = new ArrayList<>();
-		try{
+		try {
 			teachers = teacherRepository.findAllByEndDateIsNotNull();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
 		return teachers;
@@ -63,47 +63,47 @@ public class TeacherServiceImpl implements TeacherService {
 		List<Teacher> teachers = null;// studentRepository.findAll();
 
 		Specification<Teacher> spec = Specification.where(null);
-		
-		if((StringUtils.isNotBlank(state))&&(!StringUtils.equals(state, JaeConstants.ALL))) {
+
+		if ((StringUtils.isNotBlank(state)) && (!StringUtils.equals(state, JaeConstants.ALL))) {
 			spec = spec.and(TeacherSpecification.stateEquals(state));
 		}
-		if(StringUtils.isNotBlank(branch)&&(!StringUtils.equals(branch, JaeConstants.ALL))) {
+		if (StringUtils.isNotBlank(branch) && (!StringUtils.equals(branch, JaeConstants.ALL))) {
 			spec = spec.and(TeacherSpecification.branchEquals(branch));
 		}
 
-		switch ((active==null) ? JaeConstants.ALL : active) {
+		switch ((active == null) ? JaeConstants.ALL : active) {
 
-		case JaeConstants.CURRENT:
-			spec = spec.and(TeacherSpecification.hasNullVaule("endDate"));
-			teachers = teacherRepository.findAll(spec);
-			break;
+			case JaeConstants.CURRENT:
+				spec = spec.and(TeacherSpecification.hasNullVaule("endDate"));
+				teachers = teacherRepository.findAll(spec);
+				break;
 
-		case JaeConstants.STOPPED:
-			spec = spec.and(TeacherSpecification.hasNotNullVaule("endDate"));
-			teachers = teacherRepository.findAll(spec);
-			break;
+			case JaeConstants.STOPPED:
+				spec = spec.and(TeacherSpecification.hasNotNullVaule("endDate"));
+				teachers = teacherRepository.findAll(spec);
+				break;
 
-		case JaeConstants.ALL:
-			teachers = teacherRepository.findAll(spec);
+			case JaeConstants.ALL:
+				teachers = teacherRepository.findAll(spec);
 
 		}
 		return teachers;
 	}
-	
+
 	@Override
 	public List<Teacher> searchTeachers(String keyword) {
 		List<Teacher> teachers = new ArrayList<>();
 		Specification<Teacher> spec = Specification.where(null);
-		
-		if(StringUtils.isNumericSpace(keyword)) {
+
+		if (StringUtils.isNumericSpace(keyword)) {
 			spec = spec.and(TeacherSpecification.idEquals(keyword));
-		}else {
+		} else {
 			// firstName or lastName search
 			spec = spec.and(TeacherSpecification.nameContains(keyword));
 		}
-		try{
+		try {
 			teachers = teacherRepository.findAll(spec);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
 		return teachers;
@@ -112,9 +112,9 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public Teacher getTeacher(Long id) {
 		Teacher teacher = null;
-		try{
+		try {
 			teacher = teacherRepository.findById(id).get();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
 		return teacher;
@@ -133,10 +133,11 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	//@Transactional
+	// @Transactional
 	public Teacher updateTeacher(Teacher newVal, Long id) {
 		// search by getId
-		Teacher existing = teacherRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
+		Teacher existing = teacherRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Teacher not found"));
 		// Update info
 		String newFirstName = StringUtils.defaultString(newVal.getFirstName());
 		if (StringUtils.isNotBlank(newFirstName)) {
@@ -174,7 +175,7 @@ public class TeacherServiceImpl implements TeacherService {
 		if (StringUtils.isNotBlank(newMemo)) {
 			existing.setMemo(newMemo);
 		}
-		
+
 		String newBank = StringUtils.defaultString(newVal.getBank());
 		if (StringUtils.isNotBlank(newBank)) {
 			existing.setBank(newBank);
@@ -183,9 +184,9 @@ public class TeacherServiceImpl implements TeacherService {
 		if (StringUtils.isNotBlank(newBsb)) {
 			existing.setBsb(newBsb);
 		}
-		Long newAccountNumber = (newVal.getAccountNumber())!=null ? (newVal.getAccountNumber()) : 0;
+		Long newAccountNumber = (newVal.getAccountNumber()) != null ? (newVal.getAccountNumber()) : 0;
 		existing.setAccountNumber(newAccountNumber);
-		
+
 		String newsuperannuation = StringUtils.defaultString(newVal.getSuperannuation());
 		if (StringUtils.isNotBlank(newsuperannuation)) {
 			existing.setSuperannuation(newsuperannuation);
@@ -200,7 +201,7 @@ public class TeacherServiceImpl implements TeacherService {
 		if (StringUtils.isNotBlank(newSuperMember)) {
 			existing.setSuperMember(newSuperMember);
 		}
-		Long newTaxNumber = (newVal.getTfn())!=null ? (newVal.getTfn()) : 0;
+		Long newTaxNumber = (newVal.getTfn()) != null ? (newVal.getTfn()) : 0;
 		existing.setTfn(newTaxNumber);
 		if (newVal.getStartDate() != null) {
 			LocalDate newStartDate = newVal.getStartDate();
@@ -220,7 +221,8 @@ public class TeacherServiceImpl implements TeacherService {
 	public void reactivateTeacher(Long id) {
 		try {
 			Optional<Teacher> end = teacherRepository.findById(id);
-			if(!end.isPresent()) return; // if not found, terminate.
+			if (!end.isPresent())
+				return; // if not found, terminate.
 			Teacher teacher = end.get();
 			teacher.setEndDate(null);
 			teacherRepository.save(teacher);
@@ -233,7 +235,8 @@ public class TeacherServiceImpl implements TeacherService {
 	public void dischargeTeacher(Long id) {
 		try {
 			Optional<Teacher> end = teacherRepository.findById(id);
-			if(!end.isPresent()) return; // if not found, terminate.
+			if (!end.isPresent())
+				return; // if not found, terminate.
 			Teacher teacher = end.get();
 			teacher.setEndDate(LocalDate.now());
 			teacherRepository.save(teacher);
@@ -253,16 +256,27 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	public void updateTeacherMemo(Long id, String memo) {
-		try{
+		try {
 			Optional<Teacher> teacher = teacherRepository.findById(id);
-			if(teacher.isPresent()){
+			if (teacher.isPresent()) {
 				Teacher t = teacher.get();
 				t.setMemo(memo);
 				teacherRepository.save(t);
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
+	}
+
+	@Override
+	public List<Long> getClazzIdByTeacher(Long id) {
+		List<Long> ids = new ArrayList<>();
+		try {
+			ids = teacherRepository.findClazzIdByTeacherId(id);
+		} catch (Exception e) {
+			System.out.println("No teacher found");
+		}
+		return ids;
 	}
 
 }
