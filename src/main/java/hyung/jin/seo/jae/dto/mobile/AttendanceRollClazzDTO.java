@@ -1,4 +1,4 @@
-package hyung.jin.seo.jae.dto;
+package hyung.jin.seo.jae.dto.mobile;
 
 import java.io.Serializable;
 import lombok.Getter;

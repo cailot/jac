@@ -49,13 +49,14 @@ public class JaeClazzController {
 		List<ClazzDTO> dtos = clazzService.findClazzForGradeNCycle(grade, year);
 		// if new academic year is going to start, display next year classes
 		// if(week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
-		// 	// display next year classes
-		// 	List<ClazzDTO> nexts = clazzService.findClassesForGradeNCycle(grade, year+1);
-		// 	for(ClazzDTO next : nexts) {
-		// 		String append = next.getName() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX;
-		// 		next.setName(append);
-		// 		dtos.add(next);
-		// 	}
+		// // display next year classes
+		// List<ClazzDTO> nexts = clazzService.findClassesForGradeNCycle(grade, year+1);
+		// for(ClazzDTO next : nexts) {
+		// String append = next.getName() +
+		// JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX;
+		// next.setName(append);
+		// dtos.add(next);
+		// }
 		// }
 		return dtos;
 	}
@@ -66,7 +67,7 @@ public class JaeClazzController {
 	String[] getAcademicInfo() {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
-		return new String[] {String.valueOf(year), String.valueOf(week)};
+		return new String[] { String.valueOf(year), String.valueOf(week) };
 	}
 
 	// count records number in database
@@ -87,55 +88,57 @@ public class JaeClazzController {
 
 	// bring all courses in database
 	@GetMapping("/listClass")
-	public String listClasses(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
-        System.out.println(state+"\t"+branch+"\t"+grade+"\t"+year+"\t"+active+"\t");
-		List<ClazzDTO> dtos = clazzService.listClazz(state, branch, grade, year, active);//clazzService.allClasses();
+	public String listClasses(@RequestParam(value = "listState", required = false) String state,
+			@RequestParam(value = "listBranch", required = false) String branch,
+			@RequestParam(value = "listGrade", required = false) String grade,
+			@RequestParam(value = "listYear", required = false) String year,
+			@RequestParam(value = "listActive", required = false) String active, Model model) {
+		System.out.println(state + "\t" + branch + "\t" + grade + "\t" + year + "\t" + active + "\t");
+		List<ClazzDTO> dtos = clazzService.listClazz(state, branch, grade, year, active);// clazzService.allClasses();
 		model.addAttribute(JaeConstants.CLASS_LIST, dtos);
 		return "classListPage";
 	}
 
-
 	// bring all classes in database
 	@GetMapping("/listCourse")
-	public String listCourses(@RequestParam(value="listGrade", required=false) String grade, Model model) {
+	public String listCourses(@RequestParam(value = "listGrade", required = false) String grade, Model model) {
 		List<CourseDTO> dtos = null;
 		// if grade has some value
-		if((StringUtils.isNotBlank(grade)) && !(JaeConstants.ALL.equalsIgnoreCase(grade))){
+		if ((StringUtils.isNotBlank(grade)) && !(JaeConstants.ALL.equalsIgnoreCase(grade))) {
 			dtos = courseService.findByGrade(grade);
-		}else{ // if grade has no value, simply bring all
+		} else { // if grade has no value, simply bring all
 			dtos = courseService.allCourses();
 		}
 		model.addAttribute(JaeConstants.COURSE_LIST, dtos);
 		return "courseListPage";
 	}
 
-
 	// bring all courses based on grade
 	@GetMapping("/coursesByGrade")
 	@ResponseBody
-	public List<CourseDTO> getCoursesByGrade(@RequestParam(value="grade", required=true) String grade) {
+	public List<CourseDTO> getCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
 		List<CourseDTO> dtos = courseService.findByGrade(grade);
 		// set year
-		for(CourseDTO dto : dtos) {
+		for (CourseDTO dto : dtos) {
 			dto.setYear(year);
 		}
-		// if new academic year is going to start, display next year classes	
-		if(week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
+		// if new academic year is going to start, display next year classes
+		if (week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
 			List<CourseDTO> nexts = new ArrayList<>();
 			// display next year courses by increasing price
-			for(CourseDTO dto : dtos) {
+			for (CourseDTO dto : dtos) {
 				CourseDTO next = dto.clone();
-				next.setYear(year+1);
+				next.setYear(year + 1);
 				next.setPrice(next.getPrice() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_PRICE_INCREASE);
 				next.setDescription(next.getDescription() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX);
 				nexts.add(next);
 			}
 			// add next year courses to the end of the list
-			if(nexts.size() > 0) {
+			if (nexts.size() > 0) {
 				dtos.addAll(nexts);
-			}	
+			}
 		}
 		return dtos;
 	}
@@ -143,27 +146,27 @@ public class JaeClazzController {
 	// bring all courses based on grade
 	@GetMapping("/listCoursesByGrade")
 	@ResponseBody
-	public List<CourseDTO> listCoursesByGrade(@RequestParam(value="grade", required=true) String grade) {
+	public List<CourseDTO> listCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
 		int year = cycleService.academicYear();
 		// int week = cycleService.academicWeeks();
 		List<CourseDTO> dtos = courseService.findByGrade(grade);
 		// set year
-		for(CourseDTO dto : dtos) {
+		for (CourseDTO dto : dtos) {
 			dto.setYear(year);
 		}
 		return dtos;
 	}
 
-
 	// search classes by id & year & state & branch
 	@GetMapping("/classesByCourse")
 	@ResponseBody
-	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
-		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId, year);
+	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year,
+			@RequestParam("state") String state, @RequestParam("branch") String branch) {
+		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId,
+		// year);
 		List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycleNStateNBranch(courseId, year, state, branch);
 		return dtos;
 	}
-
 
 	// get class by Id
 	@GetMapping("/get/class/{id}")
@@ -182,13 +185,13 @@ public class JaeClazzController {
 		CourseDTO dto = new CourseDTO(course);
 		return dto;
 	}
-	
+
 	// register new course
 	@PostMapping("/registerCourse")
 	@ResponseBody
 	public ResponseEntity<String> registerCourse(@RequestBody CourseDTO formData) {
 		// System.out.println(formData);
-		try{
+		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
 			// 2. save Class
@@ -205,7 +208,7 @@ public class JaeClazzController {
 	@PostMapping("/registerClass")
 	@ResponseBody
 	public ResponseEntity<String> registerClass(@RequestBody ClazzDTO formData) {
-		try{
+		try {
 			// 1. create bare Class
 			Clazz clazz = formData.convertToOnlyClass();
 			// 2. set active to true as default
@@ -227,16 +230,15 @@ public class JaeClazzController {
 		}
 	}
 
-
 	// update existing class
 	@PutMapping("/update/class")
 	@ResponseBody
 	public ResponseEntity<String> updateClazz(@RequestBody ClazzDTO formData) {
-		try{
+		try {
 			// 1. create bare Class
 			Clazz clazz = formData.convertToOnlyClass();
 			// 1. get Course
-			Course course = courseService.getCourse(Long.parseLong(formData.getCourseId()));		
+			Course course = courseService.getCourse(Long.parseLong(formData.getCourseId()));
 			// 2. get Cycle
 			Cycle cycle = cycleService.findCycleByDate(formData.getStartDate());
 			// 3. assign Course & Cycle
@@ -246,17 +248,17 @@ public class JaeClazzController {
 			clazzService.updateClazz(clazz);
 			// 5. return flag
 			return ResponseEntity.ok("\"Class update success\"");
-		}catch(Exception e){
+		} catch (Exception e) {
 			String message = "Error updating class: " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
-	
+
 	// update existing course
 	@PutMapping("/update/course")
 	@ResponseBody
 	public ResponseEntity<String> updateCourse(@RequestBody CourseDTO formData) {
-		try{
+		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
 			// 4. save Class
@@ -269,13 +271,25 @@ public class JaeClazzController {
 		}
 	}
 
-
 	// bring all courses for dropdown list
 	@GetMapping("/filterClass")
 	@ResponseBody
-	public List<ClazzDTO> filterClasses(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade) {
-        System.out.println(state+"\t"+branch+"\t"+grade);
+	public List<ClazzDTO> filterClasses(@RequestParam(value = "listState", required = false) String state,
+			@RequestParam(value = "listBranch", required = false) String branch,
+			@RequestParam(value = "listGrade", required = false) String grade) {
+		// System.out.println(state + "\t" + branch + "\t" + grade);
 		List<ClazzDTO> dtos = clazzService.filterClazz(state, branch, grade);
+		return dtos;
+	}
+
+	// list classes for teacher association
+	@GetMapping("/classes4Teacher")
+	@ResponseBody
+	List<ClazzDTO> getClassesForTeacher(@RequestParam("state") String state, @RequestParam("branch") String branch,
+			@RequestParam("grade") String grade, @RequestParam("year") String year) {
+		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId,
+		// year);
+		List<ClazzDTO> dtos = clazzService.filterOnSiteClazz(state, branch, grade, year);
 		return dtos;
 	}
 

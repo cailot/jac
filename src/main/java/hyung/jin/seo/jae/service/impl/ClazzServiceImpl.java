@@ -18,7 +18,7 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Service
 public class ClazzServiceImpl implements ClazzService {
-	
+
 	@Autowired
 	private ClazzRepository clazzRepository;
 
@@ -31,14 +31,14 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> allClazz() {
 		List<Clazz> crs = new ArrayList<>();
-		try{
+		try {
 			crs = clazzRepository.findAll();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		// clazzRepository.findAll();
 		List<ClazzDTO> dtos = new ArrayList<>();
-		for(Clazz claz : crs){
+		for (Clazz claz : crs) {
 			ClazzDTO dto = new ClazzDTO(claz);
 			dtos.add(dto);
 		}
@@ -49,25 +49,25 @@ public class ClazzServiceImpl implements ClazzService {
 	public List<ClazzDTO> findClazzForGradeNCycle(String grade, int year) {
 		// 1. get classes
 		List<ClazzDTO> dtos = new ArrayList<>();
-		try{
+		try {
 			dtos = clazzRepository.findClassForGradeNCycle(grade, year);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		// clazzRepository.findClassForGradeNCycle(grade, year);
-		return dtos;	
+		return dtos;
 	}
 
 	@Override
 	public List<ClazzDTO> findClazzForCourseIdNCycle(Long id, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
-		try{
+		try {
 			dtos = clazzRepository.findClassForCourseIdNCycle(id, year);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
-		}	
+		}
 		// clazzRepository.findClassForCourseIdNCycle(id, year);
-		return dtos;	
+		return dtos;
 	}
 
 	@Override
@@ -80,19 +80,20 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public Clazz getClazz(Long id) {
 		Clazz clazz = null;
-		try{
+		try {
 			clazz = clazzRepository.findById(id).get();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		// clazzRepository.findById(id).get();
-		return clazz;	
+		return clazz;
 	}
 
 	@Override
 	public ClazzDTO updateClazz(Clazz clazz) {
 		// search by getId
-		Clazz existing =  clazzRepository.findById(clazz.getId()).orElseThrow(() -> new EntityNotFoundException("Clazz Not Found"));
+		Clazz existing = clazzRepository.findById(clazz.getId())
+				.orElseThrow(() -> new EntityNotFoundException("Clazz Not Found"));
 		// Update info
 		// state
 		String newState = clazz.getState();
@@ -114,7 +115,7 @@ public class ClazzServiceImpl implements ClazzService {
 		existing.setActive(newActive);
 		// update Course & Cycle
 		existing.setCourse(clazz.getCourse());
-		existing.setCycle(clazz.getCycle());		
+		existing.setCycle(clazz.getCycle());
 		// update the existing record
 		Clazz updated = clazzRepository.save(existing);
 		ClazzDTO dto = new ClazzDTO(updated);
@@ -124,9 +125,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> listClazz(String state, String branch, String grade, String year, String active) {
 		List<ClazzDTO> dtos = null;
-		if(StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))){
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
 			dtos = clazzRepository.findClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
-		}else{
+		} else {
 			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
 		}
 		return dtos;
@@ -135,9 +136,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> filterClazz(String state, String branch, String grade) {
 		List<ClazzDTO> dtos = new ArrayList<>();
-		try{
+		try {
 			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		return dtos;
@@ -146,9 +147,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public double getPrice(Long id) {
 		double price = 0;
-		try{
+		try {
 			price = clazzRepository.getPrice(id);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No price found");
 		}
 		return price;
@@ -157,9 +158,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public int getAcademicYear(Long id) {
 		int year = 0;
-		try{
+		try {
 			year = clazzRepository.getYear(id);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No academic year found");
 		}
 		return year;
@@ -168,9 +169,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public String getDay(Long id) {
 		String day = "";
-		try{
+		try {
 			day = clazzRepository.getDay(id);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No day found");
 		}
 		return day;
@@ -179,9 +180,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public String getName(Long id) {
 		String name = "";
-		try{
+		try {
 			name = clazzRepository.getName(id);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No name found");
 		}
 		return name;
@@ -190,9 +191,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<Long> filterClazzIds(String state, String branch, String grade) {
 		List<Long> ids = new ArrayList<>();
-		try{
+		try {
 			ids = clazzRepository.findClassIdsForStateNBranchNGrade(state, branch, grade);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		return ids;
@@ -201,9 +202,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public Long getOnlineId(String grade, int year) {
 		Long id = 0L;
-		try{
+		try {
 			id = clazzRepository.getOnlineClazzId(grade, year);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		return id;
@@ -212,9 +213,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public String getGrade(Long id) {
 		String grade = "";
-		try{
+		try {
 			grade = clazzRepository.getGrade(id);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No grade found");
 		}
 		return grade;
@@ -223,9 +224,9 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade) {
 		List<ClazzDTO> dtos = new ArrayList<>();
-		try{
+		try {
 			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
 		}
 		return dtos;
@@ -234,10 +235,22 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> findClazzForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch) {
 		List<ClazzDTO> dtos = new ArrayList<>();
-		try{
+		try {
 			dtos = clazzRepository.findClassForCourseIdNCycleNStateNBranch(id, year, state, branch);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, String year) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade,
+					Integer.parseInt(year));
+		} else {
+			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
 		}
 		return dtos;
 	}
