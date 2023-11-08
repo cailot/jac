@@ -17,7 +17,6 @@
 					<script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 					<script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 
-
 					<script>
 						$(document).ready(function () {
 							$('#teacherListTable').DataTable({
@@ -50,6 +49,13 @@
 							$('#clazzYear').change(function () {
 								getClazzByGrade();
 							});
+
+							$('#clazzList').on('shown.bs.modal', function () {
+								getClazzByGrade();
+							});
+
+
+
 
 						});
 
@@ -304,13 +310,15 @@
 										row.append($('<td>').text(value.day));
 										row.append($('<td>').text(value.grade.toUpperCase()));
 										row.append($('<td>').text(value.year));
-										row.append($('<td>').text(value.online));
-										row.append($('<td>').text(value.active));
+										var isOnline = value.online;
+										var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
+										row.append($('<td>').addClass('text-center').append(onlineIcon));
+										var isActived = value.active;
+										var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-primary h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
+										row.append($('<td>').addClass('text-center').append(activeIcon));
 										row.append($('<td hidden>').addClass("clazzId").text(value.id));
-										// row.append($("<td onclick='removeClazz(" + value.id + ")'>").addClass('text-center').html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-trash"></i></a>'));
-
 										// Create the bin icon and add an onClick event
-										var binIcon = $('<i class="bi bi-trash"></i>');
+										var binIcon = $('<i class="bi bi-trash h5"></i>');
 										var binIconLink = $("<a>")
 											.attr("href", "javascript:void(0)")
 											.attr("title", "Delete Class")
@@ -462,7 +470,7 @@
 															<th>VIT/WWCC</th>
 															<th>Start Date</th>
 															<th>End Date</th>
-															<th>Action</th>
+															<th data-orderable="false">Action</th>
 														</tr>
 													</thead>
 													<tbody id="list-teacher-body">
@@ -868,9 +876,6 @@
 					</div>
 					<!-- /.modal -->
 
-
-
-
 					<!-- Clazz Form Dialogue -->
 					<div class="modal fade" id="clazzList">
 						<div class="modal-dialog modal-xl modal-dialog-centered">
@@ -903,74 +908,69 @@
 								</div>
 
 								<div class="form-group">
+									<div
+										style="border: 2px solid #017bfe; padding: 20px; border-radius: 10px; margin-left: 50px; margin-right: 50px;">
+										<input type="hidden" id="clazzState" name="clazzState" />
+										<input type="hidden" id="clazzBranch" name="clazzBranch" />
+										<div class="form-row">
+											<div class="offset-md-1"></div>
+											<div class="col-md-1">
+												<label for="clazzGrade" class="label-form">Grade</label>
+												<select class="form-control" id="clazzGrade" name="clazzGrade">
+													<option value="p2">P2</option>
+													<option value="p3">P3</option>
+													<option value="p4">P4</option>
+													<option value="p5">P5</option>
+													<option value="p6">P6</option>
+													<option value="s7">S7</option>
+													<option value="s8">S8</option>
+													<option value="s9">S9</option>
+													<option value="s10">S10</option>
+													<option value="s10e">S10E</option>
+													<option value="tt6">TT6</option>
+													<option value="tt8">TT8</option>
+													<option value="tt8e">TT8E</option>
+													<option value="srw4">SRW4</option>
+													<option value="srw5">SRW5</option>
+													<option value="srw6">SRW6</option>
+													<option value="srw8">SRW8</option>
+													<option value="jmss">JMSS</option>
+													<option value="vce">VCE</option>
+												</select>
+											</div>
+											<div class="col-md-2">
+												<label for="clazzYear" class="label-form">Academic Year</label>
+												<select class="form-control" id="clazzYear" name="clazzYear">
+													<option value="All">All</option>
+													<option value="2023">2023</option>
+													<option value="2022">2022</option>
+													<option value="2021">2021</option>
+													<option value="2020">2020</option>
+												</select>
+											</div>
+											<div class="col-md-3">
+												<label for="clazzId" class="label-form">Class</label>
+												<select class="form-control" id="clazzId" name="clazzId">
+												</select>
+											</div>
+											<div class="offset-md-2"></div>
+											<div class="col mx-auto">
+												<label for="addCourse" class="label-form">&nbsp;</label>
 
-									<input type="hidden" id="clazzState" name="clazzState" />
-									<input type="hidden" id="clazzBranch" name="clazzBranch" />
-
-									<div class="form-row">
-										<div class="col-md-1">
-											<label for="clazzGrade" class="label-form">Grade</label>
-											<select class="form-control" id="clazzGrade" name="clazzGrade">
-												<option value="p2">P2</option>
-												<option value="p3">P3</option>
-												<option value="p4">P4</option>
-												<option value="p5">P5</option>
-												<option value="p6">P6</option>
-												<option value="s7">S7</option>
-												<option value="s8">S8</option>
-												<option value="s9">S9</option>
-												<option value="s10">S10</option>
-												<option value="s10e">S10E</option>
-												<option value="tt6">TT6</option>
-												<option value="tt8">TT8</option>
-												<option value="tt8e">TT8E</option>
-												<option value="srw4">SRW4</option>
-												<option value="srw5">SRW5</option>
-												<option value="srw6">SRW6</option>
-												<option value="srw8">SRW8</option>
-												<option value="jmss">JMSS</option>
-												<option value="vce">VCE</option>
-											</select>
+												<button type="button" class="btn btn-primary btn-block"> <i
+														class="bi bi-plus"></i>&nbsp;Add</button>
+											</div>
+											<div class="offset-md-1"></div>
 										</div>
-										<div class="col-md-1">
-											<label for="clazzYear" class="label-form">Academic Year</label>
-											<select class="form-control" id="clazzYear" name="clazzYear">
-												<option value="All">All</option>
-												<option value="2023">2023</option>
-												<option value="2022">2022</option>
-												<option value="2021">2021</option>
-												<option value="2020">2020</option>
-											</select>
-										</div>
-										<div class="col-md-3">
-											<label for="clazzId" class="label-form">Class</label>
-											<select class="form-control" id="clazzId" name="clazzId">
-											</select>
-										</div>
-										<div class="offset-md-4"></div>
-										<div class="col mx-auto">
-											<label for="addCourse" class="label-form">&nbsp;</label>
-
-											<button type="button" class="btn btn-primary btn-block"> <i
-													class="bi bi-search"></i>&nbsp;Add</button>
-										</div>
-
 									</div>
-
 								</div>
-
-
-								<div class="modal-footer">
+								<div class="modal-footer" style="border-top: 0px;">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal"
 										onclick='clearStateNBranch()'>Close</button>
 								</div>
 							</div>
 						</div>
 					</div>
-
-
-
-
 
 					<!--  Password Modal HTML -->
 					<div id="passwordStudentModal" class="modal fade">
@@ -1015,36 +1015,3 @@
 							</div>
 						</div>
 					</div>
-
-					<!-- Info Dialogue -->
-					<!--
-					<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-						aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-body">
-									<section class="fieldset rounded border-primary">
-										<header class="text-primary font-weight-bold">Teacher Memo</header>
-										<br>
-										Please Add Memo
-										<form id="showInformation">
-											<div class="form-row mt-4">
-												<div class="col-md-12">
-													<textarea class="form-control" id="information" name="information"
-														style="height: 8rem;"></textarea>
-												</div>
-											</div>
-											<input type="hidden" id="infoDataId" name="infoDataId"></input>
-											<div class="d-flex justify-content-end mt-4">
-												<button type="button" class="btn btn-primary"
-													onclick="updateMemoInformation()">Save</button>&nbsp;&nbsp;
-												<button type="button" class="btn btn-secondary" data-dismiss="modal"
-													onclick="document.getElementById('showInformation').reset();">Cancel</button>
-											</div>
-										</form>
-									</section>
-								</div>
-							</div>
-						</div>
-					</div>
-					-->
