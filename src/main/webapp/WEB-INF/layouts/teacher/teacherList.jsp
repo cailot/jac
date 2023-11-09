@@ -36,7 +36,6 @@
 								//pageLength: 20
 							});
 
-
 							$('table .password').on('click', function () {
 								var username = $(this).parent().find('#username').val();
 								$('#passwordModal #usernamepassword').val(username);
@@ -53,9 +52,6 @@
 							$('#clazzList').on('shown.bs.modal', function () {
 								getClazzByGrade();
 							});
-
-
-
 
 						});
 
@@ -80,7 +76,7 @@
 									$('#clazzId').empty(); // clear the previous options
 									$.each(data, function (index, value) {
 										const cleaned = cleanUpJson(value);
-										console.log(cleaned);
+										//console.log(cleaned);
 										$('#clazzId').append($("<option value='" + value.id + "'>").text(value.name).val(value.id)); // add new option
 									});
 								},
@@ -290,10 +286,9 @@
 						///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 						function retreiveClazzInfo(id, state, branch) {
 							// console.log('retreiveClazzInfo : ' + id + ' - ' + state + ' - ' + branch);
+							$('#clazzTeacher').val(id);
 							$('#clazzState').val(state);
 							$('#clazzBranch').val(branch);
-
-
 
 							$('#clazzListResultTable tbody').empty();
 							// send query to controller
@@ -314,7 +309,7 @@
 										var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
 										row.append($('<td>').addClass('text-center').append(onlineIcon));
 										var isActived = value.active;
-										var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-primary h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
+										var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
 										row.append($('<td>').addClass('text-center').append(activeIcon));
 										row.append($('<td hidden>').addClass("clazzId").text(value.id));
 										// Create the bin icon and add an onClick event
@@ -323,7 +318,7 @@
 											.attr("href", "javascript:void(0)")
 											.attr("title", "Delete Class")
 											.click(function () {
-												removeClazz(std, value.id);
+												removeClazz(id, value.id);
 												row.remove(); // Remove the corresponding <tr>
 											});
 										binIconLink.append(binIcon);
@@ -344,12 +339,41 @@
 						//////////////////////////////////////////////////////////////////////////////////////////////////////
 						//		Add Clazz
 						//////////////////////////////////////////////////////////////////////////////////////////////////////
-						function addClazz(teacher, clazz) {
+						function addClazz() {
+							var teacherId = $('#clazzTeacher').val();
+							var clazzId = $('#clazzId').val();
+							// console.log('addClazz : ' + teacherId + ' - ' + clazzId);
 							$.ajax({
-								url: '${pageContext.request.contextPath}/teacher/addClazz/' + teacher + '/' + clazz,
+								url: '${pageContext.request.contextPath}/teacher/addClazz/' + teacherId + '/' + clazzId,
 								type: 'PUT',
-								success: function (data) {
-									console.log('addClazz : ' + data);
+								success: function (value) {
+									// console.log('addClazz : ' + data);
+									var row = $("<tr>");
+									row.append($('<td>').text(value.name));
+									row.append($('<td>').text(value.description));
+									row.append($('<td>').text(value.day));
+									row.append($('<td>').text(value.grade.toUpperCase()));
+									row.append($('<td>').text(value.year));
+									var isOnline = value.online;
+									var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
+									row.append($('<td>').addClass('text-center').append(onlineIcon));
+									var isActived = value.active;
+									var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
+									row.append($('<td>').addClass('text-center').append(activeIcon));
+									row.append($('<td hidden>').addClass("clazzId").text(value.id));
+									// Create the bin icon and add an onClick event
+									var binIcon = $('<i class="bi bi-trash h5"></i>');
+									var binIconLink = $("<a>")
+										.attr("href", "javascript:void(0)")
+										.attr("title", "Delete Class")
+										.click(function () {
+											removeClazz(id, value.id);
+											row.remove(); // Remove the corresponding <tr>
+										});
+									binIconLink.append(binIcon);
+									row.append($("<td>").addClass('text-center').append(binIconLink));
+
+									$('#clazzListResultTable > tbody').append(row);
 								},
 								error: function (xhr, status, error) {
 									console.log('Error : ' + error);
@@ -365,7 +389,7 @@
 								url: '${pageContext.request.contextPath}/teacher/updateClazz/' + teacher + '/' + clazz,
 								type: 'PUT',
 								success: function (data) {
-									console.log('removeClazz : ' + data);
+									// console.log('removeClazz : ' + data);
 								},
 								error: function (xhr, status, error) {
 									console.log('Error : ' + error);
@@ -377,6 +401,7 @@
 						//		Clear existing values on state & branch
 						//////////////////////////////////////////////////////////////////////////////////////////////////////
 						function clearStateNBranch() {
+							$('#clazzTeacher').val('');
 							$('#clazzState').val('');
 							$('#clazzBranch').val('');
 						}
@@ -910,6 +935,7 @@
 								<div class="form-group">
 									<div
 										style="border: 2px solid #017bfe; padding: 20px; border-radius: 10px; margin-left: 50px; margin-right: 50px;">
+										<input type="hidden" id="clazzTeacher" name="clazzTeacher" />
 										<input type="hidden" id="clazzState" name="clazzState" />
 										<input type="hidden" id="clazzBranch" name="clazzBranch" />
 										<div class="form-row">
@@ -957,8 +983,8 @@
 											<div class="col mx-auto">
 												<label for="addCourse" class="label-form">&nbsp;</label>
 
-												<button type="button" class="btn btn-primary btn-block"> <i
-														class="bi bi-plus"></i>&nbsp;Add</button>
+												<button type="button" class="btn btn-primary btn-block"
+													onclick="addClazz()"> <i class="bi bi-plus"></i>&nbsp;Add</button>
 											</div>
 											<div class="offset-md-1"></div>
 										</div>
