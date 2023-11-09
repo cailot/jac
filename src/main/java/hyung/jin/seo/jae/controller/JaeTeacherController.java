@@ -76,33 +76,9 @@ public class JaeTeacherController {
 	@ResponseBody
 	public TeacherDTO updateTeacher(@RequestBody TeacherDTO formData) {
 		Teacher teacher = formData.convertToTeacher();
-		System.out.println(formData);
-		System.out.println(teacher);
-		// if((teacher.getElearnings() != null) && (teacher.getElearnings().size() > 0))
-		// {
-		// // 1. check if any related courses come
-		// Set<ElearningDTO> crss = formData.getElearnings();
-		// Set<Long> cidList = new HashSet<Long>(); // extract Course Id
-		// for(ElearningDTO crsDto : crss) {
-		// cidList.add(Long.parseLong(crsDto.getId()));
-		// }
-		// long[] courseId = cidList.stream().mapToLong(Long::longValue).toArray();
-		// // 2. get Course in Teacher
-		// Set courses = teacher.getElearnings();
-		// // 3. clear existing course
-		// courses.clear();
-		// for(long cid : courseId) {
-		// // 4. get course info
-		// Elearning crs = elearningService.getElearning(cid);
-		// // 6. add Teacher to Course
-		// crs.getTeachers().add(teacher);
-		// // 5. add Course to Teacher
-		// courses.add(crs);
-		// }
-		// }
-		// 7. update Teacher
+		// 1. update Teacher
 		teacher = teacherService.updateTeacher(teacher, teacher.getId());
-		// 8. convert Teacher to TeacherDTO
+		// 2. convert Teacher to TeacherDTO
 		TeacherDTO dto = new TeacherDTO(teacher);
 		return dto;
 	}
@@ -165,25 +141,26 @@ public class JaeTeacherController {
 	// add assoicated clazz by Id
 	@PutMapping("/addClazz/{teacherId}/{clazzId}")
 	@ResponseBody
-	public ResponseEntity<String> addClazz(@PathVariable("teacherId") Long teacherId,
+	public ClazzDTO addClazz(@PathVariable("teacherId") Long teacherId,
 			@PathVariable("clazzId") Long clazzId) {
 
 		// 1. get teacher
 		Teacher teacher = teacherService.getTeacher(teacherId);
 		// 2. get associated clazz
 		Set<Clazz> clazzs = teacher.getClazzs();
+		Clazz addClazz = clazzService.getClazz(clazzId);
 		// 3. add clazz
-		clazzs.add(clazzService.getClazz(clazzId));		
+		clazzs.add(addClazz);
 		// 4. update teacher's clazz
 		teacherService.updateTeacher(teacher, teacherId);
 		// 5. return success message
-		return ResponseEntity.ok("success");
+		return new ClazzDTO(addClazz);
 	}
 
 	// remove assoicated clazz by Id
 	@PutMapping("/updateClazz/{teacherId}/{clazzId}")
 	@ResponseBody
-	public ResponseEntity<String> updateClazz(@PathVariable("teacherId") Long teacherId,
+	public ResponseEntity<String> removeClazz(@PathVariable("teacherId") Long teacherId,
 			@PathVariable("clazzId") Long clazzId) {
 
 		// 1. get teacher

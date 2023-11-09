@@ -228,9 +228,9 @@
 						editActiveInput.value = "false";
 					}
 				}
-
-
-				// initialise courses by grade in edit dialog
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////
+				// 		Initialise courses by grade in edit dialog
+				/////////////////////////////////////////////////////////////////////////////////////////////////////////
 				function editInitialiseCourseByGrade(grade, courseId) {
 					$.ajax({
 						url: '${pageContext.request.contextPath}/class/listCoursesByGrade',

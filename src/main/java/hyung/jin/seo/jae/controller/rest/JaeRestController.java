@@ -32,12 +32,12 @@ public class JaeRestController {
 	List<AttendanceRollClazzDTO> getClazzList(@PathVariable Long id) {
 		List<AttendanceRollClazzDTO> dtos = new ArrayList<>();
 		AttendanceRollClazzDTO dto1 = new AttendanceRollClazzDTO(1, "Monday", "Math", "p2", "Math", 7);
-		AttendanceRollClazzDTO dto2 = new AttendanceRollClazzDTO(2, "Tuesday", "English", "p2", "English", 6);
+		AttendanceRollClazzDTO dto2 = new AttendanceRollClazzDTO(2, "Tuesday", "English", "s7", "English", 6);
 		AttendanceRollClazzDTO dto3 = new AttendanceRollClazzDTO(3, "Wednesday", "Korean", "p3", "Korean", 10);
-		AttendanceRollClazzDTO dto4 = new AttendanceRollClazzDTO(4, "Thursday", "Science", "p4", "Science", 9);
+		AttendanceRollClazzDTO dto4 = new AttendanceRollClazzDTO(4, "Thursday", "Science", "tt6", "Science", 9);
 		AttendanceRollClazzDTO dto5 = new AttendanceRollClazzDTO(5, "Friday", "History", "p5", "History", 8);
-		AttendanceRollClazzDTO dto6 = new AttendanceRollClazzDTO(6, "Saturday", "Art", "p6", "Art", 5);
-		AttendanceRollClazzDTO dto7 = new AttendanceRollClazzDTO(7, "Sunday", "Music", "p5", "Music", 4);
+		AttendanceRollClazzDTO dto6 = new AttendanceRollClazzDTO(6, "Saturday", "Art", "s10", "Art", 5);
+		AttendanceRollClazzDTO dto7 = new AttendanceRollClazzDTO(7, "Sunday", "Music", "jmssi", "Music", 4);
 
 		dtos.add(dto1);
 		dtos.add(dto2);
