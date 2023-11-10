@@ -12,10 +12,18 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollClazzDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollStudentDTO;
+import hyung.jin.seo.jae.model.Clazz;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.AttendanceService;
+import hyung.jin.seo.jae.service.ClazzService;
+import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.StudentService;
+import hyung.jin.seo.jae.service.TeacherService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +33,39 @@ import java.util.List;
 @RequestMapping("api")
 public class JaeRestController {
 
-	// @Autowired
-	// private StudentService studentService;
+	@Autowired
+	private TeacherService teacherService;
+
+	@Autowired
+	private ClazzService clazzService;
+
+	@Autowired
+	private EnrolmentService enrolmentService;
+
+	@Autowired
+	private CycleService cycleService;
 
 	@GetMapping("/clazzList/{id}")
 	List<AttendanceRollClazzDTO> getClazzList(@PathVariable Long id) {
 		List<AttendanceRollClazzDTO> dtos = new ArrayList<>();
-		AttendanceRollClazzDTO dto1 = new AttendanceRollClazzDTO(1, "Monday", "Math", "p2", "Math", 7);
-		AttendanceRollClazzDTO dto2 = new AttendanceRollClazzDTO(2, "Tuesday", "English", "s7", "English", 6);
-		AttendanceRollClazzDTO dto3 = new AttendanceRollClazzDTO(3, "Wednesday", "Korean", "p3", "Korean", 10);
-		AttendanceRollClazzDTO dto4 = new AttendanceRollClazzDTO(4, "Thursday", "Science", "tt6", "Science", 9);
-		AttendanceRollClazzDTO dto5 = new AttendanceRollClazzDTO(5, "Friday", "History", "p5", "History", 8);
-		AttendanceRollClazzDTO dto6 = new AttendanceRollClazzDTO(6, "Saturday", "Art", "s10", "Art", 5);
-		AttendanceRollClazzDTO dto7 = new AttendanceRollClazzDTO(7, "Sunday", "Music", "jmssi", "Music", 4);
-
-		dtos.add(dto1);
-		dtos.add(dto2);
-		dtos.add(dto3);
-		dtos.add(dto4);
-		dtos.add(dto5);
-		dtos.add(dto6);
-		dtos.add(dto7);
-
+		// 1. clazz ids
+		List<Long> clazzIds = teacherService.getClazzIdByTeacher(id);
+		int currentWeek = cycleService.academicWeeks();
+		// 2. get clazz info & number of students
+		for (Long clazzId : clazzIds) {
+			AttendanceRollClazzDTO dto = new AttendanceRollClazzDTO();
+			Clazz clazz = clazzService.getClazz(clazzId);
+			ClazzDTO clazzDto = new ClazzDTO(clazz);
+			Integer number = enrolmentService.getStudentNumberByClazz(clazzId, currentWeek);
+			dto.setId(Long.toString(clazzId));
+			dto.setName(clazzDto.getName());
+			dto.setDescription(clazzDto.getDescription());
+			dto.setDay(clazzDto.getDay());
+			dto.setGrade(clazzDto.getGrade());
+			dto.setNumber(number.toString());
+			dtos.add(dto);
+		}
+		// 3. return dtos
 		return dtos;
 	}
 
