@@ -66,4 +66,7 @@ public interface EnrolmentService {
 	// find all invoice id by student id
 	List<Long> findInvoiceIdByStudent(Long studentId);
 
+	// get student number by clazz id & week
+	Integer getStudentNumberByClazz(Long clazzId, int week);
+
 }

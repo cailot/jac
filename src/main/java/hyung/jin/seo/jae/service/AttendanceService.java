@@ -6,7 +6,7 @@ import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.model.Attendance;
 
 public interface AttendanceService {
-	
+
 	// list all attendances
 	List<AttendanceDTO> allAttendances();
 
@@ -54,5 +54,5 @@ public interface AttendanceService {
 
 	// find stduent Id by clazz Id
 	List<Long> findStudentIdByClazz(Long clazzId);
-	
+
 }
