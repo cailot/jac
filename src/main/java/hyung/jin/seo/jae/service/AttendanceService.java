@@ -40,6 +40,9 @@ public interface AttendanceService {
 	// list attendances by clazz Id
 	List<AttendanceDTO> findAttendanceByClazz(Long claszzId);
 
+	// list attendances by clazz Id and week
+	List<AttendanceDTO> findAttendanceByClazzAndWeek(Long claszzId, int week);
+
 	// list attendances by student Id and clazz Id
 	List<AttendanceDTO> findAttendanceByStudentAndClazz(Long studentId, Long clazzId);
 
