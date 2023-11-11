@@ -11,9 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
-import hyung.jin.seo.jae.dto.mobile.AttendanceRollClazzDTO;
 import hyung.jin.seo.jae.model.Attendance;
-import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.repository.AttendanceRepository;
 import hyung.jin.seo.jae.service.AttendanceService;
 
@@ -202,6 +200,17 @@ public class AttendanceServiceImpl implements AttendanceService {
 		} catch (Exception e) {
 			System.out.println("No attendance found");
 		}
+	}
+
+	@Override
+	public List<AttendanceDTO> findAttendanceByClazzAndWeek(Long claszzId, int week) {
+		List<AttendanceDTO> dtos = new ArrayList<>();
+		try {
+			dtos = attendanceRepository.findAttendanceIdByClazzIdAndWeek(claszzId, week + "");
+		} catch (Exception e) {
+			System.out.println("No attendance found");
+		}
+		return dtos;
 	}
 
 }
