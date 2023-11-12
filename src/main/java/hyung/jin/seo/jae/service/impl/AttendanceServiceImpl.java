@@ -213,4 +213,12 @@ public class AttendanceServiceImpl implements AttendanceService {
 		return dtos;
 	}
 
+	@Override
+	public void updateStatus(Long id, String status) {
+		try {
+			attendanceRepository.updateStatusById(id, status);
+		} catch (Exception e) {
+			System.out.println("No attendance found");
+		}
+	}
 }

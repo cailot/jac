@@ -36,6 +36,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
 	@Modifying
 	@Transactional
+	@Query("UPDATE Attendance a SET a.status = ?2 WHERE a.id = ?1")
+	void updateStatusById(
+			long id,
+			String newStatus);
+
+	@Modifying
+	@Transactional
 	@Query("UPDATE Attendance a SET a.status = ?4 WHERE a.student.id = ?1 AND a.clazz.id = ?2 AND a.week = ?3")
 	void updateStatusByStudentIdAndClazzIdAndWeek(
 			long studentId,
