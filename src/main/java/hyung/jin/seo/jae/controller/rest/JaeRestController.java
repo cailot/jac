@@ -1,8 +1,10 @@
 package hyung.jin.seo.jae.controller.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import hyung.jin.seo.jae.service.TeacherService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -91,6 +94,26 @@ public class JaeRestController {
 		}
 		// 4. return dtos
 		return dtos;
+	}
+
+	@PostMapping("/updateAttend")
+	@ResponseBody
+	public ResponseEntity<String> updateAttendance(@RequestBody(required = false) List<Map<Integer, String>> infos) {
+		// 1. check passed info
+		if (infos == null || infos.isEmpty()) {
+			return ResponseEntity.badRequest().body("Attendance Info Update Failed");
+		}
+		for (Map<Integer, String> info : infos) {
+			// how to get key and value from map?
+			info.entrySet().forEach(entry -> {
+				int attendId = entry.getKey();
+				String attendStatus = entry.getValue();
+				System.out.println(attendId + " - " + attendStatus);
+			});
+		}
+		// 4-1. return flag
+		return ResponseEntity.ok("Attendance Info Update Success");
+		// }
 	}
 
 }
