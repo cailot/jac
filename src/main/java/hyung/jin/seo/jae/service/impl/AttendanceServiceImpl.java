@@ -214,9 +214,9 @@ public class AttendanceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public void updateStatus(Long id, String status) {
+	public void updateStatus(String id, String status) {
 		try {
-			attendanceRepository.updateStatusById(id, status);
+			attendanceRepository.updateStatusById(Long.parseLong(id), status);
 		} catch (Exception e) {
 			System.out.println("No attendance found");
 		}
