@@ -533,8 +533,8 @@
 															<td class="small align-middle text-left">
 																${attend.studentName}</td>
 															<td class="small align-middle text-left">
-																<span class="text-uppercase">[
-																	<c:out value="${attend.clazzGrade}" />]
+																<span class="text-uppercase">
+																	[<c:out value="${attend.clazzGrade}" />]
 																</span>
 																<c:out value="${attend.clazzName}" />
 															</td>

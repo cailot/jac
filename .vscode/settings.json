@@ -30,23 +30,17 @@
     ],
     "liveServer.settings.port": 5501,
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.debug.settings.exceptionBreakpoint.skipClasses": [
-
+    "java.debug.settings.exceptionBreakpoint.skipClasses": [],
+    "eslint.validate": [
+        "javascript"
     ],
-
-
-    "eslint.validate": [ "javascript" ],
     "eslint.options": {
         "rules": {
             "semi": "error"
         }
     },
-
-
     "typescript.validate.enable": false,
     "javascript.validate.enable": false,
-    "javascript.format.enable": false
+    "javascript.format.enable": false,
+    "java.format.settings.url": ".vscode/java-formatter.xml"
 }
-
-
-

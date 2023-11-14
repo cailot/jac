@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.dto.ClazzDTO;
+import hyung.jin.seo.jae.dto.TeacherDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollClazzDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollStudentDTO;
+import hyung.jin.seo.jae.dto.mobile.AttendanceRollTeacherDTO;
+import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Clazz;
+import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.service.AttendanceService;
 import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.service.CycleService;
@@ -28,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "*")
 @RequestMapping("api")
 public class JaeRestController {
 
@@ -117,6 +121,22 @@ public class JaeRestController {
 		// 4-1. return flag
 		return ResponseEntity.ok("\"Attendance Update Success\"");
 		// }
+	}
+
+	// get Teacher Info
+	@GetMapping("/getTeacher/{id}")
+	AttendanceRollTeacherDTO getTeacher(@PathVariable Long id) {
+		AttendanceRollTeacherDTO dto = new AttendanceRollTeacherDTO();
+		Teacher teacher = teacherService.getTeacher(1L);
+		dto.setId(id.toString());
+		dto.setFirstName(teacher.getFirstName());
+		dto.setLastName(teacher.getLastName());
+		dto.setEmail(teacher.getEmail());
+		dto.setPhone(teacher.getPhone());
+		dto.setPassword("");
+		dto.setAddress(teacher.getAddress());
+		dto.setVit(teacher.getVitNumber());
+		return dto;
 	}
 
 }
