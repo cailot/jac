@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -100,7 +101,7 @@ public class JaeRestController {
 		return dtos;
 	}
 
-	@PostMapping("/updateAttend")
+	@PutMapping("/updateAttend")
 	@ResponseBody
 	public ResponseEntity<String> updateAttendance(@RequestBody(required = false) List<Map<String, String>> infos) {
 		// 1. check passed info
@@ -137,6 +138,32 @@ public class JaeRestController {
 		dto.setAddress(teacher.getAddress());
 		dto.setVit(teacher.getVitNumber());
 		return dto;
+	}
+
+	@PutMapping("/updateTeacher")
+	@ResponseBody
+	public ResponseEntity<String> updateTeacher(@RequestBody(required = true) AttendanceRollTeacherDTO info) {
+		// 1. check passed info
+		if (info == null || info.getId() == null || info.getId().isEmpty()) {
+			return ResponseEntity.badRequest().body("\"Teacher update failed\"");
+		}
+		System.out.println(info);
+
+		// 2. get Teacher
+		Teacher existing = teacherService.getTeacher(Long.parseLong(info.getId()));
+		
+		existing.setFirstName(info.getFirstName());
+		existing.setLastName(info.getLastName());
+		existing.setPhone(info.getPhone());
+		existing.setAddress(info.getAddress());
+		existing.setVitNumber(info.getVit());
+
+		// 3. update Teacher
+		teacherService.updateTeacher(existing, existing.getId());
+
+		// 4-1. return flag
+		return ResponseEntity.ok("\"Teacher Information Updated Successfully\"");
+		// }
 	}
 
 }
