@@ -333,6 +333,7 @@
 										<option value="2020">2020</option>
 									</select>
 								</div>
+								<div class="offset-md-1"></div>
 								<div class="col mx-auto">
 									<button type="submit" class="btn btn-primary btn-block"> <i
 											class="bi bi-search"></i>&nbsp;Search</button>

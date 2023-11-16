@@ -2,10 +2,8 @@
 	<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 		<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css">
-			</link>
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css">
-			</link>
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
 			<script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 			<script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 			<script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
@@ -17,7 +15,7 @@
 
 			<script>
 				$(document).ready(function () {
-					$('#classListTable').DataTable({
+					$('#cycleListTable').DataTable({
 						language: {
 							search: 'Filter:'
 						},
@@ -34,49 +32,33 @@
 						//pageLength: 20
 					});
 
-
-					$('table .password').on('click', function () {
-						var username = $(this).parent().find('#username').val();
-						$('#passwordModal #usernamepassword').val(username);
-					});
-
 					$("#addStartDate").datepicker({
 						dateFormat: 'dd/mm/yy'
 					});
-					$("#editStartDate").datepicker({
+					$("#addEndDate").datepicker({
 						dateFormat: 'dd/mm/yy'
 					});
-
-					// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-					$('#addGrade').change(function () {
-						var grade = $(this).val();
-						getCoursesByGrade(grade, '#addCourse');
+					$("#addVacationStartDate").datepicker({
+						dateFormat: 'dd/mm/yy'
 					});
-
-					// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-					$('#editGrade').change(function () {
-						var grade = $(this).val();
-						getCoursesByGrade(grade, '#editCourse');
+					$("#addVacationEndDate").datepicker({
+						dateFormat: 'dd/mm/yy'
 					});
-
 
 				});
 
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//		Register Class
+				//		Register Cycle
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				function addClass() {
+				function addCycle() {
 					// Get from form data
-					var clazz = {
-						state: $("#addState").val(),
-						branch: $("#addBranch").val(),
+					var cycle = {
+						year: $("#addYear").val(),
+						description: $("#addDescription").val(),
 						startDate: $("#addStartDate").val(),
-						name: $("#addName").val(),
-						grade: $("#addGrade").val(),
-						courseId: $("#addCourse").val(),
-						day: $("#addDay").val()
-						//active : $("#addActive").val(),
-						//fee : $("#addFee").val()
+						endDate: $("#addEndDate").val(),
+						vacationStartDate: $("#addVacationStartDate").val(),
+						vacationEndDate: $("#addVacationEndDate").val()
 					}
 					//	console.log(clazz);
 
@@ -100,9 +82,9 @@
 							console.log('Error : ' + error);
 						}
 					});
-					$('#registerClassModal').modal('hide');
+					$('#registerCycleModal').modal('hide');
 					// flush all registered data
-					document.getElementById("classRegister").reset();
+					document.getElementById("cycleRegister").reset();
 				}
 
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,70 +243,6 @@
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-2">
-									<select class="form-control" id="listState" name="listState">
-										<option value="All">All State</option>
-										<option value="vic">Victoria</option>
-										<option value="nsw">New South Wales</option>
-										<option value="qld">Queensland</option>
-										<option value="sa">South Australia</option>
-										<option value="tas">Tasmania</option>
-										<option value="wa">Western Australia</option>
-										<option value="nt">Northern Territory</option>
-										<option value="act">ACT</option>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<select class="form-control" id="listBranch" name="listBranch">
-										<option value="All">All Branch</option>
-										<option value="braybrook">Braybrook</option>
-										<option value="epping">Epping</option>
-										<option value="balwyn">Balwyn</option>
-										<option value="bayswater">Bayswater</option>
-										<option value="boxhill">Box Hill</option>
-										<option value="carolinesprings">Caroline Springs</option>
-										<option value="chadstone">Chadstone</option>
-										<option value="craigieburn">Craigieburn</option>
-										<option value="cranbourne">Cranbourne</option>
-										<option value="glenwaverley">Glen Waverley</option>
-										<option value="mitcha">Mitcham</option>
-										<option value="narrewarren">Narre Warren</option>
-										<option value="ormond">Ormond</option>
-										<option value="pointcook">Point Cook</option>
-										<option value="preston">Preston</option>
-										<option value="springvale">Springvale</option>
-										<option value="stalbans">St Albans</option>
-										<option value="werribee">Werribee</option>
-										<option value="mernda">Mernda</option>
-										<option value="melton">Melton</option>
-										<option value="glenroy">Glenroy</option>
-										<option value="packenham">Packenham</option>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<select class="form-control" id="listGrade" name="listGrade">
-										<option value="All">All</option>
-										<option value="p2">P2</option>
-										<option value="p3">P3</option>
-										<option value="p4">P4</option>
-										<option value="p5">P5</option>
-										<option value="p6">P6</option>
-										<option value="s7">S7</option>
-										<option value="s8">S8</option>
-										<option value="s9">S9</option>
-										<option value="s10">S10</option>
-										<option value="s10e">S10E</option>
-										<option value="tt6">TT6</option>
-										<option value="tt8">TT8</option>
-										<option value="tt8e">TT8E</option>
-										<option value="srw4">SRW4</option>
-										<option value="srw5">SRW5</option>
-										<option value="srw6">SRW6</option>
-										<option value="srw8">SRW8</option>
-										<option value="jmss">JMSS</option>
-										<option value="vce">VCE</option>
-									</select>
-								</div>
-								<div class="col-md-2">
 									<select class="form-control" id="listYear" name="listYear">
 										<option value="All">All</option>
 										<option value="2023">2023</option>
@@ -333,14 +251,14 @@
 										<option value="2020">2020</option>
 									</select>
 								</div>
-								<div class="offset-md-1"></div>
+								<div class="offset-md-6"></div>
 								<div class="col mx-auto">
 									<button type="submit" class="btn btn-primary btn-block"> <i
 											class="bi bi-search"></i>&nbsp;Search</button>
 								</div>
 								<div class="col mx-auto">
 									<button type="button" class="btn btn-block btn-success" data-toggle="modal"
-										data-target="#registerClassModal"
+										data-target="#registerCycleModal"
 										onclick="getCoursesByGrade('p2', '#addCourse')"><i
 											class="bi bi-plus"></i>&nbsp;New</button>
 								</div>
@@ -350,18 +268,15 @@
 							<div class="form-row">
 								<div class="col-md-12">
 									<div class="table-wrap">
-										<table id="classListTable" class="table table-striped table-bordered">
+										<table id="cycleListTable" class="table table-striped table-bordered">
 											<thead class="table-primary">
 												<tr>
-													<th>State</th>
-													<th>Branch</th>
-													<th>Grade</th>
-													<th>Name</th>
+													<th>Year</th>
 													<th>Description</th>
 													<th>Start Date</th>
-													<th>Day</th>
-													<th>Year</th>
-													<th data-orderable="false">Activated</th>
+													<th>End Date</th>
+													<th>Vacationn Start</th>
+													<th>Vacation End</th>
 													<th data-orderable="false">Action</th>
 												</tr>
 											</thead>
@@ -437,128 +352,77 @@
 			</div>
 
 			<!-- Add Form Dialogue -->
-			<div class="modal fade" id="registerClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			<div class="modal fade" id="registerCycleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 				aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-body">
 							<section class="fieldset rounded border-primary">
-								<header class="text-primary font-weight-bold">Class Registration</header>
+								<header class="text-primary font-weight-bold">Adademic Cycle Registration</header>
 
-								<form id="classRegister">
-									<div class="form-group">
-										<div class="form-row">
-											<div class="col-md-6">
-												<label for="addState" class="label-form">State</label> <select
-													class="form-control" id="addState" name="addState">
-													<option value="vic">Victoria</option>
-												</select>
-											</div>
-											<div class="col-md-6">
-												<label for="addBranch" class="label-form">Branch</label> <select
-													class="form-control" id="addBranch" name="addBranch">
-													<option value="braybrook">Braybrook</option>
-													<option value="epping">Epping</option>
-													<option value="balwyn">Balwyn</option>
-													<option value="bayswater">Bayswater</option>
-													<option value="boxhill">Box Hill</option>
-													<option value="carolinesprings">Caroline Springs</option>
-													<option value="chadstone">Chadstone</option>
-													<option value="craigieburn">Craigieburn</option>
-													<option value="cranbourne">Cranbourne</option>
-													<option value="glenwaverley">Glen Waverley</option>
-													<option value="mitcha">Mitcham</option>
-													<option value="narrewarren">Narre Warren</option>
-													<option value="ormond">Ormond</option>
-													<option value="pointcook">Point Cook</option>
-													<option value="preston">Preston</option>
-													<option value="springvale">Springvale</option>
-													<option value="stalbans">St Albans</option>
-													<option value="werribee">Werribee</option>
-													<option value="mernda">Mernda</option>
-													<option value="melton">Melton</option>
-													<option value="glenroy">Glenroy</option>
-													<option value="packenham">Packenham</option>
-												</select>
-											</div>
+								<form id="cycleRegister">
+									<div class="form-row mt-3">
+										<div class="offset-md-1"></div>
+										<div class="col-md-3">
+											<label for="addYear" class="label-form">Academic Year</label> 
+											<select class="form-control" id="addYear" name="addYear">
+												<option value="2023">2023</option>
+												<option value="2022">2022</option>
+												<option value="2021">2021</option>
+												<option value="2020">2020</option>
+											</select>
+										</div>
+										<div class="col-md-7">
+											<label for="addDescription" class="label-form">Description</label> 
+											<input type="text" class="form-control" id="addDescription" name="addDescription" placeholder="Description" title="Please enter cycle description">
+										</div>
+										<div class="offset-md-1"></div>
+									</div>
+									<div class="form-row mt-3">
+										<div class="offset-md-1"></div>
+										<div class="col-md-4">
+											<label for="addStartDate" class="label-form">Start Date</label>
+											<input type="text" class="form-control datepicker" id="addStartDate" name="addStartDate" placeholder="dd/mm/yyyy">
+										</div>
+										<div class="offset-md-2"></div>
+										<div class="col-md-4">
+											<label for="addEndDate" class="label-form">End Date</label>
+											<input type="text" class="form-control datepicker" id="addEndDate" name="addEndDate" placeholder="dd/mm/yyyy">
+										</div>
+										<div class="offset-md-1"></div>
+									</div>
+									<div class="form-row mt-3">
+										<div class="offset-md-1"></div>
+										<div class="col-md-4">
+											<label for="addVacationStartDate" class="label-form">Vacation Start</label>
+											<input type="text" class="form-control datepicker" id="addVacationStartDate" name="addVacationStartDate" placeholder="dd/mm/yyyy">
+										</div>
+										<div class="offset-md-2"></div>
+										<div class="col-md-4">
+											<label for="addVacationEndDate" class="label-form">Vacation End</label>
+											<input type="text" class="form-control datepicker" id="addVacationEndDate" name="addVacationEndDate" placeholder="dd/mm/yyyy">
+										</div>
+										<div class="offset-md-1"></div>
+									</div>
+									<script>
+										var today = new Date();
+										var day = today.getDate();
+										var month = today.getMonth() + 1; // Note: January is 0
+										var year = today.getFullYear();
+										var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+										document.getElementById('addStartDate').value = formattedDate;
+										document.getElementById('addEndDate').value = formattedDate;
+										document.getElementById('addVacationStartDate').value = formattedDate;
+										document.getElementById('addVacationEndDate').value = formattedDate;
+									</script>
 
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="form-row">
-											<div class="col-md-3">
-												<label for="addGrade" class="label-form">Grade</label>
-												<select class="form-control" id="addGrade" name="addGrade">
-													<option value="p2">P2</option>
-													<option value="p3">P3</option>
-													<option value="p4">P4</option>
-													<option value="p5">P5</option>
-													<option value="p6">P6</option>
-													<option value="s7">S7</option>
-													<option value="s8">S8</option>
-													<option value="s9">S9</option>
-													<option value="s10">S10</option>
-													<option value="s10e">S10E</option>
-													<option value="tt6">TT6</option>
-													<option value="tt8">TT8</option>
-													<option value="tt8e">TT8E</option>
-													<option value="srw4">SRW4</option>
-													<option value="srw5">SRW5</option>
-													<option value="srw6">SRW6</option>
-													<option value="srw8">SRW8</option>
-													<option value="jmss">JMSS</option>
-													<option value="vce">VCE</option>
-												</select>
-											</div>
-											<div class="col-md-9">
-												<label for="addCourse" class="label-form">Course</label>
-												<select class="form-control" id="addCourse" name="addCourse">
-												</select>
-											</div>
-										</div>
-									</div>
-									<div class="form-group">
-										<div class="form-row">
-											<div class="col-md-5">
-												<label for="addName" class="label-form">Class Name</label>
-												<input type="text" class="form-control" id="addName" name="addName"
-													placeholder="Name" title="Please enter Class name">
-											</div>
-											<div class="col-md-4">
-												<label for="addDay" class="label-form">Day</label>
-												<select class="form-control" id="addDay" name="addDay">
-													<option value="All">All</option>
-													<option value="Monday">Monday</option>
-													<option value="Tuesday">Tuesday</option>
-													<option value="Wednesday">Wednesday</option>
-													<option value="Thursday">Thursday</option>
-													<option value="Friday">Friday</option>
-													<option value="Saturday">Saturday</option>
-													<option value="Sunday">Sunday</option>
-												</select>
-											</div>
-											<div class="col-md-3">
-												<label for="addStartDate" class="label-form">Start Date</label>
-												<input type="text" class="form-control datepicker" id="addStartDate"
-													name="addStartDate" placeholder="dd/mm/yyyy">
-											</div>
-											<script>
-												var today = new Date();
-												var day = today.getDate();
-												var month = today.getMonth() + 1; // Note: January is 0
-												var year = today.getFullYear();
-												var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-												document.getElementById('addStartDate').value = formattedDate;
-											</script>
-
-										</div>
-									</div>
+									
 								</form>
 								<div class="d-flex justify-content-end">
 									<button type="submit" class="btn btn-primary"
-										onclick="addClass()">Create</button>&nbsp;&nbsp;
+										onclick="addCycle()">Create</button>&nbsp;&nbsp;
 									<button type="button" class="btn btn-default btn-secondary"
-										onclick="clearClassForm('classRegister')" data-dismiss="modal">Close</button>
+										onclick="clearClassForm('cycleRegister')" data-dismiss="modal">Close</button>
 								</div>
 							</section>
 						</div>
