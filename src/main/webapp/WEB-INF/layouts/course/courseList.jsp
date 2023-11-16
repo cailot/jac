@@ -189,6 +189,7 @@ function clearCourseForm(elementId) {
 							<option value="vce">VCE</option>
 						</select>
 					</div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>

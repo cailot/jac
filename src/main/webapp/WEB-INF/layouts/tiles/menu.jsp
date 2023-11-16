@@ -92,6 +92,7 @@
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/courseList">Course List</a>
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/classList">Class List</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/cycleList">Academic Cycle List</a>
 			</div>
 		</li>
 

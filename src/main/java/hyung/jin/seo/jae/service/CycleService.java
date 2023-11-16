@@ -43,4 +43,7 @@ public interface CycleService {
 
 	// get Cycle by date
 	Cycle findCycleByDate(String date);
+
+	// add Cycle
+	Cycle addCycle(Cycle cycle);
 }

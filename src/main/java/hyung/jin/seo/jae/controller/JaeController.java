@@ -39,6 +39,11 @@ public class JaeController {
 		return "classListPage";
 	}
 
+	@GetMapping("/cycleList")
+	public String cycleList(HttpSession session) {
+		return "cycleListPage";
+	}
+
 	@GetMapping("/teacherList")
 	public String teacher(HttpSession session) {
 		return "teacherListPage";

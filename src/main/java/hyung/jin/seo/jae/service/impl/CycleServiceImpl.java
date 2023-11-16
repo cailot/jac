@@ -319,4 +319,10 @@ public class CycleServiceImpl implements CycleService {
 		}
 	}
 
+	@Override
+	public Cycle addCycle(Cycle cycle) {
+		Cycle add = cycleRepository.save(cycle);
+		return add;
+	}
+
 }
