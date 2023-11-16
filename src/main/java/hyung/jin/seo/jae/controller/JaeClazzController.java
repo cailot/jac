@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.CourseDTO;
+import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Course;
 import hyung.jin.seo.jae.model.Cycle;
@@ -222,6 +223,23 @@ public class JaeClazzController {
 			clazz.setCycle(cycle);
 			// 6. add Class
 			clazzService.addClazz(clazz);
+			// 3. return success;
+			return ResponseEntity.ok("\"Class register success\"");
+		} catch (Exception e) {
+			String message = "Error registering Class: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
+	// register new cycle
+	@PostMapping("/registerCycle")
+	@ResponseBody
+	public ResponseEntity<String> registerCycle(@RequestBody CycleDTO formData) {
+		try {
+			// 1. create Cycle
+			Cycle cycle = formData.convertToCycle();
+			// 2. add Class
+			cycleService.addCycle(cycle);
 			// 3. return success;
 			return ResponseEntity.ok("\"Class register success\"");
 		} catch (Exception e) {
