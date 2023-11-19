@@ -80,6 +80,8 @@ public interface JaeConstants {
 	String COURSE_LIST = "CourseList";
 	
 	String CLASS_LIST = "ClassList";
+
+	String CYCLE_LIST = "CycleList";
 	
 	String TEACHER_LIST = "TeacherList";
 	

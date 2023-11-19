@@ -165,9 +165,9 @@ function clearCourseForm(elementId) {
 		<form id="courseList" method="get" action="${pageContext.request.contextPath}/class/listCourse">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<div class="col-md-3">
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="All">All Grade</option>
 							<option value="p2">P2</option>
 							<option value="p3">P3</option>
 							<option value="p4">P4</option>
@@ -189,7 +189,7 @@ function clearCourseForm(elementId) {
 							<option value="vce">VCE</option>
 						</select>
 					</div>
-					<div class="offset-md-5"></div>
+					<div class="offset-md-4"></div>
 					<div class="col mx-auto">
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>

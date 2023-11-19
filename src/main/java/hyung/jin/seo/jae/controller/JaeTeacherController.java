@@ -107,13 +107,13 @@ public class JaeTeacherController {
 		List<TeacherDTO> dtos = new ArrayList<TeacherDTO>();
 		for (Teacher teacher : teachers) {
 			TeacherDTO dto = new TeacherDTO(teacher);
-			try {
-				// convert date format to dd/MM/yyyy
-				dto.setStartDate(JaeUtils.convertToddMMyyyyFormat(dto.getStartDate()));
-				dto.setEndDate(JaeUtils.convertToddMMyyyyFormat(dto.getEndDate()));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			// try {
+			// 	// convert date format to dd/MM/yyyy
+			// 	dto.setStartDate(JaeUtils.convertToddMMyyyyFormat(dto.getStartDate()));
+			// 	dto.setEndDate(JaeUtils.convertToddMMyyyyFormat(dto.getEndDate()));
+			// } catch (ParseException e) {
+			// 	e.printStackTrace();
+			// }
 			dtos.add(dto);
 		}
 		model.addAttribute(JaeConstants.TEACHER_LIST, dtos);
