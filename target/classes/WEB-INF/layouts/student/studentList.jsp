@@ -3,6 +3,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
+<%@page import="java.util.Calendar"%>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -275,7 +276,7 @@ function retrieveStudentInfo(std) {
 		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/list">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="listState" class="label-form">State</label> 
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
@@ -338,14 +339,23 @@ function retrieveStudentInfo(std) {
 							<option value="vce">VCE</option>
 						</select>
 					</div>
-					<div class="col-md-2">
-						<label for="listYear" class="label-form">Enrolment</label> 
+					<div class="col-md-1">
+						<label for="listYear" class="label-form">Academic Year</label> 
 						<select class="form-control" id="listYear" name="listYear">
+							<%
+								Calendar now = Calendar.getInstance();
+								int currentYear = now.get(Calendar.YEAR);
+							%>
 							<!-- <option value="All">All</option> -->
-							<option value="2023">Academic Year 23/24</option>
-							<option value="2022">Academic Year 22/23</option>
-							<option value="2021">Academic Year 21/22</option>
-							<option value="2020">Academic Year 20/21</option>
+							<option value="<%= currentYear %>"><%= currentYear %></option>
+							<%
+								// Adding the last five years
+								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
+							%>
+								<option value="<%= i %>"><%= i %></option>
+							<%
+							}
+							%>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -356,6 +366,7 @@ function retrieveStudentInfo(std) {
 							<option value="Stopped">Stopped Students</option>
 						</select>
 					</div>
+					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -398,7 +409,12 @@ function retrieveStudentInfo(std) {
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${fn:toUpperCase(student.grade)}" /></span></td>
 												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${student.registerDate}" /></span></td>
+												<td class="small ellipsis">
+													<span>
+														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
+														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
+													</span>
+												</td>
 												<td class="small ellipsis"><span><c:out value="${student.startWeek}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${student.endWeek}" /></span></td>	
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
