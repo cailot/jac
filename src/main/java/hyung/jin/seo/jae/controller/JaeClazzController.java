@@ -46,19 +46,7 @@ public class JaeClazzController {
 	@ResponseBody
 	List<ClazzDTO> searchClasses(@RequestParam("grade") String grade) {
 		int year = cycleService.academicYear();
-		// int week = cycleService.academicWeeks();
 		List<ClazzDTO> dtos = clazzService.findClazzForGradeNCycle(grade, year);
-		// if new academic year is going to start, display next year classes
-		// if(week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
-		// // display next year classes
-		// List<ClazzDTO> nexts = clazzService.findClassesForGradeNCycle(grade, year+1);
-		// for(ClazzDTO next : nexts) {
-		// String append = next.getName() +
-		// JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX;
-		// next.setName(append);
-		// dtos.add(next);
-		// }
-		// }
 		return dtos;
 	}
 
@@ -94,10 +82,25 @@ public class JaeClazzController {
 			@RequestParam(value = "listGrade", required = false) String grade,
 			@RequestParam(value = "listYear", required = false) String year,
 			@RequestParam(value = "listActive", required = false) String active, Model model) {
-		System.out.println(state + "\t" + branch + "\t" + grade + "\t" + year + "\t" + active + "\t");
-		List<ClazzDTO> dtos = clazzService.listClazz(state, branch, grade, year, active);// clazzService.allClasses();
+		// System.out.println(state + "\t" + branch + "\t" + grade + "\t" + year + "\t" + active + "\t");
+		List<ClazzDTO> dtos = clazzService.listClazz(state, branch, grade, year, active);
 		model.addAttribute(JaeConstants.CLASS_LIST, dtos);
 		return "classListPage";
+	}
+
+	// bring all classes in database
+	@GetMapping("/listCycle")
+	public String listCycle(@RequestParam(value = "listYear", required = true) String year, Model model) {
+		List<CycleDTO> dtos = null;
+		if(StringUtils.isNotEmpty(year) && !(JaeConstants.ALL.equalsIgnoreCase(year))) {
+			int yearParam = Integer.parseInt(year);
+			dtos = cycleService.listCycles(yearParam);
+		}else{
+			// if condition is 'All', bring all
+			dtos = cycleService.allCycles();
+		}
+		model.addAttribute(JaeConstants.CYCLE_LIST, dtos);
+		return "cycleListPage";
 	}
 
 	// bring all classes in database
@@ -187,6 +190,15 @@ public class JaeClazzController {
 		return dto;
 	}
 
+	// get cycle by Id
+	@GetMapping("/get/cycle/{id}")
+	@ResponseBody
+	public CycleDTO getCycle(@PathVariable("id") Long id) {
+		Cycle cycle = cycleService.getCycle(id);
+		CycleDTO dto = new CycleDTO(cycle);
+		return dto;
+	}
+
 	// register new course
 	@PostMapping("/registerCourse")
 	@ResponseBody
@@ -255,16 +267,16 @@ public class JaeClazzController {
 		try {
 			// 1. create bare Class
 			Clazz clazz = formData.convertToOnlyClass();
-			// 1. get Course
+			// 2. get Course
 			Course course = courseService.getCourse(Long.parseLong(formData.getCourseId()));
-			// 2. get Cycle
+			// 3. get Cycle
 			Cycle cycle = cycleService.findCycleByDate(formData.getStartDate());
-			// 3. assign Course & Cycle
+			// 4. assign Course & Cycle
 			clazz.setCourse(course);
 			clazz.setCycle(cycle);
-			// 4. save Class
+			// 5. save Class
 			clazzService.updateClazz(clazz);
-			// 5. return flag
+			// 6. return flag
 			return ResponseEntity.ok("\"Class update success\"");
 		} catch (Exception e) {
 			String message = "Error updating class: " + e.getMessage();
@@ -279,9 +291,26 @@ public class JaeClazzController {
 		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
-			// 4. save Class
+			// 2. save Class
 			courseService.updateCourse(course);
-			// 5. return flag
+			// 3. return flag
+			return ResponseEntity.ok("\"Course update success\"");
+		} catch (Exception e) {
+			String message = "Error updating course: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
+	// update existing cycle
+	@PutMapping("/update/cycle")
+	@ResponseBody
+	public ResponseEntity<String> updateCycle(@RequestBody CycleDTO formData) {
+		try {
+			// 1. create Cycle
+			Cycle cycle = formData.convertToCycle();
+			// 2. uppdate Cycle
+			cycleService.updateCycle(cycle);
+			// 3. return flag
 			return ResponseEntity.ok("\"Course update success\"");
 		} catch (Exception e) {
 			String message = "Error updating course: " + e.getMessage();

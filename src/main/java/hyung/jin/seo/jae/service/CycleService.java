@@ -36,7 +36,10 @@ public interface CycleService {
 	LocalDate getDateByWeekAndDay(int year, int week, String day);
 
 	// get Cycle by Id
-    Cycle findById(String cycleId);
+    Cycle getCycle(Long cycleId);
+
+	// update Cycle
+	Cycle updateCycle(Cycle cycle);
 
 	// get Id by date
 	Long findIdByDate(String date);
@@ -46,4 +49,7 @@ public interface CycleService {
 
 	// add Cycle
 	Cycle addCycle(Cycle cycle);
+
+	// list all cycles by year
+	List<CycleDTO> listCycles(int year);
 }

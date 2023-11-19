@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.model.Cycle;
 
 public interface CycleRepository extends JpaRepository<Cycle, Long>{  
@@ -20,4 +21,9 @@ public interface CycleRepository extends JpaRepository<Cycle, Long>{
 
     @Query("SELECT c FROM Cycle c WHERE :date BETWEEN c.startDate AND c.endDate")
     Cycle findCycleByDate(@Param("date") LocalDate date);
+
+	// list all cycles for year
+	@Query("SELECT new hyung.jin.seo.jae.dto.CycleDTO(c.id, c.year, c.startDate, c.endDate, c.vacationStartDate, c.vacationEndDate, c.description) FROM Cycle c WHERE c.year = ?1")
+	List<CycleDTO> findCycleForYear(int year);
+
 }

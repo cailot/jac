@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
@@ -209,8 +211,8 @@ public class CycleServiceImpl implements CycleService {
 	}
 
 	@Override
-	public Cycle findById(String cycleId) {
-		Optional<Cycle> cycle = cycleRepository.findById(Long.parseLong(cycleId));
+	public Cycle getCycle(Long cycleId) {
+		Optional<Cycle> cycle = cycleRepository.findById(cycleId);
 		if(cycle.isPresent()) {
 			return cycle.get();
 		}else{
@@ -272,30 +274,6 @@ public class CycleServiceImpl implements CycleService {
 		return startDate;
 	}
 
-	// @Override
-	// public String getDateByWeekAndDay(int year, int week, String day) {
-	// 	String start = academicStartSunday(year, week);
-	// 	switch(day){
-	// 		// case "Sunday":
-	// 		// 	return start;
-	// 		case "Monday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(1).format(dateFormatter);
-	// 		case "Tuesday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(2).format(dateFormatter);
-	// 		case "Wednesday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(3).format(dateFormatter);
-	// 		case "Thursday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(4).format(dateFormatter);
-	// 		case "Friday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5).format(dateFormatter);
-	// 		case "Saturday":
-	// 			return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6).format(dateFormatter);
-	// 		default: // Sunday or All
-	// 			return start;
-	// 	}
-	// }
-
-
 	@Override
 	public LocalDate getDateByWeekAndDay(int year, int week, String day) {
 		String start = academicStartSunday(year, week);
@@ -325,4 +303,43 @@ public class CycleServiceImpl implements CycleService {
 		return add;
 	}
 
+	@Override
+	public List<CycleDTO> listCycles(int year) {
+		List<CycleDTO> dtos = new ArrayList<>();
+		try{
+			dtos = cycleRepository.findCycleForYear(year);
+		}catch(Exception e){
+			System.out.println("No cycle found");
+		}
+		return dtos;	
+	}
+
+	@Override
+	public Cycle updateCycle(Cycle cycle) {
+		// search by getId
+		Cycle existing = cycleRepository.findById(cycle.getId())
+				.orElseThrow(() -> new EntityNotFoundException("Clazz Not Found"));
+		// Update info
+		// year
+		int newYear = cycle.getYear();
+		existing.setYear(newYear);
+		// description
+		String newDescription = cycle.getDescription();
+		existing.setDescription(newDescription);
+		// start date
+		LocalDate newStartDate = cycle.getStartDate();
+		existing.setStartDate(newStartDate);
+		// end date
+		LocalDate newEndDate = cycle.getEndDate();
+		existing.setEndDate(newEndDate);
+		// vacation start date
+		LocalDate newVacationStartDate = cycle.getVacationStartDate();
+		existing.setVacationStartDate(newVacationStartDate);
+		// vacation end date
+		LocalDate newVacationEndDate = cycle.getVacationEndDate();
+		existing.setVacationEndDate(newVacationEndDate);
+		// update the existing record
+		Cycle updated = cycleRepository.save(existing);
+		return updated;		
+	}
 }

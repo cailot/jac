@@ -17,15 +17,7 @@ import lombok.ToString;
 @ToString
 public class PaymentDTO extends MoneyDTO{
     
-	// private String id;
-
-	// private String registerDate;
-
-	// private double amount;
-
 	private String method;
-
-	// private String info;
 
 	private String invoiceId;
 
