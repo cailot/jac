@@ -57,6 +57,10 @@ $(document).ready(function () {
 		getCoursesByGrade(grade, '#editCourse');
 	});
 
+	// initialise state list when loading
+	listState('#listState');
+	listState('#addState');
+	listState('#editState');
 
 });
 
@@ -261,14 +265,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 					<div class="col-md-2">
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
-							<option value="vic">Victoria</option>
-							<option value="nsw">New South Wales</option>
-							<option value="qld">Queensland</option>
-							<option value="sa">South Australia</option>
-							<option value="tas">Tasmania</option>
-							<option value="wa">Western Australia</option>
-							<option value="nt">Northern Territory</option>
-							<option value="act">ACT</option>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -379,10 +375,22 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<c:when test="${ClassList != null}">
 											<c:forEach items="${ClassList}" var="clazz">
 												<tr>
-													<td class="small ellipsis"><span
-															style="text-transform: capitalize;">
-															<c:out value="${clazz.state}" />
-														</span></td>
+													<td class="small ellipsis">
+														<span style="text-transform: capitalize;">
+														  <c:choose>
+															<c:when test="${clazz.state eq '1'}">Victoria</c:when>
+															<c:when test="${clazz.state eq '2'}">NSW</c:when>
+															<c:when test="${clazz.state eq '3'}">Queensland</c:when>
+															<c:when test="${clazz.state eq '4'}">South Australia</c:when>
+															<c:when test="${clazz.state eq '5'}">Tasmania</c:when>
+															<c:when test="${clazz.state eq '6'}">Western Australia</c:when>
+															<c:when test="${clazz.state eq '7'}">Northern Territory</c:when>
+															<c:when test="${clazz.state eq '8'}">ACT</c:when>
+															<c:otherwise>Unknown State</c:otherwise>
+														  </c:choose>
+														</span>
+													</td>
+													  
 													<td class="small ellipsis"><span
 															style="text-transform: capitalize;">
 															<c:out value="${clazz.branch}" />
@@ -459,9 +467,8 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-6">
-									<label for="addState" class="label-form">State</label> <select
-										class="form-control" id="addState" name="addState">
-										<option value="vic">Victoria</option>
+									<label for="addState" class="label-form">State</label> 
+									<select class="form-control" id="addState" name="addState">
 									</select>
 								</div>
 								<div class="col-md-6">
@@ -589,16 +596,8 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-4">
-									<label for="editState" class="label-form">State</label> <select
-										class="form-control" id="editState" name="editState">
-										<option value="vic">Victoria</option>
-										<!-- <option value="nsw">New South Wales</option>
-						<option value="qld">Queensland</option>
-						<option value="sa">South Australia</option>
-						<option value="tas">Tasmania</option>
-						<option value="wa">Western Australia</option>
-						<option value="nt">Northern Territory</option>
-						<option value="act">ACT</option> -->
+									<label for="editState" class="label-form">State</label> 
+									<select class="form-control" id="editState" name="editState">
 									</select>
 								</div>
 								<div class="col-md-5">

@@ -16,10 +16,10 @@ public interface TeacherService {
 	List<Teacher> stoppedTeachers();
 
 	// bring student list base on the condition
-	List<Teacher> listTeachers(String state, String branch, String active);
+	List<Teacher> listTeachers(String state, String branch);
 
-	// search student list base on keyword where id, firstName or lastName
-	List<Teacher> searchTeachers(String keyword);
+	// // search student list base on keyword where id, firstName or lastName
+	// List<Teacher> searchTeachers(String keyword);
 
 	Teacher getTeacher(Long id);
 

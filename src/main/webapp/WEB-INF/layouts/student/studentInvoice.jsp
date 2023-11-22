@@ -52,6 +52,8 @@ $(document).ready(function () {
 			$(api.column(6).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
 		}		
     });
+	// initialise state list when loading
+	listState('#listState');
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,14 +234,6 @@ function clearStudentInfo() {
 						<label for="listState" class="label-form">State</label> 
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
-							<option value="vic">Victoria</option>
-							<option value="nsw">New South Wales</option>
-							<option value="qld">Queensland</option>
-							<option value="sa">South Australia</option>
-							<option value="tas">Tasmania</option>
-							<option value="wa">Western Australia</option>
-							<option value="nt">Northern Territory</option>
-							<option value="act">ACT</option>
 						</select>
 					</div>
 					<div class="col-md-2">

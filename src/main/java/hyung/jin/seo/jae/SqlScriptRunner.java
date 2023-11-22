@@ -35,10 +35,12 @@ public class SqlScriptRunner {
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/subject.sql")); // Subject
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/cycle.sql")); // Cycle
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/course_subject.sql")); // Course_Subject
-			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/book.sql")); // Course
-																											// Book
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/book.sql")); // Book																								// Book
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/class.sql")); // Class
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/state.sql")); // State
+			
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/braybrook_student.sql")); // Student
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/attendance_test.sql")); // attendane_test
 		}
 	}
 }
