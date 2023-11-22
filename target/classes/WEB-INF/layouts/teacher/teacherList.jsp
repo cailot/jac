@@ -3,6 +3,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="hyung.jin.seo.jae.dto.TeacherDTO" %>
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils" %>
+<%@ page import="java.util.Calendar" %>
 
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css">
@@ -53,6 +54,10 @@
 			getClazzByGrade();
 		});
 
+		// initialise state list when loading
+		listState('#listState');
+		listState('#addState');
+		listState('#editState');
 	});
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -418,14 +423,6 @@
 					<div class="col-md-2">
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
-							<option value="vic">Victoria</option>
-							<option value="nsw">New South Wales</option>
-							<option value="qld">Queensland</option>
-							<option value="sa">South Australia</option>
-							<option value="tas">Tasmania</option>
-							<option value="wa">Western Australia</option>
-							<option value="nt">Northern Territory</option>
-							<option value="act">ACT</option>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -455,25 +452,16 @@
 							<option value="packenham">Packenham</option>
 						</select>
 					</div>
-					<div class="col-md-2">
-						<select class="form-control" id="listActive" name="listActive">
-							<option value="All">All Teachers</option>
-							<option value="Current">Current Teachers</option>
-							<option value="Stopped">Stopped Teachers</option>
-						</select>
-					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-2">
+					<div class="offset-md-4">
 					</div>
 					<div class="col-md-2">
-						<button type="submit" class="btn btn-primary btn-block"
-							onclick="return validate()"><i
-								class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal"
-							data-target="#registerModal"><i
-								class="bi bi-plus"></i>&nbsp;&nbsp;Registration</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerModal">
+							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
+						</button>
 					</div>
 				</div>
 			</div>
@@ -602,14 +590,6 @@
 							<div class="col-md-4">
 								<label for="addState" class="label-form">State</label>
 								<select class="form-control" id="addState" name="addState">
-									<option value="vic">Victoria</option>
-									<option value="nsw">New South Wales</option>
-									<option value="qld">Queensland</option>
-									<option value="sa">South Australia</option>
-									<option value="tas">Tasmania</option>
-									<option value="wa">Western Australia</option>
-									<option value="nt">Northern Territory</option>
-									<option value="act">ACT</option>
 								</select>
 							</div>
 							<div class="col-md-6">
@@ -756,14 +736,6 @@
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label>
 								<select class="form-control" id="editState" name="editState">
-									<option value="vic">Victoria</option>
-									<option value="nsw">New South Wales</option>
-									<option value="qld">Queensland</option>
-									<option value="sa">South Australia</option>
-									<option value="tas">Tasmania</option>
-									<option value="wa">Western Australia</option>
-									<option value="nt">Northern Territory</option>
-									<option value="act">ACT</option>
 								</select>
 							</div>
 							<div class="col-md-6">
@@ -969,11 +941,20 @@
 						<div class="col-md-2">
 							<label for="clazzYear" class="label-form">Academic Year</label>
 							<select class="form-control" id="clazzYear" name="clazzYear">
+								<%
+									Calendar now = Calendar.getInstance();
+									int currentYear = now.get(Calendar.YEAR);
+								%>
 								<option value="All">All</option>
-								<option value="2023">2023</option>
-								<option value="2022">2022</option>
-								<option value="2021">2021</option>
-								<option value="2020">2020</option>
+								<option value="<%= currentYear %>"><%= currentYear %></option>
+								<%
+									// Adding the last five years
+									for (int i = currentYear - 1; i >= currentYear - 3; i--) {
+								%>
+									<option value="<%= i %>"><%= i %></option>
+								<%
+								}
+								%>
 							</select>
 						</div>
 						<div class="col-md-3">

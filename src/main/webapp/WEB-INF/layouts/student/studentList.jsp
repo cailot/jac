@@ -46,7 +46,10 @@ $(document).ready(function () {
 	$("#editRegisterDate").datepicker({
 		dateFormat: 'dd/mm/yy'
 	});
-	
+	// initialise state list when loading
+	listState('#listState');
+	listState('#addState');
+	listState('#editState');
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,14 +283,6 @@ function retrieveStudentInfo(std) {
 						<label for="listState" class="label-form">State</label> 
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
-							<option value="vic">Victoria</option>
-							<option value="nsw">New South Wales</option>
-							<option value="qld">Queensland</option>
-							<option value="sa">South Australia</option>
-							<option value="tas">Tasmania</option>
-							<option value="wa">Western Australia</option>
-							<option value="nt">Northern Territory</option>
-							<option value="act">ACT</option>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -457,9 +452,9 @@ function retrieveStudentInfo(std) {
 					<form id="studentRegister">
 						<div class="form-row mt-2">
 							<div class="col-md-4">
-								<label for="addState" class="label-form">State</label> <select class="form-control" id="addState" name="addState">
-									<option value="vic">Victoria</option>
-									</select>
+								<label for="addState" class="label-form">State</label> 
+								<select class="form-control" id="addState" name="addState">
+								</select>
 							</div>
 							<div class="col-md-5">
 								<label for="addBranch" class="label-form">Branch</label> <select class="form-control" id="addBranch" name="addBranch">
@@ -620,7 +615,6 @@ function retrieveStudentInfo(std) {
 						<div class="form-row mt-2">
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label> <select class="form-control" id="editState" name="editState">
-									<option value="vic">Victoria</option>
 								</select>
 							</div>
 							<div class="col-md-5">

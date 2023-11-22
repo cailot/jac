@@ -68,7 +68,7 @@
 <nav class="navbar">
 	<div class="navbar_logo">
 		<img src="${pageContext.request.contextPath}/image/logo.png" style="filter: brightness(0) invert(1);width:45px;" >
-		James An Colleges
+		James An College
 	</div>
 	<ul class="navbar_menu">
 		

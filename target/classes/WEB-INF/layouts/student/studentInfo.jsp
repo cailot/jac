@@ -1,20 +1,23 @@
 <script>
-	$(function() {
-		// initiate datepicker
-    	$( "#formRegisterDate" ).datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$( "#addRegisterDate" ).datepicker({
-			dateFormat: 'dd/mm/yy'
-  		});
-		// key enter event for 'formKeyword' field
-		$('#formKeyword').keypress(function(event){
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-			if(keycode == '13'){
-				searchStudent();
-			}
-		});
+$(function() {
+	// initiate datepicker
+	$( "#formRegisterDate" ).datepicker({
+		dateFormat: 'dd/mm/yy'
 	});
+	$( "#addRegisterDate" ).datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
+	// key enter event for 'formKeyword' field
+	$('#formKeyword').keypress(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '13'){
+			searchStudent();
+		}
+	});
+	// initialise state list when loading
+	listState('#formState');
+	listState('#addState');
+});
 	
 
 
@@ -446,7 +449,6 @@
 						<div class="col-md-4">
 							<label for="addState" class="label-form">State</label> 
 							<select class="form-control" id="addState" name="addState">
-								<option value="vic">Victoria</option>
 							</select>
 						</div>
 						<div class="col-md-5">
@@ -626,7 +628,6 @@
 			<div class="col-md-4">
 				<label for="formState" class="label-form">State</label> 
 				<select class="form-control" id="formState" name="formState">
-					<option value="vic">Victoria</option>
 				</select>
 			</div>
 			<div class="col-md-4">

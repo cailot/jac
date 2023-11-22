@@ -47,18 +47,18 @@ public class JaeTeacherController {
 		return dto;
 	}
 
-	// search teacher with keyword - ID, firstName & lastName
-	@GetMapping("/search")
-	@ResponseBody
-	List<TeacherDTO> searchTeachers(@RequestParam("keyword") String keyword) {
-		List<Teacher> teachers = teacherService.searchTeachers(keyword);
-		List<TeacherDTO> dtos = new ArrayList<TeacherDTO>();
-		for (Teacher teacher : teachers) {
-			TeacherDTO dto = new TeacherDTO(teacher);
-			dtos.add(dto);
-		}
-		return dtos;
-	}
+	// // search teacher with keyword - ID, firstName & lastName
+	// @GetMapping("/search")
+	// @ResponseBody
+	// List<TeacherDTO> searchTeachers(@RequestParam("keyword") String keyword) {
+	// 	List<Teacher> teachers = teacherService.searchTeachers(keyword);
+	// 	List<TeacherDTO> dtos = new ArrayList<TeacherDTO>();
+	// 	for (Teacher teacher : teachers) {
+	// 		TeacherDTO dto = new TeacherDTO(teacher);
+	// 		dtos.add(dto);
+	// 	}
+	// 	return dtos;
+	// }
 
 	// search teacher by ID
 	@GetMapping("/get/{id}")
@@ -101,19 +101,11 @@ public class JaeTeacherController {
 	@GetMapping("/list")
 	public String listTeachers(@RequestParam(value = "listState", required = false) String state,
 			@RequestParam(value = "listBranch", required = false) String branch,
-			@RequestParam(value = "listActive", required = false) String active, Model model) {
-		System.out.println(state + "\t" + branch + "\t" + active);
-		List<Teacher> teachers = teacherService.listTeachers(state, branch, active);
+			Model model) {
+		List<Teacher> teachers = teacherService.listTeachers(state, branch);
 		List<TeacherDTO> dtos = new ArrayList<TeacherDTO>();
 		for (Teacher teacher : teachers) {
 			TeacherDTO dto = new TeacherDTO(teacher);
-			// try {
-			// 	// convert date format to dd/MM/yyyy
-			// 	dto.setStartDate(JaeUtils.convertToddMMyyyyFormat(dto.getStartDate()));
-			// 	dto.setEndDate(JaeUtils.convertToddMMyyyyFormat(dto.getEndDate()));
-			// } catch (ParseException e) {
-			// 	e.printStackTrace();
-			// }
 			dtos.add(dto);
 		}
 		model.addAttribute(JaeConstants.TEACHER_LIST, dtos);

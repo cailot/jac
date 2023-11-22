@@ -84,3 +84,24 @@ function getParameterByName(name) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		List state
+function listState(selectElementId) {
+	$.ajax({
+		url: '/code/state',
+		type: 'GET',
+		success: function (data) {
+			// Update display info
+			// $("#editId").val(teacher.id);
+			$.each(data, function (index, state) {
+				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
+				$(selectElementId).append(option);	
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+  

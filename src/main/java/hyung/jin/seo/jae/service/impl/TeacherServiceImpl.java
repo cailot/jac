@@ -9,13 +9,11 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.repository.TeacherRepository;
 import hyung.jin.seo.jae.service.TeacherService;
-import hyung.jin.seo.jae.specification.TeacherSpecification;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Service
@@ -32,7 +30,6 @@ public class TeacherServiceImpl implements TeacherService {
 		} catch (Exception e) {
 			System.out.println("No teacher found");
 		}
-		// teacherRepository.findAll();
 		return teachers;
 	}
 
@@ -59,52 +56,28 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	public List<Teacher> listTeachers(String state, String branch, String active) {
-		List<Teacher> teachers = null;// studentRepository.findAll();
-
-		Specification<Teacher> spec = Specification.where(null);
-
-		if ((StringUtils.isNotBlank(state)) && (!StringUtils.equals(state, JaeConstants.ALL))) {
-			spec = spec.and(TeacherSpecification.stateEquals(state));
-		}
-		if (StringUtils.isNotBlank(branch) && (!StringUtils.equals(branch, JaeConstants.ALL))) {
-			spec = spec.and(TeacherSpecification.branchEquals(branch));
-		}
-
-		switch ((active == null) ? JaeConstants.ALL : active) {
-
-			case JaeConstants.CURRENT:
-				spec = spec.and(TeacherSpecification.hasNullVaule("endDate"));
-				teachers = teacherRepository.findAll(spec);
-				break;
-
-			case JaeConstants.STOPPED:
-				spec = spec.and(TeacherSpecification.hasNotNullVaule("endDate"));
-				teachers = teacherRepository.findAll(spec);
-				break;
-
-			case JaeConstants.ALL:
-				teachers = teacherRepository.findAll(spec);
-
-		}
-		return teachers;
-	}
-
-	@Override
-	public List<Teacher> searchTeachers(String keyword) {
-		List<Teacher> teachers = new ArrayList<>();
-		Specification<Teacher> spec = Specification.where(null);
-
-		if (StringUtils.isNumericSpace(keyword)) {
-			spec = spec.and(TeacherSpecification.idEquals(keyword));
-		} else {
-			// firstName or lastName search
-			spec = spec.and(TeacherSpecification.nameContains(keyword));
-		}
-		try {
-			teachers = teacherRepository.findAll(spec);
-		} catch (Exception e) {
-			System.out.println("No teacher found");
+	public List<Teacher> listTeachers(String state, String branch) {
+		List<Teacher> teachers = teacherRepository.findByState(state);
+		boolean isStateAll = StringUtils.equals(state, JaeConstants.ALL);
+		boolean isBranchAll = StringUtils.equals(branch, JaeConstants.ALL);
+		if(isStateAll){
+			// branch 
+			if(isBranchAll){
+				// all
+				teachers = teacherRepository.findAll();
+			}else{
+				// branch only
+				teachers = teacherRepository.findByBranch(branch);
+			}
+		}else{
+			// state & branch
+			if(isBranchAll){
+				// state only
+				teachers = teacherRepository.findByState(state);
+			}else{
+				// state & branch
+				teachers = teacherRepository.findByStateAndBranch(state, branch);
+			}
 		}
 		return teachers;
 	}
