@@ -9,12 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -85,21 +81,6 @@ public class Student {
     @CreatedDate
     private LocalDate endDate;
 
-    // // Unidirectional ManyToMany
-    // // @ManyToMany(cascade=CascadeType.ALL)
-    //  @ManyToMany(fetch = FetchType.LAZY, cascade = {
-	// 	CascadeType.PERSIST,
-	// 	CascadeType.MERGE,
-	// 	CascadeType.REFRESH,
-	// 	CascadeType.DETACH
-	// })
-    // @JoinTable(name="Student_Elearning",
-    // 	joinColumns = @JoinColumn(name="studentId"),
-    // 	inverseJoinColumns = @JoinColumn(name="elearningId")
-    // )
-    // private Set<Elearning> elearnings = new HashSet<>();
-
-    //@OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @OneToMany(mappedBy = "student", cascade = {
      	CascadeType.PERSIST,
 		CascadeType.MERGE,
@@ -115,6 +96,5 @@ public class Student {
 		CascadeType.DETACH
 	})
     private Set<Attendance> attendances = new HashSet<>();
-
 
 }
