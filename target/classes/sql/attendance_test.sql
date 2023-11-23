@@ -1,5 +1,5 @@
 -- Teacher
-INSERT INTO jae.Teacher (accountNumber,address,bank,branch,bsb,email,endDate,firstName,lastName,memo,phone,startDate,state,superMember,superannuation,tfn,title,vitNumber) VALUES (67890,'123 Belmore Rd','Anz','braybrook','012-345','jy171114@gmail.com',NULL,'Jin','Seo',NULL,'0433195038','2023-11-11','vic','39404TS','VicSuper',123456,'mr','VT393443');
+INSERT INTO jae.Teacher (accountNumber,address,bank,branch,bsb,email,endDate,firstName,lastName,memo,phone,startDate,state,superMember,superannuation,tfn,title,vitNumber) VALUES (67890,'123 Belmore Rd','Anz','11','012-345','jy171114@gmail.com',NULL,'Jin','Seo',NULL,'0433195038','2023-11-11','1','39404TS','VicSuper',123456,'mr','VT393443');
 
 -- Teacher_Class
 INSERT INTO jae.Teacher_Class (teacherId,clazzId) VALUES (1,1);

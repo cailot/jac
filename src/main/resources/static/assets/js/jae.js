@@ -86,7 +86,7 @@ function getParameterByName(name) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		List state
+//	List state
 function listState(selectElementId) {
 	$.ajax({
 		url: '/code/state',
@@ -105,3 +105,19 @@ function listState(selectElementId) {
 	});
 }
   
+//	List branch
+function listBranch(selectElementId) {
+	$.ajax({
+		url: '/code/branch',
+		type: 'GET',
+		success: function (data) {
+			$.each(data, function (index, state) {
+				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
+				$(selectElementId).append(option);	
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}

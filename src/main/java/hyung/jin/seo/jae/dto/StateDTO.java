@@ -16,18 +16,16 @@ import lombok.ToString;
 @ToString
 public class StateDTO implements Serializable{
     
-	public String id;
+	private String id;
 
-	public String code;
+	private String code;
 
-	public String acronym;
-
-	public String name;
+	private String name;
 
 	public StateDTO(State state){
 		this.id = (state.getId()!=null) ? state.getId().toString() : "";
 		this.code = (state.getCode()!=null) ? state.getCode() : "";
-		this.acronym = (state.getAcronym()!=null) ? state.getAcronym() : "";
+		// this.acronym = (state.getAcronym()!=null) ? state.getAcronym() : "";
 		this.name = (state.getName()!=null) ? state.getName() : "";
 	}
 

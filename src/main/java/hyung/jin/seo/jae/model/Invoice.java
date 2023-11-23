@@ -38,13 +38,6 @@ public class Invoice{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-	// @OneToMany(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "invoiceId")
-	// private Set<Enrolment> enrolments = new LinkedHashSet<>();
-
-	// public void addEnrolment(Enrolment enrolment){
-	// 	enrolments.add(enrolment);
-	// }
 	@OneToMany(mappedBy = "invoice", cascade = {
      	CascadeType.PERSIST,
 		CascadeType.MERGE,

@@ -19,350 +19,346 @@ $(function() {
 	listState('#addState');
 });
 	
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// 		Add Student
-	///////////////////////////////////////////////////////////////////////////
-	function addStudent() {
-		// Get from form data
-		var std = {
-			firstName : $("#addFirstName").val(),
-			lastName : $("#addLastName").val(),
-			address : $("#addAddress").val(),
-			gender : $("#addGender").val(),
-			email1 : $("#addEmail1").val(),
-			email2 : $("#addEmail2").val(),
-			relation1 : $("#addRelation1").val(),
-			relation2 : $("#addRelation2").val(),
-			contactNo1 : $("#addContact1").val(),
-			contactNo2 : $("#addContact2").val(),
-			memo : $("#addMemo").val(),
-			state : $("#addState").val(),
-			branch : $("#addBranch").val(),
-			grade : $("#addGrade").val(),
-			registerDate : $("#addRegisterDate").val(),
-		}
-		// Send AJAX to server
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/register',
-			type : 'POST',
-			dataType : 'json',
-			data : JSON.stringify(std),
-			contentType : 'application/json',
-			success : function(student) {
-				//debugger;
-				// Display the success alert
-				$('#success-alert .modal-body').html('New student is registered successfully.');
-				$('#success-alert').modal('toggle');
-				// Update display info
-				$("#formId").val(student.id);
-				$("#formFirstName").val(student.firstName);
-				$("#formLastName").val(student.lastName);
-				$("#formEmail1").val(student.email1);
-				$("#formEmail2").val(student.email2);
-				$("#formRelation1").val(student.relation1);
-				$("#formRelation2").val(student.relation2);
-				$("#formGrade").val(student.grade);
-				$("#formGender").val(student.gender);
-				$("#formAddress").val(student.address);
-				$("#formContact1").val(student.contactNo1);
-				$("#formContact2").val(student.contactNo2);
-				$("#formMemo").val(student.memo);
-				$("#formState").val(student.state);
-				$("#formBranch").val(student.branch);
-				$('#formActive').prop('checked', true);
-				$("#formActive").prop("disabled", true);
-				// Set date value
-				var date = new Date(student.registerDate); // Replace with your date value
-				$("#formRegisterDate").datepicker('setDate', date);
-
-				// clear enrolment basket
-				clearEnrolmentBasket();
-				// clear invoice table
-				clearInvoiceTable();
-				// clear course register section
-				clearCourseRegisteration();
-				// clear attendance table
-				clearAttendanceTable();
-				// ready for course registration
-				readyForCourseRegistration(student.grade);
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-		$('#registerModal').modal('hide');
-		// flush all registered data
-		document.getElementById("studentRegister").reset();		
+///////////////////////////////////////////////////////////////////////////
+// 		Add Student
+///////////////////////////////////////////////////////////////////////////
+function addStudent() {
+	// Get from form data
+	var std = {
+		firstName : $("#addFirstName").val(),
+		lastName : $("#addLastName").val(),
+		address : $("#addAddress").val(),
+		gender : $("#addGender").val(),
+		email1 : $("#addEmail1").val(),
+		email2 : $("#addEmail2").val(),
+		relation1 : $("#addRelation1").val(),
+		relation2 : $("#addRelation2").val(),
+		contactNo1 : $("#addContact1").val(),
+		contactNo2 : $("#addContact2").val(),
+		memo : $("#addMemo").val(),
+		state : $("#addState").val(),
+		branch : $("#addBranch").val(),
+		grade : $("#addGrade").val(),
+		registerDate : $("#addRegisterDate").val(),
 	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 			Deactivate student
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function inactivateStudent() {
-		var id = $("#formId").val();
-		//warn if Id is empty
-		if (id == '') {
-			$('#warning-alert .modal-body').text('Please search student record before suspend');
-			$('#warning-alert').modal('toggle');
-			return;
-		}
-
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/inactivate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				$('#deactivateModal').modal('hide');
-				$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now suspended');
-				$('#success-alert').modal('toggle');
-				clearStudentForm();
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 			Re-activate student
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function reactivateStudent() {
-		var id = $("#formId").val();
-		//warn if Id is empty
-		if (id == '') {
-			$('#warning-alert .modal-body').text('Please search student record before activate');
-			$('#warning-alert').modal('toggle');
-			return;
-		}
-			// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/activate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now activated');
-				$('#success-alert').modal('toggle');
-				displayStudentInfo(data);
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//			Search Student with Keyword	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function searchStudent() {
-		//warn if keyword is empty
-		if ($("#formKeyword").val() == '') {
-			$('#warning-alert .modal-body').text('Please fill in keyword before search');
-			$('#warning-alert').modal('toggle');
-			return;
-		}
-		// send query to controller
-		$('#studentListResultTable tbody').empty();
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/search',
-			type : 'GET',
-			data : {
-				keyword : $("#formKeyword").val()
-			},
-			success : function(data) {
-				//console.log('search - ' + data);
-				if (data == '') {
-					$('#warning-alert .modal-body').html('No record found with <b>' + $("#formKeyword").val() + '</b>');
-					$('#warning-alert').modal('toggle');
-					clearStudentForm();
-					return;
-				}
-				$.each(data, function(index, value) {
-					const cleaned = cleanUpJson(value);
-					var row = $("<tr onclick='displayStudentInfo(" + cleaned + ")'>");		
-					row.append($('<td>').text(value.id));
-					row.append($('<td>').text(value.firstName));
-					row.append($('<td>').text(value.lastName));
-					row.append($('<td>').text(value.grade.toUpperCase()));
-					row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
-					row.append($('<td>').text(formatDate(value.registerDate)));
-					row.append($('<td>').text(formatDate(value.endDate)));
-					row.append($('<td>').text(value.email1));
-					row.append($('<td>').text(value.contactNo1));
-					row.append($('<td>').text(value.email2));
-					row.append($('<td>').text(value.contactNo2));
-					row.append($('<td>').text(value.address));
-					$('#studentListResultTable > tbody').append(row);
-				});
-				$('#studentListResult').modal('show');
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Update existing student
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	function updateStudentInfo() {
-		// if activate process, then call activateStudent()
-		if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
-			reactivateStudent();
-			return;
-		}		
-		//warn if Id is empty
-		if ($("#formId").val() == '') {
-			$('#warning-alert .modal-body').text('Please search student record before update');
-			$('#warning-alert').modal('toggle');
-			return;
-		}
-		// get from formData
-		var std = {
-			id : $('#formId').val(),
-			firstName : $("#formFirstName").val(),
-			lastName : $("#formLastName").val(),
-			email1 : $("#formEmail1").val(),
-			email2 : $("#formEmail2").val(),
-			relation1 : $("#formRelation1").val(),
-			relation2 : $("#formRelation2").val(),
-			address : $("#formAddress").val(),
-			contactNo1 : $("#formContact1").val(),
-			contactNo2 : $("#formContact2").val(),
-			gender : $("#formGender").val(),
-			memo : $("#formMemo").val(),
-			state : $("#formState").val(),
-			branch : $("#formBranch").val(),
-			grade : $("#formGrade").val(),
-			registerDate : $("#formRegisterDate").val(),
-		}
-			
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/update',
-			type : 'PUT',
-			dataType : 'json',
-			data : JSON.stringify(std),
-			contentType : 'application/json',
-			success : function(value) {
-				// Display success alert
-				$('#success-alert .modal-body').html('ID : <b>' + value.id + '</b> is updated successfully.');
-				$('#success-alert').modal('toggle');
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Display selected student in student search
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function displayStudentInfo(value) {
-		
-		clearStudentForm();
-		$("#formId").val(value['id']);
-		//debugger;
-		if(value['endDate']===''){ // active student
-			$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
-			$("#formLastName").val(value['lastName']).css("color", "black").prop('disabled', false);
-			$("#formEmail1").val(value['email1']).css("color", "black").prop('disabled', false);
-			$("#formEmail2").val(value['email2']).css("color", "black").prop('disabled', false);
-			$("#formRelation1").val(value['relation1']).css("color", "black").prop('disabled', false);
-			$("#formRelation2").val(value['relation2']).css("color", "black").prop('disabled', false);
-			$("#formGrade").val(value['grade']).css("color", "black").prop('disabled', false);
-			$("#formGender").val(value['gender']).css("color", "black").prop('disabled', false);
-			$("#formAddress").val(value['address']).css("color", "black").prop('disabled', false);
-			$("#formContact1").val(value['contactNo1']).css("color", "black").prop('disabled', false);
-			$("#formContact2").val(value['contactNo2']).css("color", "black").prop('disabled', false);
-			$("#formMemo").val(value['memo']).css("color", "black").prop('disabled', false);
-			$("#formState").prop('disabled', false);
-			$("#formBranch").prop('disabled', false);
-			$("#formRegisterDate").prop('disabled', false);
+	// Send AJAX to server
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/register',
+		type : 'POST',
+		dataType : 'json',
+		data : JSON.stringify(std),
+		contentType : 'application/json',
+		success : function(student) {
+			//debugger;
+			// Display the success alert
+			$('#success-alert .modal-body').html('New student is registered successfully.');
+			$('#success-alert').modal('toggle');
+			// Update display info
+			$("#formId").val(student.id);
+			$("#formFirstName").val(student.firstName);
+			$("#formLastName").val(student.lastName);
+			$("#formEmail1").val(student.email1);
+			$("#formEmail2").val(student.email2);
+			$("#formRelation1").val(student.relation1);
+			$("#formRelation2").val(student.relation2);
+			$("#formGrade").val(student.grade);
+			$("#formGender").val(student.gender);
+			$("#formAddress").val(student.address);
+			$("#formContact1").val(student.contactNo1);
+			$("#formContact2").val(student.contactNo2);
+			$("#formMemo").val(student.memo);
+			$("#formState").val(student.state);
+			$("#formBranch").val(student.branch);
 			$('#formActive').prop('checked', true);
 			$("#formActive").prop("disabled", true);
-		}else{ // inactive student
-			$("#formFirstName").val(value['firstName']).css("color", "red").prop('disabled', true);
-			$("#formLastName").val(value['lastName']).css("color", "red").prop('disabled', true);
-			$("#formEmail1").val(value['email1']).css("color", "red").prop('disabled', true);
-			$("#formEmail2").val(value['email2']).css("color", "red").prop('disabled', true);
-			$("#formRelation1").val(value['relation1']).css("color", "red").prop('disabled', true);
-			$("#formRelation2").val(value['relation2']).css("color", "red").prop('disabled', true);
-			$("#formGrade").val(value['grade']).css("color", "red").prop('disabled', true);
-			$("#formGender").val(value['gender']).css("color", "red").prop('disabled', true);
-			$("#formAddress").val(value['address']).css("color", "red").prop('disabled', true);
-			$("#formContact1").val(value['contactNo1']).css("color", "red").prop('disabled', true);
-			$("#formContact2").val(value['contactNo2']).css("color", "red").prop('disabled', true);
-			$("#formMemo").val(value['memo']).css("color", "red").prop('disabled', true);
-			$("#formState").prop('disabled', true);
-			$("#formBranch").prop('disabled', true);
-			$("#formRegisterDate").prop('disabled', true);
-			$('#formActive').prop('checked', false);
-			$("#formActive").prop("disabled", false);
+			// Set date value
+			var date = new Date(student.registerDate); // Replace with your date value
+			$("#formRegisterDate").datepicker('setDate', date);
+
+			// clear enrolment basket
+			clearEnrolmentBasket();
+			// clear invoice table
+			clearInvoiceTable();
+			// clear course register section
+			clearCourseRegisteration();
+			// clear attendance table
+			clearAttendanceTable();
+			// ready for course registration
+			readyForCourseRegistration(student.grade);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
 		}
-		$("#formState").val(value['state']);
-		$("#formBranch").val(value['branch']);
-		$("#formEndDate").val(value['endDate']);
-		
-		// Set date value
-		// const tempDate = formatDate(value['registerDate']);
-		// var date = new Date(tempDate); // Replace with your date value
-		var date = new Date(value['registerDate']); // Replace with your date value
-		$("#formRegisterDate").datepicker('setDate', date);
-		
-		// dispose modal
-		$('#studentListResult').modal('hide');
-		// clear search keyword
-		$("#formKeyword").val('');
+	});
+	$('#registerModal').modal('hide');
+	// flush all registered data
+	document.getElementById("studentRegister").reset();		
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Deactivate student
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function inactivateStudent() {
+	var id = $("#formId").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search student record before suspend');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/inactivate/' + id,
+		type : 'PUT',
+		success : function(data) {
+			$('#deactivateModal').modal('hide');
+			$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now suspended');
+			$('#success-alert').modal('toggle');
+			clearStudentForm();
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Re-activate student
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function reactivateStudent() {
+	var id = $("#formId").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search student record before activate');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+		// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/activate/' + id,
+		type : 'PUT',
+		success : function(data) {
+			$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now activated');
+			$('#success-alert').modal('toggle');
+			displayStudentInfo(data);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//			Search Student with Keyword	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function searchStudent() {
+	//warn if keyword is empty
+	if ($("#formKeyword").val() == '') {
+		$('#warning-alert .modal-body').text('Please fill in keyword before search');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$('#studentListResultTable tbody').empty();
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/search',
+		type : 'GET',
+		data : {
+			keyword : $("#formKeyword").val()
+		},
+		success : function(data) {
+			//console.log('search - ' + data);
+			if (data == '') {
+				$('#warning-alert .modal-body').html('No record found with <b>' + $("#formKeyword").val() + '</b>');
+				$('#warning-alert').modal('toggle');
+				clearStudentForm();
+				return;
+			}
+			$.each(data, function(index, value) {
+				const cleaned = cleanUpJson(value);
+				var row = $("<tr onclick='displayStudentInfo(" + cleaned + ")'>");		
+				row.append($('<td>').text(value.id));
+				row.append($('<td>').text(value.firstName));
+				row.append($('<td>').text(value.lastName));
+				row.append($('<td>').text(value.grade.toUpperCase()));
+				row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
+				row.append($('<td>').text(formatDate(value.registerDate)));
+				row.append($('<td>').text(formatDate(value.endDate)));
+				row.append($('<td>').text(value.email1));
+				row.append($('<td>').text(value.contactNo1));
+				row.append($('<td>').text(value.email2));
+				row.append($('<td>').text(value.contactNo2));
+				row.append($('<td>').text(value.address));
+				$('#studentListResultTable > tbody').append(row);
+			});
+			$('#studentListResult').modal('show');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update existing student
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateStudentInfo() {
+	// if activate process, then call activateStudent()
+	if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
+		reactivateStudent();
+		return;
+	}		
+	//warn if Id is empty
+	if ($("#formId").val() == '') {
+		$('#warning-alert .modal-body').text('Please search student record before update');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// get from formData
+	var std = {
+		id : $('#formId').val(),
+		firstName : $("#formFirstName").val(),
+		lastName : $("#formLastName").val(),
+		email1 : $("#formEmail1").val(),
+		email2 : $("#formEmail2").val(),
+		relation1 : $("#formRelation1").val(),
+		relation2 : $("#formRelation2").val(),
+		address : $("#formAddress").val(),
+		contactNo1 : $("#formContact1").val(),
+		contactNo2 : $("#formContact2").val(),
+		gender : $("#formGender").val(),
+		memo : $("#formMemo").val(),
+		state : $("#formState").val(),
+		branch : $("#formBranch").val(),
+		grade : $("#formGrade").val(),
+		registerDate : $("#formRegisterDate").val(),
+	}
 		
-		// associate courseInfo.jsp 
-		// 1. display same selected grade to Course Register section in courseInfo.jsp
-		readyForCourseRegistration(value['grade']);
-		// 2. trigger 'retrieveEnrolment' in courseInfo.jsp
-		retrieveEnrolment(value['id']);
-		// 3. trigger 'retrievAttenance' in attendanceInfo.jsp
-		retrieveAttendance(value['id']);
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/update',
+		type : 'PUT',
+		dataType : 'json',
+		data : JSON.stringify(std),
+		contentType : 'application/json',
+		success : function(value) {
+			// Display success alert
+			$('#success-alert .modal-body').html('ID : <b>' + value.id + '</b> is updated successfully.');
+			$('#success-alert').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display selected student in student search
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayStudentInfo(value) {
 	
+	clearStudentForm();
+	$("#formId").val(value['id']);
+	//debugger;
+	if(value['endDate']===''){ // active student
+		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
+		$("#formLastName").val(value['lastName']).css("color", "black").prop('disabled', false);
+		$("#formEmail1").val(value['email1']).css("color", "black").prop('disabled', false);
+		$("#formEmail2").val(value['email2']).css("color", "black").prop('disabled', false);
+		$("#formRelation1").val(value['relation1']).css("color", "black").prop('disabled', false);
+		$("#formRelation2").val(value['relation2']).css("color", "black").prop('disabled', false);
+		$("#formGrade").val(value['grade']).css("color", "black").prop('disabled', false);
+		$("#formGender").val(value['gender']).css("color", "black").prop('disabled', false);
+		$("#formAddress").val(value['address']).css("color", "black").prop('disabled', false);
+		$("#formContact1").val(value['contactNo1']).css("color", "black").prop('disabled', false);
+		$("#formContact2").val(value['contactNo2']).css("color", "black").prop('disabled', false);
+		$("#formMemo").val(value['memo']).css("color", "black").prop('disabled', false);
+		$("#formState").prop('disabled', false);
+		$("#formBranch").prop('disabled', false);
+		$("#formRegisterDate").prop('disabled', false);
+		$('#formActive').prop('checked', true);
+		$("#formActive").prop("disabled", true);
+	}else{ // inactive student
+		$("#formFirstName").val(value['firstName']).css("color", "red").prop('disabled', true);
+		$("#formLastName").val(value['lastName']).css("color", "red").prop('disabled', true);
+		$("#formEmail1").val(value['email1']).css("color", "red").prop('disabled', true);
+		$("#formEmail2").val(value['email2']).css("color", "red").prop('disabled', true);
+		$("#formRelation1").val(value['relation1']).css("color", "red").prop('disabled', true);
+		$("#formRelation2").val(value['relation2']).css("color", "red").prop('disabled', true);
+		$("#formGrade").val(value['grade']).css("color", "red").prop('disabled', true);
+		$("#formGender").val(value['gender']).css("color", "red").prop('disabled', true);
+		$("#formAddress").val(value['address']).css("color", "red").prop('disabled', true);
+		$("#formContact1").val(value['contactNo1']).css("color", "red").prop('disabled', true);
+		$("#formContact2").val(value['contactNo2']).css("color", "red").prop('disabled', true);
+		$("#formMemo").val(value['memo']).css("color", "red").prop('disabled', true);
+		$("#formState").prop('disabled', true);
+		$("#formBranch").prop('disabled', true);
+		$("#formRegisterDate").prop('disabled', true);
+		$('#formActive').prop('checked', false);
+		$("#formActive").prop("disabled", false);
 	}
+	$("#formState").val(value['state']);
+	$("#formBranch").val(value['branch']);
+	$("#formEndDate").val(value['endDate']);
+	
+	// Set date value
+	// const tempDate = formatDate(value['registerDate']);
+	// var date = new Date(tempDate); // Replace with your date value
+	var date = new Date(value['registerDate']); // Replace with your date value
+	$("#formRegisterDate").datepicker('setDate', date);
+	
+	// dispose modal
+	$('#studentListResult').modal('hide');
+	// clear search keyword
+	$("#formKeyword").val('');
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Clear All Info	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	function clearStudentForm() {
-		document.getElementById("studentInfo").reset();
-		// clear enrolment basket
-		clearEnrolmentBasket();
-		// clear invoice table
-		clearInvoiceTable();
-		// clear course register section
-		clearCourseRegisteration();
-		// clear attendance table
-		clearAttendanceTable();
-	}
+	
+	// associate courseInfo.jsp 
+	// 1. display same selected grade to Course Register section in courseInfo.jsp
+	readyForCourseRegistration(value['grade']);
+	// 2. trigger 'retrieveEnrolment' in courseInfo.jsp
+	retrieveEnrolment(value['id']);
+	// 3. trigger 'retrievAttenance' in attendanceInfo.jsp
+	retrieveAttendance(value['id']);
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 	Initialise Course Register section
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function readyForCourseRegistration(grade){
-		$("#registerGrade").val(grade);
-		listCourses(grade);
-		listBooks(grade);	
-	}
+}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// 	Clear Course Register section
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function clearCourseRegisteration(){
-		// reset course register section
-		document.getElementById("courseRegister").reset();	
-		$('#basketTable > tbody').empty();
-		$('#elearnTable > tbody').empty();		
-		$('#courseTable > tbody').empty();
-		$('#bookTable > tbody').empty();			
-	}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clear All Info	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearStudentForm() {
+	document.getElementById("studentInfo").reset();
+	// clear enrolment basket
+	clearEnrolmentBasket();
+	// clear invoice table
+	clearInvoiceTable();
+	// clear course register section
+	clearCourseRegisteration();
+	// clear attendance table
+	clearAttendanceTable();
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 	Initialise Course Register section
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function readyForCourseRegistration(grade){
+	$("#registerGrade").val(grade);
+	listCourses(grade);
+	listBooks(grade);	
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 	Clear Course Register section
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearCourseRegisteration(){
+	// reset course register section
+	document.getElementById("courseRegister").reset();	
+	$('#basketTable > tbody').empty();
+	$('#elearnTable > tbody').empty();		
+	$('#courseTable > tbody').empty();
+	$('#bookTable > tbody').empty();			
+}
 
 </script>
 

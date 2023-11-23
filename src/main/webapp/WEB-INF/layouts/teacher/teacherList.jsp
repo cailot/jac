@@ -58,6 +58,9 @@
 		listState('#listState');
 		listState('#addState');
 		listState('#editState');
+		listBranch('#listBranch');
+		listBranch('#addBranch');
+		listBranch('#editBranch');
 	});
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,28 +431,6 @@
 					<div class="col-md-2">
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="All">All Branch</option>
-							<option value="braybrook">Braybrook</option>
-							<option value="epping">Epping</option>
-							<option value="balwyn">Balwyn</option>
-							<option value="bayswater">Bayswater</option>
-							<option value="boxhill">Box Hill</option>
-							<option value="carolinesprings">Caroline Springs</option>
-							<option value="chadstone">Chadstone</option>
-							<option value="craigieburn">Craigieburn</option>
-							<option value="cranbourne">Cranbourne</option>
-							<option value="glenwaverley">Glen Waverley</option>
-							<option value="mitcha">Mitcham</option>
-							<option value="narrewarren">Narre Warren</option>
-							<option value="ormond">Ormond</option>
-							<option value="pointcook">Point Cook</option>
-							<option value="preston">Preston</option>
-							<option value="springvale">Springvale</option>
-							<option value="stalbans">St Albans</option>
-							<option value="werribee">Werribee</option>
-							<option value="mernda">Mernda</option>
-							<option value="melton">Melton</option>
-							<option value="glenroy">Glenroy</option>
-							<option value="packenham">Packenham</option>
 						</select>
 					</div>
 					<!-- put blank col-md-2 -->
@@ -595,28 +576,6 @@
 							<div class="col-md-6">
 								<label for="addBranch" class="label-form">Branch</label>
 								<select class="form-control" id="addBranch" name="addBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
 								</select>
 							</div>
 							<div class="col-md-2">
@@ -741,28 +700,6 @@
 							<div class="col-md-6">
 								<label for="editBranch" class="label-form">Branch</label>
 								<select class="form-control" id="editBranch" name="editBranch">
-									<option value="braybrook">Braybrook</option>
-									<option value="epping">Epping</option>
-									<option value="balwyn">Balwyn</option>
-									<option value="bayswater">Bayswater</option>
-									<option value="boxhill">Box Hill</option>
-									<option value="carolinesprings">Caroline Springs</option>
-									<option value="chadstone">Chadstone</option>
-									<option value="craigieburn">Craigieburn</option>
-									<option value="cranbourne">Cranbourne</option>
-									<option value="glenwaverley">Glen Waverley</option>
-									<option value="mitcha">Mitcham</option>
-									<option value="narrewarren">Narre Warren</option>
-									<option value="ormond">Ormond</option>
-									<option value="pointcook">Point Cook</option>
-									<option value="preston">Preston</option>
-									<option value="springvale">Springvale</option>
-									<option value="stalbans">St Albans</option>
-									<option value="werribee">Werribee</option>
-									<option value="mernda">Mernda</option>
-									<option value="melton">Melton</option>
-									<option value="glenroy">Glenroy</option>
-									<option value="packenham">Packenham</option>
 								</select>
 							</div>
 							<div class="col-md-2">
