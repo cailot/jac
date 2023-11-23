@@ -1,7 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="java.util.Calendar" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -44,6 +43,10 @@
 		$("#editVacationEndDate").datepicker({
 			dateFormat: 'dd/mm/yy'
 		});
+
+		// initialise state list when loading
+		listState('#listState');
+		
 
 	});
 
@@ -171,27 +174,12 @@
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="classList" method="get" action="${pageContext.request.contextPath}/class/listCycle">
+		<form id="branchList" method="get" action="${pageContext.request.contextPath}/code/listBranch">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
-						<select class="form-control" id="listYear" name="listYear">
-							<%
-								Calendar now = Calendar.getInstance();
-								int currentYear = now.get(Calendar.YEAR);
-								int nextYear = currentYear + 1;
-							%>
+						<select class="form-control" id="listState" name="listState">
 							<option value="All">All</option>
-							<option value="<%= nextYear %>"><%= nextYear %></option>
-							<option value="<%= currentYear %>"><%= currentYear %></option>
-							<%
-								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
-							%>
-								<option value="<%= i %>"><%= i %></option>
-							<%
-							}
-							%>
 						</select>
 					</div>
 					<div class="offset-md-6"></div>
@@ -200,10 +188,8 @@
 								class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal"
-							data-target="#registerCycleModal"
-							onclick="getCoursesByGrade('p2', '#addCourse')"><i
-								class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerCycleModal">
+							<i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -211,50 +197,47 @@
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="cycleListTable" class="table table-striped table-bordered">
+							<table id="branchListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Year</th>
-										<th>Description</th>
-										<th>Start Date</th>
-										<th>End Date</th>
-										<th>Vacation Start</th>
-										<th>Vacation End</th>
+										<th>Code</th>
+										<th>Name</th>
+										<th>Phone</th>
+										<th>Email</th>
+										<th>Address</th>
+										<th>ABN</th>
 										<th data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${CycleList != null}">
-											<c:forEach items="${CycleList}" var="cycle">
+										<c:when test="${BranchList != null}">
+											<c:forEach items="${BranchList}" var="branch">
 												<tr>
 													<td class="small ellipsis">
-														<c:out value="${cycle.year}" />
-													</td>
-													<td class="small ellipsis"><span
-															style="text-transform: capitalize;">
-															<c:out value="${cycle.description}" />
-														</span></td>
-													<td class="small ellipsis">
-														<fmt:parseDate var="cycleStartDate" value="${cycle.startDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${cycleStartDate}" pattern="dd/MM/yyyy" />
+														<c:out value="${branch.code}" />
 													</td>
 													<td class="small ellipsis">
-														<fmt:parseDate var="cycleEndDate" value="${cycle.endDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${cycleEndDate}" pattern="dd/MM/yyyy" />
+														<span style="text-transform: capitalize;">
+															<c:out value="${branch.name}" />
+														</span>
 													</td>
 													<td class="small ellipsis">
-														<fmt:parseDate var="cycleVacationStartDate" value="${cycle.vacationStartDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${cycleVacationStartDate}" pattern="dd/MM/yyyy" />
+														<c:out value="${branch.phone}" />
 													</td>
 													<td class="small ellipsis">
-														<fmt:parseDate var="cycleVactionEndDate" value="${cycle.vacationEndDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${cycleVactionEndDate}" pattern="dd/MM/yyyy" />
+														<c:out value="${branch.email}" />
+													</td>
+													<td class="small ellipsis">
+														<c:out value="${branch.address}" />
+													</td>
+													<td class="small ellipsis">
+														<c:out value="${branch.abn}" />
 													</td>
 													<td class="text-center">
 														<i class="bi bi-pencil-square text-primary fa-lg"
 															data-toggle="tooltip" title="Edit"
-															onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;
+															onclick="retrieveBranchInfo('${branch.id}')"></i>&nbsp;
 													</td>
 												</tr>
 											</c:forEach>
@@ -287,15 +270,7 @@
 							<div class="col-md-3">
 								<label for="addYear" class="label-form">Academic Year</label> 
 								<select class="form-control" id="addYear" name="addYear">
-								<option value="<%= nextYear %>"><%= nextYear %></option>
-								<option value="<%= currentYear %>"><%= currentYear %></option>
-								<%
-									for (int i = currentYear - 1; i >= currentYear - 3; i--) {
-								%>
-								<option value="<%= i %>"><%= i %></option>
-								<%
-									}
-								%>
+								
 								</select>
 							</div>
 							<div class="col-md-7">
@@ -369,15 +344,7 @@
 							<div class="col-md-3">
 								<label for="editYear" class="label-form">Academic Year</label> 
 								<select class="form-control" id="editYear" name="editYear">
-								<option value="<%= nextYear %>"><%= nextYear %></option>
-								<option value="<%= currentYear %>"><%= currentYear %></option>
-								<%
-									for (int i = currentYear - 1; i >= currentYear - 5; i--) {
-								%>
-								<option value="<%= i %>"><%= i %></option>
-								<%
-									}
-								%>
+								
 								</select>
 							</div>
 							<div class="col-md-7">

@@ -100,7 +100,7 @@ public class JaeClazzController {
 			dtos = cycleService.allCycles();
 		}
 		model.addAttribute(JaeConstants.CYCLE_LIST, dtos);
-		return "cycleListPage";
+		return "cyclePage";
 	}
 
 	// bring all classes in database
