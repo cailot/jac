@@ -58,11 +58,7 @@ public class CodeServiceImpl implements CodeService {
 	public List<BranchDTO> allBranches() {
 		List<BranchDTO> dtos = new ArrayList<>();
 		try{
-			List<Object[]> objs = branchRepository.getAllBranches();
-			for(Object[] obj : objs){
-				BranchDTO dto = new BranchDTO(obj);
-				dtos.add(dto);
-			}
+			dtos = branchRepository.getAllBranches();
 		}catch(Exception e){
 			System.out.println("No branch found");
 		}
@@ -73,11 +69,7 @@ public class CodeServiceImpl implements CodeService {
 	public List<BranchDTO> searchBranchByState(String state) {
 		List<BranchDTO> dtos = new ArrayList<>();
 		try{
-			List<Object[]> objs = branchRepository.searchBranchByState(state);
-			for(Object[] obj : objs){
-				BranchDTO dto = new BranchDTO(obj);
-				dtos.add(dto);
-			}
+			dtos = branchRepository.searchBranchByState(Long.parseLong(state));
 		}catch(Exception e){
 			System.out.println("No branch found");
 		}
@@ -135,6 +127,41 @@ public class CodeServiceImpl implements CodeService {
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to delete");
 		}
+	}
+
+	@Override
+	public State getState(Long id) {
+		State state = null;
+		try {
+			state = stateRepository.findById(id).get();
+		} catch (Exception e) {
+			System.out.println("No state found");
+		}
+		return state;
+	}
+
+	@Override
+	public State updateState(State newState, Long id) {
+		State state = stateRepository.findById(id).map(st -> {
+			st.setCode(newState.getCode());
+			st.setName(newState.getName());
+			return stateRepository.save(st);
+		}).orElseGet(() -> {
+			newState.setId(id);
+			return stateRepository.save(newState);
+		});
+		return state;
+	}
+
+	@Override
+	public BranchDTO getBranch(Long id) {
+		BranchDTO dto = null;
+		try{
+			dto = branchRepository.findBranch(id);
+		}catch(Exception e){
+			System.out.println("No branch found");
+		}
+		return dto;
 	}
 
 }

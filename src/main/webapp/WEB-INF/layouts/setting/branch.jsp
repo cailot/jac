@@ -46,34 +46,41 @@
 
 		// initialise state list when loading
 		listState('#listState');
-		
+		listState('#addState');
+		listState('#editState');
 
 	});
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Register Cycle
+	//		Register Branch
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addCycle() {
+	function addBranch() {
 		// Get from form data
-		var cycle = {
-			year: $("#addYear").val(),
-			description: $("#addDescription").val(),
-			startDate: $("#addStartDate").val(),
-			endDate: $("#addEndDate").val(),
-			vacationStartDate: $("#addVacationStartDate").val(),
-			vacationEndDate: $("#addVacationEndDate").val()
+		var branch = {
+			stateId: $("#addState").val(),
+			code: $("#addCode").val(),
+			name: $("#addName").val(),
+			phone: $("#addPhone").val(),
+			email: $("#addEmail").val(),
+			address: $("#addAddress").val(),
+			abn: $("#addAbn").val(),
+			bank: $("#addBank").val(),
+			bsb: $("#addBsb").val(),
+			accountNumber: $("#addAccountNumber").val(),
+			accountName: $("#addAccountName").val(),
+			info: $("#addInfo").val()
 		}
 		// Send AJAX to server
 		$.ajax({
-			url: '${pageContext.request.contextPath}/class/registerCycle',
+			url: '${pageContext.request.contextPath}/code/registerBranch',
 			type: 'POST',
 			dataType: 'json',
-			data: JSON.stringify(cycle),
+			data: JSON.stringify(branch),
 			contentType: 'application/json',
 			success: function (student) {
 				// Display the success alert
 				$('#success-alert .modal-body').text(
-					'New Cycle is registered successfully.');
+					'New Branch is registered successfully.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -83,35 +90,36 @@
 				console.log('Error : ' + error);
 			}
 		});
-		$('#registerCycleModal').modal('hide');
+		$('#registerBranchModal').modal('hide');
 		// flush all registered data
-		document.getElementById("cycleRegister").reset();
+		document.getElementById("branchRegister").reset();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Retrieve Cycle
+	//		Retrieve Branch
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function retrieveCycleInfo(cycleId) {
+	function retrieveBranchInfo(branchId) {
 		// send query to controller
 		$.ajax({
-			url: '${pageContext.request.contextPath}/class/get/cycle/' + cycleId,
+			url: '${pageContext.request.contextPath}/code/getBranch/' + branchId,
 			type: 'GET',
-			success: function (cycle) {
-				// console.log(cycle);
-				$("#editId").val(cycle.id);
-				$("#editYear").val(cycle.year);
-				$("#editDescription").val(cycle.description);
-				// Set date value
-				var startDate = new Date(cycle.startDate); // Replace with your date value
-				$("#editStartDate").datepicker('setDate', startDate);
-				var endDate = new Date(cycle.endDate); // Replace with your date value
-				$("#editEndDate").datepicker('setDate', endDate);
-				var vacationStartDate = new Date(cycle.vacationStartDate); // Replace with your date value
-				$("#editVacationStartDate").datepicker('setDate', vacationStartDate);
-				var vacationEndDate = new Date(cycle.vacationEndDate); // Replace with your date value
-				$("#editVacationEndDate").datepicker('setDate', vacationEndDate);
+			success: function (branch) {
+				// console.log(branch);
+				$("#editId").val(branch.id);
+				$("#editCode").val(branch.code);
+				$("#editName").val(branch.name);
+				$("#editPhone").val(branch.phone);
+				$("#editEmail").val(branch.email);
+				$("#editAddress").val(branch.address);
+				$("#editAbn").val(branch.abn);
+				$("#editBank").val(branch.bank);
+				$("#editBsb").val(branch.bsb);
+				$("#editAccountNumber").val(branch.accountNumber);
+				$("#editAccountName").val(branch.accountName);
+				$("#editInfo").val(branch.info);
+
 				// show dialog
-				$('#editCycleModal').modal('show');
+				$('#editBranchModal').modal('show');
 			},
 			error: function (xhr, status, error) {
 				console.log('Error : ' + error);
@@ -120,10 +128,10 @@
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Update Cycle
+	//		Update Branch
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function updateCycleInfo() {
-		var cycleId = $("#editId").val();
+	function updateBranchInfo() {
+		var branchId = $("#editId").val();
 		// get from formData
 		var cycle = {
 			id: cycleId,
@@ -157,7 +165,7 @@
 			}
 		});
 
-		$('#editCycleModal').modal('hide');
+		$('#editBranchModal').modal('hide');
 		// flush all registered data
 		clearCycleForm("cycleEdit");
 	}
@@ -188,7 +196,7 @@
 								class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerCycleModal">
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerBranchModal">
 							<i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
@@ -201,6 +209,7 @@
 								<thead class="table-primary">
 									<tr>
 										<th>Code</th>
+										<th>State</th>
 										<th>Name</th>
 										<th>Phone</th>
 										<th>Email</th>
@@ -216,6 +225,22 @@
 												<tr>
 													<td class="small ellipsis">
 														<c:out value="${branch.code}" />
+													</td>
+													<td class="small ellipsis">
+														<span style="text-transform: capitalize;">
+															<c:choose>
+															<c:when test="${branch.stateId eq '1'}">Victoria</c:when>
+															<c:when test="${branch.stateId eq '2'}">New South Wales</c:when>
+															<c:when test="${branch.stateId eq '3'}">Queensland</c:when>
+															<c:when test="${branch.stateId eq '4'}">South Australia</c:when>
+															<c:when test="${branch.stateId eq '5'}">Western Australia</c:when>
+															<c:when test="${branch.stateId eq '6'}">Tasmania</c:when>
+															<c:when test="${branch.stateId eq '7'}">Northern Territory</c:when>
+															<c:when test="${branch.stateId eq '8'}">Australian Capital Territory</c:when>
+															<c:when test="${branch.stateId eq '9'}">New Zealand</c:when>
+															<c:otherwise>Unknown State</c:otherwise>
+															</c:choose>
+														</span>
 													</td>
 													<td class="small ellipsis">
 														<span style="text-transform: capitalize;">
@@ -256,133 +281,163 @@
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerCycleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-	aria-hidden="true">
+<div class="modal fade" id="registerBranchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Adademic Cycle Registration</header>
-
-					<form id="cycleRegister">
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
+					<header class="text-primary font-weight-bold">Branch Registration</header>
+					<form id="branchRegister">
+						<div class="form-row mt-2">
 							<div class="col-md-3">
-								<label for="addYear" class="label-form">Academic Year</label> 
-								<select class="form-control" id="addYear" name="addYear">
-								
+								<label for="addState" class="label-form">State</label>
+								<select class="form-control" id="addState" name="addState">
+								</select>
+							</div>
+							<div class="col-md-2">
+								<label for="addCode" class="label-form">Code</label>
+								<input type="number" class="form-control" id="addCode" name="addCode">
 								</select>
 							</div>
 							<div class="col-md-7">
-								<label for="addDescription" class="label-form">Description</label> 
-								<input type="text" class="form-control" id="addDescription" name="addDescription" placeholder="Description" title="Please enter cycle description">
+								<label for="addName" class="label-form">Name</label>
+								<input type="text" class="form-control" id="addName" name="addName">
 							</div>
-							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
-							<div class="col-md-4">
-								<label for="addStartDate" class="label-form">Start Date</label>
-								<input type="text" class="form-control datepicker" id="addStartDate" name="addStartDate" placeholder="dd/mm/yyyy">
+						<div class="form-row mt-2">
+							<div class="col-md-6">
+								<label for="addPhone" class="label-form">Phone</label>
+								<input type="text" class="form-control" id="addPhone" name="addPhone">
 							</div>
-							<div class="offset-md-2"></div>
-							<div class="col-md-4">
-								<label for="addEndDate" class="label-form">End Date</label>
-								<input type="text" class="form-control datepicker" id="addEndDate" name="addEndDate" placeholder="dd/mm/yyyy">
+							<div class="col-md-6">
+								<label for="addEmail" class="label-form">Email</label>
+								<input type="text" class="form-control" id="addEmail" name="addEmail">
 							</div>
-							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
-							<div class="col-md-4">
-								<label for="addVacationStartDate" class="label-form">Vacation Start</label>
-								<input type="text" class="form-control datepicker" id="addVacationStartDate" name="addVacationStartDate" placeholder="dd/mm/yyyy">
+						<div class="form-row mt-2">
+							<div class="col-md-12">
+								<label for="addAddress" class="label-form">Address</label>
+								<input type="text" class="form-control" id="addAddress" name="addAddress">
 							</div>
-							<div class="offset-md-2"></div>
-							<div class="col-md-4">
-								<label for="addVacationEndDate" class="label-form">Vacation End</label>
-								<input type="text" class="form-control datepicker" id="addVacationEndDate" name="addVacationEndDate" placeholder="dd/mm/yyyy">
-							</div>
-							<div class="offset-md-1"></div>
 						</div>
-						<script>
-							var today = new Date();
-							var day = today.getDate();
-							var month = today.getMonth() + 1; // Note: January is 0
-							var year = today.getFullYear();
-							var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-							document.getElementById('addStartDate').value = formattedDate;
-							document.getElementById('addEndDate').value = formattedDate;
-							document.getElementById('addVacationStartDate').value = formattedDate;
-							document.getElementById('addVacationEndDate').value = formattedDate;
-						</script>
+						<div class="form-row mt-2">
+							<div class="col-md-4">
+								<label for="addAbn" class="label-form">ABN</label>
+								<input type="number" class="form-control" id="addAbn" name="addAbn">
+							</div>
+							<div class="col-md-4">
+								<label for="addBank" class="label-form">Bank</label>
+								<input type="text" class="form-control" id="addBank" name="addBank">
+							</div>
+							<div class="col-md-4">
+								<label for="addBsb" class="label-form">Bsb</label>
+								<input type="text" class="form-control" id="addBsb" name="addBsb">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-6">
+								<label for="addAccountNumber" class="label-form">Account Number</label>
+								<input type="number" class="form-control" id="addAccountNumber" name="addAccountNumber">
+							</div>
+							<div class="col-md-6">
+								<label for="addAccountName" class="label-form">Account Name</label>
+								<input type="text" class="form-control" id="addAccountName" name="addAccountName">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-12">
+								<label for="addInfo" class="label-form">Information</label>
+								<textarea class="form-control" id="addInfo" name="addInfo" rows="5"></textarea>
+							</div>
+						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addCycle()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearCycleForm('cycleRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="addBranch()">Register</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
 		</div>
+		<!-- /.modal-content -->
 	</div>
+	<!-- /.modal-dialog -->
 </div>
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editCycleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
+<div class="modal fade" id="editBranchModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Academic Cycle Edit</header>
-
-					<form id="cycleEdit">
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
+					<header class="text-primary font-weight-bold">Branch Edit</header>
+					<form id="branchEdit">	
+						<div class="form-row mt-2">
 							<div class="col-md-3">
-								<label for="editYear" class="label-form">Academic Year</label> 
-								<select class="form-control" id="editYear" name="editYear">
-								
+								<label for="editState" class="label-form">State</label>
+								<select class="form-control" id="editState" name="editState">
+								</select>
+							</div>
+							<div class="col-md-2">
+								<label for="editCode" class="label-form">Code</label>
+								<input type="text" class="form-control" id="editCode" name="editCode">
 								</select>
 							</div>
 							<div class="col-md-7">
-								<label for="editDescription" class="label-form">Description</label> 
-								<input type="text" class="form-control" id="editDescription" name="editDescription" placeholder="Description" title="Please enter cycle description">
+								<label for="editName" class="label-form">Name</label>
+								<input type="text" class="form-control" id="editName" name="editName">
 							</div>
-							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
-							<div class="col-md-4">
-								<label for="editStartDate" class="label-form">Start Date</label>
-								<input type="text" class="form-control datepicker" id="editStartDate" name="editStartDate" placeholder="dd/mm/yyyy">
+						<div class="form-row mt-2">
+							<div class="col-md-6">
+								<label for="editPhone" class="label-form">Phone</label>
+								<input type="text" class="form-control" id="editPhone" name="editPhone">
 							</div>
-							<div class="offset-md-2"></div>
-							<div class="col-md-4">
-								<label for="editEndDate" class="label-form">End Date</label>
-								<input type="text" class="form-control datepicker" id="editEndDate" name="editEndDate" placeholder="dd/mm/yyyy">
+							<div class="col-md-6">
+								<label for="editEmail" class="label-form">Email</label>
+								<input type="text" class="form-control" id="editEmail" name="editEmail">
 							</div>
-							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
-							<div class="offset-md-1"></div>
-							<div class="col-md-4">
-								<label for="editVacationStartDate" class="label-form">Vacation Start</label>
-								<input type="text" class="form-control datepicker" id="editVacationStartDate" name="editVacationStartDate" placeholder="dd/mm/yyyy">
+						<div class="form-row mt-2">
+							<div class="col-md-12">
+								<label for="editAddress" class="label-form">Address</label>
+								<input type="text" class="form-control" id="editAddress" name="editAddress">
 							</div>
-							<div class="offset-md-2"></div>
+						</div>
+						<div class="form-row mt-2">
 							<div class="col-md-4">
-								<label for="editVacationEndDate" class="label-form">Vacation End</label>
-								<input type="text" class="form-control datepicker" id="editVacationEndDate" name="editVacationEndDate" placeholder="dd/mm/yyyy">
+								<label for="editAbn" class="label-form">ABN</label>
+								<input type="text" class="form-control" id="editAbn" name="editAbn">
 							</div>
-							<div class="offset-md-1"></div>
+							<div class="col-md-4">
+								<label for="editBank" class="label-form">Bank</label>
+								<input type="text" class="form-control" id="editBank" name="editBank">
+							</div>
+							<div class="col-md-4">
+								<label for="editBsb" class="label-form">Bsb</label>
+								<input type="text" class="form-control" id="editBsb" name="editBsb">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-6">
+								<label for="editAccountNumber" class="label-form">Account Number</label>
+								<input type="text" class="form-control" id="editAccountNumber" name="editAccountNumber">
+							</div>
+							<div class="col-md-6">
+								<label for="editAccountName" class="label-form">Account Name</label>
+								<input type="text" class="form-control" id="editAccountName" name="editAccountName">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-12">
+								<label for="editInfo" class="label-form">Information</label>
+								<textarea class="form-control" id="editInfo" name="editInfo" rows="5"></textarea>
+							</div>
 						</div>
 						<input type="hidden" id="editId" name="editId">
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateCycleInfo()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" onclick="updateBranchInfo()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
