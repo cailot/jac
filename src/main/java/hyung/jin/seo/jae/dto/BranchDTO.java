@@ -1,8 +1,6 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-
 import hyung.jin.seo.jae.model.Branch;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -58,21 +56,22 @@ public class BranchDTO implements Serializable{
 		this.info = (branch.getInfo()!=null) ? branch.getInfo() : "";
 	}
 
-	// public BranchDTO(long id, String code, String name, String phone, String email, String address, String abn, String bank, String bsb, String accountNumber, String accountName, String info, long stateId){
-	// 	this.id = (id!=0) ? String.valueOf(id) : "";
-	// 	this.code = (code!=null) ? code : "";
-	// 	this.name = (name!=null) ? name : "";
-	// 	this.phone = (phone!=null) ? phone : "";
-	// 	this.email = (email!=null) ? email : "";
-	// 	this.address = (address!=null) ? address : "";
-	// 	this.abn = (abn!=null) ? abn : "";
-	// 	this.bank = (bank!=null) ? bank : "";
-	// 	this.bsb = (bsb!=null) ? bsb : "";
-	// 	this.accountNumber = (accountNumber!=null) ? accountNumber : "";
-	// 	this.accountName = (accountName!=null) ? accountName : "";
-	// 	this.info = (info!=null) ? info : "";
-	// 	this.stateId = (stateId!=0) ? String.valueOf(stateId) : "";
-	// }
+	public BranchDTO(long id, String code, String name, String phone, String email, String address, String abn, String bank, String bsb, String accountNumber, String accountName, String info, long stateId){
+		this.id = String.valueOf(id);
+		this.code = code;
+		this.name = name;
+		this.phone = phone;
+		this.email = email;
+		this.address = address;
+		this.abn = abn;
+		this.bank = bank;
+		this.bsb = bsb;
+		this.accountNumber = accountNumber;
+		this.accountName = accountName;
+		this.info = info;
+		this.stateId = String.valueOf(stateId);
+	}
+
 	public BranchDTO(Object[] object){
 		this.id = (object[0]!=null) ? String.valueOf(object[0]) : "0";
 		this.code = (object[1]!=null) ? String.valueOf(object[1]) : "";
@@ -87,5 +86,22 @@ public class BranchDTO implements Serializable{
 		this.accountName = (object[10]!=null) ? String.valueOf(object[10]) : "";
 		this.info = (object[11]!=null) ? String.valueOf(object[11]) : "";
 		this.stateId = (object[12]!=null) ? String.valueOf(object[12]) : "0";
+	}
+
+	public Branch convertToBranch(BranchDTO dto){
+		Branch branch = new Branch();
+		// branch.setId(Long.parseLong(dto.getId()));
+		branch.setCode(dto.getCode());
+		branch.setName(dto.getName());
+		branch.setPhone(dto.getPhone());
+		branch.setEmail(dto.getEmail());
+		branch.setAddress(dto.getAddress());
+		branch.setAbn(dto.getAbn());
+		branch.setBank(dto.getBank());
+		branch.setBsb(dto.getBsb());
+		branch.setAccountNumber(dto.getAccountNumber());
+		branch.setAccountName(dto.getAccountName());
+		branch.setInfo(dto.getInfo());
+		return branch;
 	}
 }
