@@ -156,14 +156,7 @@
 
 		$('#editCycleModal').modal('hide');
 		// flush all registered data
-		clearCycleForm("cycleEdit");
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Clear class register form
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	function clearCycleForm(elementId) {
-		document.getElementById(elementId).reset();
+		clearFormData("cycleEdit");
 	}
 
 </script>
@@ -341,10 +334,8 @@
 						</script>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addCycle()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearCycleForm('cycleRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="addCycle()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearFormData('cycleRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>

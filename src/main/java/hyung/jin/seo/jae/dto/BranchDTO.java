@@ -90,7 +90,8 @@ public class BranchDTO implements Serializable{
 
 	public Branch convertToBranch(BranchDTO dto){
 		Branch branch = new Branch();
-		// branch.setId(Long.parseLong(dto.getId()));
+		//branch.setId(Long.parseLong(dto.getId()));
+		branch.setId((dto.getId()!=null) ? Long.parseLong(dto.getId()) : 0);
 		branch.setCode(dto.getCode());
 		branch.setName(dto.getName());
 		branch.setPhone(dto.getPhone());
