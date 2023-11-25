@@ -13,37 +13,6 @@
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
 	$(document).ready(function () {
-		$('#cycleListTable').DataTable({
-			language: {
-				search: 'Filter:'
-			},
-		});
-
-		$("#addStartDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#addEndDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#addVacationStartDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#addVacationEndDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#editStartDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#editEndDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#editVacationStartDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-		$("#editVacationEndDate").datepicker({
-			dateFormat: 'dd/mm/yy'
-		});
-
 		// initialise state list when loading
 		listState('#listState');
 		listState('#addState');
@@ -106,6 +75,8 @@
 			success: function (branch) {
 				// console.log(branch);
 				$("#editId").val(branch.id);
+				$("#editState").val(branch.stateId);
+				$("#editState").prop('disabled', true);
 				$("#editCode").val(branch.code);
 				$("#editName").val(branch.name);
 				$("#editPhone").val(branch.phone);
@@ -132,29 +103,36 @@
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function updateBranchInfo() {
 		var branchId = $("#editId").val();
+		var branchName = $("#editName").val();
 		// get from formData
-		var cycle = {
-			id: cycleId,
-			year: $("#editYear").val(),
-			description: $("#editDescription").val(),
-			startDate: $("#editStartDate").val(),
-			endDate: $("#editEndDate").val(),
-			vacationStartDate: $("#editVacationStartDate").val(),
-			vacationEndDate: $("#editVacationEndDate").val()
+		var branch = {
+			id: branchId,
+			stateId: $("#editState").val(),
+			code: $("#editCode").val(),
+			name: branchName,
+			phone: $("#editPhone").val(),
+			email: $("#editEmail").val(),
+			address: $("#editAddress").val(),
+			abn: $("#editAbn").val(),
+			bank: $("#editBank").val(),
+			bsb: $("#editBsb").val(),
+			accountNumber: $("#editAccountNumber").val(),
+			accountName: $("#editAccountName").val(),
+			info: $("#editInfo").val()
 		}
 
 		//console.log(cycle);
 		// send query to controller
 		$.ajax({
-			url: '${pageContext.request.contextPath}/class/update/cycle',
+			url: '${pageContext.request.contextPath}/code/updateBranch',
 			type: 'PUT',
 			dataType: 'json',
-			data: JSON.stringify(cycle),
+			data: JSON.stringify(branch),
 			contentType: 'application/json',
 			success: function (value) {
 				// Display success alert
 				$('#success-alert .modal-body').text(
-					'ID : ' + cycleId + ' is updated successfully.');
+					'ID : ' + branchName + ' is updated successfully.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -167,15 +145,36 @@
 
 		$('#editBranchModal').modal('hide');
 		// flush all registered data
-		clearCycleForm("cycleEdit");
+		clearFormData("branchEdit");
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Clear class register form
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	function clearCycleForm(elementId) {
-		document.getElementById(elementId).reset();
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//		Delete Branch
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	function deleteBranch(id) {
+	if(confirm("Are you sure you want to delete this Branch ?")){
+		// send query to controller
+		$.ajax({
+			url : '${pageContext.request.contextPath}/code/deleteBranch/' + id,
+			type : 'PUT',
+			success : function(data) {
+				// clear existing form
+				$('#success-alert .modal-body').text(
+						'ID : ' + id + ' is now deleted');
+				$('#success-alert').modal('show');
+				$('#success-alert').on('hidden.bs.modal', function(e) {
+					location.reload();
+				});
+			},
+			error : function(xhr, status, error) {
+				console.log('Error : ' + error);
+			}
+		}); 
+	}else{
+		return;
 	}
+}
+
 
 </script>
 
@@ -233,11 +232,10 @@
 															<c:when test="${branch.stateId eq '2'}">New South Wales</c:when>
 															<c:when test="${branch.stateId eq '3'}">Queensland</c:when>
 															<c:when test="${branch.stateId eq '4'}">South Australia</c:when>
-															<c:when test="${branch.stateId eq '5'}">Western Australia</c:when>
-															<c:when test="${branch.stateId eq '6'}">Tasmania</c:when>
+															<c:when test="${branch.stateId eq '5'}">Tasmania</c:when>
+															<c:when test="${branch.stateId eq '6'}">Western Australia</c:when>
 															<c:when test="${branch.stateId eq '7'}">Northern Territory</c:when>
 															<c:when test="${branch.stateId eq '8'}">Australian Capital Territory</c:when>
-															<c:when test="${branch.stateId eq '9'}">New Zealand</c:when>
 															<c:otherwise>Unknown State</c:otherwise>
 															</c:choose>
 														</span>
@@ -260,9 +258,8 @@
 														<c:out value="${branch.abn}" />
 													</td>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg"
-															data-toggle="tooltip" title="Edit"
-															onclick="retrieveBranchInfo('${branch.id}')"></i>&nbsp;
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranchInfo('${branch.id}')"></i>&nbsp;
+														<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -353,7 +350,7 @@
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="addBranch()">Register</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearFormData('branchRegister')">Close</button>
 					</div>
 				</section>
 			</div>
