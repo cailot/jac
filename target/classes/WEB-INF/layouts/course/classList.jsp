@@ -61,6 +61,9 @@ $(document).ready(function () {
 	listState('#listState');
 	listState('#addState');
 	listState('#editState');
+	listBranch('#listBranch');
+	listBranch('#addBranch');
+	listBranch('#editBranch');
 
 });
 
@@ -270,28 +273,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 					<div class="col-md-2">
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="All">All Branch</option>
-							<option value="braybrook">Braybrook</option>
-							<option value="epping">Epping</option>
-							<option value="balwyn">Balwyn</option>
-							<option value="bayswater">Bayswater</option>
-							<option value="boxhill">Box Hill</option>
-							<option value="carolinesprings">Caroline Springs</option>
-							<option value="chadstone">Chadstone</option>
-							<option value="craigieburn">Craigieburn</option>
-							<option value="cranbourne">Cranbourne</option>
-							<option value="glenwaverley">Glen Waverley</option>
-							<option value="mitcha">Mitcham</option>
-							<option value="narrewarren">Narre Warren</option>
-							<option value="ormond">Ormond</option>
-							<option value="pointcook">Point Cook</option>
-							<option value="preston">Preston</option>
-							<option value="springvale">Springvale</option>
-							<option value="stalbans">St Albans</option>
-							<option value="werribee">Werribee</option>
-							<option value="mernda">Mernda</option>
-							<option value="melton">Melton</option>
-							<option value="glenroy">Glenroy</option>
-							<option value="packenham">Packenham</option>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -391,10 +372,42 @@ function editInitialiseCourseByGrade(grade, courseId) {
 														</span>
 													</td>
 													  
-													<td class="small ellipsis"><span
-															style="text-transform: capitalize;">
-															<c:out value="${clazz.branch}" />
-														</span></td>
+													<td class="small ellipsis">
+														<span style="text-transform: capitalize;">
+															<c:choose>
+															<c:when test="${clazz.branch eq '12'}">Box Hill</c:when>
+															<c:when test="${clazz.branch eq '13'}">Braybrook</c:when>
+															<c:when test="${clazz.branch eq '14'}">Chadstone</c:when>
+															<c:when test="${clazz.branch eq '15'}">Cranbourne</c:when>
+															<c:when test="${clazz.branch eq '16'}">Epping</c:when>
+															<c:when test="${clazz.branch eq '17'}">Glen Waverley</c:when>
+															<c:when test="${clazz.branch eq '18'}">Narre Warren</c:when>
+															<c:when test="${clazz.branch eq '19'}">Micham</c:when>
+															<c:when test="${clazz.branch eq '20'}">Preston</c:when>
+															<c:when test="${clazz.branch eq '21'}">Richmond</c:when>
+															<c:when test="${clazz.branch eq '22'}">Springvale</c:when>
+															<c:when test="${clazz.branch eq '23'}">St.Albans</c:when>
+															<c:when test="${clazz.branch eq '24'}">Werribee</c:when>
+															<c:when test="${clazz.branch eq '25'}">Balwyn</c:when>
+															<c:when test="${clazz.branch eq '26'}">Rowville</c:when>
+															<c:when test="${clazz.branch eq '27'}">Caroline Springs</c:when>
+															<c:when test="${clazz.branch eq '28'}">Bayswater</c:when>
+															<c:when test="${clazz.branch eq '29'}">Point Cook</c:when>
+															<c:when test="${clazz.branch eq '30'}">Craigieburn</c:when>
+															<c:when test="${clazz.branch eq '31'}">Mernda</c:when>
+															<c:when test="${clazz.branch eq '32'}">Melton</c:when>
+															<c:when test="${clazz.branch eq '33'}">Glenroy</c:when>
+															<c:when test="${clazz.branch eq '34'}">Pakenham</c:when>
+															<c:when test="${clazz.branch eq '90'}">JAC Head Office VIC</c:when>
+															<c:when test="${clazz.branch eq '99'}">Testing</c:when>
+															<c:otherwise>Unknown State</c:otherwise>
+															</c:choose>
+														</span>
+													</td>
+														
+
+
+
 													<td class="small ellipsis"><span>
 															<c:out value="${fn:toUpperCase(clazz.grade)}" />
 														</span></td>
@@ -472,30 +485,8 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="addBranch" class="label-form">Branch</label> <select
-										class="form-control" id="addBranch" name="addBranch">
-										<option value="braybrook">Braybrook</option>
-										<option value="epping">Epping</option>
-										<option value="balwyn">Balwyn</option>
-										<option value="bayswater">Bayswater</option>
-										<option value="boxhill">Box Hill</option>
-										<option value="carolinesprings">Caroline Springs</option>
-										<option value="chadstone">Chadstone</option>
-										<option value="craigieburn">Craigieburn</option>
-										<option value="cranbourne">Cranbourne</option>
-										<option value="glenwaverley">Glen Waverley</option>
-										<option value="mitcha">Mitcham</option>
-										<option value="narrewarren">Narre Warren</option>
-										<option value="ormond">Ormond</option>
-										<option value="pointcook">Point Cook</option>
-										<option value="preston">Preston</option>
-										<option value="springvale">Springvale</option>
-										<option value="stalbans">St Albans</option>
-										<option value="werribee">Werribee</option>
-										<option value="mernda">Mernda</option>
-										<option value="melton">Melton</option>
-										<option value="glenroy">Glenroy</option>
-										<option value="packenham">Packenham</option>
+									<label for="addBranch" class="label-form">Branch</label>
+									<select class="form-control" id="addBranch" name="addBranch">
 									</select>
 								</div>
 
@@ -601,30 +592,8 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									</select>
 								</div>
 								<div class="col-md-5">
-									<label for="editBranch" class="label-form">Branch</label> <select
-										class="form-control" id="editBranch" name="editBranch">
-										<option value="braybrook">Braybrook</option>
-										<option value="epping">Epping</option>
-										<option value="balwyn">Balwyn</option>
-										<option value="bayswater">Bayswater</option>
-										<option value="boxhill">Box Hill</option>
-										<option value="carolinesprings">Caroline Springs</option>
-										<option value="chadstone">Chadstone</option>
-										<option value="craigieburn">Craigieburn</option>
-										<option value="cranbourne">Cranbourne</option>
-										<option value="glenwaverley">Glen Waverley</option>
-										<option value="mitcha">Mitcham</option>
-										<option value="narrewarren">Narre Warren</option>
-										<option value="ormond">Ormond</option>
-										<option value="pointcook">Point Cook</option>
-										<option value="preston">Preston</option>
-										<option value="springvale">Springvale</option>
-										<option value="stalbans">St Albans</option>
-										<option value="werribee">Werribee</option>
-										<option value="mernda">Mernda</option>
-										<option value="melton">Melton</option>
-										<option value="glenroy">Glenroy</option>
-										<option value="packenham">Packenham</option>
+									<label for="editBranch" class="label-form">Branch</label>
+									<select class="form-control" id="editBranch" name="editBranch">
 									</select>
 								</div>
 								<div class="col-md-3">

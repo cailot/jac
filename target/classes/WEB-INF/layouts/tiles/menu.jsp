@@ -120,7 +120,7 @@
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
-				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/branch">Branch List</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/branch">Branch Management</a>
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/setting">Admin Automation</a>
 				<a class="dropdown-item" style="color: #212529;" href="#">Admin Property</a>
 			</div>

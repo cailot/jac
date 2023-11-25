@@ -69,13 +69,12 @@ public class JaeAttendanceController {
 
 	// search attendance
 	@GetMapping("/search")
-	public String searchAttendance1(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
 		
 		// 1. clear session
 		JaeUtils.clearSession(session);
 		
 		List<AttendanceListDTO> dtos = new ArrayList<>();
-		
 		
 		// 2. set search criteria
 		SearchCriteriaDTO criteria = new SearchCriteriaDTO();

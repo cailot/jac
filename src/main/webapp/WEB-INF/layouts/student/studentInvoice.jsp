@@ -1,8 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
-<%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -54,6 +52,7 @@ $(document).ready(function () {
     });
 	// initialise state list when loading
 	listState('#listState');
+	listBranch('#listBranch');
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,28 +239,6 @@ function clearStudentInfo() {
 						<label for="listBranch" class="label-form">Branch</label> 
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="All">All Branch</option>
-							<option value="braybrook">Braybrook</option>
-							<option value="epping">Epping</option>
-							<option value="balwyn">Balwyn</option>
-							<option value="bayswater">Bayswater</option>
-							<option value="boxhill">Box Hill</option>
-							<option value="carolinesprings">Caroline Springs</option>
-							<option value="chadstone">Chadstone</option>
-							<option value="craigieburn">Craigieburn</option>
-							<option value="cranbourne">Cranbourne</option>
-							<option value="glenwaverley">Glen Waverley</option>
-							<option value="mitcha">Mitcham</option>
-							<option value="narrewarren">Narre Warren</option>
-							<option value="ormond">Ormond</option>
-							<option value="pointcook">Point Cook</option>
-							<option value="preston">Preston</option>
-							<option value="springvale">Springvale</option>
-							<option value="stalbans">St Albans</option>
-							<option value="werribee">Werribee</option>
-							<option value="mernda">Mernda</option>
-							<option value="melton">Melton</option>
-							<option value="glenroy">Glenroy</option>
-							<option value="packenham">Packenham</option>
 						</select>
 					</div>
 					<div class="col-md-2">

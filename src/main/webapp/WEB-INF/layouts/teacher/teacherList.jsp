@@ -155,6 +155,7 @@
 			type: 'GET',
 			success: function (teacher) {
 				// Update display info
+				console.log(teacher);
 				$("#editId").val(teacher.id);
 				$("#editFirstName").val(teacher.firstName);
 				$("#editLastName").val(teacher.lastName);
