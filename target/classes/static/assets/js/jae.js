@@ -85,6 +85,11 @@ function getParameterByName(name) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+// Clear Form data
+function clearFormData(elementId) {
+	document.getElementById(elementId).reset();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	List state
 function listState(selectElementId) {

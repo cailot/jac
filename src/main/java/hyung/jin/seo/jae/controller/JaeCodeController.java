@@ -12,16 +12,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
+import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Branch;
+import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Course;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.State;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -97,5 +101,36 @@ public class JaeCodeController {
 		}
 		return dto;
 	}
+
+	// update existing branch
+	@PutMapping("/updateBranch")
+	@ResponseBody
+	public ResponseEntity<String> updateBranch(@RequestBody BranchDTO formData) {
+		try {
+			// 1. create Branch
+			Branch branch = formData.convertToBranch(formData);
+			// 2. update Branch
+			codeService.updateBranch(branch, branch.getId());
+			// 3. return flag
+			return ResponseEntity.ok("\"Branch update success\"");
+		} catch (Exception e) {
+			String message = "Error updating branch: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
+	// remove branch by Id
+	@PutMapping("/deleteBranch/{id}")
+	@ResponseBody
+	public ResponseEntity<String> deleteBranch(@PathVariable("id") Long id) {
+		try{
+			codeService.deleteBranch(id);
+			return ResponseEntity.ok("\"Branch delete success\"");		
+		}catch(Exception e){
+			String message = "Error deleting branch: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
 
 }
