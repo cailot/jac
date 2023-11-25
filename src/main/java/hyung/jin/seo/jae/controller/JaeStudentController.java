@@ -93,15 +93,6 @@ public class JaeStudentController {
 	@GetMapping("/list")
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
 		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, year, active);
-		// convert enroment date format
-		// for(StudentDTO dto: dtos) {
-		// 	try {
-		// 		dto.setRegisterDate(JaeUtils.convertToddMMyyyyFormat(dto.getRegisterDate()));
-		// 	} catch (ParseException e) {
-		// 		// TODO Auto-generated catch block
-		// 		e.printStackTrace();
-		// 	}
-		// }
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "studentListPage";
 	}
