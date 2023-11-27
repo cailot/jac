@@ -7,11 +7,11 @@ INSERT INTO jae.Teacher_Class (teacherId,clazzId) VALUES (1,27);
 INSERT INTO jae.Teacher_Class (teacherId,clazzId) VALUES (1,51);
 
 -- Invoice
-INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (843,0,0,NULL,843,'2023-11-11','2023-11-11');
-INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (765,0,0,NULL,65,'2023-11-11','2023-11-11');
-INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (709.99,1,0,NULL,709.99,'2023-11-11','2023-11-11');
-INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (700,0,0,NULL,700,'2023-11-11','2023-11-11');
-INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (555,0,0,NULL,55,'2023-11-11','2023-11-11');
+INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (843,0,0,NULL,0,'2023-11-11','2023-11-11');
+INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (700,0,0,NULL,0,'2023-11-11','2023-11-11');
+INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (709.99,1,0,NULL,0,'2023-11-11','2023-11-11');
+INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (700,0,0,NULL,0,'2023-11-11','2023-11-11');
+INSERT INTO jae.Invoice (amount,credit,discount,info,paidAmount,paymentDate,registerDate) VALUES (555,0,0,NULL,0,'2023-11-11','2023-11-11');
 
 -- Enrolment
 INSERT INTO jae.Enrolment (cancellationReason,cancelled,credit,discount,endWeek,info,old,registerDate,startWeek,clazzId,invoiceId,studentId) VALUES (NULL,0,0,'0',31,NULL,0,'2023-11-11',22,1,1,130055);
@@ -121,8 +121,7 @@ INSERT INTO jae.Attendance (attendDate,day,info,status,week,clazzId,studentId)
  VALUES ('2024-01-03','Wednesday',NULL,'O','30',1,134357);
 INSERT INTO jae.Attendance (attendDate,day,info,status,week,clazzId,studentId)
  VALUES ('2024-01-10','Wednesday',NULL,'O','31',1,134357);
-
-
+/*
 -- Outstanding
 INSERT INTO jae.Outstanding (amount,info,paid,paymentId,registerDate,remaining,invoiceId) VALUES (765.00,NULL,65.00,2,'2023-11-11',700.00,2);
 INSERT INTO jae.Outstanding (amount,info,paid,paymentId,registerDate,remaining,invoiceId) VALUES (555.00,NULL,55.00,5,'2023-11-11',500.00,5);
@@ -133,3 +132,4 @@ INSERT INTO jae.Payment (amount,info,method,registerDate,total,invoiceId) VALUES
 INSERT INTO jae.Payment (amount,info,method,registerDate,total,invoiceId) VALUES (709.99,NULL,'bank','2023-11-11',709.99,3);
 INSERT INTO jae.Payment (amount,info,method,registerDate,total,invoiceId) VALUES (700.00,NULL,'cash','2023-11-11',700.00,4);
 INSERT INTO jae.Payment (amount,info,method,registerDate,total,invoiceId) VALUES (55.00,NULL,'cheque','2023-11-11',555.00,5);
+*/

@@ -2,13 +2,12 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,7 +29,6 @@ import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
-import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("attendance")
@@ -69,10 +67,10 @@ public class JaeAttendanceController {
 
 	// search attendance
 	@GetMapping("/search")
-	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, HttpSession session) {
+	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, Model model) {
 		
 		// 1. clear session
-		JaeUtils.clearSession(session);
+		// JaeUtils.clearSession(session);
 		
 		List<AttendanceListDTO> dtos = new ArrayList<>();
 		
@@ -88,7 +86,7 @@ public class JaeAttendanceController {
 		criteria.setClazzName(clazzName);
 		criteria.setFromDate(fromDate);
 		criteria.setToDate(toDate);
-		session.setAttribute(JaeConstants.CRITERIA_INFO, criteria);	
+		model.addAttribute(JaeConstants.CRITERIA_INFO, criteria);	
 
 
 		// 3. check academic weeks
@@ -101,7 +99,7 @@ public class JaeAttendanceController {
 		for(int i=startWeek; i<=endWeek; i++){
 			headerWks.add(i);
 		}
-		session.setAttribute(JaeConstants.WEEK_HEADER, headerWks);	
+		model.addAttribute(JaeConstants.WEEK_HEADER, headerWks);	
 
 		// 4. search AttendanceListDTO
 		// 4-1. if clazzId is "All", then search all clazz Ids
@@ -226,7 +224,7 @@ public class JaeAttendanceController {
 		}
 
 		// 5. set AttendanceListDTO to session
-		session.setAttribute(JaeConstants.ATTENDANCE_INFO, dtos);	
+		model.addAttribute(JaeConstants.ATTENDANCE_INFO, dtos);	
 
 		// 6. return redirect page
 		return "studentAttendancePage";
