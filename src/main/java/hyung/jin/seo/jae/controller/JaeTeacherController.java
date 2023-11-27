@@ -1,6 +1,5 @@
 package hyung.jin.seo.jae.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +24,6 @@ import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.service.TeacherService;
 import hyung.jin.seo.jae.utils.JaeConstants;
-import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("teacher")

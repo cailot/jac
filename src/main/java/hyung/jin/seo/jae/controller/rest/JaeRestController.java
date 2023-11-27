@@ -166,4 +166,30 @@ public class JaeRestController {
 		// }
 	}
 
+	@PutMapping("/teacherLogin")
+	@ResponseBody
+	public ResponseEntity<String> loginCheck() {
+		// 1. check passed info
+		// if (info == null || info.getId() == null || info.getId().isEmpty()) {
+		// 	return ResponseEntity.badRequest().body("\"Login failed\"");
+		// }
+		// System.out.println(info);
+
+		// // 2. get Teacher
+		// Teacher existing = teacherService.getTeacher(Long.parseLong(info.getId()));
+		
+		// existing.setFirstName(info.getFirstName());
+		// existing.setLastName(info.getLastName());
+		// existing.setPhone(info.getPhone());
+		// existing.setAddress(info.getAddress());
+		// existing.setVitNumber(info.getVit());
+
+		// // 3. update Teacher
+		// teacherService.updateTeacher(existing, existing.getId());
+
+		// 4-1. return flag
+		return ResponseEntity.ok("\"Login Success\"");
+		// }
+	}
+
 }

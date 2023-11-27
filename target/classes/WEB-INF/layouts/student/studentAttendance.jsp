@@ -16,6 +16,20 @@
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
 $(document).ready(function () {
+
+	// Apply initial color on dropdown list when the page loads
+	$('.custom-color-select').each(function() {
+		var col = $(this).find('option:selected').attr('data-color');
+		$(this).css('color', col);
+    });
+
+	// Change color when a new option is selected
+	$('.custom-color-select').change(function() {
+    	var selectedColor = $(this).find('option:selected').attr('data-color');
+    	$(this).css('color', selectedColor);
+  	});
+
+
 	$('#attendanceTable').DataTable({
 		language: {
 			search: 'Filter:'
@@ -116,7 +130,7 @@ function updateAttendanceInfo(clazzId, studentId, weeks, rowId) {
 		}
 	});
 
-	console.log('rollValues : ' + rollValues);
+	//console.log('rollValues : ' + rollValues);
 
 	var attend = {
 		studentId: studentId,
@@ -222,6 +236,7 @@ function clearAttendanceInfo() {
 	#attendanceTable .th-background {
 		background-color: #007bff !important;
 	}
+
 </style>
 
 <!-- List Body -->
@@ -301,9 +316,9 @@ function clearAttendanceInfo() {
 				</div>
 			</div>
 			<!-- Search Criteria Info-->
-			<c:if test="${not empty sessionScope.criteriaInfo}">
+			<c:if test="${criteriaInfo != null}">
 				<div id="criteriaInfo" class="alert alert-info">
-					<c:set var="criteria" value="${sessionScope.criteriaInfo}" />
+					<c:set var="criteria" value="${criteriaInfo}" />
 					<c:set var="criteriaState" value="${criteria.state}" />
 					<c:choose>
 						<c:when test="${criteriaState eq '1'}">
@@ -437,7 +452,7 @@ function clearAttendanceInfo() {
 				<div class="form-row">
 					<div class="col-md-12">
 						<c:choose>
-							<c:when test="${empty sessionScope.attendanceInfo}">
+							<c:when test="${attendanceInfo == null}">
 								No attendance data is available.
 							</c:when>
 							<c:otherwise>
@@ -474,7 +489,7 @@ function clearAttendanceInfo() {
 										</tr>
 									</thead>
 									<tbody>
-										<c:forEach var="attend" items="${sessionScope.attendanceInfo}">
+										<c:forEach var="attend" items="${attendanceInfo}">
 											<tr data-row-id="${attend.clazzId}-${attend.studentId}">
 												<td class="small align-middle text-center">
 													${attend.studentId}</td>
@@ -497,48 +512,38 @@ function clearAttendanceInfo() {
 															value="${attend.week[loop.index]}" />
 														<c:choose>
 															<c:when test="${status eq 'Y'}">
-																<select name="statusDropdown"
-																	class="custom-select custom-select-sm no-gap">
-																	<option value="Y" selected>Attended
-																	</option>
-																	<option value="N">Absent</option>
-																	<option value="P">Pause</option>
-																	<!-- <option value="O">Other</option> -->
+																<select name="statusDropdown" class="custom-select custom-select-sm no-gap custom-color-select">
+																	<option value="Y" data-color="green" selected>Attended</option>
+																	<option value="N" data-color="red">Absent</option>
+																	<option value="P" data-color="orange">Pause</option>
 																</select>
 															</c:when>
 															<c:when test="${status eq 'N'}">
 																<select name="statusDropdown"
-																	class="custom-select custom-select-sm no-gap">
-																	<option value="Y">Attended</option>
-																	<option value="N" selected>Absent
-																	</option>
-																	<option value="P">Pause</option>
-																	<!-- <option value="O">Other</option> -->
+																	class="custom-select custom-select-sm no-gap custom-color-select">
+																	<option value="Y" data-color="green">Attended</option>
+																	<option value="N" selected data-color="red">Absent</option>
+																	<option value="P" data-color="orange">Pause</option>
 																</select>
 															</c:when>
 															<c:when test="${status eq 'P'}">
-																<select name="statusDropdown"
-																	class="custom-select custom-select-sm no-gap">
-																	<option value="Y">Attended</option>
-																	<option value="N">Absent</option>
-																	<option value="P" selected>Pause
-																	</option>
-																	<!-- <option value="O">Other</option> -->
+																<select name="statusDropdown" class="custom-select custom-select-sm no-gap custom-color-select">
+																	<option value="Y" data-color="green">Attended</option>
+																	<option value="N" data-color="red">Absent</option>
+																	<option value="P" selected data-color="orange">Pause</option>
 																</select>
 															</c:when>
 															<%-- when registered for the first time --%>
-																<c:when test="${status eq 'O'}">
-																	<select name="statusDropdown"
-																		class="custom-select custom-select-sm no-gap">
-																		<option value="Y">Attended</option>
-																		<option value="N">Absent</option>
-																		<option value="P">Pause</option>
-																		<option value="O" selected>Enrol
-																		</option>
-																	</select>
-																</c:when>
-																<c:otherwise>
-																</c:otherwise>
+															<c:when test="${status eq 'O'}">
+																<select name="statusDropdown" class="custom-select custom-select-sm no-gap custom-color-select">
+																	<option value="Y" data-color="green">Attended</option>
+																	<option value="N" data-color="red">Absent</option>
+																	<option value="P" data-color="orange">Pause</option>
+																	<option value="O" selected data-color="black">Enrol</option>
+																</select>
+															</c:when>
+															<c:otherwise>
+															</c:otherwise>
 														</c:choose>
 													</td>
 												</c:forEach>
