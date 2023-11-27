@@ -259,9 +259,9 @@ function clearStudentInfo() {
 				</div>
 			</div>
 			<!-- Student Info-->
-			<c:if test="${not empty sessionScope.studentInfo}">
+			<c:if test="${studentInfo != null}">
 				<div id="studentInfo" class="alert alert-info">
-					<c:set var="student" value="${sessionScope.studentInfo}" />
+					<c:set var="student" value="${studentInfo}" />
 					<c:set var="studentId" value="${student.id}" />
 					<c:set var="studentFirstName" value="${student.firstName}" />
 					<c:set var="studentLastName" value="${student.lastName}" />
@@ -299,7 +299,7 @@ function clearStudentInfo() {
 									</tr>
 								</thead>
 								<tbody>
-									<c:if test="${not empty sessionScope.payments}">
+									<c:if test="${payments != null}">
 										<c:forEach var="payment" items="${payments}">
 											<tr>
 												<td class="payment-id" style="display: none;">${payment.id}</td> <!-- invisible -->
