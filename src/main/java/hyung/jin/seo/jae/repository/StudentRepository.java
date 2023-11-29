@@ -36,7 +36,20 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate) FROM Student s WHERE s.state LIKE ?1 AND s.branch LIKE ?2 AND s.grade LIKE ?3 AND s.endDate IS NOT NULL")
 	List<StudentDTO> listInactiveStudent(String state, String branch, String grade);
 
-	@Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+	// @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+        // "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.startWeek, e.endWeek) " +
+        // "FROM Student s " +
+        // "JOIN Enrolment e ON s.id = e.student.id " +
+        // "WHERE s.endDate IS NULL " +
+        // "AND s.state LIKE :state " +
+        // "AND s.branch LIKE :branch " +
+        // "AND s.grade LIKE :grade " +
+        // "AND e.clazz.id IN (" +
+        // "SELECT cla.id FROM Clazz cla WHERE cla.cycle.id IN (" +
+        // "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")
+	// List<StudentDTO> listActiveStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year);
+
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
         "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.startWeek, e.endWeek) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
@@ -44,6 +57,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
         "AND s.state LIKE :state " +
         "AND s.branch LIKE :branch " +
         "AND s.grade LIKE :grade " +
+        "AND e.discount != '" + "100%" + "' " +
         "AND e.clazz.id IN (" +
         "SELECT cla.id FROM Clazz cla WHERE cla.cycle.id IN (" +
         "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")
@@ -58,6 +72,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
         "AND s.state LIKE :state " +
         "AND s.branch LIKE :branch " +
         "AND s.grade LIKE :grade " +
+        "AND e.discount != '" + "100%" + "' " +
         "AND e.clazz.id IN (" +
         "SELECT cla.id FROM Clazz cla WHERE cla.cycle.id IN (" +
         "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")

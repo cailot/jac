@@ -247,8 +247,7 @@ public class ClazzServiceImpl implements ClazzService {
 	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
-			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade,
-					Integer.parseInt(year));
+			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
 		} else {
 			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
 		}
