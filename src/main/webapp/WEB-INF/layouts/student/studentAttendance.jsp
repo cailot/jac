@@ -45,7 +45,6 @@ $(document).ready(function () {
 			},
 			'print'
 		],
-		// fixedColumns: true,
 		columnDefs: [
 			{ targets: 0, width: '10%' },
 			{ targets: 1, width: '15%' },
@@ -290,28 +289,22 @@ function clearAttendanceInfo() {
 						</select>
 					</div>
 					<div class="col-md-1">
-						<label for="fromDate" class="label-form">From Date</label> <input type="text"
-							class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From"
-							required>
+						<label for="fromDate" class="label-form">From Date</label>
+						<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
 					</div>
 					<div class="col-md-1">
-						<label for="toDate" class="label-form">To Date</label> <input type="text"
-							class="form-control datepicker" id="toDate" name="toDate" placeholder="To"
-							required>
+						<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
 					</div>
 					<!-- put blank col-md-1 -->
 					<div class="offset-md-1"></div>
 					<div class="col max-auto">
 						<label class="label-form-white">Search</label>
 						<!-- <button type="button" class="btn btn-primary btn-block" onclick="searchAttendance()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button> -->
-						<button type="submit" class="btn btn-primary btn-block"><i
-								class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col max-auto">
 						<label class="label-form-white">Clear</label>
-						<button type="button" class="btn btn-block btn-success"
-							onclick="clearAttendanceInfo()"><i
-								class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
+						<button type="button" class="btn btn-block btn-success" onclick="clearAttendanceInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 					</div>
 				</div>
 			</div>
@@ -348,71 +341,80 @@ function clearAttendanceInfo() {
 					</c:choose>
 					<c:set var="criteriaBranch" value="${criteria.branch}" />
 					<c:choose>
-						<c:when test="${criteriaBranch eq 'braybrook'}">
-							<c:set var="criteriaBranch" value="Braybrook" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'epping'}">
-							<c:set var="criteriaBranch" value="Epping" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'balwyn'}">
-							<c:set var="criteriaBranch" value="Balwyn" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'bayswater'}">
-							<c:set var="criteriaBranch" value="Bayswater" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'boxhill'}">
+						<c:when test="${criteriaBranch eq '12'}">
 							<c:set var="criteriaBranch" value="Box Hill" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'carolinesprings'}">
-							<c:set var="criteriaBranch" value="Caroline Springs" />
+						<c:when test="${criteriaBranch eq '13'}">
+							<c:set var="criteriaBranch" value="Braybrook" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'chadstone'}">
+						<c:when test="${criteriaBranch eq '14'}">
 							<c:set var="criteriaBranch" value="Chadstone" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'craigieburn'}">
-							<c:set var="criteriaBranch" value="Craigieburn" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'cranbourne'}">
+						<c:when test="${criteriaBranch eq '15'}">
 							<c:set var="criteriaBranch" value="Cranbourne" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'glenwaverley'}">
+						<c:when test="${criteriaBranch eq '16'}">
+							<c:set var="criteriaBranch" value="Epping" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '17'}">
 							<c:set var="criteriaBranch" value="Glen Waverley" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'mitcham'}">
-							<c:set var="criteriaBranch" value="Mitcham" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'narrewarren'}">
+						<c:when test="${criteriaBranch eq '18'}">
 							<c:set var="criteriaBranch" value="Narre Warren" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'ormond'}">
-							<c:set var="criteriaBranch" value="Ormond" />
+						<c:when test="${criteriaBranch eq '19'}">
+							<c:set var="criteriaBranch" value="Mitcham" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'pointcook'}">
-							<c:set var="criteriaBranch" value="Point Cook" />
-						</c:when>
-						<c:when test="${criteriaBranch eq 'preston'}">
+						<c:when test="${criteriaBranch eq '20'}">
 							<c:set var="criteriaBranch" value="Preston" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'springvale'}">
+						<c:when test="${criteriaBranch eq '21'}">
+							<c:set var="criteriaBranch" value="Richimond" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '22'}">
 							<c:set var="criteriaBranch" value="Springvale" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'stalbans'}">
+						<c:when test="${criteriaBranch eq '23'}">
 							<c:set var="criteriaBranch" value="St Albans" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'werribee'}">
+						<c:when test="${criteriaBranch eq '24'}">
 							<c:set var="criteriaBranch" value="Werribee" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'mernda'}">
+						<c:when test="${criteriaBranch eq '25'}">
+							<c:set var="criteriaBranch" value="Balwyn" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '26'}">
+							<c:set var="criteriaBranch" value="Rowville" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '27'}">
+							<c:set var="criteriaBranch" value="Caroline Springs" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '28'}">
+							<c:set var="criteriaBranch" value="Bayswater" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '29'}">
+							<c:set var="criteriaBranch" value="Point Cook" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '30'}">
+							<c:set var="criteriaBranch" value="Craigieburn" />
+						</c:when>	
+						<c:when test="${criteriaBranch eq '31'}">
 							<c:set var="criteriaBranch" value="Mernda" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'melton'}">
+						<c:when test="${criteriaBranch eq '32'}">
 							<c:set var="criteriaBranch" value="Melton" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'glenroy'}">
+						<c:when test="${criteriaBranch eq '33'}">
 							<c:set var="criteriaBranch" value="Glenroy" />
 						</c:when>
-						<c:when test="${criteriaBranch eq 'packenham'}">
+						<c:when test="${criteriaBranch eq '34'}">
 							<c:set var="criteriaBranch" value="Packenham" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '90'}">
+							<c:set var="criteriaBranch" value="JAC Head Office VIC" />
+						</c:when>
+						<c:when test="${criteriaBranch eq '99'}">
+							<c:set var="criteriaBranch" value="Testing" />
 						</c:when>
 					</c:choose>
 					<c:set var="criteriaGrade" value="${criteria.grade}" />
