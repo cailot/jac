@@ -1,5 +1,5 @@
 INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'Wednesday', '2023-07-01', true, 1, 5, 'Preview Class', CURDATE());
-INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'Thursday', '2023-07-01', true, 1, 5, 'Thursday Braybrook', CURDATE());
+INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'Thursday', '2023-07-01', true, 1, 5, 'Fundamental Class', CURDATE());
 INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'Friday', '2023-07-01', true, 1, 5, 'Friday Night', CURDATE());
 INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'Saturday', '2023-07-01', true, 1, 5, 'Saturday Morning', CURDATE());
 INSERT INTO jae.Class (state, branch, day, startDate, active, courseId, cycleId, name, registerDate) VALUES ('1', '13', 'All', '2023-07-01', true, 2, 5, 'E-learning', CURDATE());
