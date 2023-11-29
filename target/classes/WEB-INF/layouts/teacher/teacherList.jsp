@@ -454,7 +454,7 @@
 							<table id="teacherListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>ID</th>
+										<!-- <th>ID</th> -->
 										<th>First Name</th>
 										<th>Last Name</th>
 										<th>Title</th>
@@ -475,10 +475,9 @@
 											<c:forEach items="${TeacherList}" var="teacher">
 
 												<tr>
-													<td class="small ellipsis" id="teacherId"
-														name="teacherId"><span>
+													<!-- <td class="small ellipsis" id="teacherId" name="teacherId"><span>
 															<c:out value="${teacher.id}" />
-														</span></td>
+														</span></td> -->
 													<td class="small ellipsis"><span>
 															<c:out value="${teacher.firstName}" />
 														</span></td>
