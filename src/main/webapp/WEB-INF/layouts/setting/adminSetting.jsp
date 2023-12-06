@@ -1,12 +1,39 @@
-<div class="row" style="max-width: 80%;">
-
-grade upgrade automation.
-<br>
 
 
-<h1>Zoom Video Player</h1>
-<br>
+<div class="row">
+    <div class="row">
+    <div class="col-lg-4 bg-primary">
+        <div class="card-body">
+            <h5>Chart</h5>
+        </div>
+    </div>
+    <div class="col-lg-8 bg-warning">
+        <div class="row">
+            <div class="col-lg-12 bg-success">
+                <div class="card-body">
+                    <h5>Progress Bar</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 bg-danger">
+                <div class="card-body">
+                    <h5>Weeks</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 
-<iframe src="https://us02web.zoom.us/rec/play/5BG_jfiBJd4GVJjwH4LljZYve5WVHlC0SUd5x_LdVddx_loKX3AM8N6E9PJlExnucj3OTkrjJqskaYhW.rLWxzanIOL46m3WY?canPlayFromShare=true&from=share_recording_detail&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FxcljkttYhTMxnKYy912sU8wWJqePt2K2kN8kmFRgK_jdbmxTvklhZJW4sj6rNa6j.Knamzg5DjXJnuEj1" width="800" height="450" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+
+    <div class="row">
+    <div class="col-lg-12 bg-secondary">
+        <div class="card-body">
+            <iframe src="https://your-iframe-url.com" width="800" height="450" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
 
 </div>
+
