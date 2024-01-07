@@ -114,41 +114,31 @@ public class CycleServiceImpl implements CycleService {
 		String academicDate = "";
 		String vacationStartDate = "";
 		String vacationEndDate = "";
-		if(currentYear==academicYear) { // from June to December
-			// bring academic start date
-			for(CycleDTO dto : cycles){
-				if(dto.getYear().equals(Integer.toString(academicYear))){
-					academicDate = dto.getStartDate();
-					vacationStartDate = dto.getVacationStartDate();
-					break;
-				}
+		// bring academic start date
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(academicYear))){
+				academicDate = dto.getStartDate();
+				vacationStartDate = dto.getVacationStartDate();
+				vacationEndDate = dto.getVacationEndDate();
+				break;
 			}
-			// convert to LocalDate
-			LocalDate academicStart = LocalDate.parse(academicDate);
-			LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		}
+		LocalDate academicStart = LocalDate.parse(academicDate);
+		LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
+		
+		if(currentYear==academicYear) { // from June to December
 			// compare today's date with vacation start date
 			if(today.isBefore(vacationStart)) { // simply calculate weeks
 				weeks = (int) ChronoUnit.WEEKS.between(academicStart, today);
 			}else { // set weeks as xmas week
-				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart);
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart) - 1;
 			}
 		}else { // from January to June
 			// simply calculate since last year starting date - 3 weeks (xmas holidays)
-			// bring academic start date
-			for(CycleDTO dto : cycles){
-				if(dto.getYear().equals(Integer.toString(academicYear))){
-					academicDate = dto.getStartDate();
-					vacationStartDate = dto.getVacationStartDate();
-					vacationEndDate = dto.getVacationEndDate();
-					break;
-				}
-			}
-			LocalDate academicStart = LocalDate.parse(academicDate);
-			LocalDate vacationStart = LocalDate.parse(vacationStartDate);
-			LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
 			// compare today's date with vacation end date
 			if(today.isBefore(vacationEnd)) { // until vacation start date
-				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart);
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart) - 1;
 			}else{
 				weeks = (int) ChronoUnit.WEEKS.between(academicStart, today) - 3; // 3 weeks for xmas holidays
 			}		
@@ -169,45 +159,91 @@ public class CycleServiceImpl implements CycleService {
 		String academicDate = "";
 		String vacationStartDate = "";
 		String vacationEndDate = "";
-		if(currentYear==academicYear) { // from June to December
-			// bring academic start date
-			for(CycleDTO dto : cycles){
-				if(dto.getYear().equals(Integer.toString(academicYear))){
-					academicDate = dto.getStartDate();
-					vacationStartDate = dto.getVacationStartDate();
-				}
+
+		// bring academic start date & end date
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(academicYear))){
+				academicDate = dto.getStartDate();
+				vacationStartDate = dto.getVacationStartDate();
+				vacationEndDate = dto.getVacationEndDate();
+				break;
 			}
-			// convert to LocalDate
-			LocalDate academicStart = LocalDate.parse(academicDate);
-			LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		}
+		// convert to LocalDate
+		LocalDate academicStart = LocalDate.parse(academicDate);
+		LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
+			
+		if(currentYear==academicYear) { // from June to December
 			// compare today's date with vacation start date
 			if(specificDate.isBefore(vacationStart)) { // simply calculate weeks
 				weeks = (int) ChronoUnit.WEEKS.between(academicStart, specificDate);
 			}else { // set weeks as xmas week
-				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart);
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart) - 1;
 			}
 		}else { // from January to June
 			// simply calculate since last year starting date - 3 weeks (xmas holidays)
-			// bring academic start date
-			for(CycleDTO dto : cycles){
-				if(dto.getYear().equals(Integer.toString(academicYear))){
-					academicDate = dto.getStartDate();
-					vacationStartDate = dto.getVacationStartDate();
-					vacationEndDate = dto.getVacationEndDate();
-				}
-			}
-			// convert to LocalDate
-			LocalDate academicStart = LocalDate.parse(academicDate);
-			LocalDate vacationStart = LocalDate.parse(vacationStartDate);
-			LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
 			// compare today's date with vacation end date
 			if(specificDate.isBefore(vacationEnd)) { // until vacation start date
-				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart);
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart) - 1;
 			}else{
 				weeks = (int) ChronoUnit.WEEKS.between(academicStart, specificDate) - 3; // 3 weeks for xmas holidays
 			}		
 		}
 		return (weeks+1); // calculation must start from 1 not 0
+	}
+
+	@Override
+	public boolean isBelongToHoliday(){
+		boolean isBelongToHoliday = false;
+		LocalDate today = LocalDate.now();
+		// get academic year
+		int currentYear = today.getYear();
+		int academicYear = academicYear();
+		String vacationStartDate = "";
+		String vacationEndDate = "";
+		// get vacation start date and end date
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(academicYear))){
+				vacationStartDate = dto.getVacationStartDate();
+				vacationEndDate = dto.getVacationEndDate();
+				break;
+			}
+		}
+		LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
+		if ((today.isAfter(vacationStart) || today.isEqual(vacationStart)) 
+    		&& (today.isBefore(vacationEnd) || today.isEqual(vacationEnd))) {
+				isBelongToHoliday = true;
+		}
+		return isBelongToHoliday;
+	}
+
+	@Override
+	public boolean isBelongToHoliday(String date){
+		boolean isBelongToHoliday = false;
+		// if not formatted date passed, return false
+		if(!JaeUtils.isValidDateFormat(date)) return isBelongToHoliday;
+		LocalDate specificDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		// get academic year
+		int academicYear = academicYear(date);
+		String vacationStartDate = "";
+		String vacationEndDate = "";
+		// get vacation start date and end date
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(academicYear))){
+				vacationStartDate = dto.getVacationStartDate();
+				vacationEndDate = dto.getVacationEndDate();
+				break;
+			}
+		}
+		LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
+		if ((specificDate.isAfter(vacationStart) || specificDate.isEqual(vacationStart)) 
+    		&& (specificDate.isBefore(vacationEnd) || specificDate.isEqual(vacationEnd))) {
+				isBelongToHoliday = true;
+		}
+		return isBelongToHoliday;
 	}
 
 	@Override

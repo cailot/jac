@@ -27,7 +27,7 @@ $(document).ready(
 			// save the response into the variable
 			academicYear = response[0];
 			academicWeek = response[1];
-			// console.log(response[1]);
+			//console.log(response[1]);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Error : ' + errorThrown);
