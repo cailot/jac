@@ -38,7 +38,10 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		List<CycleDTO> cycles = cycleService.allCycles();
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
 
-		// String date = "18/01/2024";
+		// cycleService.getDateByWeekAndDay(2023, 27, "Tuesday");
+		String date = cycleService.academicEndSaturday(2023, 27);
+		System.out.println("********************** " + date);
+		// date = "24/12/2023";
 		// System.out.println("********************** " + cycleService.academicWeeks(date));
 		// System.out.println("********************** " + cycleService.isBelongToHoliday(date));
 		// boolean year = JaeUtils.checkIfTodayBelongTo("2022-06-13", "2023-06-11");

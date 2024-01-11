@@ -1,9 +1,11 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.text.ParseException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import static java.time.temporal.TemporalAdjusters.next;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -198,7 +200,7 @@ public class CycleServiceImpl implements CycleService {
 		boolean isBelongToHoliday = false;
 		LocalDate today = LocalDate.now();
 		// get academic year
-		int currentYear = today.getYear();
+		// int currentYear = today.getYear();
 		int academicYear = academicYear();
 		String vacationStartDate = "";
 		String vacationEndDate = "";
@@ -274,26 +276,83 @@ public class CycleServiceImpl implements CycleService {
 		return cycle;
 	}
 
+
+
+
+
+
+
+
+
 	@Override
 	public String academicStartSunday(int year, int week) {
 		String startDate = getStartDate(year);
-		LocalDate academicYearStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);
-     
-        String formattedWeekStartDay = weekStartDay.format(dateFormatter);
-     	return formattedWeekStartDay;
+		String vacationStartDate = getVacationStartDate(year);
+		int vacationStartWeek = 0;
+		try {
+			vacationStartWeek = academicWeeks(JaeUtils.convertToddMMyyyyFormat(vacationStartDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(week <= vacationStartWeek){ // 1. before vacation starts
+			LocalDate academicYearStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);		
+			String formattedWeekStartDay = weekStartDay.format(dateFormatter);
+			return formattedWeekStartDay;
+		}else{ // 2. afterf vactation ends
+			String vacationEndDate = getVacationEndDate(year);
+			int delta = week - vacationStartWeek;
+			LocalDate academicYearVactoionEndDate = LocalDate.parse(vacationEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			// get next sunday of vacation end date
+			LocalDate resumeStartDay = academicYearVactoionEndDate.with(next(DayOfWeek.SUNDAY));		
+			LocalDate weekStartDay = resumeStartDay.plusWeeks(delta - 1);				
+			String formattedWeekStartDay = weekStartDay.format(dateFormatter);
+			return formattedWeekStartDay;
+		}
 	}
+
+
+
+
+
 
 	@Override
 	public String academicEndSaturday(int year, int week) {
 		String startDate = getStartDate(year);
-		LocalDate academicYearStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);
-        LocalDate weekEndDay = weekStartDay.plusDays(6);
-
-        String formattedWeekEndDay = weekEndDay.format(dateFormatter);
-		return formattedWeekEndDay;
+		String vacationStartDate = getVacationStartDate(year);
+		int vacationStartWeek = 0;
+		try {
+			vacationStartWeek = academicWeeks(JaeUtils.convertToddMMyyyyFormat(vacationStartDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(week <= vacationStartWeek){ // 1. before vacation starts
+			LocalDate academicYearStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			LocalDate weekStartDay = academicYearStartDate.plusWeeks(week - 1);
+			LocalDate weekEndDay = weekStartDay.plusDays(6);		
+			String formattedWeekStartDay = weekEndDay.format(dateFormatter);
+			return formattedWeekStartDay;
+		}else{ // 2. afterf vactation ends
+			String vacationEndDate = getVacationEndDate(year);
+			int delta = week - vacationStartWeek;
+			LocalDate academicYearVactoionEndDate = LocalDate.parse(vacationEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			// get next sunday of vacation end date
+			LocalDate resumeStartDay = academicYearVactoionEndDate.with(next(DayOfWeek.SATURDAY));		
+			LocalDate weekStartDay = resumeStartDay.plusWeeks(delta - 1);				
+			String formattedWeekStartDay = weekStartDay.format(dateFormatter);
+			return formattedWeekStartDay;
+		}
 	}
+
+
+
+
+
+
+
+
+
+
 
 	// get start date of academic year
 	private String getStartDate(int year){
@@ -308,6 +367,51 @@ public class CycleServiceImpl implements CycleService {
 			}
 		}
 		return startDate;
+	}
+
+	// get end date of academic year
+	private String getEndDate(int year){
+		String endDate = "";
+		if(cycles==null) {
+			cycles = (List<CycleDTO>) applicationContext.getBean(JaeConstants.ACADEMIC_CYCLES);
+		}
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(year))){
+				endDate = dto.getEndDate();
+				break;
+			}
+		}
+		return endDate;
+	}
+
+	// get vacation start date of academic year
+	private String getVacationStartDate(int year){
+		String startDate = "";
+		if(cycles==null) {
+			cycles = (List<CycleDTO>) applicationContext.getBean(JaeConstants.ACADEMIC_CYCLES);
+		}
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(year))){
+				startDate = dto.getVacationStartDate();
+				break;
+			}
+		}
+		return startDate;
+	}
+
+	// get vacation end date of academic year
+	private String getVacationEndDate(int year){
+		String endDate = "";
+		if(cycles==null) {
+			cycles = (List<CycleDTO>) applicationContext.getBean(JaeConstants.ACADEMIC_CYCLES);
+		}
+		for(CycleDTO dto : cycles){
+			if(dto.getYear().equals(Integer.toString(year))){
+				endDate = dto.getVacationEndDate();
+				break;
+			}
+		}
+		return endDate;
 	}
 
 	@Override

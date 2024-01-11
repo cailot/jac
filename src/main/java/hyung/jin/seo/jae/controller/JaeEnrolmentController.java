@@ -426,8 +426,10 @@ public class JaeEnrolmentController {
 							attendance.setClazz(clazz);
 							attendance.setDay(clazzDay);
 							attendance.setStatus(JaeConstants.ATTEND_OTHER);
+							
 							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
 							attendance.setAttendDate(attendDate);
+							
 							attendanceService.addAttendance(attendance);
 						}
 						//////////////////////////////////////////////////////////
