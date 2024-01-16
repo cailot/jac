@@ -28,7 +28,8 @@
 		<div class="row">
 			<tiles:insertAttribute name="menu" />
 		</div>
-		<div class="row justify-content-center align-items-center">
+		<!-- <div class="row justify-content-center align-items-center"> -->
+			<div class="row justify-content-center">
 			<tiles:insertAttribute name="body" />
 		</div>
 		<footer class="mt-auto">
