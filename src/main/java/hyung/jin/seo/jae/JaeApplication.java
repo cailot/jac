@@ -39,8 +39,8 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
 
 		// cycleService.getDateByWeekAndDay(2023, 27, "Tuesday");
-		String date = cycleService.academicEndSaturday(2023, 27);
-		System.out.println("********************** " + date);
+		// String date = cycleService.academicEndSaturday(2023, 27);
+		// System.out.println("********************** " + date);
 		// date = "24/12/2023";
 		// System.out.println("********************** " + cycleService.academicWeeks(date));
 		// System.out.println("********************** " + cycleService.isBelongToHoliday(date));
