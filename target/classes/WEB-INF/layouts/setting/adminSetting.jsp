@@ -3,6 +3,9 @@
 
     var academicYear;
     var academicWeek;
+
+
+
  
     $(document).ready(
         function() {
@@ -17,7 +20,7 @@
                 academicWeek = response[1];
 
                 // update the value of the academicYear span element
-                document.getElementById("academicYear").innerHTML = academicYear;
+                // document.getElementById("academicYear").innerHTML = academicYear;
                 // update the value of the academicWeek span element
                 document.getElementById("academicWeek").innerHTML = academicWeek;
                 
@@ -32,51 +35,62 @@
             });
     
         }
+
+  
+
+
+
     );
+
+
 
 </script>    
 
+
+
+<div class="row">
+    <div class="col-lg-12 bg-warning">
+        <div class="card-body">
+            <h5>Jac-eLearning Student Lecture</h5>
+        </div>
+        <iframe id="lessonVideo" src="${pageContext.request.contextPath}/image/video-thumbnail.png" width="1000" height="550" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        
+        <div class="card-body">
+            <div class="alert alert-info" role="alert">
+                <p><strong>Week</strong> <span id="academicWeek">29</span></p>
+                <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/nuFFIpczD7iogZYv0tivuSTdUaQDTxxHY5_M6u1_m6LN7QXixyb0rMrGn3Ser1aKe25wiF8lx7Wki7E6.i2ZHvq5tHcqkBpQr?canPlayFromShare=true&amp;from=share_recording_detail&amp;continueMode=true&amp;componentName=rec-play&amp;originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FgCZoECG_n6w6sd0H6hb8J3bStfK1-J2HFJnThllaHtKgAHn-GDabsuQrmlUpgtzl.w8toYrFjklUstG2p">
+                    <li style="margin-left: 30px;"> Online Weekly Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
+                </p>
+                <p id="recordAcademicWeek" data-video-url="https://us02web.zoom.us/rec/play/5NtOifU5bIF28MWEzMO6Gp-kAW2gfmZuXpwk1DIPNlYseLkIGIV5SRGf8PaQluDFnQFgVzx-pztcDwYd.azV5kuFv4dyJqgwf?canPlayFromShare=true&amp;from=share_recording_detail&amp;continueMode=true&amp;componentName=rec-play&amp;originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FE9c3hs7nsQn5FGcptixCiL8FT80Dl4YlN6Sn7yhPW56gjfY_qU8C-taeTrE0ET-S.MMgw_nPVM4A6SR0N">
+                    <li style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
+                    </li>
+                </p> 
+            </div>   
+            <div class="alert alert-primary" role="alert">
+                <p><strong>Week</strong> <span id="academicMinusOneWeek">28</span></p>
+                <p id="recordAcademicMinusOneWeek">
+                    <li style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
+                    </li>    
+                </p>
+            </div>
+            <div class="alert alert-success" role="alert">
+                <p><strong>Week</strong> <span id="academicMinusTwoWeek">27</span></p>
+                <p id="recordAcademicMinusTwoWeek">
+                    <li style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
+                    </li>
+                </p>
+            </div>    
+        </div>
+    </div>
+</div>
+
+
 <style>
-.video-thumbnail {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
+    li:hover {
+        cursor: pointer;
+    }
 </style>
-<div class="row">
-    <div class="col-lg-12 bg-success">
-        <div class="card-body">
-            <h5>Progress Bar</h5>
-            <!-- how to print academicWeek -->
-            <p>Academic Year: <span id="academicYear"></span></p>
-            <p><span id="academicWeek"></span></p>
-            <!-- add a data-video-url attribute to the online weekly lesson element -->
-            <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/nuFFIpczD7iogZYv0tivuSTdUaQDTxxHY5_M6u1_m6LN7QXixyb0rMrGn3Ser1aKe25wiF8lx7Wki7E6.i2ZHvq5tHcqkBpQr?canPlayFromShare=true&from=share_recording_detail&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FgCZoECG_n6w6sd0H6hb8J3bStfK1-J2HFJnThllaHtKgAHn-GDabsuQrmlUpgtzl.w8toYrFjklUstG2p">- Online Weekly Lesson</p>
-            <p id="recordAcademicWeek" data-video-url="https://us02web.zoom.us/rec/play/5NtOifU5bIF28MWEzMO6Gp-kAW2gfmZuXpwk1DIPNlYseLkIGIV5SRGf8PaQluDFnQFgVzx-pztcDwYd.azV5kuFv4dyJqgwf?canPlayFromShare=true&from=share_recording_detail&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FE9c3hs7nsQn5FGcptixCiL8FT80Dl4YlN6Sn7yhPW56gjfY_qU8C-taeTrE0ET-S.MMgw_nPVM4A6SR0N">- Recorded Lesson</p>
-
-            <p><span id="academicMinusOneWeek"></p>
-            <p>Recorded Lesson<span id="recordAcademicMinusOneWeek"></span></p>
-
-            <p><span id="academicMinusTwoWeek"></p>
-            <p>Recorded Lesson<span id="recordAcademicMinusTwoWeek"></span></p>
-
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12 bg-secondary">
-        <div class="card-body">
-            <!-- add an id to the iframe element -->
-            <iframe id="lessonVideo" src="" width="800" height="450" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            <!-- add an image element with a class -->
-            <img class="video-thumbnail" src="${pageContext.request.contextPath}/image/video-thumbnail.png" alt="Video Thumbnail">
-        </div>
-    </div>
-</div>
+    
 <script>
     // get the online lesson element and the video iframe element
     const onlineLesson = document.getElementById('onlineLesson');
@@ -101,3 +115,4 @@
         handleLessonClick(recordAcademicWeek);
     });
 </script>
+

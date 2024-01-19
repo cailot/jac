@@ -57,28 +57,33 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/teacher/teacherList.jsp" />
 	</definition>
 
-	<!-- Setting -->
-	<definition name="settingPage" extends="base.definition">
-		<put-attribute name="title" value="Setting" />
-		<put-attribute name="body" value="/WEB-INF/layouts/setting/adminSetting.jsp" />
-	</definition>
+	
 
-
-	<!-- Payment Base -->
-	<definition name="payment.definition" template="/WEB-INF/layouts/payment.jsp">
+	<!-- Single Page Base -->
+	<definition name="single.definition" template="/WEB-INF/layouts/singlePage.jsp">
 		<put-attribute name="title" value="" />
 		<put-attribute name="body" value="" />
 	</definition>
 
-	<!-- Receipt from Payment Base -->
-	<definition name="receiptPage" extends="payment.definition">
+	<!-- Receipt from Single Base -->
+	<definition name="receiptPage" extends="single.definition">
 		<put-attribute name="title" value="James An College Receipt Page" />
 		<put-attribute name="body" value="/WEB-INF/layouts/invoice/receipt.jsp" />
 	</definition>
 	
-	<!-- Invoice from Payment Base -->
-	<definition name="invoicePage" extends="payment.definition">
+	<!-- Invoice from Single Base -->
+	<definition name="invoicePage" extends="single.definition">
 		<put-attribute name="title" value="James An College Invoice Page" />
 		<put-attribute name="body" value="/WEB-INF/layouts/invoice/invoice.jsp" />
 	</definition>
+
+
+
+	<!-- Setting : Student -->
+	<definition name="settingPage" extends="single.definition">
+		<put-attribute name="title" value="Lecture" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/adminSetting.jsp" />
+	</definition>
+
+
 </tiles-definitions>
