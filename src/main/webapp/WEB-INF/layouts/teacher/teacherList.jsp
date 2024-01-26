@@ -507,7 +507,7 @@
 													<td class="small ellipsis">
 														<fmt:parseDate var="teacherStartDate" value="${teacher.startDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${teacherStartDate}" pattern="dd/MM/yyyy" />
-														
+											
 													</td>
 													<td class="small ellipsis">
 														<fmt:parseDate var="teacherEndDate" value="${teacher.endDate}" pattern="yyyy-MM-dd" />
