@@ -2,8 +2,7 @@
     var academicYear;
     var academicWeek;
 
-    $(document).ready(
-        function() {
+    $(function() {
             // make an AJAX call on page load
             // to get the academic year and week
             $.ajax({
@@ -25,9 +24,11 @@
                 console.log('Error : ' + errorThrown);
                 }
             });
-        }
-    );
-
+    });
+    // initialise state list when loading
+    listState('#editState');
+    listBranch('#editBranch');
+	
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Student Info
@@ -50,14 +51,12 @@ function retrieveStudentInfo(std) {
 			$("#editAddress").val(student.address);
 			$("#editContact1").val(student.contactNo1);
 			$("#editContact2").val(student.contactNo2);
-			$("#editMemo").val(student.memo);
 			$("#editState").val(student.state);
 			$("#editBranch").val(student.branch);
 			$("#editGrade").val(student.grade);
 			$("#editGender").val(student.gender);
-			// Set date value
-			var date = new Date(student.registerDate); // Replace with your date value
-			$("#editRegisterDate").datepicker('setDate', date);
+            var regDate = formatDate(student.registerDate);
+			$("#editRegisterDate").val(regDate);
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -69,7 +68,7 @@ function retrieveStudentInfo(std) {
 </script>    
 
 <style>
-    p#onlineLesson:hover, p#recordAcademicWeek:hover, p#recordAcademicMinusOneWeek:hover, p#recordAcademicMinusTwoWeek:hover {
+    p#onlineLesson:hover, p#recordAcademicWeek:hover, p#recordAcademicMinusOneWeek:hover, p#recordAcademicMinusTwoWeek:hover, span#studentName:hover {
         cursor: pointer;
     }
 </style>
@@ -82,7 +81,7 @@ function retrieveStudentInfo(std) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-light h2">Jac-eLearning Student Lecture</span>           
         </div>
         <div class="card-body bg-primary text-right">
-            <span class="card-text" onclick="retrieveStudentInfo(130365)">Dylan Quach</span>
+            <span class="card-text" id="studentName" onclick="retrieveStudentInfo(130365)">Dylan Quach</span>
             <a href="#" class="btn btn-primary"><i class="bi bi-box-arrow-right"></i></a>
         </div>
         <iframe id="lessonVideo" src="${pageContext.request.contextPath}/image/video-thumbnail.png" width="1000" height="550" allow="autoplay; encrypted-media" allowfullscreen></iframe>        
@@ -124,17 +123,18 @@ function retrieveStudentInfo(std) {
 						<form id="studentEdit">
 						<div class="form-row mt-2">
 							<div class="col-md-4">
-								<label for="editState" class="label-form">State</label> <select class="form-control" id="editState" name="editState">
+								<label for="editState" class="label-form">State</label>
+                                <select class="form-control" id="editState" name="editState" disabled>
 								</select>
 							</div>
 							<div class="col-md-5">
 								<label for="editBranch" class="label-form">Branch</label> 
-								<select class="form-control" id="editBranch" name="editBranch">
+								<select class="form-control" id="editBranch" name="editBranch" disabled>
 								</select>
 							</div>
 							<div class="col-md-3">
 								<label for="editRegisterDate" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="editRegisterDate" name="editRegisterDate" placeholder="dd/mm/yyyy">
+								<input type="text" class="form-control" id="editRegisterDate" name="editRegisterDate" readonly>
 							</div>
 						</div>	
 						<div class="form-row mt-2">
@@ -142,13 +142,13 @@ function retrieveStudentInfo(std) {
 								<label for="editId" class="label-form">ID:</label> <input type="text" class="form-control" id="editId" name="editId" readonly>
 							</div>
 							<div class="col-md-4">
-								<label for="editFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="editFirstName" name="editFirstName">
+								<label for="editFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="editFirstName" name="editFirstName" readonly>
 							</div>
 							<div class="col-md-3">
-								<label for="editLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="editLastName" name="editLastName">
+								<label for="editLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="editLastName" name="editLastName" readonly>
 							</div>
 							<div class="col-md-2">
-								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
+								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade" disabled>
 									<option value="p2">P2</option>
 									<option value="p3">P3</option>
 									<option value="p4">P4</option>
@@ -173,13 +173,13 @@ function retrieveStudentInfo(std) {
 						</div>
 						<div class="form-row mt-2">
 							<div class="col-md-3">
-								<label for="editGender" class="label-form">Gender</label> <select class="form-control" id="editGender" name="editGender">
+								<label for="editGender" class="label-form">Gender</label> <select class="form-control" id="editGender" name="editGender" disabled>
 									<option value="male">Male</option>
 									<option value="female">Female</option>
 								</select>
 							</div>
 							<div class="col-md-9">
-								<label for="editAddress" class="label-form">Address</label> <input type="text" class="form-control" id="editAddress" name="editAddress">
+								<label for="editAddress" class="label-form">Address</label> <input type="text" class="form-control" id="editAddress" name="editAddress" readonly>
 							</div>
 						</div>
 					
@@ -189,10 +189,10 @@ function retrieveStudentInfo(std) {
 									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
 								<div class="row">
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact1" name="editContact1" placeholder="Contact No">
+										<input type="text" class="form-control" id="editContact1" name="editContact1" readonly>
 									</div>
 									<div class="col-md-4">
-										<select class="form-control" id="editRelation1" name="editRelation1">
+										<select class="form-control" id="editRelation1" name="editRelation1" disabled>
 											<option value="mother">Mother</option>
 											<option value="father">Father</option>
 											<option value="sibling">Sibling</option>
@@ -202,7 +202,7 @@ function retrieveStudentInfo(std) {
 								</div>
 								<div class="row mt-2">
 									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email">
+										<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email" readonly>
 									</div>
 								</div>
 								</section>
@@ -214,10 +214,10 @@ function retrieveStudentInfo(std) {
 									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
 								<div class="row">
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact2" name="editContact2" placeholder="Contact No">
+										<input type="text" class="form-control" id="editContact2" name="editContact2" readonly>
 									</div>
 									<div class="col-md-4">
-										<select class="form-control" id="editRelation2" name="editRelation2">
+										<select class="form-control" id="editRelation2" name="editRelation2" disabled>
 											<option value="mother">Mother</option>
 											<option value="father">Father</option>
 											<option value="sibling">Sibling</option>
@@ -227,21 +227,38 @@ function retrieveStudentInfo(std) {
 								</div>
 								<div class="row mt-2">
 									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail2" name="editEmail2" placeholder="Email">
+										<input type="text" class="form-control" id="editEmail2" name="editEmail2" readonly>
 									</div>
 								</div>
 								</section>
 							</div>
 						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-12">
-								<label for="editMemo" class="label-form">Memo</label>
-								<textarea class="form-control" style="height: 200px;" id="editMemo" name="editMemo"></textarea>
+						<div class="form-row">
+							<div class="col-md-12 mt-4">
+								<section class="fieldset rounded" style="padding: 10px; background-color:beige;">
+									<header class="label-form" style="font-size: 0.9rem!important;">Password Reset</header>
+								<div class="row">
+									<div class="col-md-5">
+										<label>New Password</label>
+									</div>
+									<div class="col-md-7">
+										<input type="text" class="form-control" id="newPassword" name="newPassword">
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col-md-5">
+										<label>Confirm Password</label>
+									</div>
+									<div class="col-md-7">
+										<input type="text" class="form-control" id="confirmPassword" name="confirmPassword">
+									</div>
+								</div>
+								</section>
 							</div>
 						</div>
 					</form>					
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateStudentInfo()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" onclick="updatePassword()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
