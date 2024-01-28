@@ -87,13 +87,13 @@ function retrieveStudentInfo(std) {
         <iframe id="lessonVideo" src="${pageContext.request.contextPath}/image/video-thumbnail.png" width="1000" height="550" allow="autoplay; encrypted-media" allowfullscreen></iframe>        
         <div class="card-body">
             <div class="alert alert-info" role="alert">
-                <p><strong>Week</strong> <span id="academicWeek">29</span></p>
-                <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/YknoKqtpBgfmi5va1vUFcq8jlRTDT_A4h8Ac3w7BHWCHrLlSPK4GlEcmlYlsxUf8wC_mbJVvysx9ZBQ.VWI9jS0TJg3yrYDm?canPlayFromShare=true&from=share_recording_detail&startTime=1705901416000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FC38rIDGXsOGqYoHEfzQJCMynZalimQfn5kx2QKibigR0nKBURz4aHInD7ZEWL3Py.cL_mvjc7ek-cLNwm%3FstartTime%3D1705901416000">
+                <p><strong>Week</strong> <span id="academicWeek"></span></p>
+                <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/mKny_7H7FFnkvVM0BAU36OoIphUQ352b1q9aHsc6XxFhw9kvulE94t-SmfzNDI1A2oUjz7Uot_glPPw.KiYyoJ97SzGR-zuJ?canPlayFromShare=true&from=share_recording_detail&startTime=1705901416000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FC38rIDGXsOGqYoHEfzQJCMynZalimQfn5kx2QKibigR0nKBURz4aHInD7ZEWL3Py.cL_mvjc7ek-cLNwm%3FstartTime%3D1705901416000">
                     <span style="margin-left: 30px;"> 
                         Online Weekly Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
                     </span>
                 </p>
-                <p id="recordAcademicWeek" data-video-url="https://us02web.zoom.us/rec/play/1lE-D5fJpkA4mlDS-OokNXByxwl3uxQBjpAmleM6IRldvX5K36t5S-3ExngGu8LfsWyTWnFhWUKXuUmU.HzjFF8tiyh6JX92_?canPlayFromShare=true&from=share_recording_detail&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FgCZoECG_n6w6sd0H6hb8J3bStfK1-J2HFJnThllaHtKgAHn-GDabsuQrmlUpgtzl.w8toYrFjklUstG2p">
+                <p id="recordAcademicWeek" data-video-url="https://us02web.zoom.us/j/81323157192">
                     <span style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i></span>
                 </p> 
             </div>   
@@ -266,7 +266,7 @@ function retrieveStudentInfo(std) {
 		</div>
 	</div>
 </div>
-   
+<!-- Your HTML code -->
 <script>
     // get the online lesson element and the video iframe element
     const onlineLesson = document.getElementById('onlineLesson');
@@ -274,22 +274,118 @@ function retrieveStudentInfo(std) {
     const lessonVideo = document.getElementById('lessonVideo');
 
     // define a function to handle the click event
-    function handleLessonClick(element) {
-        // get the video URL from the data-video-url attribute
-        const videoUrl = element.getAttribute('data-video-url');
-        console.log(videoUrl);
-        // set the video URL as the iframe's src attribute
-        lessonVideo.setAttribute('src', videoUrl);
-        // show the video by setting the iframe's display to block
-        lessonVideo.style.display = 'block';
+    // function handleLessonClick(element) {
+    //     // get the video URL from the data-video-url attribute
+    //     const videoUrl = element.getAttribute('data-video-url');
+    //     console.log(videoUrl);
+    //     // set the video URL as the iframe's src attribute
+    //     lessonVideo.setAttribute('src', videoUrl);
+    //     // show the video by setting the iframe's display to block
+    //     lessonVideo.style.display = 'block';
+    // }
+
+    // function to show the media warning modal
+    function showMediaWarningModal() {
+        $('#mediaWarning').modal('show');
     }
 
     // add event listeners to the online lesson and recordAcademicWeek elements
     onlineLesson.addEventListener('click', () => {
-        handleLessonClick(onlineLesson);
+		// set the videoUrl to the hidden input field
+		document.getElementById("videoUrl").value = onlineLesson.getAttribute('data-video-url');
+        // Show confirmation dialog before calling handleLessonClick
+        showMediaWarningModal();
     });
+
     recordAcademicWeek.addEventListener('click', () => {
-        handleLessonClick(recordAcademicWeek);
+        // set the videoUrl to the hidden input field
+		document.getElementById("videoUrl").value = recordAcademicWeek.getAttribute('data-video-url');
+        // Show confirmation dialog before calling handleLessonClick
+        showMediaWarningModal();
     });
+
+
+	function displayMedia(){
+		// get the videoUrl from the hidden input field
+		const videoUrl = document.getElementById("videoUrl").value;
+		// set the video URL as the iframe's src attribute
+		lessonVideo.setAttribute('src', videoUrl);
+		// show the video by setting the iframe's display to block
+		lessonVideo.style.display = 'block';
+		// Hide the media warning modal
+        $('#mediaWarning').modal('hide');
+	}
+     
 </script>
+
+<!-- Video Warning Modal -->
+<!-- <div class="modal fade" id="mediaWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">James An College Year 3</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Class Time: Every MOnday, 4:30 - 7:30 PM</p>
+				1. Each set should be completed prior to the 'online class'.
+				2. Do not turn on your Camera.
+				3. You can ask a question to the teacher if necessary. But please do not bring up irrelevant topics or send dubious and unnecessary content. Anyone who does not respect the online etiquette may be removed from the class at teacher or Head Office's discretion.
+				4. Please change your name to 'Full Name - JAC Branch', e.g. Ava Lee - Braybrook
+				- You can change your name before joining the class or 'rename' yourself after joining
+				Please note JAC 'Connected Class' is still available for extra coverage.
+            </div>
+			<input type="hidden" id="videoUrl" name="videoUrl" value="">	
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="agreeMediaWarning" onclick="displayMedia()">I agree</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<!-- Video Warning Modal -->
+<div class="modal fade" id="mediaWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+				<p style="text-align:center"><span style="font-size:18px"><strong>James An College Year <span style="color:#c0392b">3</span></strong></span></p>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${pageContext.request.contextPath}/image/warning.png" style="width: 150px; height: 150px; border-radius: 5%;">
+                </div>
+                <!-- Add your warning message or content here -->
+                <p style="color: #337ab7;"><strong>Class Time:</strong> Every Monday, 4:30 - 7:30 PM</p>
+                <ol style="color: #337ab7;">
+                    <li>Each set should be completed prior to the 'online class'.</li>
+                    <li>Do not turn on your Camera.</li>
+                    <li>
+                        You can ask a question to the teacher if necessary. But please do not bring up irrelevant
+                        topics or send dubious and unnecessary content. Anyone who does not respect the online
+                        etiquette may be removed from the class at teacher or Head Office's discretion.
+                    </li>
+                    <li>
+                        Please change your name to 'Full Name - JAC Branch', e.g. Ava Lee - Braybrook
+                        <ul>
+                            <li>You can change your name before joining the class or 'rename' yourself after joining.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Please note JAC 'Connected Class' is still available for extra coverage.
+                    </li>
+                </ol>
+            </div>
+            <input type="hidden" id="videoUrl" name="videoUrl" value="">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="agreeMediaWarning" onclick="displayMedia()">I agree</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
