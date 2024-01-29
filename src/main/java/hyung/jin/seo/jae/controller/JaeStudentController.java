@@ -89,6 +89,21 @@ public class JaeStudentController {
 		return dto;
 	}
 
+	// update student password
+	@PutMapping("/updatePassword/{id}/{pwd}")
+	@ResponseBody
+	public StudentDTO updatePassword(@PathVariable Long id, @PathVariable String pwd) {
+		Long stdId = id;
+		String newPwd = pwd;
+		 
+		// 1. update Student
+		//std = studentService.updateStudent(std, std.getId());
+		// 2. convert Student to StudentDTO
+		StudentDTO dto = new StudentDTO();
+		return dto;
+	}
+	
+
 	// search student list with state, branch, grade, start date or active
 	@GetMapping("/list")
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
