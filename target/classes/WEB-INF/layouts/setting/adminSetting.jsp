@@ -64,13 +64,85 @@ function retrieveStudentInfo(std) {
 	});
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Update password
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updatePassword() {
+	var id = $("#editId").val();
+	var newPwd = $("#newPassword").val();
+	var confirmPwd = $("#confirmPassword").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search student record before updating');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// warn if newPwd or confirmPwd is empty
+	if (newPwd == '' || confirmPwd == '') {
+		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	//warn if newPwd is not same as confirmPwd
+	if(newPwd != confirmPwd){
+		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/updatePassword/' + id + '/' + confirmPwd,
+		type : 'PUT',
+		success : function(data) {
+			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
+			$('#success-alert').modal('toggle');
+			// clear fields
+			clearPassword();
+			// close modal
+			$('#editStudentModal').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Clear password fields
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearPassword() {
+	$("#newPassword").val('');
+	$("#confirmPassword").val('');
+}
+
 
 </script>    
 
 <style>
-    p#onlineLesson:hover, p#recordAcademicWeek:hover, p#recordAcademicMinusOneWeek:hover, p#recordAcademicMinusTwoWeek:hover, span#studentName:hover {
+
+	p#onlineLesson:hover, p#recordAcademicWeek:hover, p#recordAcademicMinusOneWeek:hover, p#recordAcademicMinusTwoWeek:hover, span#studentName:hover {
         cursor: pointer;
     }
+	
+	.custom-icon {
+    font-size: 2rem; /* Adjust the size as needed */
+	}
+
+	/* Style for an additional container element */
+	.iframe-container {
+		margin: 5px; /* Adjust the margin as needed */
+	}
+
+	/* Style for the iframe */
+	#lessonVideo {
+		width: 1000px;
+		height: 550px;
+		border: none;
+		background: url('${pageContext.request.contextPath}/image/video-thumbnail.png') center center no-repeat;
+		background-size: 40%;
+	}
+
 </style>
 
 
@@ -81,11 +153,15 @@ function retrieveStudentInfo(std) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-light h2">Jac-eLearning Student Lecture</span>           
         </div>
         <div class="card-body bg-primary text-right">
-            <span class="card-text" id="studentName" onclick="retrieveStudentInfo(130365)">Dylan Quach</span>
-            <a href="#" class="btn btn-primary"><i class="bi bi-box-arrow-right"></i></a>
+            <span class="card-text text-warning font-weight-bold font-italic" id="studentName" onclick="clearPassword();retrieveStudentInfo(130365)">Dylan Quach</span>
+            <a href="#" class="btn btn-primary"><i class="bi bi-box-arrow-right custom-icon"></i></a>
         </div>
-        <iframe id="lessonVideo" src="${pageContext.request.contextPath}/image/video-thumbnail.png" width="1000" height="550" allow="autoplay; encrypted-media" allowfullscreen></iframe>        
-        <div class="card-body">
+        <!-- HTML with additional container -->
+		<div class="iframe-container">
+			<iframe id="lessonVideo" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+		</div>
+		
+		<div class="card-body">
             <div class="alert alert-info" role="alert">
                 <p><strong>Week</strong> <span id="academicWeek"></span></p>
                 <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/mKny_7H7FFnkvVM0BAU36OoIphUQ352b1q9aHsc6XxFhw9kvulE94t-SmfzNDI1A2oUjz7Uot_glPPw.KiYyoJ97SzGR-zuJ?canPlayFromShare=true&from=share_recording_detail&startTime=1705901416000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FC38rIDGXsOGqYoHEfzQJCMynZalimQfn5kx2QKibigR0nKBURz4aHInD7ZEWL3Py.cL_mvjc7ek-cLNwm%3FstartTime%3D1705901416000">
@@ -114,7 +190,7 @@ function retrieveStudentInfo(std) {
 </div>
 
  <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">	
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
@@ -273,17 +349,6 @@ function retrieveStudentInfo(std) {
     const recordAcademicWeek = document.getElementById('recordAcademicWeek');
     const lessonVideo = document.getElementById('lessonVideo');
 
-    // define a function to handle the click event
-    // function handleLessonClick(element) {
-    //     // get the video URL from the data-video-url attribute
-    //     const videoUrl = element.getAttribute('data-video-url');
-    //     console.log(videoUrl);
-    //     // set the video URL as the iframe's src attribute
-    //     lessonVideo.setAttribute('src', videoUrl);
-    //     // show the video by setting the iframe's display to block
-    //     lessonVideo.style.display = 'block';
-    // }
-
     // function to show the media warning modal
     function showMediaWarningModal() {
         $('#mediaWarning').modal('show');
@@ -306,6 +371,8 @@ function retrieveStudentInfo(std) {
 
 
 	function displayMedia(){
+		// remove iframe inital background
+		lessonVideo.style.background = 'none';
 		// get the videoUrl from the hidden input field
 		const videoUrl = document.getElementById("videoUrl").value;
 		// set the video URL as the iframe's src attribute
@@ -319,73 +386,64 @@ function retrieveStudentInfo(std) {
 </script>
 
 <!-- Video Warning Modal -->
-<!-- <div class="modal fade" id="mediaWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">James An College Year 3</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Class Time: Every MOnday, 4:30 - 7:30 PM</p>
-				1. Each set should be completed prior to the 'online class'.
-				2. Do not turn on your Camera.
-				3. You can ask a question to the teacher if necessary. But please do not bring up irrelevant topics or send dubious and unnecessary content. Anyone who does not respect the online etiquette may be removed from the class at teacher or Head Office's discretion.
-				4. Please change your name to 'Full Name - JAC Branch', e.g. Ava Lee - Braybrook
-				- You can change your name before joining the class or 'rename' yourself after joining
-				Please note JAC 'Connected Class' is still available for extra coverage.
-            </div>
-			<input type="hidden" id="videoUrl" name="videoUrl" value="">	
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="agreeMediaWarning" onclick="displayMedia()">I agree</button>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<!-- Video Warning Modal -->
 <div class="modal fade" id="mediaWarning" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-				<p style="text-align:center"><span style="font-size:18px"><strong>James An College Year <span style="color:#c0392b">3</span></strong></span></p>
-            </div>
+            <div class="modal-header bg-warning" style="display: block;">
+				<p style="text-align: center; margin-bottom: 0;"><span style="font-size:18px"><strong>James An College Year <span class="text-danger">3</span></strong></span></p>
+			</div>
             <div class="modal-body">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <img src="${pageContext.request.contextPath}/image/warning.png" style="width: 150px; height: 150px; border-radius: 5%;">
                 </div>
                 <!-- Add your warning message or content here -->
-                <p style="color: #337ab7;"><strong>Class Time:</strong> Every Monday, 4:30 - 7:30 PM</p>
-                <ol style="color: #337ab7;">
+                <p ><strong>Class Time:</strong> Every Monday, 4:30 - 7:30 PM</p>
+                <ol>
                     <li>Each set should be completed prior to the 'online class'.</li>
-                    <li>Do not turn on your Camera.</li>
+                    <li><span class="text-danger"><strong>Do not turn on your Camera.</strong></span></li>
                     <li>
                         You can ask a question to the teacher if necessary. But please do not bring up irrelevant
                         topics or send dubious and unnecessary content. Anyone who does not respect the online
                         etiquette may be removed from the class at teacher or Head Office's discretion.
                     </li>
                     <li>
-                        Please change your name to 'Full Name - JAC Branch', e.g. Ava Lee - Braybrook
-                        <ul>
-                            <li>You can change your name before joining the class or 'rename' yourself after joining.</li>
-                        </ul>
+                        Please change your name to <strong>&#39;Full Name - JAC Branch&#39;</strong>, e.g. Ava Lee - Braybrook
+                        <br>
+                        - You can change your name before joining the class or 'rename' yourself after joining.</li>
+                        
                     </li>
                     <li>
-                        Please note JAC 'Connected Class' is still available for extra coverage.
+                        Please note JAC <span class="text-primary"><strong>&#39;Connected Class&#39; </strong></span> is still available for extra coverage.
                     </li>
                 </ol>
             </div>
             <input type="hidden" id="videoUrl" name="videoUrl" value="">
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="agreeMediaWarning" onclick="displayMedia()">I agree</button>
+				<button type="button" class="btn btn-primary" id="agreeMediaWarning" onclick="displayMedia()">I agree</button>
+            	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 
+<!-- Success Alert -->
+<div id="success-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-success alert-dialog-display">
+			<i class="fa fa-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Warning Alert -->
+<div id="warning-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-warning alert-dialog-display">
+			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
 
