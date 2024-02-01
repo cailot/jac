@@ -38,6 +38,12 @@ public class Student {
     
     @Column(length = 100, nullable = false)
     private String lastName;
+
+    @Column(length = 70, nullable = true) // exsting data has no password
+    private String password;
+    
+    @Column(length = 1, nullable = false)
+    private int active;
     
     @Column(length = 10, nullable = false)
     private String grade;
@@ -74,7 +80,7 @@ public class Student {
     
     @Column(length = 7, nullable = true)
     private String gender;
-    
+        
     @CreationTimestamp
     private LocalDate registerDate;
     
