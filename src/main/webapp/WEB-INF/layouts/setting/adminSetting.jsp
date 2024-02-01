@@ -149,11 +149,11 @@ function clearPassword() {
 <div class="row">
     <div class="col-lg-12">
         <div class="card-body bg-primary text-center">
-            <img src="${pageContext.request.contextPath}/image/logo.png" style="filter: brightness(0) invert(1);width:45px;" >
+            <img src="${pageContext.request.contextPath}/image/logo.png" style="filter: brightness(0) invert(1);width:75px;" >
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-light h2">Jac-eLearning Student Lecture</span>           
         </div>
         <div class="card-body bg-primary text-right">
-            <span class="card-text text-warning font-weight-bold font-italic" id="studentName" onclick="clearPassword();retrieveStudentInfo(130365)">Dylan Quach</span>
+            <span class="card-text text-warning font-weight-bold font-italic" id="studentName" onclick="clearPassword();retrieveStudentInfo(130603)">Dylan Quach</span>
             <a href="#" class="btn btn-primary"><i class="bi bi-box-arrow-right custom-icon"></i></a>
         </div>
         <!-- HTML with additional container -->
@@ -164,7 +164,7 @@ function clearPassword() {
 		<div class="card-body">
             <div class="alert alert-info" role="alert">
                 <p><strong>Week</strong> <span id="academicWeek"></span></p>
-                <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/mKny_7H7FFnkvVM0BAU36OoIphUQ352b1q9aHsc6XxFhw9kvulE94t-SmfzNDI1A2oUjz7Uot_glPPw.KiYyoJ97SzGR-zuJ?canPlayFromShare=true&from=share_recording_detail&startTime=1705901416000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FC38rIDGXsOGqYoHEfzQJCMynZalimQfn5kx2QKibigR0nKBURz4aHInD7ZEWL3Py.cL_mvjc7ek-cLNwm%3FstartTime%3D1705901416000">
+                <p id="onlineLesson" data-video-url="https://us02web.zoom.us/rec/play/ma2pfFazOsXqFla1dreILhb5Xjffq-85oAksTr9TgxjNdPfHDRKQMz7hcxuJrbpUaE6ofpw0wQ0WCt4s.qQEHvpWXF4BWgnru?canPlayFromShare=true&from=share_recording_detail&startTime=1706506287000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus02web.zoom.us%2Frec%2Fshare%2FmnB4w4HZI80oTYn_UyQCkveSxmITcw0Xs-Myw9pN4DUx4Dv-HrOaosI4si2jeOmr.32ShDyR6f2WnTe3j%3FstartTime%3D1706506287000">
                     <span style="margin-left: 30px;"> 
                         Online Weekly Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i>
                     </span>
@@ -174,13 +174,13 @@ function clearPassword() {
                 </p> 
             </div>   
             <div class="alert alert-primary" role="alert">
-                <p><strong>Week</strong> <span id="academicMinusOneWeek">28</span></p>
+                <p><strong>Week</strong> <span id="academicMinusOneWeek"></span></p>
                 <p id="recordAcademicMinusOneWeek">
                     <span style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i></span>    
                 </p>
             </div>
             <div class="alert alert-success" role="alert">
-                <p><strong>Week</strong> <span id="academicMinusTwoWeek">27</span></p>
+                <p><strong>Week</strong> <span id="academicMinusTwoWeek"></span></p>
                 <p id="recordAcademicMinusTwoWeek">
                     <span style="margin-left: 30px;">Recorded Lesson &nbsp;<i class="bi bi-caret-right-square text-primary" title="Play Video"></i></span>
                 </p>
@@ -334,7 +334,7 @@ function clearPassword() {
 						</div>
 					</form>					
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updatePassword()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" onclick="updatePassword()">Update Password</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -382,6 +382,25 @@ function clearPassword() {
 		// Hide the media warning modal
         $('#mediaWarning').modal('hide');
 	}
+
+
+
+
+
+
+
+// Add an event listener to the timeupdate event
+lessonVideo.addEventListener("timeupdate", function() {
+  // If the video is loaded and duration is known
+  if (!isNaN(this.duration)) {
+    // Calculate the percentage of the video that the user has watched
+    var percentComplete = (this.currentTime / this.duration) * 100;
+    // Display the percentage as a progress bar or as a number
+    // You can use CSS to style the progress bar
+    console.log("Percentage complete: " + percentComplete + "%");
+  }
+});
+
      
 </script>
 
