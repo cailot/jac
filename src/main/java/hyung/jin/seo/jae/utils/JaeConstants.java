@@ -179,4 +179,14 @@ public interface JaeConstants {
 
 	String ATTEND_OTHER = "O";
 
+	////////////////////////////////////
+	//
+	//	Student Active or not
+	//
+	////////////////////////////////////
+
+	int ACTIVE = 0;
+
+	int INACTIVE = 1;
+
 }
