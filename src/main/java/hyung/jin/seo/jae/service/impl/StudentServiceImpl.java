@@ -160,6 +160,7 @@ public class StudentServiceImpl implements StudentService {
 		existing.setState(newState);
 		String newBranch = StringUtils.defaultString(newStudent.getBranch());
 		existing.setBranch(newBranch);
+		// existing.setActive(newStudent.getActive());
 		LocalDate newRegisterDate = newStudent.getRegisterDate();
 		existing.setRegisterDate(newRegisterDate);
 		String newMemo = StringUtils.defaultString(newStudent.getMemo());
@@ -188,6 +189,7 @@ public class StudentServiceImpl implements StudentService {
 			if(end.isPresent()){
 				Student std = end.get();
 				std.setEndDate(null);
+				std.setActive(JaeConstants.ACTIVE);
 				student = studentRepository.save(std);
 			}
 			return student;
@@ -205,6 +207,7 @@ public class StudentServiceImpl implements StudentService {
 			if(!end.isPresent()) return; // if not found, terminate.
 			Student std = end.get();
 			std.setEndDate(LocalDate.now());
+			std.setActive(JaeConstants.INACTIVE);
 			studentRepository.save(std);
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to discharge");
@@ -219,6 +222,12 @@ public class StudentServiceImpl implements StudentService {
 			System.out.println("Nothing to delete");
 		}
 
+	}
+
+	@Override
+	public int updatePassword(Long id, String password) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'updatePassword'");
 	}
 
 	
