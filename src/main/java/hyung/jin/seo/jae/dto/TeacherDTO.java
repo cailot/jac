@@ -24,6 +24,8 @@ public class TeacherDTO implements Serializable{
     private String firstName;
     
     private String lastName;
+
+    private String password;
     
     private String title;
     
@@ -56,6 +58,8 @@ public class TeacherDTO implements Serializable{
     private String startDate;
     
     private String endDate;
+
+    private int active;
   
 	public TeacherDTO(Teacher teacher) {
     	this.id = (teacher.getId()!=null) ? teacher.getId().toString() : "";
@@ -76,7 +80,9 @@ public class TeacherDTO implements Serializable{
         this.superMember = (teacher.getSuperMember()!=null) ? teacher.getSuperMember() : "";
         this.tfn = (teacher.getTfn()!=null) ? teacher.getTfn().toString() : "";
         this.startDate = (teacher.getStartDate()!=null) ? teacher.getStartDate().toString() : "";
-        this.endDate = (teacher.getEndDate()!=null) ? teacher.getEndDate().toString() : ""; 
+        this.endDate = (teacher.getEndDate()!=null) ? teacher.getEndDate().toString() : "";
+        this.active = teacher.getActive();
+        this.password = (teacher.getPassword()!=null) ? teacher.getPassword() : "";
     }
     
     public Teacher convertToTeacher() {
@@ -100,6 +106,8 @@ public class TeacherDTO implements Serializable{
     	if(StringUtils.isNotBlank(tfn)) teacher.setTfn(Long.parseLong(this.tfn));
     	if(StringUtils.isNotBlank(startDate)) teacher.setStartDate(LocalDate.parse(startDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	if(StringUtils.isNotBlank(endDate)) teacher.setEndDate(LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        if(StringUtils.isNotBlank(password)) teacher.setPassword(this.password);
+        teacher.setActive(this.active);
     	return teacher;
     }
 }

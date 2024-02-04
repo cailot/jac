@@ -42,6 +42,12 @@ public class Teacher implements Serializable{
     
     @Column(length = 100, nullable = false)
     private String lastName;
+
+    @Column(length = 70, nullable = true)
+    private String password;
+    
+    @Column(length = 1, nullable = false)
+    private int active;
     
     @Column(length = 5, nullable = true)
     private String title;
@@ -49,7 +55,7 @@ public class Teacher implements Serializable{
     @Column(length = 100, nullable = true)
     private String phone;
     
-    @Column(length = 100, nullable = true)
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
     
     @Column(length = 200, nullable = true)

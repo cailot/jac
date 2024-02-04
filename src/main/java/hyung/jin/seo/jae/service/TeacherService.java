@@ -38,4 +38,6 @@ public interface TeacherService {
 	void updateTeacherMemo(Long id, String memo);
 
 	List<Long> getClazzIdByTeacher(Long id);
+
+	void updatePassword(Teacher teacher);
 }

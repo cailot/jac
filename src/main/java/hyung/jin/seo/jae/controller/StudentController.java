@@ -21,7 +21,7 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("student")
-public class JaeStudentController {
+public class StudentController {
 
 	@Autowired
 	private StudentService studentService;
@@ -92,14 +92,14 @@ public class JaeStudentController {
 	// update student password
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody
-	public int updatePassword(@PathVariable Long id, @PathVariable String pwd) {
+	public void updatePassword(@PathVariable Long id, @PathVariable String pwd) {
 		Long stdId = id;
 		String newPwd = pwd;
 		Student std = new Student();
 		std.setId(stdId);
 		std.setPassword(newPwd);
-		int result = studentService.updatePassword(std);
-		return result;
+		studentService.updatePassword(std);
+		// return result;
 	}
 	
 
