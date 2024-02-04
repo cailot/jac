@@ -92,15 +92,14 @@ public class JaeStudentController {
 	// update student password
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody
-	public StudentDTO updatePassword(@PathVariable Long id, @PathVariable String pwd) {
+	public int updatePassword(@PathVariable Long id, @PathVariable String pwd) {
 		Long stdId = id;
 		String newPwd = pwd;
-		 
-		// 1. update Student
-		//std = studentService.updateStudent(std, std.getId());
-		// 2. convert Student to StudentDTO
-		StudentDTO dto = new StudentDTO();
-		return dto;
+		Student std = new Student();
+		std.setId(stdId);
+		std.setPassword(newPwd);
+		int result = studentService.updatePassword(std);
+		return result;
 	}
 	
 
