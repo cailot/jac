@@ -31,6 +31,7 @@ function addStudent() {
 		lastName : $("#addLastName").val(),
 		address : $("#addAddress").val(),
 		gender : $("#addGender").val(),
+		password : $("#addPassword").val(),
 		email1 : $("#addEmail1").val(),
 		email2 : $("#addEmail2").val(),
 		relation1 : $("#addRelation1").val(),
@@ -149,6 +150,60 @@ function reactivateStudent() {
 			console.log('Error : ' + error);
 		}
 	}); 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Update password
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updatePassword() {
+	var id = $("#formId").val();
+	var newPwd = $("#newPwd").val();
+	var confirmPwd = $("#confirmPwd").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search student record before password reset');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// warn if newPwd or confirmPwd is empty
+	if (newPwd == '' || confirmPwd == '') {
+		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	//warn if newPwd is not same as confirmPwd
+	if(newPwd != confirmPwd){
+		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/updatePassword/' + id + '/' + confirmPwd,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
+			$('#success-alert').modal('toggle');
+			// clear fields
+			clearPassword();
+			// close modal
+			$('#passwordModal').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Clear password fields
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearPassword() {
+	$("#newPwd").val('');
+	$("#confirmPwd").val('');
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -339,6 +394,8 @@ function clearStudentForm() {
 	clearCourseRegisteration();
 	// clear attendance table
 	clearAttendanceTable();
+	// clear passwords
+	clearPassword();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -506,6 +563,11 @@ function clearCourseRegisteration(){
 							</select>
 						</div>
 						<div class="col-md-9">
+							<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
+						</div>
+					</div>
+					<div class="form-row mt-2">
+						<div class="col-md-12">
 							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 						</div>
 					</div>
@@ -576,6 +638,44 @@ function clearCourseRegisteration(){
 	</div>
 </div>
 
+<!-- Password Reset Dialogue -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Password Reset</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5> Do you want to reset password for this student?</h5>
+				<p>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							New Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							Confirm Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+						</div>
+					</div>
+				</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+
 <!-- Administration Body -->
 <div class="modal-body">
 	<form id="studentInfo">
@@ -583,22 +683,25 @@ function clearCourseRegisteration(){
 			<div class="col-md-8">
 				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
 			</div>
-			<div class="col-md-4">
-				<button type="button" class="btn btn-block btn-warning" onclick="searchStudent()">Search</button>
+			<div class="col-md-4" title="Search Student by Id or Name">
+				<button type="button" class="btn btn-block btn-warning" onclick="searchStudent()"><i class="bi bi-search"></i></button>
 			</div>
 		</div>
 		<div class="form-row mt-3">
-			<div class="col mx-auto">
-				<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#registerModal">New</button>
+			<div class="col mx-auto" title="Register New Student">
+				<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus-circle"></i></button>
 			</div>
-			<div class="col mx-auto">
-				<button type="button" class="btn btn-block btn-info" onclick="updateStudentInfo()">Update</button>
+			<div class="col mx-auto" title="Update Student Information">
+				<button type="button" class="btn btn-block btn-info" onclick="updateStudentInfo()"><i class="bi bi-pencil-fill"></i></button>
 			</div>
-			<div class="col mx-auto">
-				<button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#deactivateModal">Suspend</button>
+			<div class="col mx-auto" title="Reset Student Password">
+				<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#passwordModal" onclick="clearPassword()"><i class="bi bi-key-fill"></i></button>
 			</div>
-			<div class="col mx-auto">
-				<button type="button" class="btn btn-block btn-success" onclick="clearStudentForm()">Clear</button>
+			<div class="col mx-auto" title="Inactivate Student">
+				<button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#deactivateModal"><i class="bi bi-pause"></i></button>
+			</div>
+			<div class="col mx-auto" title="Clear Student Information">
+				<button type="button" class="btn btn-block btn-secondary" onclick="clearStudentForm()"><i class="bi bi-eraser"></i></button>
 			</div>
 		</div>
 		<div class="form-row mt-3">

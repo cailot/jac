@@ -200,6 +200,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
+	@Transactional
 	public void deactivateStudent(Long id) {
 		try {
 			// studentRepository.deleteById(id);
@@ -225,11 +226,19 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public int updatePassword(Long id, String password) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'updatePassword'");
+	@Transactional
+	public int updatePassword(Student std) {
+		Long username = std.getId();
+		String password = std.getPassword();
+		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		// String encodedPassword = passwordEncoder.encode(password);
+		int result = 0;
+		try{
+			result = studentRepository.updatePassword(username, password);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}	
+		return result;
 	}
-
-	
 
 }
