@@ -75,6 +75,7 @@ function addStudent() {
 		branch : $("#addBranch").val(),
 		grade : $("#addGrade").val(),
 		gender : $("#addGender").val(),
+		password : $("#addPassword").val(),
 		enrolmentDate : $("#addEnrolment").val()
 	}
 	// Send AJAX to server
@@ -248,33 +249,70 @@ function retrieveStudentInfo(std) {
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Update password
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updatePassword() {
+	var id = $("#pwdId").val();
+	var newPwd = $("#newPwd").val();
+	var confirmPwd = $("#confirmPwd").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search student record before password reset');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// warn if newPwd or confirmPwd is empty
+	if (newPwd == '' || confirmPwd == '') {
+		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	//warn if newPwd is not same as confirmPwd
+	if(newPwd != confirmPwd){
+		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/updatePassword/' + id + '/' + confirmPwd,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
+			$('#success-alert').modal('toggle');
+			// clear fields
+			clearPassword();
+			// close modal
+			$('#passwordModal').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Show password dialogue
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showPasswordModal(id) {
+	clearPassword();
+	$("#pwdId").val(id);
+	$('#passwordModal').modal('show');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Clear password fields
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearPassword() {
+	$("pwdId").val('');
+	$("#newPwd").val('');
+	$("#confirmPwd").val('');
+}
+
 </script>
-
-<!-- Datepicker size change ... -->
-<style>
-	/* #studentListTable th, tr {
-		padding: 15px;
-	}
-	#studentList .form-row {
-  		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-	div.dataTables_filter {
-		padding-top: 35px;
-		padding-bottom: 35px;
-	}
-	div.dt-buttons {
-		padding-top: 35px;
-		padding-bottom: 10px;
-	}
-	div.dataTables_length{
-		padding-top: 40px;
-		padding-bottom: 10px;
-	}
-	tr { height: 50px }  */
-
-</style>
-
 
 <!-- List Body -->
 <div class="row">
@@ -399,7 +437,7 @@ function retrieveStudentInfo(std) {
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
 												<td>
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<a href="#passwordStudentModal" class="password" data-toggle="modal"><i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password"></i></a>&nbsp;
+													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
 														<c:when test="${empty student.endDate}">
 															<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
@@ -494,6 +532,11 @@ function retrieveStudentInfo(std) {
 								</select>
 							</div>
 							<div class="col-md-9">
+								<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-12">
 								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 							</div>
 						</div>
@@ -700,32 +743,44 @@ function retrieveStudentInfo(std) {
 	</div>
 </div>
 
-<!--  Password Modal HTML -->
-<div id="passwordStudentModal" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form method="POST" action="${pageContext.request.contextPath}/changePassword">
-				<div class="modal-header">
-					<h4 class="modal-title">Change Password</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label>Password</label> <input type="password" class="form-control" required="required" name="passwordpassword" id="passwordpassword" />
+<!-- Password Reset Dialogue -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Password Reset</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5> Do you want to reset password for this student?</h5>
+				<p>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							New Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+						</div>
 					</div>
-					<div class="form-group">
-						<label>Confirm Password</label> <input type="password" class="form-control" required="required" name="confirmPasswordpassword" id="confirmPasswordpassword"/>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							Confirm Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-info" onclick="return passwordChange();">Change Password</button> 
-					<input type="button" class="btn btn-secondary" data-dismiss="modal" value="Cancel">
-					<input type="hidden" name="usernamepassword" id="usernamepassword" />
-				</div>
-			</form>
-		</div>
+				</p>
+				<input type="hidden" id="pwdId" name="pwdId"/>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
 	</div>
 </div>
+
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
