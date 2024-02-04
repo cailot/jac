@@ -227,18 +227,16 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	@Transactional
-	public int updatePassword(Student std) {
+	public void updatePassword(Student std) {
 		Long username = std.getId();
 		String password = std.getPassword();
 		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		// String encodedPassword = passwordEncoder.encode(password);
-		int result = 0;
 		try{
-			result = studentRepository.updatePassword(username, password);
+			studentRepository.updatePassword(username, password);
 		}catch(Exception e){
 			System.out.println("No student found");
 		}	
-		return result;
 	}
 
 }

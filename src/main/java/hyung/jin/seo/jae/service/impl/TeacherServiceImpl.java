@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.repository.TeacherRepository;
@@ -94,6 +95,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
+	@Transactional
 	public Teacher addTeacher(Teacher teacher) {
 		Teacher add = teacherRepository.save(teacher);
 		return add;
@@ -106,7 +108,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
-	// @Transactional
+	@Transactional
 	public Teacher updateTeacher(Teacher newVal, Long id) {
 		// search by getId
 		Teacher existing = teacherRepository.findById(id)
@@ -191,6 +193,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
+	@Transactional
 	public void reactivateTeacher(Long id) {
 		try {
 			Optional<Teacher> end = teacherRepository.findById(id);
@@ -198,6 +201,7 @@ public class TeacherServiceImpl implements TeacherService {
 				return; // if not found, terminate.
 			Teacher teacher = end.get();
 			teacher.setEndDate(null);
+			teacher.setActive(JaeConstants.ACTIVE);
 			teacherRepository.save(teacher);
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to discharge");
@@ -205,6 +209,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
+	@Transactional
 	public void dischargeTeacher(Long id) {
 		try {
 			Optional<Teacher> end = teacherRepository.findById(id);
@@ -212,6 +217,7 @@ public class TeacherServiceImpl implements TeacherService {
 				return; // if not found, terminate.
 			Teacher teacher = end.get();
 			teacher.setEndDate(LocalDate.now());
+			teacher.setActive(JaeConstants.INACTIVE);
 			teacherRepository.save(teacher);
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to discharge");
@@ -228,6 +234,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 
 	@Override
+	@Transactional
 	public void updateTeacherMemo(Long id, String memo) {
 		try {
 			Optional<Teacher> teacher = teacherRepository.findById(id);
@@ -250,6 +257,18 @@ public class TeacherServiceImpl implements TeacherService {
 			System.out.println("No teacher found");
 		}
 		return ids;
+	}
+
+	@Override
+	@Transactional
+	public void updatePassword(Teacher teacher) {
+		String email = teacher.getEmail();
+		String password = teacher.getPassword();
+		try{
+			teacherRepository.updatePassword(email, password);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }
