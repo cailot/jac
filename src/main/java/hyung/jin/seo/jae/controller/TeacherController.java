@@ -27,7 +27,7 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("teacher")
-public class JaeTeacherController {
+public class TeacherController {
 
 	@Autowired
 	private TeacherService teacherService;
@@ -169,4 +169,18 @@ public class JaeTeacherController {
 		// 5. return success message
 		return ResponseEntity.ok("success");
 	}
+	
+	// update student password
+	@PutMapping("/updatePassword/{email}/{pwd}")
+	@ResponseBody
+	public void updatePassword(@PathVariable String email, @PathVariable String pwd) {
+		String id = email;
+		String newPwd = pwd;
+		Teacher teacher = new Teacher();
+		teacher.setEmail(id);
+		teacher.setPassword(newPwd);
+		teacherService.updatePassword(teacher);
+		// return result;
+	}
+	
 }

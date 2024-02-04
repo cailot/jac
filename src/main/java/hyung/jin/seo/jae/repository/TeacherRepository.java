@@ -37,4 +37,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	@Query(value = "SELECT clazzId FROM Teacher_Class WHERE teacherId = ?1", nativeQuery = true)
 	List<Long> findClazzIdByTeacherId(Long id);
 
+	@Query(value = "UPDATE Teacher t SET t.password = ?2 WHERE t.email = ?1 AND ACTIVE = 0", nativeQuery = true)
+	void updatePassword(String email, String password);
+
 }

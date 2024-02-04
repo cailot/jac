@@ -107,6 +107,7 @@
 			lastName: $("#addLastName").val(),
 			email: $("#addEmail").val(),
 			phone: $("#addPhone").val(),
+			password : $("#addPassword").val(),
 			address: $("#addAddress").val(),
 			bank: $("#addBank").val(),
 			bsb: $("#addBsb").val(),
@@ -415,6 +416,71 @@
 		$('#clazzBranch').val('');
 	}
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Update password
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updatePassword() {
+	var id = $("#emailId").val();
+	var newPwd = $("#newPwd").val();
+	var confirmPwd = $("#confirmPwd").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search teacher record before password reset');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// warn if newPwd or confirmPwd is empty
+	if (newPwd == '' || confirmPwd == '') {
+		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	//warn if newPwd is not same as confirmPwd
+	if(newPwd != confirmPwd){
+		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/teacher/updatePassword/' + id + '/' + confirmPwd,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
+			$('#success-alert').modal('toggle');
+			// clear fields
+			clearPassword();
+			// close modal
+			$('#passwordModal').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Show password dialogue
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showPasswordModal(id) {
+	clearPassword();
+	$("#emailId").val(id);
+	$('#passwordModal').modal('show');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Clear password fields
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearPassword() {
+	$("emailId").val('');
+	$("#newPwd").val('');
+	$("#confirmPwd").val('');
+}
+
+
 </script>
 
 <!-- List Body -->
@@ -523,11 +589,7 @@
 															title="Class Association"
 															onclick="retreiveClazzInfo('${teacher.id}','${teacher.state}','${teacher.branch}')"></i>&nbsp;
 
-														<a href="#passwordStudentModal"
-															class="password" data-toggle="modal"><i
-																class="bi bi-key text-warning"
-																data-toggle="tooltip"
-																title="Change Password"></i></a>&nbsp;
+														<i	class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
 														<c:choose>
 															<c:when test="${empty teacher.endDate}">
 																<i class="bi bi-x-circle text-danger"
@@ -614,15 +676,22 @@
 							</div>
 						</div>
 						<div class="form-row mt-2">
-							<div class="col-md-9">
-								<label for="addAddress" class="label-form">Address</label>
-								<input type="text" class="form-control" id="addAddress"
-									name="addAddress">
+							<div class="col-md-8">
+								<label for="addPassword" class="label-form">Password</label>
+								<input type="text" class="form-control" id="addPassword"
+									name="addPassword">
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<label for="addVitNumber" class="label-form">VIT/WWCC</label>
 								<input type="text" class="form-control" id="addVitNumber"
 									name="addVitNumber">
+							</div>
+						</div>
+						<div class="form-row mt-2">
+							<div class="col-md-12">
+								<label for="addAddress" class="label-form">Address</label>
+								<input type="text" class="form-control" id="addAddress"
+									name="addAddress">
 							</div>
 						</div>
 						<div class="form-row mt-2">
@@ -714,17 +783,18 @@
 							</div>
 						</div>
 						<div class="form-row mt-2">
-							<div class="col-md-2">
+							<!-- <div class="col-md-2">
 								<label for="editId" class="label-form">Id:</label>
 								<input type="text" class="form-control" id="editId" name="editId"
 									readonly>
-							</div>
-							<div class="col-md-5">
+							</div> -->
+							<input type="hidden" id="editId" name="editId" />
+							<div class="col-md-6">
 								<label for="editFirstName" class="label-form">First Name:</label>
 								<input type="text" class="form-control" id="editFirstName"
 									name="editFirstName">
 							</div>
-							<div class="col-md-5">
+							<div class="col-md-6">
 								<label for="editLastName" class="label-form">Last Name:</label>
 								<input type="text" class="form-control" id="editLastName"
 									name="editLastName">
@@ -733,8 +803,7 @@
 						<div class="form-row mt-2">
 							<div class="col-md-5">
 								<label for="editEmail" class="label-form">Email</label>
-								<input type="text" class="form-control" id="editEmail"
-									name="editEmail">
+								<input type="text" class="form-control" id="editEmail" name="editEmail" disabled>
 							</div>
 							<div class="col-md-6">
 								<label for="editPhone" class="label-form">Phone</label>
@@ -918,40 +987,6 @@
 	</div>
 </div>
 
-<!--  Password Modal HTML -->
-<div id="passwordStudentModal" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form method="POST" action="${pageContext.request.contextPath}/changePassword">
-				<div class="modal-header">
-					<h4 class="modal-title">Change Password</h4>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label>Password</label> <input type="password" class="form-control"
-							required="required" name="passwordpassword" id="passwordpassword" />
-					</div>
-					<div class="form-group">
-						<label>Confirm Password</label> <input type="password" class="form-control"
-							required="required" name="confirmPasswordpassword"
-							id="confirmPasswordpassword" />
-					</div>
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal"
-						value="Cancel">
-					<button type="submit" class="btn btn-info"
-						onclick="return passwordChange();">Change Password</button>
-					<input type="hidden" name="usernamepassword" id="usernamepassword" />
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
-
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
@@ -959,5 +994,53 @@
 			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
+	</div>
+</div>
+
+<!-- Warning Alert -->
+<div id="warning-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-warning alert-dialog-display">
+			<i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Password Reset Dialogue -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Teacher Password Reset</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5> Do you want to reset password for this teacher ?</h5>
+				<p>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							New Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							Confirm Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+						</div>
+					</div>
+				</p>
+				<input type="hidden" id="emailId" name="emailId"/>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
 	</div>
 </div>
