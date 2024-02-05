@@ -18,6 +18,8 @@ const DISCOUNT_FREE = '100%';
 
 $(document).ready(
 	function() {
+		// load grades
+		listGrade('#registerGrade');
 		// make an AJAX call on page load
 		// to get the academic year and week
 		$.ajax({
@@ -965,25 +967,6 @@ function showAlertMessage(elementId, message) {
 					<div class="col-md-2">
 						<select class="form-control form-control-sm" id="registerGrade" name="registerGrade">
 							<option>Grade</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="srw4">SRW4</option>
-							<option value="srw5">SRW5</option>
-							<option value="srw6">SRW6</option>
-							<option value="srw8">SRW8</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
 						</select>
 					</div>
 					<div class="offset-md-8">

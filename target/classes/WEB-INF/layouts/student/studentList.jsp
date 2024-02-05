@@ -53,6 +53,9 @@ $(document).ready(function () {
 	listBranch('#listBranch');
 	listBranch('#addBranch');
 	listBranch('#editBranch');
+	listGrade('#listGrade');
+	listGrade('#addGrade');
+	listGrade('#editGrade');
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,21 +338,6 @@ function clearPassword() {
 						<label for="listGrade" class="label-form">Grade</label> 
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -420,7 +408,33 @@ function clearPassword() {
 												<td class="small ellipsis" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${fn:toUpperCase(student.grade)}" /></span></td>
+												<td class="small ellipsis">
+													<span>
+														<c:choose>
+															<c:when test="${student.grade == '1'}">P2</c:when>
+															<c:when test="${student.grade == '2'}">P3</c:when>
+															<c:when test="${student.grade == '3'}">P4</c:when>
+															<c:when test="${student.grade == '4'}">P5</c:when>
+															<c:when test="${student.grade == '5'}">P6</c:when>
+															<c:when test="${student.grade == '6'}">S7</c:when>
+															<c:when test="${student.grade == '7'}">S8</c:when>
+															<c:when test="${student.grade == '8'}">S9</c:when>
+															<c:when test="${student.grade == '9'}">S10</c:when>
+															<c:when test="${student.grade == '10'}">S10E</c:when>
+															<c:when test="${student.grade == '11'}">TT6</c:when>
+															<c:when test="${student.grade == '12'}">TT8</c:when>
+															<c:when test="${student.grade == '13'}">TT8E</c:when>
+															<c:when test="${student.grade == '14'}">SRW4</c:when>
+															<c:when test="${student.grade == '15'}">SRW5</c:when>
+															<c:when test="${student.grade == '16'}">SRW6</c:when>
+															<c:when test="${student.grade == '17'}">SRW7</c:when>
+															<c:when test="${student.grade == '18'}">SRW8</c:when>
+															<c:when test="${student.grade == '19'}">JMSS</c:when>
+															<c:when test="${student.grade == '20'}">VCE</c:when>
+															<c:otherwise></c:otherwise>
+														</c:choose>
+													</span>
+												</td>
 												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
 												<td class="small ellipsis">
 													<span>
@@ -501,25 +515,6 @@ function clearPassword() {
 							</div>
 							<div class="col-md-3">
 								<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade">
-									<option value="p2">P2</option>
-									<option value="p3">P3</option>
-									<option value="p4">P4</option>
-									<option value="p5">P5</option>
-									<option value="p6">P6</option>
-									<option value="s7">S7</option>
-									<option value="s8">S8</option>
-									<option value="s9">S9</option>
-									<option value="s10">S10</option>
-									<option value="s10e">S10E</option>
-									<option value="tt6">TT6</option>
-									<option value="tt8">TT8</option>
-									<option value="tt8e">TT8E</option>
-									<option value="srw4">SRW4</option>
-									<option value="srw5">SRW5</option>
-									<option value="srw6">SRW6</option>
-									<option value="srw8">SRW8</option>
-									<option value="jmss">JMSS</option>
-									<option value="vce">VCE</option>
 								</select>
 							</div>
 						</div>
@@ -641,25 +636,6 @@ function clearPassword() {
 							</div>
 							<div class="col-md-2">
 								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
-									<option value="p2">P2</option>
-									<option value="p3">P3</option>
-									<option value="p4">P4</option>
-									<option value="p5">P5</option>
-									<option value="p6">P6</option>
-									<option value="s7">S7</option>
-									<option value="s8">S8</option>
-									<option value="s9">S9</option>
-									<option value="s10">S10</option>
-									<option value="s10e">S10E</option>
-									<option value="tt6">TT6</option>
-									<option value="tt8">TT8</option>
-									<option value="tt8e">TT8E</option>
-									<option value="srw4">SRW4</option>
-									<option value="srw5">SRW5</option>
-									<option value="srw6">SRW6</option>
-									<option value="srw8">SRW8</option>
-									<option value="jmss">JMSS</option>
-									<option value="vce">VCE</option>
 								</select>
 							</div>
 						</div>
