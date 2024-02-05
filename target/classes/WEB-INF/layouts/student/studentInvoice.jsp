@@ -50,6 +50,16 @@ $(document).ready(function () {
 			$(api.column(6).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
 		}		
     });
+
+	// key enter event for 'studentKeyword' field
+	$('#studentKeyword').keypress(function(event){
+		var keycode = (event.keyCode ? event.keyCode : event.which);
+		if(keycode == '13'){
+			searchStudent();
+		}
+	});
+
+
 	// initialise state list when loading
 	listState('#listState');
 	listBranch('#listBranch');
@@ -88,7 +98,8 @@ function searchStudent() {
 				row.append($('<td>').text(value.id));
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
-				row.append($('<td>').text(value.grade.toUpperCase()));
+				var gradeText = gradeName(value.grade);
+				row.append($('<td>').text(gradeText));	
 				row.append($('<td>').text((value.gender === "") ? "" : value.gender.slice(0, 1).toUpperCase() + value.gender.substring(1)));	
 				row.append($('<td>').text(formatDate(value.registerDate)));
 				row.append($('<td>').text(formatDate(value.endDate)));
@@ -274,7 +285,33 @@ function clearStudentInfo() {
 						<tr>
 							<td class="text-right">Student ID : <span class="font-weight-bold"><c:out value="${student.id}" /></span></td>
 							<td class="text-center">Name : <span class="font-weight-bold"><c:out value="${student.firstName} ${student.lastName}" /></span></td>
-							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase"><c:out value="${student.grade}" /></span></td>
+							<td class="text-left">Grade : 
+								<span class="font-weight-bold">
+									<c:choose>
+										<c:when test="${student.grade == '1'}">P2</c:when>
+										<c:when test="${student.grade == '2'}">P3</c:when>
+										<c:when test="${student.grade == '3'}">P4</c:when>
+										<c:when test="${student.grade == '4'}">P5</c:when>
+										<c:when test="${student.grade == '5'}">P6</c:when>
+										<c:when test="${student.grade == '6'}">S7</c:when>
+										<c:when test="${student.grade == '7'}">S8</c:when>
+										<c:when test="${student.grade == '8'}">S9</c:when>
+										<c:when test="${student.grade == '9'}">S10</c:when>
+										<c:when test="${student.grade == '10'}">S10E</c:when>
+										<c:when test="${student.grade == '11'}">TT6</c:when>
+										<c:when test="${student.grade == '12'}">TT8</c:when>
+										<c:when test="${student.grade == '13'}">TT8E</c:when>
+										<c:when test="${student.grade == '14'}">SRW4</c:when>
+										<c:when test="${student.grade == '15'}">SRW5</c:when>
+										<c:when test="${student.grade == '16'}">SRW6</c:when>
+										<c:when test="${student.grade == '17'}">SRW7</c:when>
+										<c:when test="${student.grade == '18'}">SRW8</c:when>
+										<c:when test="${student.grade == '19'}">JMSS</c:when>
+										<c:when test="${student.grade == '20'}">VCE</c:when>
+										<c:otherwise></c:otherwise>
+									</c:choose>
+								</span>
+							</td>
 						</tr>
 					</table>						
 				</div>

@@ -77,6 +77,7 @@ $(document).ready(function () {
 	// initialise state list when loading
 	listState('#listState');
 	listBranch('#listBranch');
+	listGrade('#listGrade');
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,25 +262,6 @@ function clearAttendanceInfo() {
 						<select class="form-control" id="listGrade" name="listGrade"
 							onchange="fetchOptions()">
 							<option value="All">All</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="srw4">SRW4</option>
-							<option value="srw5">SRW5</option>
-							<option value="srw6">SRW6</option>
-							<option value="srw8">SRW8</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -436,9 +418,33 @@ function clearAttendanceInfo() {
 							<td class="text-center">Branch : <span class="font-weight-bold">
 									<c:out value="${criteriaBranch}" />
 								</span></td>
-							<td class="text-left">Grade : <span class="font-weight-bold text-uppercase">
-									<c:out value="${criteriaGrade}" />
-								</span></td>
+							<td class="text-left">Grade : 
+								<span class="font-weight-bold">
+									<c:choose>
+										<c:when test="${criteriaGrade == '1'}">P2</c:when>
+										<c:when test="${criteriaGrade == '2'}">P3</c:when>
+										<c:when test="${criteriaGrade == '3'}">P4</c:when>
+										<c:when test="${criteriaGrade == '4'}">P5</c:when>
+										<c:when test="${criteriaGrade == '5'}">P6</c:when>
+										<c:when test="${criteriaGrade == '6'}">S7</c:when>
+										<c:when test="${criteriaGrade == '7'}">S8</c:when>
+										<c:when test="${criteriaGrade == '8'}">S9</c:when>
+										<c:when test="${criteriaGrade == '9'}">S10</c:when>
+										<c:when test="${criteriaGrade == '10'}">S10E</c:when>
+										<c:when test="${criteriaGrade == '11'}">TT6</c:when>
+										<c:when test="${criteriaGrade == '12'}">TT8</c:when>
+										<c:when test="${criteriaGrade == '13'}">TT8E</c:when>
+										<c:when test="${criteriaGrade == '14'}">SRW4</c:when>
+										<c:when test="${criteriaGrade == '15'}">SRW5</c:when>
+										<c:when test="${criteriaGrade == '16'}">SRW6</c:when>
+										<c:when test="${criteriaGrade == '17'}">SRW7</c:when>
+										<c:when test="${criteriaGrade == '18'}">SRW8</c:when>
+										<c:when test="${criteriaGrade == '19'}">JMSS</c:when>
+										<c:when test="${criteriaGrade == '20'}">VCE</c:when>
+										<c:otherwise></c:otherwise>
+									</c:choose>
+								</span>
+							</td>
 							<td class="text-left">Class : <span class="font-weight-bold text-capitalize">
 									<c:out value="${criteriaClazz}" />
 								</span></td>

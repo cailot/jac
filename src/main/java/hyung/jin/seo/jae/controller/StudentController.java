@@ -111,5 +111,13 @@ public class StudentController {
 		return "studentListPage";
 	}
 
+	// list student list with state, branch, grade
+	@GetMapping("/upgrade")
+	public String gradeStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listCurrentGrade", required=false) String grade, Model model) {
+		List<StudentDTO> dtos = studentService.showGradeStudents(state, branch, grade);
+		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		return "studentGradePage";
+	}
+
 
 }

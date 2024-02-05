@@ -26,6 +26,10 @@
 		<put-attribute name="title" value="Student Attendance" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentAttendance.jsp" />
 	</definition>
+	<definition name="studentGradePage" extends="base.definition">
+		<put-attribute name="title" value="Student Grade" />
+		<put-attribute name="body" value="/WEB-INF/layouts/student/studentGrade.jsp" />
+	</definition>
 
 	<!--Course -->
 	<definition name="courseListPage" extends="base.definition">

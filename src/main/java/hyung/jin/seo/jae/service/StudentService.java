@@ -21,6 +21,9 @@ public interface StudentService {
 	
 	// search student list base on keyword where id, firstName or lastName
 	List<Student> searchStudents(String keyword);
+
+	// bring student list base on grade
+	List<StudentDTO> showGradeStudents(String state, String branch, String grade);	
 		
 	// bring student by id
 	Student getStudent(Long id);
