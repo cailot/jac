@@ -19,6 +19,8 @@ $(function() {
 	listState('#addState');
 	listBranch('#formBranch');
 	listBranch('#addBranch');
+	listGrade('#formGrade')
+	listGrade('#addGrade');
 });
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -238,7 +240,8 @@ function searchStudent() {
 				row.append($('<td>').text(value.id));
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
-				row.append($('<td>').text(value.grade.toUpperCase()));
+				var gradeText = gradeName(value.grade);
+				row.append($('<td>').text(gradeText));
 				row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
 				row.append($('<td>').text(formatDate(value.registerDate)));
 				row.append($('<td>').text(formatDate(value.endDate)));
@@ -532,27 +535,7 @@ function clearCourseRegisteration(){
 							<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
 						</div>
 						<div class="col-md-3">
-							<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade">
-								<option value="p2">P2</option>
-								<option value="p3">P3</option>
-								<option value="p4">P4</option>
-								<option value="p5">P5</option>
-								<option value="p6">P6</option>
-								<option value="s7">S7</option>
-								<option value="s8">S8</option>
-								<option value="s9">S9</option>
-								<option value="s10">S10</option>
-								<option value="s10e">S10E</option>
-								<option value="tt6">TT6</option>
-								<option value="tt8">TT8</option>
-								<option value="tt8e">TT8E</option>
-								<option value="srw4">SRW4</option>
-								<option value="srw5">SRW5</option>
-								<option value="srw6">SRW6</option>
-								<option value="srw8">SRW8</option>
-								<option value="jmss">JMSS</option>
-								<option value="vce">VCE</option>
-							</select>
+							<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade"></select>
 						</div>
 					</div>
 					<div class="form-row mt-2">
@@ -734,25 +717,6 @@ function clearCourseRegisteration(){
 			</div>
 			<div class="col-md-3">
 				<select class="form-control" id="formGrade" name="formGrade">
-					<option value="p2">P2</option>
-					<option value="p3">P3</option>
-					<option value="p4">P4</option>
-					<option value="p5">P5</option>
-					<option value="p6">P6</option>
-					<option value="s7">S7</option>
-					<option value="s8">S8</option>
-					<option value="s9">S9</option>
-					<option value="s10">S10</option>
-					<option value="s10e">S10E</option>
-					<option value="tt6">TT6</option>
-					<option value="tt8">TT8</option>
-					<option value="tt8e">TT8E</option>
-					<option value="srw4">SRW4</option>
-					<option value="srw5">SRW5</option>
-					<option value="srw6">SRW6</option>
-					<option value="srw8">SRW8</option>
-					<option value="jmss">JMSS</option>
-					<option value="vce">VCE</option>
 				</select>
 			</div>
 		</div>

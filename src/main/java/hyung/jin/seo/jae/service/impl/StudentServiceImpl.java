@@ -239,4 +239,16 @@ public class StudentServiceImpl implements StudentService {
 		}	
 	}
 
+	@Override
+	public List<StudentDTO> showGradeStudents(String state, String branch, String grade) {
+		String stateParam = StringUtils.equalsIgnoreCase(state, JaeConstants.ALL) ? "%" : state;
+		String branchParam = StringUtils.equalsIgnoreCase(branch, JaeConstants.ALL) ? "%" : branch;
+		String gradeParam = StringUtils.equalsAnyIgnoreCase(grade, JaeConstants.ALL) ? "%" : grade;
+		
+		List<StudentDTO> dtos = null;
+		dtos = studentRepository.listActiveStudent(stateParam, branchParam, gradeParam);
+		
+		return dtos;
+	}
+
 }

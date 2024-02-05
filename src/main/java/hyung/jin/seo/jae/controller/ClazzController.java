@@ -30,7 +30,7 @@ import io.micrometer.core.instrument.util.StringUtils;
 
 @Controller
 @RequestMapping("class")
-public class JaeClazzController {
+public class ClazzController {
 
 	@Autowired
 	private ClazzService clazzService;

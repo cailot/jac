@@ -82,6 +82,7 @@
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentList">Enrolment List</a>
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
 			</div>
 		</li>
 

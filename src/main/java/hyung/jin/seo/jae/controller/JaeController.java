@@ -29,6 +29,11 @@ public class JaeController {
 		return "studentAttendancePage";
 	}
 
+	@GetMapping("/studentGrade")
+	public String studentGrade(HttpSession session) {
+		return "studentGradePage";
+	}
+
 	@GetMapping("/courseList")
 	public String courseList(HttpSession session) {
 		return "courseListPage";
