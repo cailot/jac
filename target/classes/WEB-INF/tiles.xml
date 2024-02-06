@@ -36,12 +36,17 @@
 		<put-attribute name="title" value="Course List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/courseList.jsp" />
 	</definition>
-
 	<!--Class -->
 	<definition name="classListPage" extends="base.definition">
 		<put-attribute name="title" value="Class List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/classList.jsp" />
 	</definition>
+	<!--Grade -->
+	<definition name="gradeListPage" extends="base.definition">
+		<put-attribute name="title" value="Grade List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/gradeList.jsp" />
+	</definition>
+
 
 	<!--Academic Cycle -->
 	<definition name="cyclePage" extends="base.definition">
