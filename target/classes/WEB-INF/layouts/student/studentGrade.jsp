@@ -49,8 +49,9 @@ $(document).ready(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateStudentInfo(){
 	
-	// how to get all checked student id saved in checkbox's value
-
+	// how to get value for 'listToGrade'
+	var listTo = $('#listToGrade').val();
+	console.log(listTo);
 
 
 	var std = [];
@@ -61,27 +62,26 @@ function updateStudentInfo(){
 		}
 	});
 		
-	// send query to controller
-	// $.ajax({
-	// 	url : '${pageContext.request.contextPath}/student/update',
-	// 	type : 'PUT',
-	// 	dataType : 'json',
-	// 	data : JSON.stringify(std),
-	// 	contentType : 'application/json',
-	// 	success : function(value) {
-	// 		// Display success alert
-	// 		$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
-	// 		$('#success-alert').modal('show');
-	// 		// fetch data again
-	// 		$('#success-alert').on('hidden.bs.modal', function(e) {
-	// 			location.reload();
-	// 		});
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/updateGrade/' + listTo,
+		type : 'PUT',
+		dataType : 'json',
+		data : JSON.stringify(std),
+		contentType : 'application/json',
+		success : function(value) {
+			// Display success alert
+			$('#success-alert .modal-body').text('Upgrade to ' + listTo + ' is updated successfully.');
+			$('#success-alert').modal('show');
+			// fetch data again
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
 			
-	// 	},
-	// 	error : function(xhr, status, error) {
-	// 		console.log('Error : ' + error);
-	// 	}
-	// });
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
 	
 }
 
@@ -192,7 +192,7 @@ function updateStudentInfo(){
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
-												<td class="small"><input type="checkbox" checked value="${student.id}" id="${student.id}" /><span></span></td>											
+												<td class="small text-center"><input type="checkbox" checked value="${student.id}" id="${student.id}" /><span></span></td>											
 											</tr>
 										</c:forEach>
 									</c:when>
