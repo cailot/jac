@@ -15,7 +15,7 @@
   
 <script>
 $(document).ready(function () {
-    $('#courseListTable').DataTable({
+    $('#gradeListTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -153,7 +153,7 @@ function clearCourseForm(elementId) {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="courseList" method="get" action="${pageContext.request.contextPath}/class/listCourse">
+		<form id="gradeList" method="get" action="${pageContext.request.contextPath}/class/listGrade">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-3">
@@ -174,7 +174,7 @@ function clearCourseForm(elementId) {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="courseListTable" class="table table-striped table-bordered"><thead class="table-primary">
+							<table id="gradeListTable" class="table table-striped table-bordered"><thead class="table-primary">
 									<tr>
 										<th>Name</th>
 										<th>Description</th>

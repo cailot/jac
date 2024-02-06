@@ -67,4 +67,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 
         @Query(value = "UPDATE Student s SET s.password = ?2 WHERE s.id = ?1 AND ACTIVE = 0", nativeQuery = true)
         void updatePassword(Long id, String password);    
+
+        @Query(value = "UPDATE Student s SET s.grade = ?2 WHERE s.id = ?1", nativeQuery = true)
+        void updateGrade(Long id, String grade);    
+
 }

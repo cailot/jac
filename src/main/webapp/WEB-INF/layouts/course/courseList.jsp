@@ -31,21 +31,12 @@ $(document).ready(function () {
         ],
 		//pageLength: 20
     });
+
+	// initialise grade list
+	listGrade('#listGrade');
+	listGrade('#addGrade');
+	listGrade('#editGrade');
     
-
-	$('table .password').on('click', function(){
-		var username = $(this).parent().find('#username').val();
-		$('#passwordModal #usernamepassword').val(username);
-	});
-	
-	// Set default date format
-	$.fn.datepicker.defaults.format = 'dd/mm/yyyy';
-
-	$('.datepicker').datepicker({
-		//format: 'dd/mm/yyyy',
-		autoclose : true,
-		todayHighlight : true
-	});
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,25 +159,6 @@ function clearCourseForm(elementId) {
 					<div class="col-md-3">
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All Grade</option>
-							<option value="p2">P2</option>
-							<option value="p3">P3</option>
-							<option value="p4">P4</option>
-							<option value="p5">P5</option>
-							<option value="p6">P6</option>
-							<option value="s7">S7</option>
-							<option value="s8">S8</option>
-							<option value="s9">S9</option>
-							<option value="s10">S10</option>
-							<option value="s10e">S10E</option>
-							<option value="tt6">TT6</option>
-							<option value="tt8">TT8</option>
-							<option value="tt8e">TT8E</option>
-							<option value="srw4">SRW4</option>
-							<option value="srw5">SRW5</option>
-							<option value="srw6">SRW6</option>
-							<option value="srw8">SRW8</option>
-							<option value="jmss">JMSS</option>
-							<option value="vce">VCE</option>
 						</select>
 					</div>
 					<div class="offset-md-4"></div>
@@ -218,7 +190,33 @@ function clearCourseForm(elementId) {
 											<tr>
 												<td class="small ellipsis"><span><c:out value="${course.name}" /></span></td>
 												<td class="small ellipsis"><span><c:out value="${course.description}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${fn:toUpperCase(course.grade)}" /></span></td>
+												<td class="small ellipsis">
+													<span>
+														<c:choose>
+															<c:when test="${course.grade == '1'}">P2</c:when>
+															<c:when test="${course.grade == '2'}">P3</c:when>
+															<c:when test="${course.grade == '3'}">P4</c:when>
+															<c:when test="${course.grade == '4'}">P5</c:when>
+															<c:when test="${course.grade == '5'}">P6</c:when>
+															<c:when test="${course.grade == '6'}">S7</c:when>
+															<c:when test="${course.grade == '7'}">S8</c:when>
+															<c:when test="${course.grade == '8'}">S9</c:when>
+															<c:when test="${course.grade == '9'}">S10</c:when>
+															<c:when test="${course.grade == '10'}">S10E</c:when>
+															<c:when test="${course.grade == '11'}">TT6</c:when>
+															<c:when test="${course.grade == '12'}">TT8</c:when>
+															<c:when test="${course.grade == '13'}">TT8E</c:when>
+															<c:when test="${course.grade == '14'}">SRW4</c:when>
+															<c:when test="${course.grade == '15'}">SRW5</c:when>
+															<c:when test="${course.grade == '16'}">SRW6</c:when>
+															<c:when test="${course.grade == '17'}">SRW7</c:when>
+															<c:when test="${course.grade == '18'}">SRW8</c:when>
+															<c:when test="${course.grade == '19'}">JMSS</c:when>
+															<c:when test="${course.grade == '20'}">VCE</c:when>
+															<c:otherwise></c:otherwise>
+														</c:choose>
+													</span>
+												</td>
 												<td class="small ellipsis"><span><c:out value="${course.price}" /></span></td>
 												<td class="text-center">
 													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;
@@ -252,25 +250,6 @@ function clearCourseForm(elementId) {
 								<div class="col-md-3">
 									<label for="addGrade" class="label-form">Grade</label>
 									<select class="form-control" id="addGrade" name="addGrade">
-										<option value="p2">P2</option>
-										<option value="p3">P3</option>
-										<option value="p4">P4</option>
-										<option value="p5">P5</option>
-										<option value="p6">P6</option>
-										<option value="s7">S7</option>
-										<option value="s8">S8</option>
-										<option value="s9">S9</option>
-										<option value="s10">S10</option>
-										<option value="s10e">S10E</option>
-										<option value="tt6">TT6</option>
-										<option value="tt8">TT8</option>
-										<option value="tt8e">TT8E</option>
-										<option value="srw4">SRW4</option>
-										<option value="srw5">SRW5</option>
-										<option value="srw6">SRW6</option>
-										<option value="srw8">SRW8</option>
-										<option value="jmss">JMSS</option>
-										<option value="vce">VCE</option>
 									</select>
 								</div>
 								<div class="col-md-9">
@@ -315,25 +294,6 @@ function clearCourseForm(elementId) {
 						<div class="form-row">
 							<div class="col-md-3">
 								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
-									<option value="p2">P2</option>
-									<option value="p3">P3</option>
-									<option value="p4">P4</option>
-									<option value="p5">P5</option>
-									<option value="p6">P6</option>
-									<option value="s7">S7</option>
-									<option value="s8">S8</option>
-									<option value="s9">S9</option>
-									<option value="s10">S10</option>
-									<option value="s10e">S10E</option>
-									<option value="tt6">TT6</option>
-									<option value="tt8">TT8</option>
-									<option value="tt8e">TT8E</option>
-									<option value="srw4">SRW4</option>
-									<option value="srw5">SRW5</option>
-									<option value="srw6">SRW6</option>
-									<option value="srw8">SRW8</option>
-									<option value="jmss">JMSS</option>
-									<option value="vce">VCE</option>
 								</select>
 							</div>
 							<div class="col-md-9">

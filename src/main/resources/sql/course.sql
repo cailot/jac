@@ -29,8 +29,8 @@ INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VA
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT6 Online','11', 'E-Learning Class', 57, true, CURDATE());
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8 Onsite','12', 'Onsite TT8 Course', 80, false, CURDATE());
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8 Online','12', 'E-Learning Class', 57, true, CURDATE());
-INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8E Onsite','tt8e', 'Onsite TT8E Course', 80, false, CURDATE());
-INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8E Online','tt8e', 'E-Learning Class', 57, true, CURDATE());
+INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8E Onsite','13', 'Onsite TT8E Course', 80, false, CURDATE());
+INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('TT8E Online','13', 'E-Learning Class', 57, true, CURDATE());
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('SRW4','14', '[P4] Writing', 55, false, CURDATE());
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('SRW5','15', '[P5] Writing', 55, false, CURDATE());
 INSERT INTO jae.Course (name, grade,description, price, online, registerDate) VALUES ('SRW6','16', '[TT6] Writing', 55, false, CURDATE());

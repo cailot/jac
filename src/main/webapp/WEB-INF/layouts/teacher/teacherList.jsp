@@ -61,6 +61,7 @@
 		listBranch('#listBranch');
 		listBranch('#addBranch');
 		listBranch('#editBranch');
+		listGrade('#clazzGrade');
 	});
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -313,7 +314,8 @@
 					row.append($('<td>').text(value.name));
 					row.append($('<td>').text(value.description));
 					row.append($('<td>').text(value.day));
-					row.append($('<td>').text(value.grade.toUpperCase()));
+					var gradeText = gradeName(value.grade);
+					row.append($('<td>').text(gradeText));
 					row.append($('<td>').text(value.year));
 					var isOnline = value.online;
 					var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
@@ -362,7 +364,8 @@
 				row.append($('<td>').text(value.name));
 				row.append($('<td>').text(value.description));
 				row.append($('<td>').text(value.day));
-				row.append($('<td>').text(value.grade.toUpperCase()));
+				var gradeText = gradeName(value.grade);
+				row.append($('<td>').text(gradeText));
 				row.append($('<td>').text(value.year));
 				var isOnline = value.online;
 				var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
@@ -886,8 +889,7 @@ function clearPassword() {
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header bg-primary text-white">
-				<h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Associated
-					Class</h5>
+				<h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Associated Class</h5>
 				<button type="button" class="close" data-dismiss="modal">
 					<span>&times;</span>
 				</button>
@@ -923,25 +925,6 @@ function clearPassword() {
 						<div class="col-md-1">
 							<label for="clazzGrade" class="label-form">Grade</label>
 							<select class="form-control" id="clazzGrade" name="clazzGrade">
-								<option value="p2">P2</option>
-								<option value="p3">P3</option>
-								<option value="p4">P4</option>
-								<option value="p5">P5</option>
-								<option value="p6">P6</option>
-								<option value="s7">S7</option>
-								<option value="s8">S8</option>
-								<option value="s9">S9</option>
-								<option value="s10">S10</option>
-								<option value="s10e">S10E</option>
-								<option value="tt6">TT6</option>
-								<option value="tt8">TT8</option>
-								<option value="tt8e">TT8E</option>
-								<option value="srw4">SRW4</option>
-								<option value="srw5">SRW5</option>
-								<option value="srw6">SRW6</option>
-								<option value="srw8">SRW8</option>
-								<option value="jmss">JMSS</option>
-								<option value="vce">VCE</option>
 							</select>
 						</div>
 						<div class="col-md-2">

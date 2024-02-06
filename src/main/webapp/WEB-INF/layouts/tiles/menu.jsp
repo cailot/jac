@@ -88,11 +88,12 @@
 
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			  Course
+			  Course Management
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/courseList">Course List</a>
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/classList">Class List</a>
+				<!-- <a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/gradeList">Grade List</a> -->
 			</div>
 		</li>
 

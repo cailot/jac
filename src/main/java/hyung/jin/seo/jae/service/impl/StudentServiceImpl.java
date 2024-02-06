@@ -251,4 +251,14 @@ public class StudentServiceImpl implements StudentService {
 		return dtos;
 	}
 
+	@Override
+	@Transactional
+	public void batchUpdateGrade(List<Long> ids, String grade) {
+		if(ids!=null && ids.size()>0 && StringUtils.isNotBlank(grade)) {
+			for(Long id : ids) {
+				studentRepository.updateGrade(id, grade);
+			}
+		}
+	}
+
 }
