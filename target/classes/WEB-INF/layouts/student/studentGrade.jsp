@@ -69,8 +69,12 @@ function updateStudentInfo(){
 		data : JSON.stringify(std),
 		contentType : 'application/json',
 		success : function(value) {
+			// dismiss confirm dialogue
+			$('#confirmModal').modal('hide');
+
 			// Display success alert
-			$('#success-alert .modal-body').text('Upgrade to ' + listTo + ' is updated successfully.');
+			var gradeText = gradeName(listTo);
+			$('#success-alert .modal-body').html('Upgrade to <span class="font-weight-bold text-danger">' + gradeText + '</span> is successfully updated.');
 			$('#success-alert').modal('show');
 			// fetch data again
 			$('#success-alert').on('hidden.bs.modal', function(e) {
@@ -118,11 +122,31 @@ function updateStudentInfo(){
 					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+						<!-- <button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button> -->
+
+						<c:choose>
+							<c:when test="${empty StudentList}">
+								<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+							</c:when>
+							<c:otherwise>
+								<button type="submit" class="btn btn-primary btn-block" disabled> <i class="bi bi-search"></i>&nbsp;Search</button>
+							</c:otherwise>
+						</c:choose>
+
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Upgrade</label> 
-						<button type="button" class="btn btn-block btn-success" onclick="updateStudentInfo()"><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button>
+						<!-- <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button> -->
+					
+						<c:choose>
+							<c:when test="${empty StudentList}">
+								<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal" disabled><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button>
+							</c:when>
+							<c:otherwise>
+								<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button>
+							</c:otherwise>
+						</c:choose>
+					
 					</div>
 				</div>
 			</div>
@@ -225,6 +249,25 @@ function updateStudentInfo(){
 			<i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
+	</div>
+</div>
+
+<!-- Confirmation Dialogue -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Grade Update</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to apply new grade ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" onclick="updateStudentInfo()"><i class="bi bi-x"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>
 
