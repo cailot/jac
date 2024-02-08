@@ -7,6 +7,7 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"> -->
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
@@ -18,7 +19,7 @@
   
 <script>
 $(document).ready(function () {
-    $('#studentListTable').DataTable({
+	$('#studentListTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -42,6 +43,12 @@ $(document).ready(function () {
 	listGrade('#listCurrentGrade');
 	listGrade('#listToGrade');
 
+	 // When the "Select All" checkbox is checked or unchecked
+	 $('#select-all').change(function() {
+        // Check or uncheck all checkboxes in the table body
+        $('#list-student-body input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+    });
+
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,23 +56,27 @@ $(document).ready(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateStudentInfo(){
 	
-	// how to get value for 'listToGrade'
 	var listTo = $('#listToGrade').val();
-	console.log(listTo);
+
+	// if listTo is null or empty, then display error message and exit
+	if(listTo == null || listTo == ''){
+		$('#warning-alert .modal-body').html('Please select grade to upgrade.');
+		$('#warning-alert').modal('show');
+		return;
+	}
 
 
 	var std = [];
 	$('#list-student-body input[type=checkbox]').each(function(){
 		if(this.checked){
-			console.log(this.id);
+			// console.log(this.id);
 			std.push(this.id);
 		}
 	});
 		
 	$.ajax({
 		url : '${pageContext.request.contextPath}/student/updateGrade/' + listTo,
-		type : 'PUT',
-		dataType : 'json',
+		type : 'POST',
 		data : JSON.stringify(std),
 		contentType : 'application/json',
 		success : function(value) {
@@ -76,11 +87,10 @@ function updateStudentInfo(){
 			var gradeText = gradeName(listTo);
 			$('#success-alert .modal-body').html('Upgrade to <span class="font-weight-bold text-danger">' + gradeText + '</span> is successfully updated.');
 			$('#success-alert').modal('show');
-			// fetch data again
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-			
+
+			// reset for next batch job
+			location.href = window.location.pathname;
+
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -97,57 +107,76 @@ function updateStudentInfo(){
 		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/upgrade">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
-						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listBranch" class="label-form">Branch</label> 
-						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
-						</select>
-					</div>
-					<div class="col-md-1">
-						<label for="listCurrentGrade" class="label-form">Current</label> 
-						<select class="form-control" id="listCurrentGrade" name="listCurrentGrade">
-						</select>
-					</div>
-					<div class="col-md-1">
-						<label for="listToGrade" class="label-form">To</label> 
-						<select class="form-control" id="listToGrade" name="listToGrade">
-						</select>
-					</div>
-					<div class="offset-md-2"></div>
-					<div class="col mx-auto">
-						<label class="label-form-white">Search</label> 
-						<!-- <button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button> -->
-
-						<c:choose>
-							<c:when test="${empty StudentList}">
-								<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+					<c:choose>
+							<c:when test="${empty UpgradeList}">
+								<div class="col-md-2">
+									<label for="listState" class="label-form">State</label> 
+									<select class="form-control" id="listState" name="listState">
+										<option value="All">All State</option>
+									</select>
+								</div>
+								<div class="col-md-2">
+									<label for="listBranch" class="label-form">Branch</label> 
+									<select class="form-control" id="listBranch" name="listBranch">
+										<option value="All">All Branch</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="listCurrentGrade" class="label-form">Current</label> 
+									<select class="form-control" id="listCurrentGrade" name="listCurrentGrade">
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="listToGrade" class="label-form">To</label> 
+									<select class="form-control" id="listToGrade" name="listToGrade" disabled>
+										<option value="100"></option>
+									</select>
+								</div>
+								<div class="offset-md-2"></div>
+								<div class="col mx-auto">
+									<label class="label-form-white">Search</label> 
+									<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+								</div>
+								<div class="col mx-auto">
+									<label class="label-form-white">Upgrade</label> 
+									<button type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#confirmModal" disabled><i class="bi bi bi-arrow-up-circle"></i>&nbsp;Grade Upgrade</button>
+								</div>
 							</c:when>
 							<c:otherwise>
-								<button type="submit" class="btn btn-primary btn-block" disabled> <i class="bi bi-search"></i>&nbsp;Search</button>
+								<div class="col-md-2">
+									<label for="listState" class="label-form">State</label> 
+									<select class="form-control" id="listState" name="listState" disabled>
+										<option value="All">All State</option>
+									</select>
+								</div>
+								<div class="col-md-2">
+									<label for="listBranch" class="label-form">Branch</label> 
+									<select class="form-control" id="listBranch" name="listBranch" disabled>
+										<option value="All">All Branch</option>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="listCurrentGrade" class="label-form">Current</label> 
+									<select class="form-control" id="listCurrentGrade" name="listCurrentGrade" disabled>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<label for="listToGrade" class="label-form">To</label> 
+									<select class="form-control" id="listToGrade" name="listToGrade">
+										<option value=""></option>
+									</select>
+								</div>
+								<div class="offset-md-2"></div>
+								<div class="col mx-auto">
+									<label class="label-form-white">Search</label> 
+									<button type="submit" class="btn btn-secondary btn-block" disabled> <i class="bi bi-search"></i>&nbsp;Search</button>
+								</div>
+								<div class="col mx-auto">
+									<label class="label-form-white">Upgrade</label> 
+									<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi bi-arrow-up-circle"></i>&nbsp;Grade Upgrade</button>
+								</div>
 							</c:otherwise>
-						</c:choose>
-
-					</div>
-					<div class="col mx-auto">
-						<label class="label-form-white">Upgrade</label> 
-						<!-- <button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button> -->
-					
-						<c:choose>
-							<c:when test="${empty StudentList}">
-								<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal" disabled><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button>
-							</c:when>
-							<c:otherwise>
-								<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi-plus"></i>&nbsp;Grade Upgrade</button>
-							</c:otherwise>
-						</c:choose>
-					
-					</div>
+					</c:choose>
 				</div>
 			</div>
 			<div class="form-group">
@@ -167,13 +196,15 @@ function updateStudentInfo(){
 										<th>Main Contact</th>
 										<th>Sub Email</th>
 										<th>Sub Contact</th>
-										<th data-orderable="false">Select</th>
+										<th data-orderable="false">
+											<input type="checkbox" id="select-all" checked/> Select
+										</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
 								<c:choose>
-									<c:when test="${StudentList != null}">
-										<c:forEach items="${StudentList}" var="student">
+									<c:when test="${UpgradeList != null}">
+										<c:forEach items="${UpgradeList}" var="student">
 											<tr>
 												<td class="small ellipsis" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
 												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
