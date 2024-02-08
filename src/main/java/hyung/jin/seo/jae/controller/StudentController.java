@@ -116,16 +116,19 @@ public class StudentController {
 	@GetMapping("/upgrade")
 	public String gradeStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listCurrentGrade", required=false) String grade, Model model) {
 		List<StudentDTO> dtos = studentService.showGradeStudents(state, branch, grade);
-		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		if(dtos==null || dtos.isEmpty()){
+			model.addAttribute(JaeConstants.UPGRADE_LIST, null);
+		}else{
+			model.addAttribute(JaeConstants.UPGRADE_LIST, dtos);			
+		}
 		return "studentGradePage";
 	}
 
-	@PutMapping("/updateGrade/{listTo}")
-	@ResponseBody
-	public ResponseEntity<String> updateGrade(@PathVariable("listTo") String listTo, @RequestBody List<Long> ids) {
+	@PostMapping("/updateGrade/{listTo}")
+	public String updateGrade(@PathVariable("listTo") String listTo, @RequestBody List<Long> ids, Model model) {
 		String grade = listTo;
 		studentService.batchUpdateGrade(ids, grade);
-		return ResponseEntity.ok("\"Grade Updates Successfully\"");
+		return "studentGradePage";
 	}
 	
 

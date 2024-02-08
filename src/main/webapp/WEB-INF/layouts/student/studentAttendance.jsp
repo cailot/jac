@@ -512,12 +512,9 @@ function clearAttendanceInfo() {
 												<td class="small align-middle text-center">
 													<c:out value="${attend.clazzDay}" />
 												</td>
-												<c:forEach items="${attend.status}" var="status"
-													varStatus="loop">
-													<td class="small text-center align-middle roll"
-														title="${attend.attendDate[loop.index]}">
-														<input type="hidden" name="week"
-															value="${attend.week[loop.index]}" />
+												<c:forEach items="${attend.status}" var="status" varStatus="loop">
+													<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">
+														<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 														<c:choose>
 															<c:when test="${status eq 'Y'}">
 																<select name="statusDropdown" class="custom-select custom-select-sm no-gap custom-color-select">
