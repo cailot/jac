@@ -197,7 +197,7 @@ function updateStudentInfo(){
 										<th>Sub Email</th>
 										<th>Sub Contact</th>
 										<th data-orderable="false">
-											<input type="checkbox" id="select-all" checked/> Select
+											<input type="checkbox" id="select-all" checked/>
 										</th>
 									</tr>
 								</thead>
