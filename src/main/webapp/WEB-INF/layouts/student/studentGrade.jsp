@@ -83,13 +83,15 @@ function updateStudentInfo(){
 			// dismiss confirm dialogue
 			$('#confirmModal').modal('hide');
 
-			// Display success alert
 			var gradeText = gradeName(listTo);
-			$('#success-alert .modal-body').html('Upgrade to <span class="font-weight-bold text-danger">' + gradeText + '</span> is successfully updated.');
-			$('#success-alert').modal('show');
+        	$('#success-alert .modal-body').html('Upgrade to <span class="font-weight-bold text-danger">' + gradeText + '</span> is successfully updated.');
+	        $('#success-alert').modal('show');
 
-			// reset for next batch job
-			location.href = window.location.pathname;
+			// Attach an event listener to the success alert close event
+			$('#success-alert').on('hidden.bs.modal', function () {
+				// Reload the page after the success alert is closed
+				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+			});
 
 		},
 		error : function(xhr, status, error) {
