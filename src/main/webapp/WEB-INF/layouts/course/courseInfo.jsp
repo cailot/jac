@@ -1,5 +1,5 @@
 <script>
-
+const ACADEMIC_NEXT_YEAR_COURSE_SUFFIX = " (From New Academic Year)";
 var academicYear;
 var academicWeek;
 
@@ -175,6 +175,7 @@ function addClassToBasket(value) {
 		success: function(data) {
 			// console.log(data);
 			// console.log(value);
+		
 			var start_week, end_week;        
 			if (value.year == academicYear) {
 				start_week = parseInt(academicWeek);
@@ -338,8 +339,9 @@ function addClassToBasket(value) {
 
 			// check if it is 'Online'
 			if(!value.online){
-				// console.log('Online needs');
+				//console.log('Online needs : ' + value);
 				var clazzId = 0;
+				var isNewClazz = (value.description.indexOf(ACADEMIC_NEXT_YEAR_COURSE_SUFFIX) !== -1);
 				$.ajax({
 					url: '${pageContext.request.contextPath}/class/id',
 					type: 'GET',
@@ -349,41 +351,47 @@ function addClassToBasket(value) {
 					},
 					success: function(data) {
 						// if any online course is found with grade & year
-						//debugger;
 						if((data !== '') && (data > 0)){
 							clazzId = data;
 							$('#courseTable > tbody > tr').each(function() {
 								var title = $(this).find('.course-title').text();
-								if(title.toUpperCase().indexOf(ONLINE) !== -1){
-									var clazzName = '';
-									var clazzDescription = '';
-									if(title.indexOf('-') !== -1){
-										clazzName = title.split('-')[0].trim();
-										clazzDescription = title.split('-')[1].trim();
-									}
-									var row = $('<tr class="d-flex">');
-									row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
-									row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
-									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
-									row.append($('<td class="smaller-table-font day">').text('All')); // day
-									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-									var onlineStartWeek = startWeekCell.clone().text(start_week);
-									row.append(onlineStartWeek);
-									var onlineEndWeek = endWeekCell.clone().text(end_week);
-									row.append(onlineEndWeek);
-									var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
-									row.append(onlineWeeks);
-									row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
-									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
-									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
-									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
-									row.append($('<td>'));
-									row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
-									row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
-									row.append($('<td class="hidden-column online">').text(true)); // online				
-									row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
-									row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
-									$('#basketTable > tbody').append(row);	
+								// debugger;
+								if(title.toUpperCase().indexOf(ONLINE) !== -1){ // 2 times check !!!!!
+
+									var isNewOnlineClazz = (title.indexOf(ACADEMIC_NEXT_YEAR_COURSE_SUFFIX) !== -1);
+									// check if onsite class matches proper online class - not next year online class
+									if(isNewClazz==isNewOnlineClazz){
+										var clazzName = '';
+										var clazzDescription = '';
+										if(title.indexOf('-') !== -1){
+											clazzName = title.split('-')[0].trim();
+											clazzDescription = title.split('-')[1].trim();
+										}
+										var row = $('<tr class="d-flex">');
+										row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
+										row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+										row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
+										row.append($('<td class="smaller-table-font day">').text('All')); // day
+										row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
+										var onlineStartWeek = startWeekCell.clone().text(start_week);
+										row.append(onlineStartWeek);
+										var onlineEndWeek = endWeekCell.clone().text(end_week);
+										row.append(onlineEndWeek);
+										var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
+										row.append(onlineWeeks);
+										row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
+										row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
+										row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
+										row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
+										row.append($('<td>'));
+										row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
+										row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
+										row.append($('<td class="hidden-column online">').text(true)); // online				
+										row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
+										row.append($('<td class="hidden-column description">').text(clazzDescription)); // description
+										$('#basketTable > tbody').append(row);	
+									}	
+
 								}
 							});
 						}
