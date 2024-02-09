@@ -68,7 +68,6 @@ $(document).ready(function () {
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
-
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,14 +305,10 @@ function editInitialiseCourseByGrade(grade, courseId) {
 					</div>
 					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
-						<button type="submit" class="btn btn-primary btn-block"> <i
-								class="bi bi-search"></i>&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal"
-							data-target="#registerClassModal"
-							onclick="getCoursesByGrade('p2', '#addCourse')"><i
-								class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -332,6 +327,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<th>Start Date</th>
 										<th>Day</th>
 										<th>Year</th>
+										<th>Price</th>
 										<th data-orderable="false">Activated</th>
 										<th data-orderable="false">Action</th>
 									</tr>
@@ -356,7 +352,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 														  </c:choose>
 														</span>
 													</td>
-													  
 													<td class="small ellipsis">
 														<span style="text-transform: capitalize;">
 															<c:choose>
@@ -389,7 +384,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															</c:choose>
 														</span>
 													</td>
-
 													<td class="small ellipsis">
 														<span>
 															<c:choose>
@@ -417,52 +411,56 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															</c:choose>
 														</span>
 													</td>
-															
-
-
-													<td class="small ellipsis"><span>
+													<td class="small ellipsis">
+														<span>
 															<c:out value="${clazz.name}" />
-														</span></td>
-													<td class="small ellipsis"><span>
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
 															<c:out value="${clazz.description}" />
-														</span></td>
-													<td class="small ellipsis"><span>
-														<fmt:parseDate var="clazzStartDate" value="${clazz.startDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${clazzStartDate}" pattern="dd/MM/yyyy" />
-														</span></td>
-													<td class="small ellipsis"><span>
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<fmt:parseDate var="clazzStartDate" value="${clazz.startDate}" pattern="yyyy-MM-dd" />
+															<fmt:formatDate value="${clazzStartDate}" pattern="dd/MM/yyyy" />
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
 															<c:out value="${clazz.day}" />
-														</span></td>
-													<!-- <td class="small ellipsis"><span><c:out value="${clazz.year}" /></span></td> -->
-													<td class="small ellipsis"><span>Academic Year
-															<c:out
-																value="${clazz.year%100}/${clazz.year%100+1}" />
-														</span></td>
-
-
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>Academic Year
+															<c:out value="${clazz.year%100}/${clazz.year%100+1}" />
+														</span>
+													</td>
+													<td class="small text-right">
+														<span>
+															<fmt:formatNumber value="${clazz.price}" type="number" minFractionDigits="2" maxFractionDigits="2" />
+														</span>
+													</td>
 													<c:set var="active" value="${clazz.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
-																<i
-																	class="bi bi-check-circle text-success"></i>
+																<i class="bi bi-check-circle text-success"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center">
-																<i
-																	class="bi bi-check-circle text-secondary"></i>
+																<i class="bi bi-check-circle text-secondary"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg"
-															data-toggle="tooltip" title="Edit"
-															onclick="retrieveClassInfo('${clazz.id}')"></i>&nbsp;
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
+														</i>
 													</td>
 												</tr>
 											</c:forEach>
-
 										</c:when>
 									</c:choose>
 								</tbody>
@@ -508,21 +506,12 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-9">
+								<div class="col-md-6">
 									<label for="addCourse" class="label-form">Course</label>
 									<select class="form-control" id="addCourse" name="addCourse">
 									</select>
 								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-5">
-									<label for="addName" class="label-form">Class Name</label>
-									<input type="text" class="form-control" id="addName" name="addName"
-										placeholder="Name" title="Please enter Class name">
-								</div>
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<label for="addDay" class="label-form">Day</label>
 									<select class="form-control" id="addDay" name="addDay">
 										<option value="All">All</option>
@@ -535,10 +524,21 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-5">
+									<label for="addName" class="label-form">Class Name</label>
+									<input type="text" class="form-control" id="addName" name="addName" placeholder="Name" title="Please enter Class name" />
+								</div>
 								<div class="col-md-3">
+									<label for="addPrice" class="label-form">Price</label>
+									<input type="text" class="form-control" id="addPrice" name="addPrice" />
+								</div>
+								<div class="col-md-4">
 									<label for="addStartDate" class="label-form">Start Date</label>
-									<input type="text" class="form-control datepicker" id="addStartDate"
-										name="addStartDate" placeholder="dd/mm/yyyy">
+									<input type="text" class="form-control datepicker" id="addStartDate" name="addStartDate" placeholder="dd/mm/yyyy" />
 								</div>
 								<script>
 									var today = new Date();
