@@ -135,7 +135,7 @@ public class ClazzController {
 			for (CourseDTO dto : dtos) {
 				CourseDTO next = dto.clone();
 				next.setYear(year + 1);
-				next.setPrice(next.getPrice() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_PRICE_INCREASE);
+				// next.setPrice(next.getPrice() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_PRICE_INCREASE);
 				next.setDescription(next.getDescription() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX);
 				nexts.add(next);
 			}
@@ -166,8 +166,6 @@ public class ClazzController {
 	@ResponseBody
 	List<ClazzDTO> getClassesByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year,
 			@RequestParam("state") String state, @RequestParam("branch") String branch) {
-		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId,
-		// year);
 		List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycleNStateNBranch(courseId, year, state, branch);
 		return dtos;
 	}

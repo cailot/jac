@@ -54,7 +54,6 @@ public class ClazzServiceImpl implements ClazzService {
 		} catch (Exception e) {
 			System.out.println("No class found");
 		}
-		// clazzRepository.findClassForGradeNCycle(grade, year);
 		return dtos;
 	}
 
@@ -85,7 +84,6 @@ public class ClazzServiceImpl implements ClazzService {
 		} catch (Exception e) {
 			System.out.println("No class found");
 		}
-		// clazzRepository.findById(id).get();
 		return clazz;
 	}
 
@@ -110,6 +108,9 @@ public class ClazzServiceImpl implements ClazzService {
 		// day
 		String newDay = clazz.getDay();
 		existing.setDay(newDay);
+		// price
+		double newPrice = clazz.getPrice();
+		existing.setPrice(newPrice);
 		// active
 		boolean newActive = clazz.isActive();
 		existing.setActive(newActive);
