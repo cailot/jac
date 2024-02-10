@@ -82,7 +82,8 @@ function addClass() {
 		name: $("#addName").val(),
 		grade: $("#addGrade").val(),
 		courseId: $("#addCourse").val(),
-		day: $("#addDay").val()
+		day: $("#addDay").val(),
+		price: $("#addPrice").val()
 		//active : $("#addActive").val(),
 		//fee : $("#addFee").val()
 	}
@@ -133,6 +134,7 @@ function retrieveClassInfo(clazzId) {
 			$("#editStartDate").datepicker('setDate', date);
 			$("#editGrade").val(clazz.grade);
 			$("#editDay").val(clazz.day);
+			$("#editPrice").val(clazz.price.toFixed(2));
 			$("#editName").val(clazz.name);
 			$("#editActive").val(clazz.active);
 			// if clazz.active = true, tick the checkbox 'editActiveCheckbox'
@@ -165,11 +167,11 @@ function updateClassInfo() {
 		grade: $("#editGrade").val(),
 		courseId: $("#editCourse").val(),
 		day: $("#editDay").val(),
-		active: $("#editActive").val()
-		// fee : $("#editFee").val()
+		active: $("#editActive").val(),
+		price : $("#editPrice").val()
 	}
 
-	console.log(clazz);
+	// console.log(clazz);
 	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/update/class',
@@ -180,7 +182,7 @@ function updateClassInfo() {
 		success: function (value) {
 			// Display success alert
 			$('#success-alert .modal-body').text(
-				'ID : ' + clazzId + ' is updated successfully.');
+				'Class is updated successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -621,21 +623,20 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-8">
-									<input type="text" class="form-control" id="editName" name="editName"
-										placeholder="Name" title="Please enter Class name">
+								<div class="col-md-5">
+									<input type="text" class="form-control" id="editName" name="editName" title="Please enter Class name">
+								</div>
+								<div class="col-md-3">
+									<input type="text" class="form-control" id="editPrice" name="editPrice" title="Please enter Class name">
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
 										<div class="input-group-text">
-											<input type="checkbox" id="editActiveCheckbox"
-												name="editActiveCheckbox"
-												onchange="updateEditActiveValue(this)">
+											<input type="checkbox" id="editActiveCheckbox" name="editActiveCheckbox" onchange="updateEditActiveValue(this)">
 										</div>
 									</div>
 									<input type="hidden" id="editActive" name="editActive" value="false">
-									<input type="text" id="editActiveLabel" class="form-control"
-										placeholder="Activate">
+									<input type="text" id="editActiveLabel" class="form-control" placeholder="Activate">
 								</div>
 							</div>
 						</div>
