@@ -48,7 +48,7 @@ function addCourse() {
 		name : $("#addName").val(),
 		grade : $("#addGrade").val(),
 		description : $("#addDescription").val(),
-		price : $("#addPrice").val()
+		online : $("#addOnline").is(':checked') ? true : false
 	}
 	// console.log(course);
 	
@@ -77,6 +77,7 @@ function addCourse() {
 	document.getElementById("courseRegister").reset();
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Course
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,6 +94,12 @@ function retrieveCourseInfo(courseId) {
 			$("#editName").val(course.name);
 			$("#editPrice").val(course.price);
 			$("#editDescription").val(course.description);
+			// if course.online is true, then #editOnline is checked; otherwise #editOnsite is checked
+			if (course.online) {
+				$("#editOnline").prop('checked', true);
+			} else {
+				$("#editOnsite").prop('checked', true);
+			}
 			$('#editClassModal').modal('show');
 		},
 		error : function(xhr, status, error) {
@@ -111,7 +118,7 @@ function updateCourseInfo(){
 		id : courseId,
 		name : $("#editName").val(),
 		grade : $("#editGrade").val(),
-		price : $("#editPrice").val(),
+		online : $("#editOnline").is(':checked') ? true : false,
 		description : $("#editDescription").val()
 	}
 	
@@ -125,7 +132,7 @@ function updateCourseInfo(){
 		contentType : 'application/json',
 		success : function(value) {
 			// Display success alert
-			$('#success-alert .modal-body').text('ID : ' + courseId + ' is updated successfully.');
+			$('#success-alert .modal-body').text('Course is updated successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function(e) {
 				location.reload();
@@ -179,7 +186,7 @@ function clearCourseForm(elementId) {
 										<th>Name</th>
 										<th>Description</th>
 										<th>Grade</th>
-										<th>Price</th>
+										<th data-orderable="false">Type</th>
 										<th data-orderable="false">Action</th>
 									</tr>
 								</thead>
@@ -217,13 +224,22 @@ function clearCourseForm(elementId) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="small ellipsis"><span><c:out value="${course.price}" /></span></td>
+												<td class="text-center">
+													<c:choose>
+														<c:when test="${course.online}">
+															<i class="bi bi-display" title="Online"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-person-square" title="Onsite"></i>
+														</c:otherwise>
+													</c:choose>
+													
+												</td>
 												<td class="text-center">
 													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;
 												</td>
 											</tr>
 										</c:forEach>
-									
 									</c:when>
 								</c:choose>
 								</tbody>
@@ -260,13 +276,19 @@ function clearCourseForm(elementId) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-3">
-									<label for="addPrice" class="label-form">Price</label> 
-									<input type="text" class="form-control" id="addPrice" name="addPrice" placeholder="Price" title="Please enter Course price">
-								</div>
 								<div class="col-md-9">
-									<label for="addDescription" class="label-form">Description</label> 
+									<label for="addDescription" class="label-form">Course Description</label> 
 									<input type="text" class="form-control" id="addDescription" name="addDescription" placeholder="Description" title="Please enter Course description">
+								</div>
+								<div class="input-group col-md-3">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="addCourseType" id="addOnsite" checked>
+										<label class="form-check-label" for="addOnsite">Onsite</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="addCourseType" id="addOnline">
+										<label class="form-check-label" for="addOnline">Online</label>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -287,7 +309,7 @@ function clearCourseForm(elementId) {
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Edit</header>
+					<header class="text-primary font-weight-bold">Course Edit</header>
 			
 				<form id="courseEdit">
 					<div class="form-group">
@@ -303,19 +325,22 @@ function clearCourseForm(elementId) {
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="form-row">
-							<div class="form-group">
-								<div class="form-row">
-									<div class="col-md-3">
-										<label for="editPrice" class="label-form">Price</label> 
-										<input type="text" class="form-control" id="editPrice" name="editPrice">
-									</div>
-									<div class="col-md-9">
-										<label for="editDescription" class="label-form">Description</label> 
-										<input type="text" class="form-control" id="editDescription" name="editDescription">
-									</div>
+						<div class="form-row">									
+							<div class="col-md-9">
+								<label for="editDescription" class="label-form">Description</label> 
+								<input type="text" class="form-control" id="editDescription" name="editDescription">
+							</div>
+							<div class="input-group col-md-3">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="editCourseType" id="editOnsite">
+									<label class="form-check-label" for="editOnsite">Onsite</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="editCourseType" id="editOnline">
+									<label class="form-check-label" for="editOnline">Online</label>
 								</div>
 							</div>
+							
 						</div>
 					</div>
 					<input type="hidden" id="editId" name="editId">
