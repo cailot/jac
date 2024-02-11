@@ -42,7 +42,7 @@ import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("invoice")
-public class JaeInvoiceController {
+public class InvoiceController {
 
 	@Autowired
 	private InvoiceService invoiceService;
@@ -252,6 +252,8 @@ public class JaeInvoiceController {
 		MoneyDTO header = new MoneyDTO();
 		List<String> headerGrade = new ArrayList<String>();
 		String headerDueDate = JaeUtils.getToday();
+		// declare total paid amount from invoice for later usuages
+		double invoicePaidAmount = 0;
 		// 7-1 if full paid, return EnrolmentDTO list
 		if(fullPaid){
 			invoiceService.updateInvoice(invoice, invoId);
@@ -317,6 +319,11 @@ public class JaeInvoiceController {
 			// 18-1. return
 			dtos.addAll(enrolments);
 			dtos.addAll(materials);
+
+			// set total paid amount from invoice
+			invoicePaidAmount = invoice.getPaidAmount();
+			session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
+
 			return dtos;
 		// 7-2. if not full paid, return OutstandingDTO list
 		}else{
@@ -386,6 +393,10 @@ public class JaeInvoiceController {
 			dtos.addAll(enrolments);
 			dtos.addAll(materials);
 			dtos.addAll(outstandingDTOs);
+
+			invoicePaidAmount = invoice.getPaidAmount();
+			session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
+			
 			return dtos;
 		}
 	}

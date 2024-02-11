@@ -57,6 +57,14 @@
             </tr>
         </table>
 
+
+<!-- Paid amount in Invoice -->
+<c:set var="invoicePaidAmount" value="${sessionScope.invoicePaidAmount}" />
+<c:out value="${invoicePaidAmount}" />  
+
+
+
+
         <table style="width: 90%; margin: 0 auto 10px; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
             <c:set var="paymentMeta" value="${sessionScope.receiptHeader}" />
             <!-- <c:out value="${paymentMeta}" /> -->
