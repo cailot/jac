@@ -230,7 +230,7 @@ function clearCourseForm(elementId) {
 															<i class="bi bi-display" title="Online"></i>
 														</c:when>
 														<c:otherwise>
-															<i class="bi bi-person-square" title="Onsite"></i>
+															<i class="bi bi-person-fill" title="Onsite"></i>
 														</c:otherwise>
 													</c:choose>
 													
