@@ -92,21 +92,6 @@
             </tr>
         </table>
 
-
-        <!-- Paid amount in Invoice -->
-
-<!-- Paid amount in Invoice -->
-<c:choose>
-    <c:when test="${not empty sessionScope.invoicePaidAmount}">
-        <p>Paid amount in Invoice: ${sessionScope.invoicePaidAmount}</p>
-    </c:when>
-    <c:otherwise>
-        <p>No response</p>
-    </c:otherwise>
-</c:choose>
-
-
-
         <table style="width: 90%; margin: 0 auto 10px; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
             <c:set var="paymentMeta" value="${sessionScope.receiptHeader}" />
             <!-- <c:out value="${paymentMeta}" /> -->
@@ -154,7 +139,7 @@
             </thead>
             <tbody>
                 <c:set var="finalTotal" value="0" />
-                <c:set var="paidTotal" value="0" />
+                <!-- <c:set var="paidTotal" value="0" /> -->
                 <!-- Check if enrolments attribute exists in session -->
                 <c:if test="${not empty sessionScope.enrolments}">
                     <!-- Retrieve the payments from session -->
@@ -183,9 +168,9 @@
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
                             <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
-                            <c:if test="${empty sessionScope.outstandings}">
+                            <!-- <c:if test="${empty sessionScope.outstandings}">
                                 <c:set var="paidTotal" value="${paidTotal + enrolment.paid}" />
-                            </c:if>
+                            </c:if> -->
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -206,10 +191,10 @@
                             </td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + book.price}" />
-                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings
                             <c:if test="${empty sessionScope.materials}">
                                 <c:set var="paidTotal" value="${paidTotal + book.price}" />
-                            </c:if>
+                            </c:if> -->
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -248,7 +233,7 @@
                                 </c:choose>
                             </td>
                             <!-- Add the paid to the paidTotal variable -->
-                            <c:set var="paidTotal" value="${paidTotal + outstanding.paid}" />
+                            <!-- <c:set var="paidTotal" value="${paidTotal + outstanding.paid}" /> -->
                         </tr>
                     </c:forEach>
                 </c:if>
@@ -266,11 +251,13 @@
                 <td style="height: 32px; width: 100px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: center; color: #bdbdbd; font-style: normal; font-family: 'arial', sans-serif; border: 0;">$</td>
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <c:choose>
-                        <c:when test="${paidTotal >= 0}">
-                            <fmt:formatNumber value="${- paidTotal}" pattern="#0.00" />
+                        <c:when test="${sessionScope.invoicePaidAmount >= 0}">
+
+                        
+                            - <fmt:formatNumber value="${sessionScope.invoicePaidAmount}" pattern="#0.00" />
                         </c:when>
                         <c:otherwise>
-                            <fmt:formatNumber value="${paidTotal}" pattern="#0.00" />
+                            222 <fmt:formatNumber value="${sessionScope.invoicePaidAmount}" pattern="#0.00" />
                         </c:otherwise>
                     </c:choose>
                 </td>
@@ -281,11 +268,11 @@
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <!-- Check if the balance is full paid -->
                     <c:choose>
-                        <c:when test="${finalTotal - paidTotal <= 0}">
+                        <c:when test="${finalTotal - sessionScope.invoicePaidAmount <= 0}">
                             PAID IN FULL
                         </c:when>
                         <c:otherwise>
-                            <fmt:formatNumber value="${finalTotal - paidTotal}" pattern="#0.00" />
+                            <fmt:formatNumber value="${finalTotal - sessionScope.invoicePaidAmount}" pattern="#0.00" />
                         </c:otherwise>
                     </c:choose>
                 </td>
