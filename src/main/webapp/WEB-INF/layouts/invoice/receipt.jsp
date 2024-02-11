@@ -86,11 +86,26 @@
                     <p style="margin-top: 8px; font-size: 13px;font-weight:600;line-height:1.5">
                         0393610051
                         <br />16c 77-79 Ashley St
-                        <br /><span style="font-weight:900;font-size:14px;">ABN 123123123</span>
+                        <br /><span style="font-weight:900;font-size:14px;">ABN 1231231234</span>
                     </p>
                 </td>
             </tr>
         </table>
+
+
+        <!-- Paid amount in Invoice -->
+
+<!-- Paid amount in Invoice -->
+<c:choose>
+    <c:when test="${not empty sessionScope.invoicePaidAmount}">
+        <p>Paid amount in Invoice: ${sessionScope.invoicePaidAmount}</p>
+    </c:when>
+    <c:otherwise>
+        <p>No response</p>
+    </c:otherwise>
+</c:choose>
+
+
 
         <table style="width: 90%; margin: 0 auto 10px; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
             <c:set var="paymentMeta" value="${sessionScope.receiptHeader}" />
