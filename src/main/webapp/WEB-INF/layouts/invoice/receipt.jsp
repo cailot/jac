@@ -21,9 +21,6 @@
 
 %>
 
-<!-- Bootstrap Icons -->
-<!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/> -->
-
 
 
 <!-- Add the watermark styles -->
@@ -86,7 +83,7 @@
                     <p style="margin-top: 8px; font-size: 13px;font-weight:600;line-height:1.5">
                         0393610051
                         <br />16c 77-79 Ashley St
-                        <br /><span style="font-weight:900;font-size:14px;">ABN 1231231234</span>
+                        <br /><span style="font-weight:900;font-size:14px;">ABN 123123123</span>
                     </p>
                 </td>
             </tr>
