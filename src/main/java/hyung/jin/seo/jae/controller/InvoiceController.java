@@ -253,7 +253,7 @@ public class InvoiceController {
 		List<String> headerGrade = new ArrayList<String>();
 		String headerDueDate = JaeUtils.getToday();
 		// declare total paid amount from invoice for later usuages
-		double invoicePaidAmount = 0;
+		// double invoicePaidAmount = 0;
 		// 7-1 if full paid, return EnrolmentDTO list
 		if(fullPaid){
 			invoiceService.updateInvoice(invoice, invoId);
@@ -321,8 +321,8 @@ public class InvoiceController {
 			dtos.addAll(materials);
 
 			// set total paid amount from invoice
-			invoicePaidAmount = invoice.getPaidAmount();
-			session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
+			// invoicePaidAmount = invoice.getPaidAmount();
+			// session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
 
 			return dtos;
 		// 7-2. if not full paid, return OutstandingDTO list
@@ -394,8 +394,8 @@ public class InvoiceController {
 			dtos.addAll(materials);
 			dtos.addAll(outstandingDTOs);
 
-			invoicePaidAmount = invoice.getPaidAmount();
-			session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
+			// invoicePaidAmount = invoice.getPaidAmount();
+			// session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoicePaidAmount);
 			
 			return dtos;
 		}
