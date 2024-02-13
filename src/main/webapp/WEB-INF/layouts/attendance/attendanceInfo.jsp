@@ -47,7 +47,7 @@ function retrieveAttendance(studentId) {
 					var id = value.id;  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
-					row.append($('<td class="small text-center" style="width: 35%;">').text(value.clazzGrade.toUpperCase() + '-' + value.week));
+					row.append($('<td class="small text-center" style="width: 35%;">').text(gradeName(value.clazzGrade) + '-' + value.week));
 					var dayDropdown = $('<select class="small text-center dayChoice" style="width: 100%; border: none;" title="' + value.attendDate + '">');
 					// var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					// Loop through the daysOfWeek array
