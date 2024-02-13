@@ -412,6 +412,8 @@ public class InvoiceController {
 		invoice.setInfo(info);
 		invoiceService.updateInvoice(invoice, invoice.getId());
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
+		// set paid amount
+		session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
 		// 3. set payment elements related to invoice into session
 		List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
 		List<EnrolmentDTO> filteredEnrols = new ArrayList<EnrolmentDTO>();

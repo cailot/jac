@@ -248,21 +248,12 @@
                 <td style="height: 32px; width: 100px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: center; color: #bdbdbd; font-style: normal; font-family: 'arial', sans-serif; border: 0;">$</td>
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <c:choose>
-                        <c:when test="${paidTotal > 0}">
-
-                            <!-- Never paidTotal is greater than finalTotal -->
-                            <c:choose>
-                                <c:when test="${paidTotal >= finalTotal">
-                                    <fmt:formatNumber value="${- finalTotal}" pattern="#0.00" />
-                                </c:when>
-                                <c:otherwise>
-                                    <fmt:formatNumber value="${- paidTotal}" pattern="#0.00" />
-                                </c:otherwise>
-                            </c:choose>
-                        
-                        
-                        
+                        <c:when test="${paidTotal >= finalTotal}">
+                            <fmt:formatNumber value="${- finalTotal}" pattern="#0.00" />
                         </c:when>
+                        <c:when test="${paidTotal < finalTotal && paidTotal > 0}">
+                            <fmt:formatNumber value="${- paidTotal}" pattern="#0.00" />
+                        </c:when>                                
                         <c:otherwise>
                             <fmt:formatNumber value="${paidTotal}" pattern="#0.00" />
                         </c:otherwise>
