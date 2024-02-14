@@ -94,15 +94,10 @@ public class StudentController {
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody
 	public void updatePassword(@PathVariable Long id, @PathVariable String pwd) {
-		Long stdId = id;
 		String newPwd = pwd;
-		Student std = new Student();
-		std.setId(stdId);
-		std.setPassword(newPwd);
-		studentService.updatePassword(std);
-		// return result;
+		newPwd = "$2a$12$6F/62L8H5oThbI1cD74ElOm7MC.aLCZjNY4TMLH7Vfh.kq0zeLbOi";
+		studentService.updatePassword(id, newPwd);
 	}
-	
 
 	// search student list with state, branch, grade, start date or active
 	@GetMapping("/list")

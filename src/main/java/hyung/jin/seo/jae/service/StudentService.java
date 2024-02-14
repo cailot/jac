@@ -40,7 +40,7 @@ public interface StudentService {
 	
 	void deleteStudent(Long id);
 
-	void updatePassword(Student std);
+	void updatePassword(Long id, String password);
 
 	// update student grade as batch for next year
 	void batchUpdateGrade(List<Long> ids, String grade);

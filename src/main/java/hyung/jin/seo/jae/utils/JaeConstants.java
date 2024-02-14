@@ -195,4 +195,12 @@ public interface JaeConstants {
 
 	int INACTIVE = 1;
 
+	////////////////////////////////////
+	//
+	//	Student Default Password
+	//
+	////////////////////////////////////
+
+	String DEFAULT_PASSWORD = "123";
+
 }
