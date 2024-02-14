@@ -118,6 +118,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public Student addStudent(Student std) {
+		String pwd = std.getPassword();
+		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		// std.setPassword(passwordEncoder.encode(pwd));
 		Student add = studentRepository.save(std);
 		return add;
 	}
@@ -227,13 +230,11 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	@Transactional
-	public void updatePassword(Student std) {
-		Long username = std.getId();
-		String password = std.getPassword();
+	public void updatePassword(Long id, String password) {
 		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		// String encodedPassword = passwordEncoder.encode(password);
 		try{
-			studentRepository.updatePassword(username, password);
+			// studentRepository.updatePassword(id, passwordEncoder.encode(password));
+			studentRepository.updatePassword(id, password);
 		}catch(Exception e){
 			System.out.println("No student found");
 		}	
@@ -260,5 +261,6 @@ public class StudentServiceImpl implements StudentService {
 			}
 		}
 	}
+
 
 }
