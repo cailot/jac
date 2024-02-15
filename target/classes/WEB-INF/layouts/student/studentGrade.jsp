@@ -297,8 +297,8 @@ function updateStudentInfo(){
                 <p> Are you sure to apply new grade ?</p>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" onclick="updateStudentInfo()"><i class="bi bi-x"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i> Close</button>
+                <button type="submit" class="btn btn-danger" onclick="updateStudentInfo()"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
             </div>
     	</div>
 	</div>
