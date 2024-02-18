@@ -109,7 +109,7 @@ function addClass() {
 			console.log('Error : ' + error);
 		}
 	});
-	$('#registerClassModal').modal('hide');
+	$('#registerOnlineSessionModal').modal('hide');
 	// flush all registered data
 	document.getElementById("classRegister").reset();
 }
@@ -270,7 +270,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/class/listClass">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<!-- <div class="col-md-2">
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
 						</select>
@@ -279,7 +279,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="All">All Branch</option>
 						</select>
-					</div>
+					</div> -->
 					<div class="col-md-2">
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All</option>
@@ -305,12 +305,12 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							%>
 						</select>
 					</div>
-					<div class="offset-md-1"></div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerOnlineSessionModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -477,16 +477,16 @@ function editInitialiseCourseByGrade(grade, courseId) {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<div class="modal fade" id="registerOnlineSessionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Registration</header>
+					<header class="text-primary font-weight-bold">Online Session Registration</header>
 
 					<form id="classRegister">
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<div class="form-row">
 								<div class="col-md-6">
 									<label for="addState" class="label-form">State</label> 
@@ -500,7 +500,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 								</div>
 
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-3">
