@@ -7,6 +7,10 @@ public interface JaeConstants {
 	String CURRENT = "Current";
 	
 	String STOPPED = "Stopped";
+
+	String ONSITE = "Onsite";
+
+	String ONLINE = "Online";
 	
 	///////////////////////////////////////////////////////////////////////
 	//
