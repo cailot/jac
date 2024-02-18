@@ -30,11 +30,11 @@ public class OnlineSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-    @Column(length = 1, nullable = false)
-    private int active;
+    @Column
+    private boolean active;
     
-    @Column(length = 10, nullable = false)
-    private String grade;
+    // @Column(length = 10, nullable = false)
+    // private String grade; // it comes from clazz.course.grade
     
     @Column(length = 500, nullable = true)
     private String address;
@@ -48,8 +48,8 @@ public class OnlineSession {
     @Column(length = 20, nullable = true)
     private String endTime;
 
-    @Column(length = 10, nullable = true)
-    private int year;
+    // @Column(length = 10, nullable = true)
+    // private int year; // it comes from clazz.cycle.year
     
     @Column(length = 5, nullable = true)
     private int week;
