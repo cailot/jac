@@ -44,6 +44,11 @@ public class JaeController {
 		return "classListPage";
 	}
 
+	@GetMapping("/onlineList")
+	public String onlineList(HttpSession session) {
+		return "onlineListPage";
+	}
+
 	@GetMapping("/gradeList")
 	public String gradeList(HttpSession session) {
 		return "gradeListPage";

@@ -124,7 +124,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> listClazz(String state, String branch, String grade, String year, String active) {
+	public List<ClazzDTO> listClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = null;
 		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
 			dtos = clazzRepository.findClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
@@ -251,6 +251,28 @@ public class ClazzServiceImpl implements ClazzService {
 			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
 		} else {
 			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<ClazzDTO> listOnsiteClazz(String state, String branch, String grade, String year) {
+		List<ClazzDTO> dtos = null;
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+			dtos = clazzRepository.findOnsiteClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
+		} else {
+			dtos = clazzRepository.findOnsiteClassForStateNBranchNGrade(state, branch, grade);
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<ClazzDTO> listOnlineClazz(String state, String branch, String grade, String year) {
+		List<ClazzDTO> dtos = null;
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+			dtos = clazzRepository.findOnlineClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
+		} else {
+			dtos = clazzRepository.findOnlineClassForStateNBranchNGrade(state, branch, grade);
 		}
 		return dtos;
 	}

@@ -11,6 +11,12 @@ public interface CourseService {
 
 	// list all Course by grade
 	List<CourseDTO> findByGrade(String grade);
+
+	// list onsite Course by grade
+	List<CourseDTO> findOnsiteByGrade(String grade);
+
+	// list online Course by grade
+	List<CourseDTO> findOnlineByGrade(String grade);
 	
 	// return total count
 	long checkCount();

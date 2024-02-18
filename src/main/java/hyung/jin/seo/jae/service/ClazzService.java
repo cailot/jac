@@ -14,7 +14,13 @@ public interface ClazzService {
 	List<ClazzDTO> allClazz();
 
 	// bring class list base on the condition
-	List<ClazzDTO> listClazz(String state, String branch, String grade, String year, String active);
+	List<ClazzDTO> listClazz(String state, String branch, String grade, String year);
+
+	// bring onsite class list base on the condition
+	List<ClazzDTO> listOnsiteClazz(String state, String branch, String grade, String year);
+
+	// bring online class list base on the condition
+	List<ClazzDTO> listOnlineClazz(String state, String branch, String grade, String year);
 
 	// bring class list for dropdown list
 	List<ClazzDTO> filterClazz(String state, String branch, String grade);
