@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.repository.Query;
 
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.OnlineSession;
@@ -21,7 +22,7 @@ public class OnlineSessionDTO implements Serializable{
     
 	private String id;
 
-	private int active;
+	private boolean active;
 
 	private int week;
 	
@@ -44,14 +45,14 @@ public class OnlineSessionDTO implements Serializable{
 
 	public OnlineSessionDTO(OnlineSession session){
 		this.id = String.valueOf(session.getId());
-		this.active = session.getActive();
+		this.active = session.isActive();
 		this.week = session.getWeek();
 		this.address = session.getAddress();
-		this.grade = session.getGrade();
+		// this.grade = session.getGrade();
 		this.day = session.getDay();
 		this.startTime = session.getStartTime();
 		this.endTime = session.getEndTime();
-		this.year = session.getYear();
+		// this.year = session.getYear();
 		this.registerDate = session.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.clazzId = (session.getClazz()!=null) ? String.valueOf(session.getClazz().getId()) : "";
 	}
@@ -71,51 +72,17 @@ public class OnlineSessionDTO implements Serializable{
     // 	return session;
     // }
 
-	// public OnlineSessionDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paid, LocalDate payDate, long studentId, long clazzId, String name, double price, boolean online, int year, String grade, String day){
-	// 	this.id = String.valueOf(id);
-	// 	this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	// 	this.cancelled = cancelled;
-	// 	this.cancellationReason = cancellationReason;
-	// 	this.startWeek = startWeek;
-	// 	this.endWeek = endWeek;
-	// 	this.info = info;
-	// 	this.credit = credit;
-	// 	this.amount	= amount;
-	// 	this.paid = paid;
-	// 	this.discount = discount;
-	// 	this.invoiceId = String.valueOf(invoiceId);
-	// 	this.paymentDate = (payDate != null) ? payDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
-	// 	this.studentId = String.valueOf(studentId);
-	// 	this.clazzId = String.valueOf(clazzId);
-	// 	this.name = name;
-	// 	this.price = price;
-	// 	this.online = online;
-	// 	this.year = String.valueOf(year);
-	// 	this.grade = grade;
-	// 	this.day = day;
-	// }
-
-	// public OnlineSessionDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, long studentId, long clazzId, String name, double price, boolean online, int year, String grade, String day){
-	// 	this.id = String.valueOf(id);
-	// 	this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	// 	this.cancelled = cancelled;
-	// 	this.cancellationReason = cancellationReason;
-	// 	this.startWeek = startWeek;
-	// 	this.endWeek = endWeek;
-	// 	this.info = info;
-	// 	// this.credit = credit;
-	// 	// this.amount	= amount;
-	// 	// this.paid = paid;
-	// 	// this.discount = discount;
-	// 	this.studentId = String.valueOf(studentId);
-	// 	this.clazzId = String.valueOf(clazzId);
-	// 	this.name = name;
-	// 	this.price = price;
-	// 	this.online = online;
-	// 	this.year = String.valueOf(year);
-	// 	this.grade = grade;
-	// 	this.day = day;
-	// }
+	public OnlineSessionDTO(long id, boolean active, int week, String address, String grade, String day, String startTime, String endTime, int year, LocalDate registerDate, long clazzId){
+		this.id = String.valueOf(id);
+		this.active = active;
+		this.address = address;
+		this.grade = grade;
+		this.day = day;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.clazzId = String.valueOf(clazzId);
+	}
 
 
 
