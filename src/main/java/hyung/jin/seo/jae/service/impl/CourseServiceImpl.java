@@ -103,4 +103,35 @@ public class CourseServiceImpl implements CourseService {
 		CourseDTO dto = new CourseDTO(updated);
 		return dto;
 	}
+
+
+	@Override
+	public List<CourseDTO> findOnsiteByGrade(String grade) {
+		// 1. get courses
+		List<CourseDTO> dtos = courseRepository.findOnsiteByGrade(grade);
+		// 2. get subjects
+		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
+		// 3. associate subjects to course
+		for(CourseDTO dto: dtos){
+			for(String subject : subjects){
+				dto.addSubject(subject);
+			}
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<CourseDTO> findOnlineByGrade(String grade) {
+		// 1. get courses
+		List<CourseDTO> dtos = courseRepository.findOnlineByGrade(grade);
+		// 2. get subjects
+		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
+		// 3. associate subjects to course
+		for(CourseDTO dto: dtos){
+			for(String subject : subjects){
+				dto.addSubject(subject);
+			}
+		}
+		return dtos;
+	}
 }

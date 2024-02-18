@@ -202,6 +202,7 @@ function updateClassInfo() {
 //		Populate courses by grade
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function getCoursesByGrade(grade, toWhere) {
+	// get onsite courses by grade
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/listCoursesByGrade',
 		method: 'GET',
@@ -250,7 +251,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 			$('#editCourse').empty(); // clear the previous options
 			$.each(data, function (index, value) {
 				const cleaned = cleanUpJson(value);
-				console.log(cleaned);
+				//console.log(cleaned);
 				$('#editCourse').append($("<option value='" + value.id + "'>").text(value.description).val(value.id)); // add new option
 			});
 			// Set the selected option
@@ -280,12 +281,12 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							<option value="All">All Branch</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<select class="form-control" id="listYear" name="listYear">
 							<%
 								Calendar now = Calendar.getInstance();
@@ -305,6 +306,14 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							%>
 						</select>
 					</div>
+					<div class="col-md-2">
+						<select class="form-control" id="listType" name="listType">
+							<option value="All">All</option>
+							<option value="Onsite">Onsite</option>
+							<option value="Online">Online</option>
+						</select>
+					</div>
+					
 					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -483,7 +492,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Registration</header>
+					<header class="text-primary font-weight-bold">Onsite Class Registration</header>
 
 					<form id="classRegister">
 						<div class="form-group">
