@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.service.impl;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -275,6 +276,13 @@ public class ClazzServiceImpl implements ClazzService {
 			dtos = clazzRepository.findOnlineClassForStateNBranchNGrade(state, branch, grade);
 		}
 		return dtos;
+	}
+
+	@Override
+	public Clazz getOnlineByGradeNYear(String grade, int year) {
+		Optional<Clazz> option = clazzRepository.getClazz4OnlineSession(grade, year);
+		Clazz clazz = option.orElse(null);
+		return clazz;
 	}
 
 }
