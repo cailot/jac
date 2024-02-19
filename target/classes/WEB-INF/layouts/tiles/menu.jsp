@@ -71,8 +71,6 @@
 		James An College
 	</div>
 	<ul class="navbar_menu">
-		
-
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  Student
