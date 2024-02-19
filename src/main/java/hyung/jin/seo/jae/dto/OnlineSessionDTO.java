@@ -48,38 +48,40 @@ public class OnlineSessionDTO implements Serializable{
 		this.active = session.isActive();
 		this.week = session.getWeek();
 		this.address = session.getAddress();
-		// this.grade = session.getGrade();
+		this.grade = session.getClazz().getCourse().getGrade();
 		this.day = session.getDay();
 		this.startTime = session.getStartTime();
 		this.endTime = session.getEndTime();
-		// this.year = session.getYear();
+		this.year = session.getClazz().getCycle().getYear();
 		this.registerDate = session.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.clazzId = (session.getClazz()!=null) ? String.valueOf(session.getClazz().getId()) : "";
 	}
 
-	// public OnlineSession convertToEOnlineSession() {
-    // 	OnlineSession session = new OnlineSession();
-	// 	if(StringUtils.isNotBlank(id)) session.setId(Long.parseLong(id));
-    // 	if(StringUtils.isNotBlank(registerDate)) session.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
-	// 	session.setCancelled(cancelled);
-	// 	session.setStartWeek(startWeek);
-	// 	session.setEndWeek(endWeek);
-	// 	session.setCredit(credit);
-	// 	session.setDiscount(discount);
-	// 	if(StringUtils.isNotBlank(paymentDate)) session.setRegisterDate(LocalDate.parse(paymentDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
-	// 	if(StringUtils.isNotBlank(cancellationReason)) session.setCancellationReason(cancellationReason);
-	// 	session.setInfo(info);		
-    // 	return session;
-    // }
+	public OnlineSession convertToOnlineSession() {
+    	OnlineSession session = new OnlineSession();
+		if(StringUtils.isNotBlank(id)) session.setId(Long.parseLong(id));
+		session.setActive(active);
+		session.setWeek(week);
+		session.setAddress(address);
+		// session.setGrade(grade);
+		session.setDay(day);
+		session.setStartTime(startTime);
+		session.setEndTime(endTime);
+		// session.setYear(year);
+		if(StringUtils.isNotBlank(registerDate)) session.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
+		return session;
+    }
 
 	public OnlineSessionDTO(long id, boolean active, int week, String address, String grade, String day, String startTime, String endTime, int year, LocalDate registerDate, long clazzId){
 		this.id = String.valueOf(id);
 		this.active = active;
+		this.week = week;
 		this.address = address;
 		this.grade = grade;
 		this.day = day;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.year = year;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.clazzId = String.valueOf(clazzId);
 	}

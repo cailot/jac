@@ -150,6 +150,17 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		return dtos;
 	}
 
+	@Override
+	public List<OnlineSessionDTO> filterOnlineSessionByYear(int year) {
+		List<OnlineSessionDTO> dtos = new ArrayList<>();
+		try{
+			dtos = onlineSessionRepository.filterOnlineSessionByYear(year);
+		}catch(Exception e){
+			System.out.println("No OnlineSession found");
+		}
+		return dtos;
+	}
+
 	// @Override
 	// public void activeFlagOnlineSession(Long id, boolean active) {
 	// 	// TODO Auto-generated method stub
