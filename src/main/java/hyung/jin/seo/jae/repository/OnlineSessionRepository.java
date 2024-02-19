@@ -25,8 +25,12 @@ public interface OnlineSessionRepository extends JpaRepository<OnlineSession, Lo
 	@Query("SELECT new hyung.jin.seo.jae.dto.OnlineSessionDTO(o.id, o.active, o.week, o.address, o.clazz.course.grade, o.day, o.startTime, o.endTime, o.clazz.cycle.year, o.registerDate, o.clazz.id) FROM OnlineSession o WHERE (?1 = 'All' OR o.clazz.course.grade = ?1)")
 	List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade);
 
+	// filter OnlineSessionDTO by year
+	@Query("SELECT new hyung.jin.seo.jae.dto.OnlineSessionDTO(o.id, o.active, o.week, o.address, o.clazz.course.grade, o.day, o.startTime, o.endTime, o.clazz.cycle.year, o.registerDate, o.clazz.id) FROM OnlineSession o WHERE o.clazz.cycle.year = ?1")
+	List<OnlineSessionDTO> filterOnlineSessionByYear(int year);
+
 	// filter OnlineSessionDTO by grade & year
-	@Query("SELECT new hyung.jin.seo.jae.dto.OnlineSessionDTO(o.id, o.active, o.week, o.address, o.clazz.course.grade, o.day, o.startTime, o.endTime, o.clazz.cycle.year, o.registerDate, o.clazz.id) FROM OnlineSession o WHERE (?1 = 'All' OR o.clazz.course.grade = ?1) AND (?2 = 'All' OR o.clazz.cycle.year = ?2)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.OnlineSessionDTO(o.id, o.active, o.week, o.address, o.clazz.course.grade, o.day, o.startTime, o.endTime, o.clazz.cycle.year, o.registerDate, o.clazz.id) FROM OnlineSession o WHERE (?1 = 'All' OR o.clazz.course.grade = ?1) AND (o.clazz.cycle.year = ?2)")
 	List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year);
 	
 

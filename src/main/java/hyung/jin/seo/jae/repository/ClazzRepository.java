@@ -1,9 +1,11 @@
 package hyung.jin.seo.jae.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.model.Clazz;
@@ -89,4 +91,8 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	@Query(value = "SELECT c.id FROM Clazz c where c.course.grade = ?1 AND c.cycle.year = ?2 AND c.course.online = true")
 	Long getOnlineClazzId(String grade, int year);
 
+	// get class id by grade and year
+	@Query(value = "SELECT c FROM Clazz c where c.course.grade = :grade AND c.cycle.year = :year AND c.course.online = true")
+	Optional<Clazz> getClazz4OnlineSession(@Param("grade") String grade, @Param("year") int year);
+	
 }

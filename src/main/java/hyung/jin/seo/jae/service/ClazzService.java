@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.model.Clazz;
@@ -69,4 +70,7 @@ public interface ClazzService {
 
 	// get class id by grade and year
 	Long getOnlineId(String grade, int year);
+
+	// get online class by grade and year
+	Clazz getOnlineByGradeNYear(String grade, int year);
 }

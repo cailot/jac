@@ -21,6 +21,9 @@ public interface OnlineSessionService {
 	// filter session by grade
 	List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade);
 
+	// filter session by year
+	List<OnlineSessionDTO> filterOnlineSessionByYear(int year);
+
 	// filter session by grade and year
 	List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year);
 
