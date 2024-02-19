@@ -13,9 +13,12 @@
 <script src="${pageContext.request.contextPath}/js/vfs_fonts.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
+
+
+
 <script>
 $(document).ready(function () {
-	$('#classListTable').DataTable({
+	$('#onlineListTable').DataTable({
 		language: {
 			search: 'Filter:'
 		},
@@ -29,19 +32,14 @@ $(document).ready(function () {
 			},
 			'print'
 		],
-		//pageLength: 20
 	});
 
 
-	$('table .password').on('click', function () {
-		var username = $(this).parent().find('#username').val();
-		$('#passwordModal #usernamepassword').val(username);
-	});
+	// $('#addStartTime').datetimepicker({
+    //     format: 'HH:mm'
+    // });
 
-	$("#addStartDate").datepicker({
-		dateFormat: 'dd/mm/yy'
-	});
-	$("#editStartDate").datepicker({
+	$("#addStartTime").datepicker({
 		dateFormat: 'dd/mm/yy'
 	});
 
@@ -58,12 +56,6 @@ $(document).ready(function () {
 	});
 
 	// initialise state list when loading
-	listState('#listState');
-	listState('#addState');
-	listState('#editState');
-	listBranch('#listBranch');
-	listBranch('#addBranch');
-	listBranch('#editBranch');
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
@@ -71,35 +63,32 @@ $(document).ready(function () {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Class
+//		Register OnlineSession
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function addClass() {
+function addOnline() {
 	// Get from form data
-	var clazz = {
-		state: $("#addState").val(),
-		branch: $("#addBranch").val(),
-		startDate: $("#addStartDate").val(),
-		name: $("#addName").val(),
+	var online = {
 		grade: $("#addGrade").val(),
-		courseId: $("#addCourse").val(),
+		year: $("#addYear").val(),
 		day: $("#addDay").val(),
-		price: $("#addPrice").val()
-		//active : $("#addActive").val(),
-		//fee : $("#addFee").val()
+		week: $("#addWeek").val(),
+		startTime: $("#addStartTime").val(),
+		endTime: $("#addEndTime").val(),
+		address : $("#addAddress").val()
 	}
-	//	console.log(clazz);
+		console.log(online);
 
 	// Send AJAX to server
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/registerClass',
+		url: '${pageContext.request.contextPath}/onlineSesion/register',
 		type: 'POST',
 		dataType: 'json',
-		data: JSON.stringify(clazz),
+		data: JSON.stringify(online),
 		contentType: 'application/json',
-		success: function (student) {
+		success: function (data) {
 			// Display the success alert
 			$('#success-alert .modal-body').text(
-				'New Class is registered successfully.');
+				'New Online Session is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -111,7 +100,7 @@ function addClass() {
 	});
 	$('#registerOnlineSessionModal').modal('hide');
 	// flush all registered data
-	document.getElementById("classRegister").reset();
+	document.getElementById("onlineSessionRegister").reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +307,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="classListTable" class="table table-striped table-bordered">
+							<table id="onlineListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
 										<th>State</th>
@@ -485,38 +474,24 @@ function editInitialiseCourseByGrade(grade, courseId) {
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Online Session Registration</header>
 
-					<form id="classRegister">
-						<!-- <div class="form-group">
-							<div class="form-row">
-								<div class="col-md-6">
-									<label for="addState" class="label-form">State</label> 
-									<select class="form-control" id="addState" name="addState">
-									</select>
-								</div>
-								<div class="col-md-6">
-									<label for="addBranch" class="label-form">Branch</label>
-									<select class="form-control" id="addBranch" name="addBranch">
-									</select>
-								</div>
-
-							</div>
-						</div> -->
+					<form id="onlineSessionRegister">
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mt-3">
 								<div class="col-md-3">
 									<label for="addGrade" class="label-form">Grade</label>
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-6">
-									<label for="addCourse" class="label-form">Course</label>
-									<select class="form-control" id="addCourse" name="addCourse">
+								<div class="offset-md-1"></div>
+								<div class="col-md-3">
+									<label for="addYear" class="label-form">Academic Year</label>
+									<select class="form-control" id="addYear" name="addYear">
 									</select>
 								</div>
-								<div class="col-md-3">
+								<div class="offset-md-1"></div>
+								<div class="col-md-4">
 									<label for="addDay" class="label-form">Day</label>
 									<select class="form-control" id="addDay" name="addDay">
-										<option value="All">All</option>
 										<option value="Monday">Monday</option>
 										<option value="Tuesday">Tuesday</option>
 										<option value="Wednesday">Wednesday</option>
@@ -530,35 +505,52 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
-									<label for="addName" class="label-form">Class Name</label>
-									<input type="text" class="form-control" id="addName" name="addName" placeholder="Name" title="Please enter Class name" />
-								</div>
 								<div class="col-md-3">
-									<label for="addPrice" class="label-form">Price</label>
-									<input type="text" class="form-control" id="addPrice" name="addPrice" />
+									<label for="addWeek" class="label-form">Week</label>
+									<select class="form-control" id="addWeek" name="addWeek">
+									</select>
 								</div>
-								<div class="col-md-4">
-									<label for="addStartDate" class="label-form">Start Date</label>
-									<input type="text" class="form-control datepicker" id="addStartDate" name="addStartDate" placeholder="dd/mm/yyyy" />
-								</div>
-								<script>
-									var today = new Date();
-									var day = today.getDate();
-									var month = today.getMonth() + 1; // Note: January is 0
-									var year = today.getFullYear();
-									var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-									document.getElementById('addStartDate').value = formattedDate;
-								</script>
+								<div class="offset-md-1"></div>
+								<div class="col-md-3">
+									<label for="addStartTime" class="label-form">Start Time</label>
+									<input type="text" class="form-control datepicker" id="addStarTime" name="addStartTime" placeholder="HH:mm" />
 
+
+
+
+
+
+	
+
+
+
+								</div>
+
+
+
+								
+
+								<div class="offset-md-1"></div>
+								<div class="col-md-3">
+									<label for="addEndTime" class="label-form">End Time</label>
+									<input type="text" class="form-control datepicker" id="addEndTime" name="addEndTime" placeholder="HH:mm" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="addAddress" class="label-form">Access URL</label>
+									<input type="text" class="form-control" id="addAddress" name="addAddress" placeholder="https://" title="Please enter access address" />
+								</div>
 							</div>
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary"
-							onclick="addClass()">Create</button>&nbsp;&nbsp;
+							onclick="addOnline()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearClassForm('classRegister')" data-dismiss="modal">Close</button>
+							onclick="clearClassForm('onlineSessionRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
