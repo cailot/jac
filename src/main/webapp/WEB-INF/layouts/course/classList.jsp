@@ -492,11 +492,11 @@ function editInitialiseCourseByGrade(grade, courseId) {
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Onsite Class Registration</header>
+					<header class="text-primary font-weight-bold">Class Registration</header>
 
 					<form id="classRegister">
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mt-3">
 								<div class="col-md-6">
 									<label for="addState" class="label-form">State</label> 
 									<select class="form-control" id="addState" name="addState">
