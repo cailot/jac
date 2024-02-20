@@ -2,12 +2,8 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="java.util.Calendar" %>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css">
-</link>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css">
-</link>
-
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
@@ -38,24 +34,17 @@ $(document).ready(function () {
 		],
 	});
 
-
 	$('#addStartTime').timepicker({
 		uiLibrary: 'bootstrap'
 	});
 	$('#addEndTime').timepicker({
 		uiLibrary: 'bootstrap'
 	});
-
-	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-	$('#addGrade').change(function () {
-		var grade = $(this).val();
-		getCoursesByGrade(grade, '#addCourse');
+	$('#editStartTime').timepicker({
+		uiLibrary: 'bootstrap'
 	});
-
-	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-	$('#editGrade').change(function () {
-		var grade = $(this).val();
-		getCoursesByGrade(grade, '#editCourse');
+	$('#editEndTime').timepicker({
+		uiLibrary: 'bootstrap'
 	});
 
 	// initialise state list when loading
@@ -112,35 +101,31 @@ function addOnline() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Class
+//		Retrieve Online Session
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrieveClassInfo(clazzId) {
+function retrieveOnlineInfo(onlineId) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/get/class/' + clazzId,
+		url: '${pageContext.request.contextPath}/onlineSession/get/' + onlineId,
 		type: 'GET',
-		success: async function (clazz) {
-			//console.log(clazz);
-			// firstly populate courses by grade then set the selected option
-			await editInitialiseCourseByGrade(clazz.grade, clazz.courseId);
-			$("#editId").val(clazz.id);
-			$("#editState").val(clazz.state);
-			$("#editBranch").val(clazz.branch);
-			// Set date value
-			var date = new Date(clazz.startDate); // Replace with your date value
-			$("#editStartDate").datepicker('setDate', date);
-			$("#editGrade").val(clazz.grade);
-			$("#editDay").val(clazz.day);
-			$("#editPrice").val(clazz.price.toFixed(2));
-			$("#editName").val(clazz.name);
-			$("#editActive").val(clazz.active);
-			// if clazz.active = true, tick the checkbox 'editActiveCheckbox'
-			if (clazz.active == true) {
+		success: function (online) {
+			 console.log(online);
+			$("#editId").val(online.id);
+			$("#editClazzId").val(online.clazzId);
+			$("#editGrade").val(online.grade);
+			$("#editYear").val(online.year);			
+			$("#editDay").val(online.day);
+			$("#editWeek").val(online.week);
+			$("#editStartTime").val(online.startTime);
+			$("#editEndTime").val(online.endTime);
+			$("#editActive").val(online.active);
+			if (online.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			$('#editClassModal').modal('show');
+			$("#editAddress").val(online.address);
+			$('#editOnlineModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -150,36 +135,36 @@ function retrieveClassInfo(clazzId) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Class
+//		Update Online Session
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateClassInfo() {
-	var clazzId = $("#editId").val();
+function updateOnlineInfo() {
+	var onlineId = $("#editId").val();
 	// get from formData
-	var clazz = {
-		id: clazzId,
-		state: $("#editState").val(),
-		branch: $("#editBranch").val(),
-		startDate: $("#editStartDate").val(),
-		name: $("#editName").val(),
+	var online = {
+		id: onlineId,
 		grade: $("#editGrade").val(),
-		courseId: $("#editCourse").val(),
+		year: $("#editYear").val(),
 		day: $("#editDay").val(),
+		week: $("#editWeek").val(),
+		startTime: $("#editStartTime").val(),
+		endTime: $("#editEndTime").val(),
 		active: $("#editActive").val(),
-		price : $("#editPrice").val()
+		address: $("#editAddress").val(),
+		clazzId : $("#editClazzId").val()
 	}
 
 	// console.log(clazz);
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/update/class',
+		url: '${pageContext.request.contextPath}/onlineSession/update',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(clazz),
+		data: JSON.stringify(online),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
-			$('#success-alert .modal-body').text(
-				'Class is updated successfully.');
+			//debugger
+			$('#success-alert .modal-body').text(value);
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -190,31 +175,9 @@ function updateClassInfo() {
 		}
 	});
 
-	$('#editClassModal').modal('hide');
+	$('#editOnlineModal').modal('hide');
 	// flush all registered data
-	clearClassForm("classEdit");
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Populate courses by grade
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getCoursesByGrade(grade, toWhere) {
-	$.ajax({
-		url: '${pageContext.request.contextPath}/class/listCoursesByGrade',
-		method: 'GET',
-		data: { grade: grade },
-		success: function (data) {
-			$(toWhere).empty(); // clear the previous options
-			$.each(data, function (index, value) {
-				const cleaned = cleanUpJson(value);
-				//console.log(cleaned);
-				$(toWhere).append($("<option value='" + value.id + "'>").text(value.description).val(value.id)); // add new option
-			});
-		},
-		error: function (xhr, status, error) {
-			console.error(xhr.responseText);
-		}
-	});
+	clearClassForm("onlineEdit");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,29 +197,6 @@ function updateEditActiveValue(checkbox) {
 	} else {
 		editActiveInput.value = "false";
 	}
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 		Initialise courses by grade in edit dialog
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-function editInitialiseCourseByGrade(grade, courseId) {
-	$.ajax({
-		url: '${pageContext.request.contextPath}/class/listCoursesByGrade',
-		method: 'GET',
-		data: { grade: grade },
-		success: function (data) {
-			$('#editCourse').empty(); // clear the previous options
-			$.each(data, function (index, value) {
-				const cleaned = cleanUpJson(value);
-				console.log(cleaned);
-				$('#editCourse').append($("<option value='" + value.id + "'>").text(value.description).val(value.id)); // add new option
-			});
-			// Set the selected option
-			$("#editCourse").val(courseId);
-		},
-		error: function (xhr, status, error) {
-			console.error(xhr.responseText);
-		}
-	});
 }
 
 </script>
@@ -297,7 +237,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerOnlineSessionModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerOnlineSessionModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -395,7 +335,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${online.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveOnlineInfo('${online.id}')">
 														</i>
 													</td>
 												</tr>
@@ -408,7 +348,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 					</div>
 				</div>
 			</div>
-
 		</form>
 	</div>
 </div>
@@ -527,49 +466,44 @@ function editInitialiseCourseByGrade(grade, courseId) {
 </div>
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
+<div class="modal fade" id="editOnlineModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Edit</header>
+					<header class="text-primary font-weight-bold">Online Session Edit</header>
 
-					<form id="classEdit">
+					<form id="onlineEdit">
 						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-4">
-									<label for="editState" class="label-form">State</label> 
-									<select class="form-control" id="editState" name="editState">
+							<div class="form-row mt-2">
+								<div class="col-md-2">
+									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
 								<div class="col-md-5">
-									<label for="editBranch" class="label-form">Branch</label>
-									<select class="form-control" id="editBranch" name="editBranch">
+									<label for="editYear" class="label-form">Academic Year</label>
+									<select class="form-control" id="editYear" name="editYear" disabled>
+									<%
+										Calendar editNow = Calendar.getInstance();
+										int editCurrentYear = editNow.get(Calendar.YEAR);
+										int editNextYear = editCurrentYear + 1;
+									%>
+									<option value="<%= addNextYear %>"> Year <%= (editNextYear%100)  %>/<%= (editNextYear%100)+1  %></option>
+									<option value="<%= addCurrentYear %>"> Year <%= (editCurrentYear%100) %>/<%= (editCurrentYear%100)+1 %></option>
+									<%
+										// Adding the last three years
+										for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
+									%>
+										<option value="<%= i %>"> Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+									<%
+									}
+									%>
 									</select>
 								</div>
 								<div class="col-md-3">
-									<label for="editStartDate" class="label-form">Start Date</label>
-									<input type="text" class="form-control datepicker" id="editStartDate"
-										name="editStartDate" placeholder="dd/mm/yyyy">
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-3">
-									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
-									</select>
-								</div>
-								<div class="col-md-5">
-									<label for="editCourse" class="label-form">Course</label>
-									<select class="form-control" id="editCourse" name="editCourse">
-									</select>
-								</div>
-								<div class="col-md-4">
 									<label for="editDay" class="label-form">Day</label>
 									<select class="form-control" id="editDay" name="editDay">
-										<option value="All">All</option>
 										<option value="Monday">Monday</option>
 										<option value="Tuesday">Tuesday</option>
 										<option value="Wednesday">Wednesday</option>
@@ -579,15 +513,39 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
+								
+								<div class="col-md-2">
+									<label for="editWeek" class="label-form">Week</label>
+									<select class="form-control" id="editWeek" name="editWeek">
+									</select>
+									<script>
+										// Get a reference to the select element
+										var selectElement = document.getElementById("editWeek");
+									  
+										// Loop to add options from 1 to 49
+										for (var i = 1; i <= 49; i++) {
+										  // Create a new option element
+										  var option = document.createElement("option");
+									  
+										  // Set the value and text content for the option
+										  option.value = i;
+										  option.textContent = i;
+									  
+										  // Append the option to the select element
+										  selectElement.appendChild(option);
+										}
+									</script>
+								</div>
+								
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
-									<input type="text" class="form-control" id="editName" name="editName" title="Please enter Class name">
+								<div class="col-md-4">
+									<input id="editStartTime" name="editStartTime" />
 								</div>
-								<div class="col-md-3">
-									<input type="text" class="form-control" id="editPrice" name="editPrice" title="Please enter Class name">
+								<div class="col-md-4">
+									<input id="editEndTime" name="editEndTime" />
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
@@ -596,17 +554,24 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										</div>
 									</div>
 									<input type="hidden" id="editActive" name="editActive" value="false">
-									<input type="text" id="editActiveLabel" class="form-control" placeholder="Activate">
+									<input type="text" id="editActiveLabel" class="form-control" placeholder="Active">
 								</div>
 							</div>
 						</div>
-						<input type="hidden" id="editId" name="editId">
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="editAddress" class="label-form">Access URL</label>
+									<input type="text" class="form-control" id="editAddress" name="editAddress" />
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="editId" name="editId" />
+						<input type="hidden" id="editClazzId" name="editClazzId" />
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="updateClassInfo()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="updateOnlineInfo()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -675,9 +640,3 @@ function editInitialiseCourseByGrade(grade, courseId) {
 		</div>
 	</div>
 </div>
-
-<!-- Confirmation Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
