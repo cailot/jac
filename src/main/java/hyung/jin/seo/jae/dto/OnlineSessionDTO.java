@@ -63,11 +63,9 @@ public class OnlineSessionDTO implements Serializable{
 		session.setActive(active);
 		session.setWeek(week);
 		session.setAddress(address);
-		// session.setGrade(grade);
 		session.setDay(day);
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
-		// session.setYear(year);
 		if(StringUtils.isNotBlank(registerDate)) session.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		return session;
     }

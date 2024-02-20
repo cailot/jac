@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -86,5 +87,9 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	// return number of students by clazz id
 	@Query(value = "SELECT COUNT(DISTINCT e.studentId) FROM Enrolment e WHERE e.clazzId = :clazzId AND :week BETWEEN e.startWeek AND e.endWeek", nativeQuery = true)
 	Integer getStudentNumberByClazzId(@Param("clazzId") long clazzId, @Param("week") int week);
+
+	// return clazz id by student id, year, week and online
+	@Query("SELECT e.clazz.id FROM Enrolment e WHERE e.student.id = ?1 AND e.clazz.cycle.year =?2 AND e.startWeek >= ?3 AND e.endWeek <= ?3 AND e.clazz.course.online = true")
+	Optional<Long> findClazzId4fOnlineSession(long studentId, int year, int week);
 
 }

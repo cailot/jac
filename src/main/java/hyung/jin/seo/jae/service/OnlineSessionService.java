@@ -36,13 +36,10 @@ public interface OnlineSessionService {
 	// update session
 	OnlineSession updateOnlineSession(OnlineSession session, Long id);
 
-	// find session Id by clazz Id
-	// List<Long> findSessionIdByClazzId(Long clazzId);
+	// find session by clazz Id & week
+	OnlineSessionDTO findSessionByClazzNWeek(Long clazzId, int week);
 
 	// find session by id
-	OnlineSession getOnlineSession(Long id);
-
-	// activate/inactivate session
-	// void activeFlagOnlineSession(Long id, boolean active);
+	OnlineSessionDTO getOnlineSession(Long id);
 
 }

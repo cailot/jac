@@ -129,14 +129,16 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 	// }
 
 	@Override
-	public OnlineSession getOnlineSession(Long id) {
+	public OnlineSessionDTO getOnlineSession(Long id) {
 		OnlineSession session = null;
+		OnlineSessionDTO dto = null;
 		try{
 			session = onlineSessionRepository.findById(id).get();
+			dto = new OnlineSessionDTO(session);
 		}catch(Exception e){
 			System.out.println("No OnlineSession found");
 		}
-		return session;
+		return dto;
 	}
 
 	@Override
@@ -161,10 +163,15 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		return dtos;
 	}
 
-	// @Override
-	// public void activeFlagOnlineSession(Long id, boolean active) {
-	// 	// TODO Auto-generated method stub
-	// 	throw new UnsupportedOperationException("Unimplemented method 'activeFlagOnlineSession'");
-	// }
-	
+    @Override
+    public OnlineSessionDTO findSessionByClazzNWeek(Long clazzId, int week) {
+        OnlineSessionDTO dto = null;
+		try{
+			dto = onlineSessionRepository.getOnlineSessionByClazzNWeek(clazzId, week);
+		}catch(Exception e){
+			System.out.println("No OnlineSession found");
+		}
+		return dto;
+    }
+
 }
