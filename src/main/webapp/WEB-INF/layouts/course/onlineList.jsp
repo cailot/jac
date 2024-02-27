@@ -220,7 +220,7 @@ function updateEditActiveValue(checkbox) {
 								int nextYear = currentYear + 1;
 							%>
 							<option value="All">All</option>
-							<option value="<%= nextYear %>">Academic Year <%= (nextYear%100) %>/<%= (nextYear%100)+1 %></option>
+							<!-- <option value="<%= nextYear %>">Academic Year <%= (nextYear%100) %>/<%= (nextYear%100)+1 %></option> -->
 							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
@@ -378,7 +378,7 @@ function updateEditActiveValue(checkbox) {
 											int addCurrentYear = addNow.get(Calendar.YEAR);
 											int addNextYear = addCurrentYear + 1;
 										%>
-										<option value="<%= addNextYear %>">Academic Year <%= (addNextYear%100)  %>/<%= (addNextYear%100)+1  %></option>
+										<!-- <option value="<%= addNextYear %>">Academic Year <%= (addNextYear%100)  %>/<%= (addNextYear%100)+1  %></option> -->
 										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear%100) %>/<%= (addCurrentYear%100)+1 %></option>
 										<%
 											// Adding the last three years
