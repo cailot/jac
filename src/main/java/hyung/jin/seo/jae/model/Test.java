@@ -25,33 +25,23 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Outstanding")
-public class Outstanding {
-
+@Table(name="Test")
+public class Test{
+    
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-    @Column(columnDefinition = "DECIMAL(10,2)")
-    private double paid;
+    @Column(length = 50, nullable = true)
+    private String name;
     
-    @Column(columnDefinition = "DECIMAL(10,2)")
-    private double remaining;
-    
-    @Column(columnDefinition = "DECIMAL(10,2)")
-    private double amount;
+    @Column(length = 10, nullable = false)
+    private String grade;
     
     @CreationTimestamp
     private LocalDate registerDate;
 
-    @Column(length = 100)
-    private String info;
-
-    @Column
-    private Long paymentId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoiceId")
-    private Invoice invoice;
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "testTypeId")
+    private TestType testType;
 }
