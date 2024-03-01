@@ -10,14 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.model.Homework;
-import hyung.jin.seo.jae.repository.ElearningRepository;
+import hyung.jin.seo.jae.repository.HomeworkRepository;
 import hyung.jin.seo.jae.service.ElearningService;
 
 @Service
 public class ElearningServiceImpl implements ElearningService {
 	
 	@Autowired
-	private ElearningRepository elearningRepository;
+	private HomeworkRepository elearningRepository;
 
 	@Override
 	public long checkCount() {
