@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hyung.jin.seo.jae.model.Elearning;
+import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.repository.ElearningRepository;
 import hyung.jin.seo.jae.service.ElearningService;
 
@@ -26,8 +26,8 @@ public class ElearningServiceImpl implements ElearningService {
 	}
 
 	@Override
-	public List<Elearning> allElearnings() {
-		List<Elearning> courses = new ArrayList<>();
+	public List<Homework> allElearnings() {
+		List<Homework> courses = new ArrayList<>();
 		try{
 			courses = elearningRepository.findAll();
 		}catch(Exception e){
@@ -38,22 +38,22 @@ public class ElearningServiceImpl implements ElearningService {
 	}
 	
 	@Override
-	public Elearning getElearning(Long id) {
-		Optional<Elearning> crs = elearningRepository.findById(id);
+	public Homework getElearning(Long id) {
+		Optional<Homework> crs = elearningRepository.findById(id);
 		if(!crs.isPresent()) return null;
 		return crs.get();
 	}
 
 	@Override
-	public Elearning addElearning(Elearning crs) {
-		Elearning course = elearningRepository.save(crs);
+	public Homework addElearning(Homework crs) {
+		Homework course = elearningRepository.save(crs);
 		return course;
 	}
 
 	@Override
-	public Elearning updateElearning(Elearning newCourse, Long id) {
+	public Homework updateElearning(Homework newCourse, Long id) {
 		// search by getId
-		Elearning existing = elearningRepository.findById(id).get();
+		Homework existing = elearningRepository.findById(id).get();
         // Update info
         String newName = StringUtils.defaultString(newCourse.getName());
         if(StringUtils.isNotBlank(newName)){
@@ -68,7 +68,7 @@ public class ElearningServiceImpl implements ElearningService {
         	existing.setRegisterDate(newRegisterDate);
         }
         // update the existing record
-        Elearning updated = elearningRepository.save(existing);
+        Homework updated = elearningRepository.save(existing);
         return updated;
 	}
 
@@ -83,8 +83,8 @@ public class ElearningServiceImpl implements ElearningService {
 	}
 
 	@Override
-	public List<Elearning> gradeElearnings(String grade) {
-		List<Elearning> courses = new ArrayList<>();
+	public List<Homework> gradeElearnings(String grade) {
+		List<Homework> courses = new ArrayList<>();
 		try{
 			courses = elearningRepository.findAllByGrade(grade);
 		}catch(Exception e){
@@ -95,8 +95,8 @@ public class ElearningServiceImpl implements ElearningService {
 	}
 
 	@Override
-	public List<Elearning> studentElearnings(Long id) {
-		List<Elearning> courses = new ArrayList<>();
+	public List<Homework> studentElearnings(Long id) {
+		List<Homework> courses = new ArrayList<>();
 		try{
 			courses = elearningRepository.findByStudentId(id);
 		}catch(Exception e){

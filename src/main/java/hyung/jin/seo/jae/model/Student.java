@@ -103,4 +103,12 @@ public class Student {
 	})
     private Set<Attendance> attendances = new HashSet<>();
 
+    @OneToMany(mappedBy = "student", cascade = {
+		CascadeType.PERSIST,
+	   CascadeType.MERGE,
+	   CascadeType.REFRESH,
+	   CascadeType.DETACH
+   	})
+    private Set<StudentTest> studentTests = new HashSet<>();
+
 }

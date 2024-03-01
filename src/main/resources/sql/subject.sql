@@ -7,5 +7,7 @@ INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('ALL','VCE S
 INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('ONE','1 Subject','One Subject',sysdate());
 INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('TWO','2 Subject','Two Subjects',sysdate());
 INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('THREE','3 Subject','Two Subjects',sysdate());
+INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('VR','Verval Reasoning Test','Verbal Reasoning',sysdate());
+INSERT INTO jae.Subject(abbr,description,name,registerDate) VALUES ('NR','Numerical Reasoning Test','Numerical Reasoning',sysdate());
 
 commit;
