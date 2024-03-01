@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import hyung.jin.seo.jae.model.Elearning;
+import hyung.jin.seo.jae.model.Homework;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ElearningDTO implements Serializable {
+public class HomeworkDTO implements Serializable {
 
 	private String id;
 
@@ -31,15 +31,15 @@ public class ElearningDTO implements Serializable {
 	@JsonIgnore
 	private String registerDate;
 
-	public ElearningDTO(Elearning crs) {
+	public HomeworkDTO(Homework crs) {
 		this.id = (crs.getId() != null) ? crs.getId().toString() : "";
 		this.grade = (crs.getGrade() != null) ? crs.getGrade() : "";
 		this.name = (crs.getName() != null) ? crs.getName() : "";
 		//this.registerDate = (crs.getRegisterDate() != null) ? crs.getRegisterDate().toString() : "";
 	}
 
-	public Elearning convertToElearning() {
-		Elearning crs = new Elearning();
+	public Homework convertToElearning() {
+		Homework crs = new Homework();
 		if (StringUtils.isNotBlank(id))
 			crs.setId(Long.parseLong(this.id));
 		if (StringUtils.isNotBlank(grade))

@@ -2,29 +2,29 @@ package hyung.jin.seo.jae.service;
 
 import java.util.List;
 
-import hyung.jin.seo.jae.model.Elearning;
+import hyung.jin.seo.jae.model.Homework;
 
 public interface ElearningService {
 	// list all elearnings
-	List<Elearning> allElearnings();
+	List<Homework> allElearnings();
 	
 	// list elearnings belong to grade
-	List<Elearning> gradeElearnings(String grade);
+	List<Homework> gradeElearnings(String grade);
 	
 	// list elearnings by student id
-	List<Elearning> studentElearnings(Long id);
+	List<Homework> studentElearnings(Long id);
 
 	// retrieve elearning by Id
-	public Elearning getElearning(Long id);
+	public Homework getElearning(Long id);
 	
 	// register elearning
-	Elearning addElearning(Elearning crs);
+	Homework addElearning(Homework crs);
     
     // get total number of elearnings
  	long checkCount();
     
  	// update elearning info by Id
- 	Elearning updateElearning(Elearning newCourse, Long id);
+ 	Homework updateElearning(Homework newCourse, Long id);
 	
 	// delete elearning
 	void deleteElearning(Long id);

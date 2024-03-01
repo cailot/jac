@@ -40,7 +40,7 @@ public class TestType implements Serializable{
     private String name;
         
 	@CreationTimestamp
-    private LocalDate startDate;
+    private LocalDate registerDate;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {
 		CascadeType.PERSIST,

@@ -209,4 +209,13 @@ public interface JaeConstants {
 
 	String DEFAULT_PASSWORD = "123";
 
+	////////////////////////////////////
+	//
+	//	Homework Type
+	//
+	////////////////////////////////////
+
+	int VIDEO = 0;
+
+	int PDF = 1;
 }
