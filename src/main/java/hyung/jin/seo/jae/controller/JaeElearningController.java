@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import hyung.jin.seo.jae.dto.ElearningDTO;
-import hyung.jin.seo.jae.model.Elearning;
+import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.service.ElearningService;
 
 @Controller
@@ -33,10 +33,10 @@ public class JaeElearningController {
 	// register new student
 	@PostMapping("/register")
 	@ResponseBody
-	public ElearningDTO registerStudent(@RequestBody ElearningDTO formData) {
-		Elearning crs = formData.convertToElearning();
+	public HomeworkDTO registerStudent(@RequestBody HomeworkDTO formData) {
+		Homework crs = formData.convertToElearning();
 		crs = elearningService.addElearning(crs);
-		ElearningDTO dto = new ElearningDTO(crs);
+		HomeworkDTO dto = new HomeworkDTO(crs);
 		return dto;
 	}
 
@@ -44,11 +44,11 @@ public class JaeElearningController {
 	// search elearning with grade
 	@GetMapping("/grade")
 	@ResponseBody
-	List<ElearningDTO> gradeCourses(@RequestParam("grade") String keyword) {
-		List<Elearning> crss = elearningService.gradeElearnings(keyword);
-		List<ElearningDTO> dtos = new ArrayList<ElearningDTO>();
-		for (Elearning crs : crss) {
-			ElearningDTO dto = new ElearningDTO(crs);
+	List<HomeworkDTO> gradeCourses(@RequestParam("grade") String keyword) {
+		List<Homework> crss = elearningService.gradeElearnings(keyword);
+		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
+		for (Homework crs : crss) {
+			HomeworkDTO dto = new HomeworkDTO(crs);
 			dtos.add(dto);
 		}
 		return dtos;
@@ -58,10 +58,10 @@ public class JaeElearningController {
 	// update existing course
 	@PutMapping("/update")
 	@ResponseBody
-	public ElearningDTO updateStudent(@RequestBody ElearningDTO formData) {
-		Elearning crs = formData.convertToElearning();
+	public HomeworkDTO updateStudent(@RequestBody HomeworkDTO formData) {
+		Homework crs = formData.convertToElearning();
 		crs = elearningService.updateElearning(crs, crs.getId());
-		ElearningDTO dto = new ElearningDTO(crs);
+		HomeworkDTO dto = new HomeworkDTO(crs);
 		return dto;
 	}
 	
@@ -69,11 +69,11 @@ public class JaeElearningController {
 	// list all courses
 	@GetMapping("/list")
 	@ResponseBody
-	List<ElearningDTO> allCourses() {
-		List<Elearning> crss = elearningService.allElearnings();
-		List<ElearningDTO> dtos = new ArrayList<ElearningDTO>();
-		for(Elearning crs : crss) {
-			ElearningDTO dto = new ElearningDTO(crs);	
+	List<HomeworkDTO> allCourses() {
+		List<Homework> crss = elearningService.allElearnings();
+		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
+		for(Homework crs : crss) {
+			HomeworkDTO dto = new HomeworkDTO(crs);	
 			dtos.add(dto);
 		}
         return dtos;
@@ -82,11 +82,11 @@ public class JaeElearningController {
 	// search e-learning by student Id
 	@GetMapping("/search/student/{id}")
 	@ResponseBody
-	List<ElearningDTO> searchElearningByStudent(@PathVariable Long id) {
-		List<Elearning> crss = elearningService.studentElearnings(id);
-		List<ElearningDTO> dtos = new ArrayList<ElearningDTO>();
-		for(Elearning crs : crss) {
-			ElearningDTO dto = new ElearningDTO(crs);	
+	List<HomeworkDTO> searchElearningByStudent(@PathVariable Long id) {
+		List<Homework> crss = elearningService.studentElearnings(id);
+		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
+		for(Homework crs : crss) {
+			HomeworkDTO dto = new HomeworkDTO(crs);	
 			dtos.add(dto);
 		}
         return dtos;

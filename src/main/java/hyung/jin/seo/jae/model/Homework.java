@@ -8,8 +8,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
@@ -21,18 +24,35 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Elearning")
-public class Elearning {
+@Table(name="Homework")
+public class Homework {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
+
+    @Column(length = 1, nullable = false)
+    private Integer type;
+
+    @Column(length = 100, nullable = true)
+    private String path;
     
-    @Column(length = 10, nullable = false)
-    private String grade;
-    
-    @Column(length = 200, nullable = false)
-    private String name;
+    @Column(length = 10, nullable = true)
+    private Integer duration;
+
+    @Column(length = 2, nullable = true)
+    private Integer week;
+
+    @Column(length = 50, nullable = true)
+    private String info;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gradeId")
+    private Grade grade;
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subjectId")
+    private Subject subject;
     
     @CreationTimestamp
     private LocalDate registerDate;
