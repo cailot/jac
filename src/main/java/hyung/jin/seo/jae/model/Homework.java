@@ -49,6 +49,9 @@ public class Homework {
     @Column(length = 50, nullable = true)
     private String info;
 
+    @Column
+    private boolean active;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gradeId")
     private Grade grade;

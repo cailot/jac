@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.model.Homework;
-import hyung.jin.seo.jae.service.ElearningService;
+import hyung.jin.seo.jae.service.ConnectedService;
 
 @Controller
 @RequestMapping("elearning")
@@ -27,7 +27,7 @@ public class JaeElearningController {
 	private static final Logger LOG = LoggerFactory.getLogger(JaeElearningController.class);
 
 	@Autowired
-	private ElearningService elearningService;
+	private ConnectedService elearningService;
 
 	
 	// register new student

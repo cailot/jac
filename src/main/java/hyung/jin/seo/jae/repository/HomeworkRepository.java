@@ -6,19 +6,26 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.model.Homework;
 
 public interface HomeworkRepository extends JpaRepository<Homework, Long>{  
 	
+	@SuppressWarnings("null")
 	List<Homework> findAll();
 	
+	@SuppressWarnings("null")
 	Optional<Homework> findById(Long id);
 	
-	long count();
-
 	// bring HomeworkDTO by id
-	@Query("SELECT new hyung.jin.seo.jae.dto.HomeworkDTO(e.id, e.registerDate, e.cancelled, e.cancellationReason, e.startWeek, e.endWeek, e.info, e.credit, e.discount, e.invoice.id, e.invoice.amount, e.invoice.paidAmount,  e.invoice.paymentDate, e.student.id, e.clazz.id, e.clazz.course.name, e.clazz.price, e.clazz.course.online, e.clazz.cycle.year, e.clazz.course.grade, e.clazz.day) FROM Enrolment e WHERE e.id = ?1 and e.old = false")
-	HomeworkDTO findActiveEnrolmentById(long id);
+	@Query("SELECT new hyung.jin.seo.jae.dto.HomeworkDTO(h.id, h.type, h.path, h.duration, h.week, h.year, h.info, h.active, h.grade.id, h.subject.id, h.registerDate) FROM Homework h WHERE h.subject.id = ?1 AND h.year = ?2  AND h.week = ?3")
+	HomeworkDTO findHomework(long subjectId, int year, int week);
+
+	// bring Video Homework
+	@Query("SELECT new hyung.jin.seo.jae.dto.HomeworkDTO(h.id, h.type, h.path, h.duration, h.week, h.year, h.info, h.active, h.grade.id, h.subject.id, h.registerDate) FROM Homework h WHERE h.subject.id = ?1 AND h.year = ?2  AND h.week = ?3 AND h.type = 0")
+	HomeworkDTO findVideoHomework(long subjectId, int year, int week);
+
+	// bring Pdf Homework
+	@Query("SELECT new hyung.jin.seo.jae.dto.HomeworkDTO(h.id, h.type, h.path, h.duration, h.week, h.year, h.info, h.active, h.grade.id, h.subject.id, h.registerDate) FROM Homework h WHERE h.subject.id = ?1 AND h.year = ?2  AND h.week = ?3 AND h.type = 1")
+	HomeworkDTO findPdfHomework(long subjectId, int year, int week);
 }
