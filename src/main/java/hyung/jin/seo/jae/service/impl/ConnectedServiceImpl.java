@@ -9,36 +9,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.repository.HomeworkRepository;
-import hyung.jin.seo.jae.service.ElearningService;
+import hyung.jin.seo.jae.service.ConnectedService;
 
 @Service
-public class ElearningServiceImpl implements ElearningService {
+public class ConnectedServiceImpl implements ConnectedService {
 	
 	@Autowired
-	private HomeworkRepository elearningRepository;
+	private HomeworkRepository homeworkRepository;
 
+	
 	@Override
-	public long checkCount() {
-		long count = elearningRepository.count();
-		return count;
-	}
-
-	@Override
-	public List<Homework> allElearnings() {
-		List<Homework> courses = new ArrayList<>();
+	public List<Homework> allHomeworks() {
+		List<Homework> dtos = new ArrayList<>();
 		try{
-			courses = elearningRepository.findAll();
+			dtos = homeworkRepository.findAll();
 		}catch(Exception e){
-			System.out.println("No elearning found");
+			System.out.println("No Homework found");
 		}
-		// elearningRepository.findAll();
-		return courses;
+		return dtos;
 	}
 	
 	@Override
-	public Homework getElearning(Long id) {
+	public Homework getHomework(Long id) {
 		Optional<Homework> crs = elearningRepository.findById(id);
 		if(!crs.isPresent()) return null;
 		return crs.get();
