@@ -35,31 +35,42 @@ public class HomeworkDTO implements Serializable {
 	private int week;
 
 	private int year;
-	
+
+	private boolean active;
+
 	private String grade;
 
 	private String subject;
 
 	private String registerDate;
 
-	// public HomeworkDTO(Homework work) {
-	// 	this.id = (work.getId() != null) ? work.getId().toString() : "";
-	// 	this.grade = (work.getGrade() != null) ? work.getGrade() : "";
-	// 	this.name = (work.getName() != null) ? work.getName() : "";
-	// 	//this.registerDate = (crs.getRegisterDate() != null) ? crs.getRegisterDate().toString() : "";
-	// }
+	
+	public HomeworkDTO(long id, String path, long duration, int week, int year, String info, boolean active, String grade, String subject, LocalDate registerDate){
+		this.id = String.valueOf(id);
+		this.path = path;
+		this.duration = duration;
+		this.week = week;
+		this.year = year;
+		this.info = info;
+		this.active = active;
+		this.grade = grade;
+		this.subject = subject;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
 
-	// public Homework convertToElearning() {
-	// 	Homework crs = new Homework();
-	// 	if (StringUtils.isNotBlank(id))
-	// 		crs.setId(Long.parseLong(this.id));
-	// 	if (StringUtils.isNotBlank(grade))
-	// 		crs.setGrade(this.grade);
-	// 	if (StringUtils.isNotBlank(name))
-	// 		crs.setName(this.name);
-	// 	if (StringUtils.isNotBlank(registerDate))
-	// 		crs.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-	// 	return crs;
-	// }
+	public HomeworkDTO(long id, int type, String path, long duration, int week, int year, String info, boolean active, String grade, String subject, LocalDate registerDate){
+		this.id = String.valueOf(id);
+		this.type = type;
+		this.path = path;
+		this.duration = duration;
+		this.week = week;
+		this.year = year;
+		this.info = info;
+		this.active = active;
+		this.grade = grade;
+		this.subject = subject;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+
 
 }
