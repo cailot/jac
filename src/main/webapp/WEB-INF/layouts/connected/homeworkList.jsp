@@ -18,7 +18,7 @@
 
 <script>
 $(document).ready(function () {
-	$('#onlineListTable').DataTable({
+	$('#homeworkListTable').DataTable({
 		language: {
 			search: 'Filter:'
 		},
@@ -34,53 +34,41 @@ $(document).ready(function () {
 		],
 	});
 
-	$('#addStartTime').timepicker({
-		uiLibrary: 'bootstrap'
-	});
-	$('#addEndTime').timepicker({
-		uiLibrary: 'bootstrap'
-	});
-	$('#editStartTime').timepicker({
-		uiLibrary: 'bootstrap'
-	});
-	$('#editEndTime').timepicker({
-		uiLibrary: 'bootstrap'
-	});
-
 	// initialise state list when loading
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
+	listSubject('#addSubject');
 
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register OnlineSession
+//		Register Homework
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function addOnline() {
+function addHomework() {
 	// Get from form data
-	var online = {
+	var homework = {
+		subject : $("#addSubject").val(),
 		grade: $("#addGrade").val(),
 		year: $("#addYear").val(),
-		day: $("#addDay").val(),
 		week: $("#addWeek").val(),
-		startTime: $("#addStartTime").val(),
-		endTime: $("#addEndTime").val(),
-		address : $("#addAddress").val()
+		info : $("#addInfo").val(),
+		type : $("input[name='addHomeworkType']:checked").val(),
+		path : $("#addPath").val()
 	}
-		console.log(online);
+		console.log(homework);
 
 	// Send AJAX to server
 	$.ajax({
-		url: '${pageContext.request.contextPath}/onlineSession/register',
+		url: '${pageContext.request.contextPath}/connected/addHomework',
 		type: 'POST',
 		dataType: 'json',
-		data: JSON.stringify(online),
+		data: JSON.stringify(homework),
 		contentType: 'application/json',
 		success: function (data) {
 			// Display the success alert
 			$('#success-alert .modal-body').text(
-				'New Online Session is registered successfully.');
+				'New Homework is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -95,9 +83,9 @@ function addOnline() {
 			}
 		}
 	});
-	$('#registerOnlineSessionModal').modal('hide');
+	$('#registerHomeworkModal').modal('hide');
 	// flush all registered data
-	document.getElementById("onlineSessionRegister").reset();
+	document.getElementById("homeworkRegister").reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,23 +96,23 @@ function retrieveOnlineInfo(onlineId) {
 	$.ajax({
 		url: '${pageContext.request.contextPath}/onlineSession/get/' + onlineId,
 		type: 'GET',
-		success: function (online) {
-			 console.log(online);
-			$("#editId").val(online.id);
-			$("#editClazzId").val(online.clazzId);
-			$("#editGrade").val(online.grade);
-			$("#editYear").val(online.year);			
-			$("#editDay").val(online.day);
-			$("#editWeek").val(online.week);
-			$("#editStartTime").val(online.startTime);
-			$("#editEndTime").val(online.endTime);
-			$("#editActive").val(online.active);
-			if (online.active == true) {
+		success: function (homework) {
+			 console.log(homework);
+			$("#editId").val(homework.id);
+			$("#editClazzId").val(homework.clazzId);
+			$("#editGrade").val(homework.grade);
+			$("#editYear").val(homework.year);			
+			$("#editDay").val(homework.day);
+			$("#editWeek").val(homework.week);
+			$("#editStartTime").val(homework.startTime);
+			$("#editEndTime").val(homework.endTime);
+			$("#editActive").val(homework.active);
+			if (homework.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			$("#editAddress").val(online.address);
+			$("#editAddress").val(homework.address);
 			$('#editOnlineModal').modal('show');
 		},
 		error: function (xhr, status, error) {
@@ -140,7 +128,7 @@ function retrieveOnlineInfo(onlineId) {
 function updateOnlineInfo() {
 	var onlineId = $("#editId").val();
 	// get from formData
-	var online = {
+	var homework = {
 		id: onlineId,
 		grade: $("#editGrade").val(),
 		year: $("#editYear").val(),
@@ -159,7 +147,7 @@ function updateOnlineInfo() {
 		url: '${pageContext.request.contextPath}/onlineSession/update',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(online),
+		data: JSON.stringify(homework),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -234,10 +222,10 @@ function updateEditActiveValue(checkbox) {
 					</div>
 					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
-						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Ssssearch</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerOnlineSessionModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerHomeworkModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -245,15 +233,15 @@ function updateEditActiveValue(checkbox) {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="onlineListTable" class="table table-striped table-bordered">
+							<table id="homeworkListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
+										<th>Subject</th>
 										<th>Grade</th>
 										<th>Academic Year</th>
-										<th>Day</th>
 										<th>Week</th>
-										<th>Start Time</th>
-										<th>End Time</th>
+										<th>Information</th>
+										<th>Type</th>
 										<th>Access URL</th>
 										<th data-orderable="false">Activated</th>
 										<th data-orderable="false">Action</th>
@@ -261,67 +249,85 @@ function updateEditActiveValue(checkbox) {
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${OnlineList != null}">
-											<c:forEach items="${OnlineList}" var="online">
+										<c:when test="${HomeworkList != null}">
+											<c:forEach items="${HomeworkList}" var="homework">
 												<tr>
 													<td class="small ellipsis">
 														<span>
 															<c:choose>
-																<c:when test="${online.grade == '1'}">P2</c:when>
-																<c:when test="${online.grade == '2'}">P3</c:when>
-																<c:when test="${online.grade == '3'}">P4</c:when>
-																<c:when test="${online.grade == '4'}">P5</c:when>
-																<c:when test="${online.grade == '5'}">P6</c:when>
-																<c:when test="${online.grade == '6'}">S7</c:when>
-																<c:when test="${online.grade == '7'}">S8</c:when>
-																<c:when test="${online.grade == '8'}">S9</c:when>
-																<c:when test="${online.grade == '9'}">S10</c:when>
-																<c:when test="${online.grade == '10'}">S10E</c:when>
-																<c:when test="${online.grade == '11'}">TT6</c:when>
-																<c:when test="${online.grade == '12'}">TT8</c:when>
-																<c:when test="${online.grade == '13'}">TT8E</c:when>
-																<c:when test="${online.grade == '14'}">SRW4</c:when>
-																<c:when test="${online.grade == '15'}">SRW5</c:when>
-																<c:when test="${online.grade == '16'}">SRW6</c:when>
-																<c:when test="${online.grade == '17'}">SRW7</c:when>
-																<c:when test="${online.grade == '18'}">SRW8</c:when>
-																<c:when test="${online.grade == '19'}">JMSS</c:when>
-																<c:when test="${online.grade == '20'}">VCE</c:when>
+																<c:when test="${homework.subject == '1'}">English</c:when>
+																<c:when test="${homework.subject == '2'}">Maths</c:when>
+																<c:when test="${homework.subject == '3'}">General Ability</c:when>
+																<c:when test="${homework.subject == '4'}">Writing</c:when>
+																<c:when test="${homework.subject == '5'}">Science</c:when>
+																<c:when test="${homework.subject == '6'}">All</c:when>
+																<c:when test="${homework.subject == '7'}">One Subject</c:when>
+																<c:when test="${homework.subject == '8'}">Two Subjects</c:when>
+																<c:when test="${homework.subject == '9'}">Three Subjects</c:when>
+																<c:when test="${homework.subject == '10'}">Verbal Reasoning</c:when>
+																<c:when test="${homework.subject == '11'}">Numeric Reasoning</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															Year <c:out value="${online.year}" />/<c:out value="${online.year+1}" />
-														</span>
-													</td>
-													<td class="small ellipsis">
-														<span class="text-capitalize">
-															<c:out value="${online.day}" />
+															<c:choose>
+																<c:when test="${homework.grade == '1'}">P2</c:when>
+																<c:when test="${homework.grade == '2'}">P3</c:when>
+																<c:when test="${homework.grade == '3'}">P4</c:when>
+																<c:when test="${homework.grade == '4'}">P5</c:when>
+																<c:when test="${homework.grade == '5'}">P6</c:when>
+																<c:when test="${homework.grade == '6'}">S7</c:when>
+																<c:when test="${homework.grade == '7'}">S8</c:when>
+																<c:when test="${homework.grade == '8'}">S9</c:when>
+																<c:when test="${homework.grade == '9'}">S10</c:when>
+																<c:when test="${homework.grade == '10'}">S10E</c:when>
+																<c:when test="${homework.grade == '11'}">TT6</c:when>
+																<c:when test="${homework.grade == '12'}">TT8</c:when>
+																<c:when test="${homework.grade == '13'}">TT8E</c:when>
+																<c:when test="${homework.grade == '14'}">SRW4</c:when>
+																<c:when test="${homework.grade == '15'}">SRW5</c:when>
+																<c:when test="${homework.grade == '16'}">SRW6</c:when>
+																<c:when test="${homework.grade == '17'}">SRW7</c:when>
+																<c:when test="${homework.grade == '18'}">SRW8</c:when>
+																<c:when test="${homework.grade == '19'}">JMSS</c:when>
+																<c:when test="${homework.grade == '20'}">VCE</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${online.week}" />
+															Year <c:out value="${homework.year}" />/<c:out value="${homework.year+1}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${online.startTime}" />
+															<c:out value="${homework.week}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${online.endTime}" />
+															<c:out value="${homework.info}" />
 														</span>
+													</td>
+													<td class="text-center">
+														<c:choose>
+															<c:when test="${homework.type == '0'}">
+																<i class="bi bi-play-btn" title="Video"></i>
+															</c:when>
+															<c:otherwise>
+																<i class="bi bi-filetype-pdf" title="Pdf Document"></i>
+															</c:otherwise>
+														</c:choose>
 													</td>
 													<td class="small text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${online.address}" />
+															<c:out value="${homework.path}" />
 														</span>
 													</td>
-													<c:set var="active" value="${online.active}" />
+													<c:set var="active" value="${homework.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
@@ -335,7 +341,7 @@ function updateEditActiveValue(checkbox) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveOnlineInfo('${online.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveHomeworkInfo('${homework.id}')">
 														</i>
 													</td>
 												</tr>
@@ -353,24 +359,26 @@ function updateEditActiveValue(checkbox) {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerOnlineSessionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-	aria-hidden="true">
+<div class="modal fade" id="registerHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Online Session Registration</header>
-
-					<form id="onlineSessionRegister">
+					<header class="text-primary font-weight-bold">Homework Registration</header>
+					<form id="homeworkRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
+								<div class="col-md-3">
+									<label for="addSubject" class="label-form">Subject</label>
+									<select class="form-control" id="addSubject" name="addSubject">
+									</select>
+								</div>
 								<div class="col-md-3">
 									<label for="addGrade" class="label-form">Grade</label>
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<!-- <div class="offset-md-1"></div> -->
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<label for="addYear" class="label-form">Academic Year</label>
 									<select class="form-control" id="addYear" name="addYear">
 										<%
@@ -378,35 +386,17 @@ function updateEditActiveValue(checkbox) {
 											int addCurrentYear = addNow.get(Calendar.YEAR);
 											int addNextYear = addCurrentYear + 1;
 										%>
-										<!-- <option value="<%= addNextYear %>">Academic Year <%= (addNextYear%100)  %>/<%= (addNextYear%100)+1  %></option> -->
-										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear%100) %>/<%= (addCurrentYear%100)+1 %></option>
+										<option value="<%= addCurrentYear %>">Year <%= (addCurrentYear%100) %>/<%= (addCurrentYear%100)+1 %></option>
 										<%
 											// Adding the last three years
 											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
 										%>
-											<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
 										<%
 										}
 										%>
 									</select>
 								</div>
-								<!-- <div class="offset-md-1"></div> -->
-								<div class="col-md-3">
-									<label for="addDay" class="label-form">Day</label>
-									<select class="form-control" id="addDay" name="addDay">
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
-									</select>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
 								<div class="col-md-2">
 									<label for="addWeek" class="label-form">Week</label>
 									<select class="form-control" id="addWeek" name="addWeek">
@@ -414,50 +404,51 @@ function updateEditActiveValue(checkbox) {
 									<script>
 										// Get a reference to the select element
 										var selectElement = document.getElementById("addWeek");
-									  
 										// Loop to add options from 1 to 50
 										for (var i = 1; i <= 50; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
-									  
 										  // Set the value and text content for the option
 										  option.value = i;
 										  option.textContent = i;
-									  
 										  // Append the option to the select element
 										  selectElement.appendChild(option);
 										}
 									</script>
 								</div>
-								<div class="offset-md-1"></div>
-								<div class="col-md-4">
-									<label for="addStartTime" class="label-form">Start Time</label>
-									<!-- <input type="text" class="form-control datetimepicker-input" id="addStartTime" name="addStartTime" placeholder="HH:mm" /> -->
-									<input id="addStartTime" name="addStartTime" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-8">
+									<label for="addInfo" class="label-form">Information</label>
+									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
 								</div>
 								<div class="offset-md-1"></div>
-								<div class="col-md-4">
-									<label for="addEndTime" class="label-form">End Time</label>
-									<!-- <input type="text" class="form-control datepicker" id="addEndTime" name="addEndTime" placeholder="HH:mm" /> -->
-									<input id="addEndTime" name="addEndTime" />
+								<div class="input-group col-md-3">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="addHomeworkType" id="addVideo" value="0" checked>
+										<label class="form-check-label" for="addVideo">Video</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="addHomeworkType" id="addPdf" value="1">
+										<label class="form-check-label" for="addPdf">Pdf</label>
+									</div>
 								</div>
-								<div class="offset-md-1"></div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addAddress" class="label-form">Access URL</label>
-									<input type="text" class="form-control" id="addAddress" name="addAddress" placeholder="https://" title="Please enter access address" />
+									<label for="addPath" class="label-form">Access Path</label>
+									<input type="text" class="form-control" id="addPath" name="addPath" placeholder="https://" title="Please enter access address" />
 								</div>
 							</div>
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addOnline()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearClassForm('onlineSessionRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="addHomework()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearClassForm('homeworkRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -522,8 +513,8 @@ function updateEditActiveValue(checkbox) {
 										// Get a reference to the select element
 										var selectElement = document.getElementById("editWeek");
 									  
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
+										// Loop to add options from 1 to 49
+										for (var i = 1; i <= 49; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 									  

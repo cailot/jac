@@ -1,8 +1,5 @@
 package hyung.jin.seo.jae.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 
@@ -34,74 +31,69 @@ public class ConnectedController {
 	@Autowired
 	private CodeService codeService;
 
-	
+
 	
 	// register homework
 	@PostMapping("/addHomework")
 	@ResponseBody
 	public HomeworkDTO registerHomework(@RequestBody HomeworkDTO formData) {
 		// create barebone
-		Homework crs = formData.convertToHomework();
+		Homework work = formData.convertToHomework();
 		// set Subject
-
+		Subject subject = codeService.getSubject(Long.parseLong(formData.getSubject()));
 		// set Grade
-		Grade grade = codeService.getGrade(Long.parseLong(formData.getGrade());
-		
-		crs = elearningService.addElearning(crs);
-		HomeworkDTO dto = new HomeworkDTO(crs);
+		Grade grade = codeService.getGrade(Long.parseLong(formData.getGrade()));
+		// associate Subject & Grade
+		work.setSubject(subject);
+		work.setGrade(grade);
+		// register Homework
+		Homework added = connectedService.addHomework(work);
+		// return dto
+		HomeworkDTO dto = new HomeworkDTO(added);
 		return dto;
 	}
 
-
-	// search elearning with grade
-	@GetMapping("/grade")
+	// update existing homework
+	@PutMapping("/updateHomework")
 	@ResponseBody
-	List<HomeworkDTO> gradeCourses(@RequestParam("grade") String keyword) {
-		List<Homework> crss = elearningService.gradeElearnings(keyword);
-		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
-		for (Homework crs : crss) {
-			HomeworkDTO dto = new HomeworkDTO(crs);
-			dtos.add(dto);
-		}
-		return dtos;
-	}
-
-	
-	// update existing course
-	@PutMapping("/update")
-	@ResponseBody
-	public HomeworkDTO updateStudent(@RequestBody HomeworkDTO formData) {
-		Homework crs = formData.convertToElearning();
-		crs = elearningService.updateElearning(crs, crs.getId());
-		HomeworkDTO dto = new HomeworkDTO(crs);
+	public HomeworkDTO updateHomework(@RequestBody HomeworkDTO formData) {
+		Homework work = formData.convertToHomework();
+		work = connectedService.updateHomework(work, Long.parseLong(formData.getId()));
+		HomeworkDTO dto = new HomeworkDTO(work);
 		return dto;
 	}
 	
-	
-	// list all courses
-	@GetMapping("/list")
+	// get homework
+	@GetMapping("/getHomework/{id}")
 	@ResponseBody
-	List<HomeworkDTO> allCourses() {
-		List<Homework> crss = elearningService.allElearnings();
-		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
-		for(Homework crs : crss) {
-			HomeworkDTO dto = new HomeworkDTO(crs);	
-			dtos.add(dto);
-		}
-        return dtos;
+	public HomeworkDTO getHomework(@PathVariable Long id) {
+		Homework work = connectedService.getHomework(id);
+		HomeworkDTO dto = new HomeworkDTO(work);
+		return dto;
 	}
 
-	// search e-learning by student Id
-	@GetMapping("/search/student/{id}")
+	// search homework by subject, year & week
+	@GetMapping("/homework/{subject}/{year}/{week}")
 	@ResponseBody
-	List<HomeworkDTO> searchElearningByStudent(@PathVariable Long id) {
-		List<Homework> crss = elearningService.studentElearnings(id);
-		List<HomeworkDTO> dtos = new ArrayList<HomeworkDTO>();
-		for(Homework crs : crss) {
-			HomeworkDTO dto = new HomeworkDTO(crs);	
-			dtos.add(dto);
-		}
-        return dtos;
+	public HomeworkDTO searchHomework(@PathVariable long subject, @PathVariable int year, @PathVariable int week) {
+		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+		return dto;
+	}
+
+	// search video homework by subject, year & week
+	@GetMapping("/movieHomework/{subject}/{year}/{week}")
+	@ResponseBody
+	public HomeworkDTO searchVideoHomework(@PathVariable long subject, @PathVariable int year, @PathVariable int week) {
+		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+		return dto;
+	}
+
+	// search homework by subject, year & week
+	@GetMapping("/pdfHomework/{subject}/{year}/{week}")
+	@ResponseBody
+	public HomeworkDTO searchPdfHomework(@PathVariable long subject, @PathVariable int year, @PathVariable int week) {
+		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+		return dto;
 	}
 	
 }
