@@ -248,14 +248,45 @@ public class CodeServiceImpl implements CodeService {
 
 	@Override
 	public List<SubjectDTO> allSubjects() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'allSubjects'");
+		List<SubjectDTO> dtos = new ArrayList<>();
+		try{
+			List<Subject> subs = subjectRepository.findAll();
+			for(Subject sub : subs){
+				SubjectDTO dto = new SubjectDTO(sub);
+				dtos.add(dto);
+			}
+		}catch(Exception e){
+			System.out.println("No Subject found");
+		}
+		return dtos;
 	}
 
 	@Override
 	public Subject getSubject(Long id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getSubject'");
+		Subject subject = null;
+		try{
+			subject = subjectRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No Subject found");
+		}
+		return subject;
+	}
+
+	@Override
+	public List<SimpleBasketDTO> loadSubject() {
+		List<Object[]> objects = new ArrayList<>();
+		try{
+			objects = subjectRepository.loadSubject();
+		}catch(Exception e){
+			System.out.println("No Subject found");
+		}
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			SimpleBasketDTO dto = new SimpleBasketDTO(object);
+			dtos.add(dto);
+		}
+		return dtos;
+
 	}
 
 }
