@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Homework;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -72,5 +73,16 @@ public class HomeworkDTO implements Serializable {
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
+	public Homework convertToHomework() {
+    	Homework work = new Homework();
+    	work.setType(this.type);
+		work.setPath(this.path);
+		work.setDuration(this.duration);
+		work.setWeek(this.week);
+		work.setYear(this.year);
+		work.setInfo(this.info);
+		work.setActive(true);
+		return work;
+	}
 
 }

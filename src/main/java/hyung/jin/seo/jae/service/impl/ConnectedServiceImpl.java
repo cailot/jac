@@ -1,6 +1,5 @@
 package hyung.jin.seo.jae.service.impl;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.model.Homework;
@@ -34,72 +34,94 @@ public class ConnectedServiceImpl implements ConnectedService {
 	
 	@Override
 	public Homework getHomework(Long id) {
-		Optional<Homework> crs = elearningRepository.findById(id);
-		if(!crs.isPresent()) return null;
-		return crs.get();
+		Optional<Homework> work = homeworkRepository.findById(id);
+		if(!work.isPresent()) return null;
+		return work.get();
 	}
 
 	@Override
-	public Homework addElearning(Homework crs) {
-		Homework course = elearningRepository.save(crs);
-		return course;
+	@Transactional
+	public Homework addHomework(Homework work) {
+		Homework home = homeworkRepository.save(work);
+		return home;
 	}
 
 	@Override
-	public Homework updateElearning(Homework newCourse, Long id) {
+	@Transactional
+	public Homework updateHomework(Homework newWork, Long id) {
 		// search by getId
-		Homework existing = elearningRepository.findById(id).get();
+		Homework existing = homeworkRepository.findById(id).get();
         // Update info
-        String newName = StringUtils.defaultString(newCourse.getName());
-        if(StringUtils.isNotBlank(newName)){
-        	existing.setName(newName);
+        String newPath = StringUtils.defaultString(newWork.getPath());
+        if(StringUtils.isNotBlank(newPath)){
+        	existing.setPath(newPath);
         }
-        String newGrade = StringUtils.defaultString(newCourse.getGrade());
-        if(StringUtils.isNotBlank(newGrade)){
-        	existing.setGrade(newGrade);
+        String newInfo = StringUtils.defaultString(newWork.getInfo());
+        if(StringUtils.isNotBlank(newInfo)){
+        	existing.setInfo(newInfo);
         }
-        LocalDate newRegisterDate = newCourse.getRegisterDate();
-        if(newRegisterDate!=null){
-        	existing.setRegisterDate(newRegisterDate);
-        }
+		int newType = newWork.getType();		
+		existing.setType(newType);
+		long newDuration = newWork.getDuration();
+		existing.setDuration(newDuration);
+		int newWeek = newWork.getWeek();
+		existing.setWeek(newWeek);
+		int newYear = newWork.getYear();
+		existing.setYear(newYear);
+		boolean newActive = newWork.isActive();
+		existing.setActive(newActive);
+        // LocalDate newRegisterDate = newWork.getRegisterDate();
+        // if(newRegisterDate!=null){
+        // 	existing.setRegisterDate(newRegisterDate);
+        // }
         // update the existing record
-        Homework updated = elearningRepository.save(existing);
+        Homework updated = homeworkRepository.save(existing);
         return updated;
 	}
 
 	
 	@Override
-	public void deleteElearning(Long id) {
+	@Transactional
+	public void deleteHomework(Long id) {
 		try{
-		    elearningRepository.deleteById(id);
+		    homeworkRepository.deleteById(id);
         }catch(org.springframework.dao.EmptyResultDataAccessException e){
             System.out.println("Nothing to delete");
         }
 	}
 
 	@Override
-	public List<Homework> gradeElearnings(String grade) {
-		List<Homework> courses = new ArrayList<>();
+	public HomeworkDTO getHomeworkInfo(Long subject, int year, int week) {
+		HomeworkDTO dto = null;
 		try{
-			courses = elearningRepository.findAllByGrade(grade);
+			dto = homeworkRepository.findHomework(subject, year, week);
 		}catch(Exception e){
-			System.out.println("No elearning found");
+			System.out.println("No Homework found");
 		}
-		// elearningRepository.findAllByGrade(grade);
-		return courses;
+		return dto;
+	}
+	
+	@Override
+	public HomeworkDTO getVideoHomeworkInfo(Long subject, int year, int week) {
+		HomeworkDTO dto = null;
+		try{
+			dto = homeworkRepository.findVideoHomework(subject, year, week);
+		}catch(Exception e){
+			System.out.println("No Homework found");
+		}
+		return dto;
 	}
 
 	@Override
-	public List<Homework> studentElearnings(Long id) {
-		List<Homework> courses = new ArrayList<>();
+	public HomeworkDTO getPdfHomeworkInfo(Long subject, int year, int week) {
+		HomeworkDTO dto = null;
 		try{
-			courses = elearningRepository.findByStudentId(id);
+			dto = homeworkRepository.findPdfHomework(subject, year, week);
 		}catch(Exception e){
-			System.out.println("No elearning found");
+			System.out.println("No Homework found");
 		}
-		// elearningRepository.findByStudentId(id);
-		return courses;
+		return dto;
 	}
-
+	
 
 }
