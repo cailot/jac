@@ -38,10 +38,13 @@ public class Homework {
     private String path;
     
     @Column(length = 10, nullable = true)
-    private Integer duration;
+    private Long duration;
 
     @Column(length = 2, nullable = true)
     private Integer week;
+
+    @Column(length = 4, nullable = true)
+    private Integer year;
 
     @Column(length = 50, nullable = true)
     private String info;

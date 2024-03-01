@@ -24,31 +24,42 @@ public class HomeworkDTO implements Serializable {
 
 	private String id;
 
+	private String path;
+
+	private String info;
+
+	private int type;
+
+	private long duration;
+
+	private int week;
+
+	private int year;
+	
 	private String grade;
 
-	private String name;
+	private String subject;
 
-	@JsonIgnore
 	private String registerDate;
 
-	public HomeworkDTO(Homework crs) {
-		this.id = (crs.getId() != null) ? crs.getId().toString() : "";
-		this.grade = (crs.getGrade() != null) ? crs.getGrade() : "";
-		this.name = (crs.getName() != null) ? crs.getName() : "";
-		//this.registerDate = (crs.getRegisterDate() != null) ? crs.getRegisterDate().toString() : "";
-	}
+	// public HomeworkDTO(Homework work) {
+	// 	this.id = (work.getId() != null) ? work.getId().toString() : "";
+	// 	this.grade = (work.getGrade() != null) ? work.getGrade() : "";
+	// 	this.name = (work.getName() != null) ? work.getName() : "";
+	// 	//this.registerDate = (crs.getRegisterDate() != null) ? crs.getRegisterDate().toString() : "";
+	// }
 
-	public Homework convertToElearning() {
-		Homework crs = new Homework();
-		if (StringUtils.isNotBlank(id))
-			crs.setId(Long.parseLong(this.id));
-		if (StringUtils.isNotBlank(grade))
-			crs.setGrade(this.grade);
-		if (StringUtils.isNotBlank(name))
-			crs.setName(this.name);
-		if (StringUtils.isNotBlank(registerDate))
-			crs.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		return crs;
-	}
+	// public Homework convertToElearning() {
+	// 	Homework crs = new Homework();
+	// 	if (StringUtils.isNotBlank(id))
+	// 		crs.setId(Long.parseLong(this.id));
+	// 	if (StringUtils.isNotBlank(grade))
+	// 		crs.setGrade(this.grade);
+	// 	if (StringUtils.isNotBlank(name))
+	// 		crs.setName(this.name);
+	// 	if (StringUtils.isNotBlank(registerDate))
+	// 		crs.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+	// 	return crs;
+	// }
 
 }
