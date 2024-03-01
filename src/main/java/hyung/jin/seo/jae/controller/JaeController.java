@@ -69,6 +69,13 @@ public class JaeController {
 		return "teacherListPage";
 	}
 
+	@GetMapping("/homeworkList")
+	public String homework(HttpSession session) {
+		return "homeworkListPage";
+	}
+
+
+
 	@GetMapping("/setting")
 	public String setting(HttpSession session) {
 		return "settingPage";

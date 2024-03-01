@@ -56,6 +56,13 @@ public class CodeController {
 		return dtos;
 	}
 
+	@GetMapping("/subject")
+	@ResponseBody
+	List<SimpleBasketDTO> listSubject() {
+		List<SimpleBasketDTO> dtos = codeService.loadSubject();
+		return dtos;
+	}
+
 	// list branch by state
 	@GetMapping("/listBranch")
 	String filterBranch(@RequestParam(value = "listState", required = true) String state, Model model) {

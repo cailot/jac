@@ -1,11 +1,6 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Homework;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +41,7 @@ public class HomeworkDTO implements Serializable {
 	private String registerDate;
 
 	
-	public HomeworkDTO(long id, String path, long duration, int week, int year, String info, boolean active, String grade, String subject, LocalDate registerDate){
+	public HomeworkDTO(long id, String path, long duration, int week, int year, String info, boolean active, long grade, long subject, LocalDate registerDate){
 		this.id = String.valueOf(id);
 		this.path = path;
 		this.duration = duration;
@@ -54,12 +49,12 @@ public class HomeworkDTO implements Serializable {
 		this.year = year;
 		this.info = info;
 		this.active = active;
-		this.grade = grade;
-		this.subject = subject;
+		this.grade = String.valueOf(grade);
+		this.subject = String.valueOf(subject);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
-	public HomeworkDTO(long id, int type, String path, long duration, int week, int year, String info, boolean active, String grade, String subject, LocalDate registerDate){
+	public HomeworkDTO(long id, int type, String path, long duration, int week, int year, String info, boolean active, long grade, long subject, LocalDate registerDate){
 		this.id = String.valueOf(id);
 		this.type = type;
 		this.path = path;
@@ -68,8 +63,8 @@ public class HomeworkDTO implements Serializable {
 		this.year = year;
 		this.info = info;
 		this.active = active;
-		this.grade = grade;
-		this.subject = subject;
+		this.grade = String.valueOf(grade);
+		this.subject = String.valueOf(subject);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
@@ -83,6 +78,20 @@ public class HomeworkDTO implements Serializable {
 		work.setInfo(this.info);
 		work.setActive(true);
 		return work;
+	}
+
+	public HomeworkDTO(Homework work){
+		this.id = String.valueOf(work.getId());
+		this.type = work.getType();
+		this.path = work.getPath();
+		this.duration = work.getDuration();
+		this.week = work.getWeek();
+		this.year = work.getYear();
+		this.info = work.getInfo();
+		this.active = work.isActive();
+		this.grade = String.valueOf(work.getGrade().getId());
+		this.subject = String.valueOf(work.getSubject().getId());
+		this.registerDate = work.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
 }
