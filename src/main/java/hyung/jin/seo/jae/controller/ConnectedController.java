@@ -17,24 +17,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 
 @Controller
-@RequestMapping("elearning")
-public class JaeElearningController {
+@RequestMapping("connected")
+public class ConnectedController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JaeElearningController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ConnectedController.class);
 
 	@Autowired
-	private ConnectedService elearningService;
+	private ConnectedService connectedService;
+
+	@Autowired
+	private CodeService codeService;
 
 	
-	// register new student
-	@PostMapping("/register")
+	
+	// register homework
+	@PostMapping("/addHomework")
 	@ResponseBody
-	public HomeworkDTO registerStudent(@RequestBody HomeworkDTO formData) {
-		Homework crs = formData.convertToElearning();
+	public HomeworkDTO registerHomework(@RequestBody HomeworkDTO formData) {
+		// create barebone
+		Homework crs = formData.convertToHomework();
+		// set Subject
+
+		// set Grade
+		Grade grade = codeService.getGrade(Long.parseLong(formData.getGrade());
+		
 		crs = elearningService.addElearning(crs);
 		HomeworkDTO dto = new HomeworkDTO(crs);
 		return dto;

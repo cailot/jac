@@ -9,12 +9,15 @@ import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.GradeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StateDTO;
+import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Branch;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.State;
+import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.repository.BranchRepository;
 import hyung.jin.seo.jae.repository.GradeRepository;
 import hyung.jin.seo.jae.repository.StateRepository;
+import hyung.jin.seo.jae.repository.SubjectRepository;
 import hyung.jin.seo.jae.service.CodeService;
 
 @Service
@@ -28,6 +31,9 @@ public class CodeServiceImpl implements CodeService {
 
 	@Autowired
 	private GradeRepository gradeRepository;
+
+	@Autowired
+	private SubjectRepository subjectRepository;
 
 	@Override
 	public List<StateDTO> allStates() {
@@ -238,6 +244,18 @@ public class CodeServiceImpl implements CodeService {
 		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
 			System.out.println("Nothing to delete");
 		}
+	}
+
+	@Override
+	public List<SubjectDTO> allSubjects() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'allSubjects'");
+	}
+
+	@Override
+	public Subject getSubject(Long id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getSubject'");
 	}
 
 }
