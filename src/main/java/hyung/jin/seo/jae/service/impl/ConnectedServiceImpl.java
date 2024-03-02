@@ -91,7 +91,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public HomeworkDTO getHomeworkInfo(Long subject, int year, int week) {
+	public HomeworkDTO getHomeworkInfo(int subject, int year, int week) {
 		HomeworkDTO dto = null;
 		try{
 			dto = homeworkRepository.findHomework(subject, year, week);
@@ -102,7 +102,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 	
 	@Override
-	public HomeworkDTO getVideoHomeworkInfo(Long subject, int year, int week) {
+	public HomeworkDTO getVideoHomeworkInfo(int subject, int year, int week) {
 		HomeworkDTO dto = null;
 		try{
 			dto = homeworkRepository.findVideoHomework(subject, year, week);
@@ -113,7 +113,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public HomeworkDTO getPdfHomeworkInfo(Long subject, int year, int week) {
+	public HomeworkDTO getPdfHomeworkInfo(int subject, int year, int week) {
 		HomeworkDTO dto = null;
 		try{
 			dto = homeworkRepository.findPdfHomework(subject, year, week);
@@ -121,6 +121,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 			System.out.println("No Homework found");
 		}
 		return dto;
+	}
+
+	@Override
+	public List<HomeworkDTO> listHomework(int subject, String grade, int year, int week) {
+		List<HomeworkDTO> dtos = new ArrayList<>();
+		try{
+			dtos = homeworkRepository.filterHomeworkBySubjectNGradeNYearNWeek(subject, grade, year, week);
+		}catch(Exception e){
+			System.out.println("No Homework found");
+		}
+		return dtos;
 	}
 	
 
