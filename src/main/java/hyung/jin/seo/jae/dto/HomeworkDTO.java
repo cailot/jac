@@ -76,7 +76,7 @@ public class HomeworkDTO implements Serializable {
 		work.setWeek(this.week);
 		work.setYear(this.year);
 		work.setInfo(this.info);
-		work.setActive(true);
+		work.setActive(this.active);
 		return work;
 	}
 
