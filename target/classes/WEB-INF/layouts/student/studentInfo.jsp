@@ -666,7 +666,7 @@ function clearCourseRegisteration(){
 			<div class="col-md-8">
 				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
 			</div>
-			<div class="col-md-4" title="Search Student by Id or Name">
+			<div class="col-md-4" title="Search Student by Id/Name">
 				<button type="button" class="btn btn-block btn-warning" onclick="searchStudent()"><i class="bi bi-search"></i></button>
 			</div>
 		</div>
@@ -675,7 +675,7 @@ function clearCourseRegisteration(){
 				<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus-circle"></i></button>
 			</div>
 			<div class="col mx-auto" title="Update Student Information">
-				<button type="button" class="btn btn-block btn-info" onclick="updateStudentInfo()"><i class="bi bi-pencil-fill"></i></button>
+				<button type="button" class="btn btn-block btn-info" onclick="updateStudentInfo()"><i class="bi bi-pencil-square"></i></button>
 			</div>
 			<div class="col mx-auto" title="Reset Student Password">
 				<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#passwordModal" onclick="clearPassword()"><i class="bi bi-key-fill"></i></button>
