@@ -22,7 +22,7 @@ public interface ConnectedService {
 	void deleteHomework(Long id);
 
 	// get Homework by subject, year & week
-	HomeworkDTO getHomeworkInfo(int subject, int year, int week);
+	List<HomeworkDTO> getHomeworkInfo(int subject, int year, int week);
 
 	// get Video Homework by subject, year & week
 	HomeworkDTO getVideoHomeworkInfo(int subject, int year, int week);

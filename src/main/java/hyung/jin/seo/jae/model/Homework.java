@@ -34,7 +34,7 @@ public class Homework {
     @Column(length = 1, nullable = false)
     private Integer type;
 
-    @Column(length = 100, nullable = true)
+    @Column(length = 300, nullable = true)
     private String path;
     
     @Column(length = 10, nullable = true)

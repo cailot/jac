@@ -39,8 +39,6 @@ public class ConnectedController {
 
 	@Autowired
 	private CodeService codeService;
-
-
 	
 	// register homework
 	@PostMapping("/addHomework")
@@ -93,16 +91,16 @@ public class ConnectedController {
 	// search homework by subject, year & week
 	@GetMapping("/homework/{subject}/{year}/{week}")
 	@ResponseBody
-	public HomeworkDTO searchHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
-		return dto;
+	public List<HomeworkDTO> searchHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
+		List<HomeworkDTO> dtos = connectedService.getHomeworkInfo(subject, year, week);
+		return dtos;
 	}
 
 	// search video homework by subject, year & week
 	@GetMapping("/movieHomework/{subject}/{year}/{week}")
 	@ResponseBody
 	public HomeworkDTO searchVideoHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+		HomeworkDTO dto = connectedService.getVideoHomeworkInfo(subject, year, week);
 		return dto;
 	}
 
@@ -110,7 +108,7 @@ public class ConnectedController {
 	@GetMapping("/pdfHomework/{subject}/{year}/{week}")
 	@ResponseBody
 	public HomeworkDTO searchPdfHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+		HomeworkDTO dto = connectedService.getPdfHomeworkInfo(subject, year, week);
 		return dto;
 	}
 
