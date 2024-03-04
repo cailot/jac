@@ -77,7 +77,7 @@ function addHomework() {
 		duration : $("#addDuration").val(),
 		path : $("#addPath").val()
 	}
-		console.log(homework);
+	// console.log(homework);
 
 	// Send AJAX to server
 	$.ajax({
@@ -118,7 +118,7 @@ function retrieveHomeworkInfo(id) {
 		url: '${pageContext.request.contextPath}/connected/getHomework/' + id,
 		type: 'GET',
 		success: function (homework) {
-			 console.log(homework);
+			// console.log(homework);
 			$("#editId").val(homework.id);
 			$("#editSubject").val(homework.subject);
 			$("#editGrade").val(homework.grade);
@@ -275,28 +275,6 @@ function updateEditActiveValue(checkbox) {
 							%>
 						</select>
 					</div>
-					<!-- <div class="col-md-1">
-						<label for="listWeek" class="label-form">Week</label>
-							<select class="form-control" id="listWeek" name="listWeek">
-							</select>
-							<script>
-								// Get a reference to the select element
-								var selectElement = document.getElementById("listWeek");
-								
-								// Loop to add options from 1 to 50
-								for (var i = 1; i <= 50; i++) {
-									// Create a new option element
-									var option = document.createElement("option");
-								
-									// Set the value and text content for the option
-									option.value = i;
-									option.textContent = i;
-								
-									// Append the option to the select element
-									selectElement.appendChild(option);
-								}
-							</script>
-					</div> -->
 					<div class="col-md-1">
 						<label for="listWeek" class="label-form">Week</label>
 						<select class="form-control" id="listWeek" name="listWeek">
@@ -442,12 +420,12 @@ function updateEditActiveValue(checkbox) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
-																<i class="bi bi-check-circle text-success"></i>
+																<i class="bi bi-check-circle text-success" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center">
-																<i class="bi bi-check-circle text-secondary"></i>
+																<i class="bi bi-check-circle text-secondary" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
