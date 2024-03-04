@@ -39,26 +39,26 @@ $(document).ready(function () {
 	listSubject('#editSubject');
 
 	// duration field is disabled & make duration empty for Pdf
-	document.getElementById('addPdf').addEventListener('change', function() {
-        var durationField = document.getElementById('addDuration');
-        durationField.disabled = this.checked;
-        if (this.checked) {
-            durationField.value = '';
-        }
-    });
-	document.getElementById('addVideo').addEventListener('change', function() {
-        document.getElementById('addDuration').disabled = !this.checked;
-    });
-	document.getElementById('editPdf').addEventListener('change', function() {
-        var durationField = document.getElementById('editDuration');
-        durationField.disabled = this.checked;
-        if (this.checked) {
-            durationField.value = '';
-        }
-    });
-	document.getElementById('editVideo').addEventListener('change', function() {
-        document.getElementById('editDuration').disabled = !this.checked;
-    });
+	// document.getElementById('addPdf').addEventListener('change', function() {
+    //     var durationField = document.getElementById('addDuration');
+    //     durationField.disabled = this.checked;
+    //     if (this.checked) {
+    //         durationField.value = '';
+    //     }
+    // });
+	// document.getElementById('addVideo').addEventListener('change', function() {
+    //     document.getElementById('addDuration').disabled = !this.checked;
+    // });
+	// document.getElementById('editPdf').addEventListener('change', function() {
+    //     var durationField = document.getElementById('editDuration');
+    //     durationField.disabled = this.checked;
+    //     if (this.checked) {
+    //         durationField.value = '';
+    //     }
+    // });
+	// document.getElementById('editVideo').addEventListener('change', function() {
+    //     document.getElementById('editDuration').disabled = !this.checked;
+    // });
 
 });
 
@@ -73,9 +73,8 @@ function addHomework() {
 		year: $("#addYear").val(),
 		week: $("#addWeek").val(),
 		info : $("#addInfo").val(),
-		type : $("input[name='addHomeworkType']:checked").val(),
-		duration : $("#addDuration").val(),
-		path : $("#addPath").val()
+		videoPath : $("#addVideoPath").val(),
+		pdfPath : $("#addPdfPath").val()
 	}
 	// console.log(homework);
 
@@ -124,32 +123,15 @@ function retrieveHomeworkInfo(id) {
 			$("#editGrade").val(homework.grade);
 			$("#editYear").val(homework.year);			
 			$("#editWeek").val(homework.week);
-			// if homework.duration = 0, then make editDuration is empty.
-			if(homework.duration == 0){
-				$("#editDuration").val("");
-			}else{
-				$("#editDuration").val(homework.duration);
-			}
 			$("#editInfo").val(homework.info);
-			if(homework.type == 0){
-				// check the video radio button
-				$("#editVideo").prop('checked', true);
-				// enable duration
-				document.getElementById('editDuration').disabled = false;
-			}else{
-				// check the pdf radio button
-				$("#editPdf").prop('checked', true);
-				// disable duration
-				document.getElementById('editDuration').disabled = true;
-			}
-			$("#editPath").val(homework.path);
+			$("#editVideoPath").val(homework.videoPath);
+			$("#editPdfPath").val(homework.pdfPath);	
 			$("#editActive").val(homework.active);
 			if (homework.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			// $("#editAddress").val(homework.address);
 			$('#editHomeworkModal').modal('show');
 		},
 		error: function (xhr, status, error) {
@@ -183,9 +165,8 @@ function updateHomeworkInfo() {
 		year: $("#editYear").val(),
 		week: $("#editWeek").val(),
 		info: $("#editInfo").val(),
-		duration: $("#editDuration").val(),
-		type: $("input[name='editHomeworkType']:checked").val(),
-		path: $("#editPath").val(),
+		videoPath: $("#editVideoPath").val(),
+		pdfPath: $("#editPdfPath").val(),
 		active: $("#editActive").val(),
 	}
 
@@ -329,9 +310,9 @@ function updateEditActiveValue(checkbox) {
 										<th>Grade</th>
 										<th>Academic Year</th>
 										<th>Week</th>
+										<th>Video Path</th>
+										<th>Document Path</th>
 										<th>Information</th>
-										<th>Access Path</th>
-										<th data-orderable="false">Type</th>
 										<th data-orderable="false">Activated</th>
 										<th data-orderable="false">Action</th>
 									</tr>
@@ -396,25 +377,20 @@ function updateEditActiveValue(checkbox) {
 															<c:out value="${homework.week}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.info}" />
+															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>
 													<td class="small text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.path}" />
+															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
-													<td class="text-center">
-														<c:choose>
-															<c:when test="${homework.type == '0'}">
-																<i class="bi bi-play-btn" title="Video"></i>
-															</c:when>
-															<c:otherwise>
-																<i class="bi bi-file-earmark-pdf" title="Pdf Document"></i>
-															</c:otherwise>
-														</c:choose>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${homework.info}" />
+														</span>
 													</td>
 													<c:set var="active" value="${homework.active}" />
 													<c:choose>
@@ -508,31 +484,25 @@ function updateEditActiveValue(checkbox) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="input-group col-md-3">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="addHomeworkType" id="addVideo" value="0" checked>
-										<label class="form-check-label" for="addVideo">Video</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="addHomeworkType" id="addPdf" value="1">
-										<label class="form-check-label" for="addPdf">Pdf</label>
-									</div>
-								</div>
-								<div class="col-md-3">
-									<label for="addDuration" class="label-form">Duration</label>
-									<input type="number" class="form-control" id="addDuration" name="addDuration" title="Please enter duration in case of Video" />
-								</div>
-								<div class="col-md-6">
-									<label for="addInfo" class="label-form">Information</label>
-									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
+								<div class="col-md-12">
+									<label for="addVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addPath" class="label-form">Access Path</label>
-									<input type="text" class="form-control" id="addPath" name="addPath" placeholder="https://" title="Please enter access address" />
+									<label for="addPdfPath" class="label-form">Document Path</label>
+									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="addInfo" class="label-form">Information</label>
+									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
 								</div>
 							</div>
 						</div>
@@ -608,30 +578,24 @@ function updateEditActiveValue(checkbox) {
 						</div>
 						<div class="form-group mt-4">
 							<div class="form-row">
-								<div class="input-group col-md-3">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="editHomeworkType" id="editVideo" value="0">
-										<label class="form-check-label" for="editVideo">Video</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="editHomeworkType" id="editPdf" value="1">
-										<label class="form-check-label" for="editPdf">Pdf</label>
-									</div>
+								<div class="col-md-12">
+									<label for="editVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
 								</div>
-								<div class="col-md-3">
-									<label for="editDuration" class="label-form">Duration</label>
-									<input type="number" class="form-control" id="editDuration" name="editDuration" title="Please enter duration if material is video" />
-								</div>								
-								<div class="col-md-6">
-									<label for="editInfo" class="label-form">Information</label>
-									<input type="text" class="form-control" id="editInfo" name="editInfo" title="Please enter additional information" />
+							</div>
+						</div>
+						<div class="form-group mt-4">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="editPdfPath" class="label-form">Pdf Path</label>
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
 							<div class="form-row">
 								<div class="col-md-8">
-									<input type="text" class="form-control" id="editPath" name="editPath" />
+									<input type="text" class="form-control" id="editInfo" name="editInfo" placeholder="Information" />
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
