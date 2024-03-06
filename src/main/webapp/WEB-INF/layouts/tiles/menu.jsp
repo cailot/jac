@@ -112,7 +112,7 @@
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
-				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/homeworkList">Extra Materials</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
 			</div>
 		</li>
 		<li class="nav-item dropdown">
