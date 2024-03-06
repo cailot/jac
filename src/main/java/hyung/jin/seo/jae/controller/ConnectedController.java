@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Subject;
@@ -62,6 +64,25 @@ public class ConnectedController {
 		return dto;
 	}
 
+	// register extrawork
+	@PostMapping("/addExtrawork")
+	@ResponseBody
+	public ExtraworkDTO registerExtrawork(@RequestBody ExtraworkDTO formData) {
+		// 1. create barebone
+		Extrawork work = formData.convertToExtrawork();
+		// 2. set active to true as default
+		work.setActive(true);
+		// 3. set Grade
+		Grade grade = codeService.getGrade(Long.parseLong(formData.getGrade()));
+		// 4. associate Grade
+		work.setGrade(grade);
+		// 5. register Extrawork
+		Extrawork added = connectedService.addExtrawork(work);
+		// 6. return dto
+		ExtraworkDTO dto = new ExtraworkDTO(added);
+		return dto;
+	}
+
 	// update existing homework
 	@PutMapping("/updateHomework")
 	@ResponseBody
@@ -96,23 +117,7 @@ public class ConnectedController {
 		return dto;
 	}
 
-	// search video homework by subject, year & week
-	// @GetMapping("/movieHomework/{subject}/{year}/{week}")
-	// @ResponseBody
-	// public HomeworkDTO searchVideoHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-	// 	HomeworkDTO dto = connectedService.getVideoHomeworkInfo(subject, year, week);
-	// 	return dto;
-	// }
-
-	// search homework by subject, year & week
-	// @GetMapping("/pdfHomework/{subject}/{year}/{week}")
-	// @ResponseBody
-	// public HomeworkDTO searchPdfHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-	// 	HomeworkDTO dto = connectedService.getPdfHomeworkInfo(subject, year, week);
-	// 	return dto;
-	// }
-
-	// bring all homework in database
+	// bring homework in database
 	@GetMapping("/filterHomework")
 	public String listHomeworks(
 			@RequestParam(value = "listSubject", required = false) String subject,
@@ -130,5 +135,16 @@ public class ConnectedController {
 		return "homeworkListPage";
 	}
 
+	// bring extrawork in database
+	@GetMapping("/filterExtrawork")
+	public String listExtraworks(
+			@RequestParam(value = "listGrade", required = false) String grade,
+			Model model) {
+		List<ExtraworkDTO> dtos = new ArrayList();
+		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
+		dtos = connectedService.listExtrawork(filteredGrade);		
+		model.addAttribute(JaeConstants.EXTRAWORK_LIST, dtos);
+		return "extraworkListPage";
+	}
 	
 }

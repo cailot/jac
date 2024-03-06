@@ -58,6 +58,11 @@
 		<put-attribute name="title" value="Homework List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/homeworkList.jsp" />
 	</definition>
+	<!--Extrawork -->
+	<definition name="extraworkListPage" extends="base.definition">
+		<put-attribute name="title" value="Extrawork List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/extraworkList.jsp" />
+	</definition>
 	
 
 	<!--Academic Cycle -->

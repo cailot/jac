@@ -69,13 +69,6 @@ public class JaeController {
 		return "teacherListPage";
 	}
 
-	@GetMapping("/homeworkList")
-	public String homework(HttpSession session) {
-		return "homeworkListPage";
-	}
-
-
-
 	@GetMapping("/setting")
 	public String setting(HttpSession session) {
 		return "settingPage";
@@ -90,5 +83,20 @@ public class JaeController {
 	public String openInvoice(HttpSession session) {
 		return "invoicePage";
 	}
+
+	//////////////////////////////////////////////////
+	// CONNECTED CLASS
+	/////////////////////////////////////////////////
+
+	@GetMapping("/homeworkList")
+	public String homework(HttpSession session) {
+		return "homeworkListPage";
+	}
+
+	@GetMapping("/extraworkList")
+	public String extrawork(HttpSession session) {
+		return "extraworkListPage";
+	}
+
 
 }
