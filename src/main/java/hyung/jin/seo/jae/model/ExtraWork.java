@@ -24,8 +24,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="ExtraWork")
-public class ExtraWork {
+@Table(name="Extrawork")
+public class Extrawork {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
@@ -37,8 +37,8 @@ public class ExtraWork {
     @Column(length = 300, nullable = true)
     private String pdfPath;
     
-    @Column(length = 2, nullable = true)
-    private Integer week;
+    // @Column(length = 2, nullable = true)
+    // private Integer week;
 
     // @Column(length = 4, nullable = true)
     // private Integer year;
