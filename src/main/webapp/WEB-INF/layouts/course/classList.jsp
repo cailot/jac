@@ -457,12 +457,12 @@ function editInitialiseCourseByGrade(grade, courseId) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
-																<i class="bi bi-check-circle text-success"></i>
+																<i class="bi bi-check-circle-fill text-success"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center">
-																<i class="bi bi-check-circle text-secondary"></i>
+																<i class="bi bi-check-circle-fill text-secondary"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>

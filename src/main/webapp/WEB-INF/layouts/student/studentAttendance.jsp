@@ -575,7 +575,7 @@ function clearAttendanceInfo() {
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>

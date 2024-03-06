@@ -453,7 +453,7 @@ function clearPassword() {
 													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
 														<c:when test="${empty student.endDate}">
-															<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
+															<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
 														</c:when>
 														<c:otherwise>
 															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
@@ -750,7 +750,7 @@ function clearPassword() {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle-fill"></i>&nbsp;Close</button>
             </div>
     	</div>
 	</div>
@@ -761,7 +761,7 @@ function clearPassword() {
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
