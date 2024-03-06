@@ -229,7 +229,7 @@ function updateEditActiveValue(checkbox) {
 							<option value="0">All</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All</option>
@@ -288,7 +288,7 @@ function updateEditActiveValue(checkbox) {
 							}
 						</script>
 					</div>
-					<div class="offset-md-1"></div>
+					<div class="offset-md-3"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -336,6 +336,8 @@ function updateEditActiveValue(checkbox) {
 																<c:when test="${homework.subject == '9'}">Three Subjects</c:when>
 																<c:when test="${homework.subject == '10'}">Verbal Reasoning</c:when>
 																<c:when test="${homework.subject == '11'}">Numeric Reasoning</c:when>
+																<c:when test="${homework.subject == '12'}">Short Answer</c:when>
+																<c:when test="${homework.subject == '13'}">Short Answer TT</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -396,12 +398,12 @@ function updateEditActiveValue(checkbox) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
-																<i class="bi bi-check-circle text-success" title="Activated"></i>
+																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center">
-																<i class="bi bi-check-circle text-secondary" title="Deactivated"></i>
+																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
@@ -628,7 +630,7 @@ function updateEditActiveValue(checkbox) {
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>

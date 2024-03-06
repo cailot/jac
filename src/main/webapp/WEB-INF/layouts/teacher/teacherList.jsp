@@ -318,7 +318,7 @@
 					row.append($('<td>').text(gradeText));
 					row.append($('<td>').text(value.year));
 					var isOnline = value.online;
-					var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
+					var onlineIcon = isOnline ? $('<i class="bi bi-check-circle-fill text-secondary h6"></i>') : $('<i class="bi bi-check-circle-fill text-success h6"></i>');
 					row.append($('<td>').addClass('text-center').append(onlineIcon));
 					var isActived = value.active;
 					var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
@@ -368,7 +368,7 @@
 				row.append($('<td>').text(gradeText));
 				row.append($('<td>').text(value.year));
 				var isOnline = value.online;
-				var onlineIcon = isOnline ? $('<i class="bi bi-check-circle text-secondary h6"></i>') : $('<i class="bi bi-check-circle text-success h6"></i>');
+				var onlineIcon = isOnline ? $('<i class="bi bi-check-circle-fill text-secondary h6"></i>') : $('<i class="bi bi-check-circle-fill text-success h6"></i>');
 				row.append($('<td>').addClass('text-center').append(onlineIcon));
 				var isActived = value.active;
 				var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
@@ -595,7 +595,7 @@ function clearPassword() {
 														<i	class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
 														<c:choose>
 															<c:when test="${empty teacher.endDate}">
-																<i class="bi bi-x-circle text-danger"
+																<i class="bi bi-x-circle-fill text-danger"
 																	data-toggle="tooltip"
 																	title="Suspend"
 																	onclick="inactivateTeacher('${teacher.id}')"></i>
@@ -974,7 +974,7 @@ function clearPassword() {
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>

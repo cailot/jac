@@ -71,6 +71,7 @@
 		James An College
 	</div>
 	<ul class="navbar_menu">
+		<!-- Student -->
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  Student
@@ -83,19 +84,7 @@
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
 			</div>
 		</li>
-
-		<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			  Course Management
-			</a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/courseList">Course List</a>
-			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/classList">Class List</a>
-				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/onlineList">Online Class Session</a>				
-				<!-- <a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/gradeList">Grade List</a> -->
-			</div>
-		</li>
-
+		<!-- Teacher -->
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  Teacher
@@ -104,17 +93,28 @@
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
 			</div>
 		</li>
-
+		<!-- Class -->
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  Class Management
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/courseList">Course List</a>
+			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/classList">Class List</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/onlineList">Online Class Session</a>				
+				<!-- <a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/gradeList">Grade List</a> -->
+			</div>
+		</li>
+		<!-- Connected Class -->
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  Connected Class
 			</a>
 			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
-				<a class="dropdown-item" style="color: #212529;" href="#">Student Invoice</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/homeworkList">Extra Materials</a>
 			</div>
 		</li>
-
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="${pageContext.request.contextPath}/admin" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			  Setting

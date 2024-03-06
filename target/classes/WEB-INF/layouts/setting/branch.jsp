@@ -259,7 +259,7 @@
 													</td>
 													<td class="text-center">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranchInfo('${branch.id}')"></i>&nbsp;
-														<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
+														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -448,7 +448,7 @@
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>

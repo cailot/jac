@@ -325,12 +325,12 @@ function updateEditActiveValue(checkbox) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
-																<i class="bi bi-check-circle text-success"></i>
+																<i class="bi bi-check-circle-fill text-success"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center">
-																<i class="bi bi-check-circle text-secondary"></i>
+																<i class="bi bi-check-circle-fill text-secondary"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
@@ -587,7 +587,7 @@ function updateEditActiveValue(checkbox) {
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
