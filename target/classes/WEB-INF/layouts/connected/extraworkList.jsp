@@ -86,30 +86,27 @@ function addExtrawork() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Homework
+//		Retrieve Extrawork
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrieveHomeworkInfo(id) {
+function retrieveExtraworkInfo(id) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getHomework/' + id,
+		url: '${pageContext.request.contextPath}/connected/getExtrawork/' + id,
 		type: 'GET',
-		success: function (homework) {
-			// console.log(homework);
-			$("#editId").val(homework.id);
-			$("#editSubject").val(homework.subject);
+		success: function (extrawork) {
+			console.log(extrawork);
+			$("#editId").val(extrawork.id);
 			$("#editGrade").val(extrawork.grade);
-			$("#editYear").val(homework.year);			
-			$("#editWeek").val(homework.week);
-			$("#editInfo").val(homework.info);
-			$("#editVideoPath").val(homework.videoPath);
-			$("#editPdfPath").val(homework.pdfPath);	
-			$("#editActive").val(homework.active);
-			if (homework.active == true) {
+			$("#editName").val(extrawork.name);
+			$("#editVideoPath").val(extrawork.videoPath);
+			$("#editPdfPath").val(extrawork.pdfPath);	
+			$("#editActive").val(extrawork.active);
+			if (extrawork.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			$('#editHomeworkModal').modal('show');
+			$('#editExtraworkModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -130,18 +127,15 @@ function updateEditActiveValue(checkbox) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Homework
+//		Update Extrawork
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateHomeworkInfo() {
+function updateExtraworkInfo() {
 	var workId = $("#editId").val();
 	// get from formData
-	var homework = {
+	var extrawork = {
 		id: workId,
-		subject : $("#editSubject").val(),
 		grade: $("#editGrade").val(),
-		year: $("#editYear").val(),
-		week: $("#editWeek").val(),
-		info: $("#editInfo").val(),
+		name: $("#editName").val(),
 		videoPath: $("#editVideoPath").val(),
 		pdfPath: $("#editPdfPath").val(),
 		active: $("#editActive").val(),
@@ -149,10 +143,10 @@ function updateHomeworkInfo() {
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updateHomework',
+		url: '${pageContext.request.contextPath}/connected/updateExtrawork',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(homework),
+		data: JSON.stringify(extrawork),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -168,9 +162,9 @@ function updateHomeworkInfo() {
 		}
 	});
 
-	$('#editHomeworkModal').modal('hide');
+	$('#editExtraworkModal').modal('hide');
 	// flush all registered data
-	clearHomeworkForm("homeworkEdit");
+	clearHomeworkForm("extraworkEdit");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -407,84 +401,21 @@ function updateEditActiveValue(checkbox) {
 </div>
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="editExtraworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Homework Edit</header>
-					<form id="homeworkEdit">
+					<header class="text-primary font-weight-bold">Extrawork Edit</header>
+					<form id="extraworkEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
-								<div class="col-md-3">
-									<label for="editSubject" class="label-form">Subject</label>
-									<select class="form-control" id="editSubject" name="editSubject" disabled>
-									</select>
-								</div>
-								<div class="col-md-3">
-									<label for="editGrade" class="label-form">Grade</label>
+							<div class="form-row mt-4">
+								<div class="col-md-2">
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
-								<div class="col-md-4">
-									<label for="editYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="editYear" name="editYear">
-										<%
-											Calendar editNow = Calendar.getInstance();
-											int editCurrentYear = editNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= editCurrentYear %>">Year <%= (editCurrentYear%100) %>/<%= (editCurrentYear%100)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="editWeek" class="label-form">Week</label>
-									<select class="form-control" id="editWeek" name="editWeek">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editWeek");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group mt-4">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="editVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group mt-4">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group mt-4 mb-4">
-							<div class="form-row">
-								<div class="col-md-8">
-									<input type="text" class="form-control" id="editInfo" name="editInfo" placeholder="Information" />
+								<div class="col-md-6">
+									<input type="text" class="form-control" id="editName" name="editName" />
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
@@ -497,10 +428,26 @@ function updateEditActiveValue(checkbox) {
 								</div>
 							</div>
 						</div>
+						<div class="form-group mt-4">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="editVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group mt-4 mb-4">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="editPdfPath" class="label-form">Pdf Path</label>
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
+								</div>
+							</div>
+						</div>
 						<input type="hidden" id="editId" name="editId" />
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateHomeworkInfo()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" onclick="updateExtraworkInfo()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
