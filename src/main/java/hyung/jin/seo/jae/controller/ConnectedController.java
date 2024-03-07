@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
@@ -99,6 +100,23 @@ public class ConnectedController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
+
+	// update existing extrawork
+	@PutMapping("/updateExtrawork")
+	@ResponseBody
+	public ResponseEntity<String> updateExtrawork(@RequestBody ExtraworkDTO formData) {
+		try{
+			// 1. create barebone Homework
+			Extrawork work = formData.convertToExtrawork();
+			// 2. update Homework
+			work = connectedService.updateExtrawork(work, Long.parseLong(formData.getId()));
+			// 3.return flag
+			return ResponseEntity.ok("\"Extrawork updated\"");
+		}catch(Exception e){
+			String message = "Error updating Extrawork : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
 	
 	// get homework
 	@GetMapping("/getHomework/{id}")
@@ -108,6 +126,16 @@ public class ConnectedController {
 		HomeworkDTO dto = new HomeworkDTO(work);
 		return dto;
 	}
+
+	// get extrawork
+	@GetMapping("/getExtrawork/{id}")
+	@ResponseBody
+	public ExtraworkDTO getExtrawork(@PathVariable Long id) {
+		Extrawork work = connectedService.getExtrawork(id);
+		ExtraworkDTO dto = new ExtraworkDTO(work);
+		return dto;
+	}
+
 
 	// search homework by subject, year & week
 	@GetMapping("/homework/{subject}/{year}/{week}")
@@ -145,6 +173,16 @@ public class ConnectedController {
 		dtos = connectedService.listExtrawork(filteredGrade);		
 		model.addAttribute(JaeConstants.EXTRAWORK_LIST, dtos);
 		return "extraworkListPage";
+	}
+
+	// bring summary of extrawork
+	@GetMapping("/summaryExtrawork/{grade}")
+	@ResponseBody
+	public List<SimpleBasketDTO> summaryExtraworks(@PathVariable String grade) {
+		List<SimpleBasketDTO> dtos = new ArrayList();
+		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
+		dtos = connectedService.loadExtrawork(filteredGrade);	
+		return dtos;
 	}
 	
 }
