@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.repository.ExtraworkRepository;
@@ -187,6 +188,22 @@ public class ConnectedServiceImpl implements ConnectedService {
 			dtos = extraworkRepository.filterExtraworkByGrade(grade);
 		}catch(Exception e){
 			System.out.println("No Homework found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<SimpleBasketDTO> loadExtrawork(String grade) {
+		List<Object[]> objects = new ArrayList<>();
+		try{
+			objects = extraworkRepository.summaryExtrawork(grade);
+		}catch(Exception e){
+			System.out.println("No Extrawork found");
+		}
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			SimpleBasketDTO dto = new SimpleBasketDTO(object);
+			dtos.add(dto);
 		}
 		return dtos;
 	}

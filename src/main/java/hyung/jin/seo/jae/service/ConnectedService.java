@@ -4,6 +4,7 @@ import java.util.List;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
 
@@ -50,4 +51,6 @@ public interface ConnectedService {
 	// list Extrawork by grade
 	List<ExtraworkDTO> listExtrawork(String grade);
 	
+	// summary of Extrawork by grade
+	List<SimpleBasketDTO> loadExtrawork(String grade);
 }
