@@ -63,7 +63,11 @@
 		<put-attribute name="title" value="Extrawork List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/extraworkList.jsp" />
 	</definition>
-	
+	<!--Practice -->
+	<definition name="practiceListPage" extends="base.definition">
+		<put-attribute name="title" value="Practice List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/practiceList.jsp" />
+	</definition>
 
 	<!--Academic Cycle -->
 	<definition name="cyclePage" extends="base.definition">

@@ -98,5 +98,11 @@ public class JaeController {
 		return "extraworkListPage";
 	}
 
+	@GetMapping("/practiceList")
+	public String practice(HttpSession session) {
+		return "practiceListPage";
+	}
+
+	
 
 }

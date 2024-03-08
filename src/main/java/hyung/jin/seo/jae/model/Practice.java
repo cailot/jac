@@ -31,17 +31,11 @@ public class Practice {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
 
-    // @Column(length = 300, nullable = true)
-    // private String videoPath;
-
     @Column(length = 300, nullable = true)
     private String pdfPath;
 
     @Column(length = 2, nullable = true)
     private Integer volume;
-
-    @Column(length = 4, nullable = true)
-    private Integer year;
 
     @Column(length = 50, nullable = true)
     private String info;
@@ -53,6 +47,10 @@ public class Practice {
     @JoinColumn(name = "gradeId")
     private Grade grade;
 	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "practiceTypeId")
+    private PracticeType practiceType;
+
     @CreationTimestamp
     private LocalDate registerDate;
     
