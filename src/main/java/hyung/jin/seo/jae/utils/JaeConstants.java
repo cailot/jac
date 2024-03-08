@@ -99,6 +99,8 @@ public interface JaeConstants {
 	
 	String EXTRAWORK_LIST = "ExtraworkList";
 	
+	String PRACTICE_LIST = "PracticeList";
+	
 	String VSSE = "VSSE";
 
 	String ACADEMIC_CYCLES = "academicCycles";
