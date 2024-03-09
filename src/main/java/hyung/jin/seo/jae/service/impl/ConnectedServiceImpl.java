@@ -131,6 +131,8 @@ public class ConnectedServiceImpl implements ConnectedService {
         }
 		int newVolume = newWork.getVolume();
 		existing.setVolume(newVolume);
+		int newCount = newWork.getQuestionCount();
+		existing.setQuestionCount(newCount);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
         // update the existing record

@@ -247,6 +247,5 @@ public class ConnectedController {
 		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
 		dtos = connectedService.loadExtrawork(filteredGrade);	
 		return dtos;
-	}
-	
+	}	
 }
