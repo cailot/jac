@@ -71,6 +71,7 @@ function addPractice() {
 		practiceType : $("#addPracticeType").val(),
 		grade: $("#addGrade").val(),
 		volume: $("#addVolume").val(),
+		questionCount : $("#addQuestionCount").val(),
 		info : $("#addInfo").val(),
 		pdfPath : $("#addPdfPath").val()
 	}
@@ -120,6 +121,7 @@ function retrievePracticeInfo(id) {
 			$("#editPracticeType").val(practice.practiceType);
 			$("#editGrade").val(practice.grade);
 			$("#editVolume").val(practice.volume);
+			$("#editQuestionCount").val(practice.questionCount);
 			$("#editInfo").val(practice.info);
 			$("#editPdfPath").val(practice.pdfPath);	
 			$("#editActive").val(practice.active);
@@ -159,6 +161,7 @@ function updatePracticeInfo() {
 		practiceType : $("#editPracticeType").val(),
 		grade: $("#editGrade").val(),
 		volume: $("#editVolume").val(),
+		questionCount: $("#editQuestionCount").val(),
 		info: $("#editInfo").val(),
 		pdfPath: $("#editPdfPath").val(),
 		active: $("#editActive").val(),
@@ -282,6 +285,7 @@ function updateEditActiveValue(checkbox) {
 										<th>Practice Type</th>
 										<th>Grade</th>
 										<th>Set</th>
+										<th>Count</th>
 										<th>Document Path</th>
 										<th>Information</th>
 										<th data-orderable="false">Activated</th>
@@ -347,6 +351,11 @@ function updateEditActiveValue(checkbox) {
 															<c:out value="${practice.volume}" />
 														</span>
 													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${practice.questionCount}" />
+														</span>
+													</td>
 													<td class="small text-truncate" style="max-width: 250px;">
 														<span>
 															<c:out value="${practice.pdfPath}" />
@@ -398,7 +407,7 @@ function updateEditActiveValue(checkbox) {
 					<form id="practiceRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
-								<div class="col-md-8">
+								<div class="col-md-6">
 									<label for="addPracticeType" class="label-form">Practice Type</label>
 									<select class="form-control" id="addPracticeType" name="addPracticeType">
 									</select>
@@ -426,6 +435,10 @@ function updateEditActiveValue(checkbox) {
 										  selectElement.appendChild(option);
 										}
 									</script>
+								</div>
+								<div class="col-md-2">
+									<label for="addQuestionCount" class="label-form">Count</label>
+									<input type="number" class="form-control" id="addQuestionCount" name="addQuestionCount" title="Please enter number of questions" />
 								</div>
 							</div>
 						</div>
@@ -466,12 +479,12 @@ function updateEditActiveValue(checkbox) {
 					<form id="practiceEdit">
 						<div class="form-group">
 							<div class="form-row mt-3">
-								<div class="col-md-7">
+								<div class="col-md-6">
 									<label for="editPracticeType" class="label-form">Practice Type</label>
 									<select class="form-control" id="editPracticeType" name="editPracticeType" disabled>
 									</select>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<label for="editGrade" class="label-form">Grade</label>
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
@@ -494,6 +507,10 @@ function updateEditActiveValue(checkbox) {
 										  selectElement.appendChild(option);
 										}
 									</script>
+								</div>
+								<div class="col-md-2">
+									<label for="editQuestionCount" class="label-form">Count</label>
+									<input type="number" class="form-control" id="editQuestionCount" name="editQuestionCount" title="Please enter number of questions" />
 								</div>
 							</div>
 						</div>
