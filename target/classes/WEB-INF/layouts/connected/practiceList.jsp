@@ -190,13 +190,13 @@ function updatePracticeInfo() {
 
 	$('#editPracticeModal').modal('hide');
 	// flush all registered data
-	clearHomeworkForm("practiceEdit");
+	clearPracticeForm("practiceEdit");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear class register form
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function clearHomeworkForm(elementId) {
+function clearPracticeForm(elementId) {
 	document.getElementById(elementId).reset();
 }
 
@@ -211,6 +211,245 @@ function updateEditActiveValue(checkbox) {
 		editActiveInput.value = "false";
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Answer Sheet
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function displayAnswerSheet(practiceId) {
+	//save practiceId 
+	document.getElementById("practiceId4Answer").value = practiceId;
+	// clear answerId
+	document.getElementById("answerId").value = '';
+
+	// check if answer exists or not
+	// if exists, then display info
+	// if not, show empty form to register
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/checkAnswer/' + practiceId,
+		type: 'GET',
+		success: function (answerSheet) {
+			// debugger;
+			//console.log(answerSheet);
+			if (answerSheet != null && answerSheet != '') {
+				// Display the answer sheet info
+				$("#answerId").val(answerSheet.id);				
+				$("#addAnswerVideoPath").val(answerSheet.videoPath);
+				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
+				// Display the answer sheet table
+				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+				answerSheetTableBody.innerHTML = "";
+				var numToChar = ['', 'A', 'B', 'C', 'D', 'E'];  // add 0 index = ''
+
+				function createRow(i, answerSheet, numToChar, answerSheetTableBody) {
+					// Create a new row
+					var newRow = answerSheetTableBody.insertRow(answerSheetTableBody.rows.length);
+					// Insert cells into the row
+					var cell1 = newRow.insertCell(0);
+					var cell2 = newRow.insertCell(1);
+					var cell3 = newRow.insertCell(2);
+					// Align the content of the cells to the center
+					cell1.style.textAlign = "center";
+					cell2.style.textAlign = "center";
+					cell3.style.textAlign = "center";
+					// Populate cells with data
+					cell1.innerHTML = i;
+					cell2.innerHTML = numToChar[answerSheet.answers[i]];
+					// Create a remove button in the third cell
+					var removeIcon = document.createElement("i");
+					removeIcon.className = "bi bi-trash icon-button text-danger";
+					removeIcon.addEventListener('click', function () {
+						answerSheetTableBody.removeChild(newRow);
+					});
+					// Append the remove button to the third cell
+					cell3.appendChild(removeIcon);
+				}
+
+				for (var i = 1; i < answerSheet.answers.length; i++) {
+					createRow(i, answerSheet, numToChar, answerSheetTableBody);
+				}
+			} else {
+				// Display an empty form to register the answer sheet
+				$("#addAnswerVideoPath").val("");
+				$("#addAnswerPdfPath").val("");
+				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+				answerSheetTableBody.innerHTML = "";
+				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
+				answerQuestionNumberSelect.value = "1";
+			}
+			// Display the modal
+			$('#registerPracticeAnswerModal').modal('show');
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+	// Clear or reset the values in registerPracticeAnswerModal
+    // document.getElementById("addAnswerVideoPath").value = "";
+    // document.getElementById("addAnswerPdfPath").value = "";
+	// var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+    // answerSheetTableBody.innerHTML = "";
+	// var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
+    // answerQuestionNumberSelect.value = "1";
+
+	// display modal
+	// $('#registerPracticeAnswerModal').modal('show');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Add Answer To Table
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function addAnswerToTable() {
+    // Get the selected question number
+    var questionNumber = document.getElementById("answerQuestionNumber").value;
+
+    // Get the selected radio button
+    var selectedRadioButton = document.querySelector('input[name="inlineRadioOptions"]:checked');
+
+    // Check if a radio button is selected
+    if (selectedRadioButton) {
+        // Get the selected radio button value
+        var radioButtonValue = selectedRadioButton.value;
+
+        // Map numeric values to corresponding letters
+        var letterMapping = ['A', 'B', 'C', 'D', 'E'];
+        var letterValue = letterMapping[parseInt(radioButtonValue) - 1];
+
+        // Get the table body
+        var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+
+        // Create a new row
+        var newRow = tableBody.insertRow(tableBody.rows.length);
+
+        // Insert cells into the row
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+
+		// Align the content of the cells to the center
+		cell1.style.textAlign = "center";
+		cell2.style.textAlign = "center";
+		cell3.style.textAlign = "center";
+
+        // Populate cells with data
+        cell1.innerHTML = questionNumber;
+        cell2.innerHTML = letterValue;
+
+        // Create a remove button in the third cell
+        var removeButton = document.createElement("button");
+        // Remove the row when the button is clicked
+		var removeIcon = document.createElement("i");
+    	removeIcon.className = "bi bi-trash icon-button text-danger";
+    	removeIcon.addEventListener('click', function() {
+            tableBody.removeChild(newRow);
+        });
+
+        // Append the remove button to the third cell
+        cell3.appendChild(removeIcon);
+
+        // Automatically choose the next question number
+        var nextQuestionNumber = parseInt(questionNumber) + 1;
+        document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
+
+        // Clear the selected radio button
+        selectedRadioButton.checked = false;
+    } else {
+        // Display an alert if no radio button is selected
+        alert("Please choose an answer option before adding.");
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Collect Answer And Send 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function collectAndSubmitAnswers() {
+    // Collect values from the modal
+	var answerId = document.getElementById("answerId").value;
+	var practiceId = document.getElementById("practiceId4Answer").value;
+    var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
+    var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
+
+    // Collect question number and selected value from the answerSheetTable
+    var answerList = [];
+    var answerTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+    var rows = answerTableBody.getElementsByTagName("tr");
+
+	// Create a mapping object
+	var charToNum = {
+		'A': 1,
+		'B': 2,
+		'C': 3,
+		'D': 4,
+		'E': 5
+		// Add more mappings if needed
+	};
+
+    for (var i = 0; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName("td");
+        var questionNumber = cells[0].innerHTML;
+        // var selectedRadioValue = cells[1].innerHTML;
+		var selectedRadioValue = charToNum[cells[1].innerHTML];  // Convert the character to a number
+
+        answerList.push({
+            question: questionNumber,
+            answer: selectedRadioValue
+        });
+    }
+
+    // Send the formData to the Spring controller using AJAX or other means
+    $.ajax({
+        url: '${pageContext.request.contextPath}/connected/saveAnswerSheet', // Replace with your actual Spring controller endpoint
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+			answerId : answerId,
+			practiceId : practiceId,
+			videoPath : answerVideoPath,
+			pdfPath : answerPdfPath,
+			answers : answerList
+		}),
+        success: function (response) {
+            // Handle success response
+            console.log(response);
+			// clear practionId to avoid confusion
+			document.getElementById("practiceId4Answer").value = '';
+    		// Optionally, close the modal after submitting
+    		$('#registerPracticeAnswerModal').modal('hide');
+			$('#success-alert .modal-body').html('Upgrade Answer Sheet is successfully updated.');
+	        $('#success-alert').modal('show');
+			// Attach an event listener to the success alert close event
+			$('#success-alert').on('hidden.bs.modal', function () {
+				// Reload the page after the success alert is closed
+				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+			});
+
+        },
+        error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+
+	
+}
+
+
+
+
+
 
 </script>
 
@@ -381,6 +620,8 @@ function updateEditActiveValue(checkbox) {
 													</c:choose>
 													<td class="text-center">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrievePracticeInfo('${practice.id}')">
+														</i>&nbsp;&nbsp;
+														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${practice.id}')">
 														</i>
 													</td>
 												</tr>
@@ -461,7 +702,7 @@ function updateEditActiveValue(checkbox) {
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="addPractice()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearHomeworkForm('practiceRegister')" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -550,6 +791,92 @@ function updateEditActiveValue(checkbox) {
 	</div>
 </div>
 
+
+<!-- Add Answer Form Dialogue -->
+<div class="modal fade" id="registerPracticeAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<section class="fieldset rounded border-primary">
+					<header class="text-primary font-weight-bold">Practice Answer Sheet</header>
+					<!-- <form id="practiceAnswerRegister"> -->
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12 mt-4">
+									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
+									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
+									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 60%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="question">Question #</th>
+											<th data-field="answer">Answer</th>
+											<th data-field="answer">Remove</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 20px; margin-right: 20px;">
+								<div class="col-md-2">
+									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
+										<c:forEach var="i" begin="1" end="50">
+											<option value="${i}">${i}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="offset-md-1"></div>
+								<div class="col-md-7">
+									<style>
+										.form-check-input {
+											margin-right: 10px;
+										}
+										.form-check-label {
+											margin-right: 25px;
+										}
+									</style>
+									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
+									<label class="form-check-label" for="inlineRadio1">A</label>
+									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
+									<label class="form-check-label" for="inlineRadio2">B</label>
+									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3">
+									<label class="form-check-label" for="inlineRadio3">C</label>
+									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4">
+									<label class="form-check-label" for="inlineRadio4">D</label>
+									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
+									<label class="form-check-label" for="inlineRadio5">E</label>
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
+								</div>
+						</div>
+						<input type="hidden" id="answerId" name="answerId" />
+						<input type="hidden" id="practiceId4Answer" name="practiceId4Answer" />
+					<!-- </form> -->
+					<div class="mt-4 d-flex justify-content-end">
+						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 

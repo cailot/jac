@@ -47,7 +47,7 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	List<ClazzDTO> findOnSiteClassForStateNBranchNGrade(String state, String branch, String grade);
 
 	// list onsite class for state, branch, grade, year on Teacher page
-	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3) AND c.cycle.year = ?4 AND (c.course.online = false)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3) AND (?4 = 0 OR c.cycle.year = ?4) AND (c.course.online = false)")
 	List<ClazzDTO> findOnSiteClassForStateNBranchNGradeNYear(String state, String branch, String grade, int year);
 
 	// list class Ids for state, branch, grade
