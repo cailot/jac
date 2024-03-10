@@ -365,7 +365,7 @@ public class ClazzController {
 	@GetMapping("/classes4Teacher")
 	@ResponseBody
 	List<ClazzDTO> getClassesForTeacher(@RequestParam("state") String state, @RequestParam("branch") String branch,
-			@RequestParam("grade") String grade, @RequestParam("year") String year) {
+			@RequestParam("grade") String grade, @RequestParam("year") int year) {
 		// List<ClazzDTO> dtos = clazzService.findClazzForCourseIdNCycle(courseId,
 		// year);
 		List<ClazzDTO> dtos = clazzService.filterOnSiteClazz(state, branch, grade, year);

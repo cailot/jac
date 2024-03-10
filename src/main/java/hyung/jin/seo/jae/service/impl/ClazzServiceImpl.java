@@ -246,13 +246,13 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, String year) {
+	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
-		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
-			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
-		} else {
-			dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
-		}
+		// if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+			dtos = clazzRepository.findOnSiteClassForStateNBranchNGradeNYear(state, branch, grade, year);
+		// } else {
+			// dtos = clazzRepository.findOnSiteClassForStateNBranchNGrade(state, branch, grade);
+		// }
 		return dtos;
 	}
 

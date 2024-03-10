@@ -294,7 +294,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 								int nextYear = currentYear + 1;
 							%>
 							<option value="All">All</option>
-							<option value="<%= nextYear %>"><%= nextYear %></option>
 							<option value="<%= currentYear %>"><%= currentYear %></option>
 							<%
 								// Adding the last five years
