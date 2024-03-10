@@ -1,7 +1,9 @@
 package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,12 +24,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Practice;
+import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.CodeService;
@@ -247,5 +251,69 @@ public class ConnectedController {
 		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
 		dtos = connectedService.loadExtrawork(filteredGrade);	
 		return dtos;
-	}	
+	}
+	
+	@PostMapping(value = "/saveAnswerSheet")
+	@ResponseBody
+    public ResponseEntity<String> saveAnswerSheet(@RequestBody Map<String, Object> payload) {
+        // Extract practiceId and answers from the payload
+		String answerId = payload.get("answerId").toString();
+		String practiceId = payload.get("practiceId").toString();
+		String video = payload.get("videoPath").toString();
+		String pdf = payload.get("pdfPath").toString();
+		List<Map<String, Object>> mapAns = (List<Map<String, Object>>) payload.get("answers");
+		// convert the Map of answers to List
+		List<Integer>  answer = convertAnswers(mapAns);
+		// if answerId has some value, update PracticeAnswer; otherwise register.
+		if(StringUtils.isBlank(answerId)){
+			// ADD
+			// 1. create bare bone
+			PracticeAnswer pa = new PracticeAnswer();
+			// 2. populate PracticeAnswer
+			pa.setVideoPath(video);
+			pa.setPdfPath(pdf);
+			pa.setAnswers(answer);
+			// 3. get Practice
+			Practice practice = connectedService.getPractice(Long.parseLong(practiceId));
+			// 4. associate Practice
+			pa.setPractice(practice);
+			// 5. register PracticeAnswer
+			connectedService.addPracticeAnswer(pa);
+		}else{
+			// UPDATE
+			// 1. get PracticeAnswer
+			PracticeAnswer pa = connectedService.getPracticeAnswer(Long.parseLong(answerId));
+			// 2. populate PracticeAnswer
+			pa.setVideoPath(video);
+			pa.setPdfPath(pdf);
+			pa.setAnswers(answer);
+			// 3. update PracticeAnswer
+			connectedService.updatePracticeAnswer(pa, Long.parseLong(answerId));
+		}
+		return ResponseEntity.ok("\"Success\"");
+    }
+
+	// check if PracticeAnswer exists or not
+	@GetMapping("/checkAnswer/{practiceId}")
+	@ResponseBody
+	public PracticeAnswerDTO findAnswer(@PathVariable Long practiceId) {
+		PracticeAnswerDTO answer = connectedService.findPracticeAnswerByPractice(practiceId);
+		return answer;
+	}
+
+	// helper method converting answers Map to List
+	private List<Integer> convertAnswers(List<Map<String, Object>> answers) {
+		// Sort the answers based on the "question" key
+		answers.sort(Comparator.comparingInt(answer -> Integer.parseInt(answer.get("question").toString())));
+
+		List<Integer> answerList = new ArrayList<>();
+		// 1st element represents total answer count
+		answerList.add(0, answers.size());
+		for (Map<String, Object> answer : answers) {
+			int questionNum = Integer.parseInt(answer.get("question").toString());
+			int selectedOption = Integer.parseInt(answer.get("answer").toString());
+			answerList.add(questionNum, selectedOption);
+		}
+		return answerList;
+	}
 }

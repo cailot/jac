@@ -68,6 +68,7 @@
 	//		Populate class by grade
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function getClazzByGrade() {
+		// debugger;
 		var grade = $('#clazzGrade').val();
 		var year = $('#clazzYear').val();
 		var state = $('#clazzState').val();
@@ -85,7 +86,7 @@
 				$('#clazzId').empty(); // clear the previous options
 				$.each(data, function (index, value) {
 					const cleaned = cleanUpJson(value);
-					//console.log(cleaned);
+					console.log(cleaned);
 					$('#clazzId').append($("<option value='" + value.id + "'>").text(value.name).val(value.id)); // add new option
 				});
 			},
@@ -922,7 +923,7 @@ function clearPassword() {
 					<input type="hidden" id="clazzBranch" name="clazzBranch" />
 					<div class="form-row">
 						<div class="offset-md-1"></div>
-						<div class="col-md-1">
+						<div class="col-md-2">
 							<label for="clazzGrade" class="label-form">Grade</label>
 							<select class="form-control" id="clazzGrade" name="clazzGrade">
 							</select>
@@ -934,13 +935,13 @@ function clearPassword() {
 									Calendar now = Calendar.getInstance();
 									int currentYear = now.get(Calendar.YEAR);
 								%>
-								<option value="All">All</option>
-								<option value="<%= currentYear %>"><%= currentYear %></option>
+								<option value=0>All</option>
+								<option value=<%= currentYear %>><%= currentYear %></option>
 								<%
 									// Adding the last five years
 									for (int i = currentYear - 1; i >= currentYear - 3; i--) {
 								%>
-									<option value="<%= i %>"><%= i %></option>
+									<option value=<%= i %>><%= i %></option>
 								<%
 								}
 								%>
