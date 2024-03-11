@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
-import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Extrawork;
@@ -293,13 +292,6 @@ public class ConnectedController {
 		return ResponseEntity.ok("\"Success\"");
     }
 
-	// check if PracticeAnswer exists or not
-	@GetMapping("/checkAnswer/{practiceId}")
-	@ResponseBody
-	public PracticeAnswerDTO findAnswer(@PathVariable Long practiceId) {
-		PracticeAnswerDTO answer = connectedService.findPracticeAnswerByPractice(practiceId);
-		return answer;
-	}
 
 	// helper method converting answers Map to List
 	private List<Integer> convertAnswers(List<Map<String, Object>> answers) {
