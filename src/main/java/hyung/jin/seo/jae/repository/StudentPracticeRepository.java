@@ -32,5 +32,11 @@ public interface StudentPracticeRepository extends JpaRepository<StudentPractice
             @Param("studentId") Long studentId,
             @Param("practiceId") Long practiceId
     );	// // bring latest EnrolmentDTO by student id, called from retrieveEnrolment() in
+	// // courseInfo.jsp
+	// check whether there is a record in StudentPractice table by studentId and practiceId
+	Optional<StudentPractice> findByStudentIdAndPracticeId(Long studentId, Long practiceId);
 	
+	// delete existing record in StudentPracice table by studentId and practiceId
+	void deleteByStudentIdAndPracticeId(Long studentId, Long practiceId);
+
 }
