@@ -87,6 +87,9 @@ public interface ConnectedService {
 	// retrieve PracticeAnswer by Id
 	PracticeAnswer getPracticeAnswer(Long id);
 
+	// retrieve PracticeAnswer by Practice
+	PracticeAnswerDTO findPracticeAnswerByPractice(Long id);
+
 	// register PracticeAnswer
 	PracticeAnswer addPracticeAnswer(PracticeAnswer crs);
 	
@@ -94,7 +97,10 @@ public interface ConnectedService {
 	PracticeAnswer updatePracticeAnswer(PracticeAnswer newWork, Long id);
 
 	// get Answer sheet by Practice
-	List<Integer> getAnswersByPractice(Long practiceid);
+	List<Integer> getAnswersByPractice(Long practiceId);
+
+	// get Student's answer by Student & Practice
+	List<Integer> getStudentAnswer(Long studentId, Long  practionId);
 
 	// get how many question answer sheet has
 	int getAnswerCount(Long practiceId);
@@ -111,5 +117,10 @@ public interface ConnectedService {
 	// update PracticeAnswer info by Id
 	StudentPractice updateStudentPractice(StudentPractice newWork, Long id);
 
+	// check if student has done the practice
+	boolean isStudentPracticeExist(Long studentId, Long practiceId);
+
+	// delete existing record to take test again
+	void deleteStudentPractice(Long studentId, Long practiceId); 
 	
 }
