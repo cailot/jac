@@ -13,17 +13,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -38,37 +32,28 @@ public class Test{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
+    @Column(length = 300, nullable = true)
+    private String pdfPath;
+
+    @Column(length = 2, nullable = true)
+    private Integer volume;
+
     @Column(length = 50, nullable = true)
-    private String name;
-    
-    @Column(length = 10, nullable = false)
-    private String grade;
-    
+    private String info;
+
+    @Column
+    private boolean active;
+
     @CreationTimestamp
     private LocalDate registerDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gradeId")
+    private Grade grade;	
+     
+    
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "testTypeId")
     private TestType testType;
-
-     @ManyToMany(fetch = FetchType.LAZY, cascade = {
-		CascadeType.PERSIST,
-		CascadeType.MERGE,
-		CascadeType.REFRESH,
-		CascadeType.DETACH
-	})
-    @JoinTable(name="Test_Subject",
-    joinColumns = @JoinColumn(name="testId"),
-    inverseJoinColumns = @JoinColumn(name="subjectId")
-    )
-    private Set<Subject> subjects = new HashSet<>();
-
-    @OneToMany(mappedBy = "test", cascade = {
-		CascadeType.PERSIST,
-	   CascadeType.MERGE,
-	   CascadeType.REFRESH,
-	   CascadeType.DETACH
-   	})
-    private Set<StudentTest> studentTests = new HashSet<>();
 
 }

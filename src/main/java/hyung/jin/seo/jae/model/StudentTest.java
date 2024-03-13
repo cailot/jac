@@ -16,13 +16,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 
 @Getter
 @Setter
@@ -49,17 +49,9 @@ public class StudentTest{ // bridge table between Student & Test
     private LocalDate registerDate;
 
 	@Column
-	private boolean edit;
+	private double score;
 
-	@Column(length = 100)
-    private String editReason;
-
-	@OneToMany(mappedBy = "studentTest", 
-		cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Score> scores = new ArrayList<>();
-	
-	private void addScore(Score score){
-		scores.add(score);
-	}
-
+	@ElementCollection
+    @CollectionTable(name = "StudentTestAnswerCollection") // Set the custom table name
+    private List<Integer> answers = new ArrayList<>();
 }
