@@ -1,6 +1,5 @@
 package hyung.jin.seo.jae.model;
 
-import org.hibernate.annotations.CreationTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +11,15 @@ import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import java.time.LocalDate;
+import javax.persistence.ElementCollection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,35 +27,25 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Practice")
-public class Practice {
+@Table(name="TestAnswer")
+public class TestAnswer {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
 
     @Column(length = 300, nullable = true)
+    private String videoPath;
+
+    @Column(length = 300, nullable = true)
     private String pdfPath;
 
-    @Column(length = 2, nullable = true)
-    private Integer volume;
-
-    @Column(length = 50, nullable = true)
-    private String info;
-
-    @Column
-    private boolean active;
-
-    @CreationTimestamp
-    private LocalDate registerDate;
+    @ElementCollection
+    @CollectionTable(name = "TestAnswerCollection") // Set the custom table name
+    private List<Integer> answers = new ArrayList<>();
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gradeId")
-    private Grade grade;
-	
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "practiceTypeId")
-    private PracticeType practiceType;
-
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "testId")
+    private Test test;
     
 }

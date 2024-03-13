@@ -425,7 +425,7 @@ function collectAndSubmitAnswers() {
 			document.getElementById("practiceId4Answer").value = '';
     		// Optionally, close the modal after submitting
     		$('#registerPracticeAnswerModal').modal('hide');
-			$('#success-alert .modal-body').html('Upgrade Answer Sheet is successfully updated.');
+			$('#success-alert .modal-body').html('Answer Sheet is successfully updated.');
 	        $('#success-alert').modal('show');
 			// Attach an event listener to the success alert close event
 			$('#success-alert').on('hidden.bs.modal', function () {
