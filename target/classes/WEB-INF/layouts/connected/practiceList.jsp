@@ -815,19 +815,18 @@ function collectAndSubmitAnswers() {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 20px; margin-right: 20px;">
-								<div class="col-md-2">
+							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+								<div class="col-md-3">
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
 										<c:forEach var="i" begin="1" end="50">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>
 								</div>
-								<div class="offset-md-1"></div>
-								<div class="col-md-7">
+								<div class="col-md-7" style="text-align: right;">
 									<style>
 										.form-check-input {
-											margin-right: 10px;
+											margin-right: 5px;
 										}
 										.form-check-label {
 											margin-right: 25px;
