@@ -103,6 +103,9 @@ public class JaeController {
 		return "practiceListPage";
 	}
 
-	
+	@GetMapping("/testList")
+	public String test(HttpSession session) {
+		return "testListPage";
+	}
 
 }

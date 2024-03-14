@@ -27,6 +27,8 @@ import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
+import hyung.jin.seo.jae.dto.TestAnswerDTO;
+import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
@@ -34,6 +36,8 @@ import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.Subject;
+import hyung.jin.seo.jae.model.Test;
+import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -112,6 +116,27 @@ public class ConnectedController {
 		return dto;
 	}
 
+	// register test
+	@PostMapping("/addTest")
+	@ResponseBody
+	public TestDTO registerTest(@RequestBody TestDTO formData) {
+		// 1. create barebone
+		Test work = formData.convertToTest();
+		// 2. set active to true as default
+		work.setActive(true);
+		// 3. set Grade & PracticeType
+		Grade grade = codeService.getGrade(Long.parseLong(formData.getGrade()));
+		TestType type = codeService.getTestType(formData.getTestType());
+		// 4. associate Grade & PracticeType
+		work.setGrade(grade);
+		work.setTestType(type);
+		// 5. register Practice
+		Test added = connectedService.addTest(work);
+		// 6. return dto
+		TestDTO dto = new TestDTO(added);
+		return dto;
+	}
+
 	// update existing homework
 	@PutMapping("/updateHomework")
 	@ResponseBody
@@ -122,7 +147,7 @@ public class ConnectedController {
 			// 2. update Homework
 			work = connectedService.updateHomework(work, Long.parseLong(formData.getId()));
 			// 3.return flag
-			return ResponseEntity.ok("\"Homework updated\"");
+			return ResponseEntity.ok("\"Homework updated successfully\"");
 		}catch(Exception e){
 			String message = "Error updating Homework : " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
@@ -139,7 +164,7 @@ public class ConnectedController {
 			// 2. update Homework
 			work = connectedService.updateExtrawork(work, Long.parseLong(formData.getId()));
 			// 3.return flag
-			return ResponseEntity.ok("\"Extrawork updated\"");
+			return ResponseEntity.ok("\"Extrawork updated successfully\"");
 		}catch(Exception e){
 			String message = "Error updating Extrawork : " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
@@ -156,9 +181,26 @@ public class ConnectedController {
 			// 2. update Homework
 			work = connectedService.updatePractice(work, Long.parseLong(formData.getId()));
 			// 3.return flag
-			return ResponseEntity.ok("\"Practice updated\"");
+			return ResponseEntity.ok("\"Practice updated successfully\"");
 		}catch(Exception e){
 			String message = "Error updating Practice : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+	
+	// update existing test
+	@PutMapping("/updateTest")
+	@ResponseBody
+	public ResponseEntity<String> updateTest(@RequestBody TestDTO formData) {
+		try{
+			// 1. create barebone Homework
+			Test work = formData.convertToTest();
+			// 2. update Homework
+			work = connectedService.updateTest(work, Long.parseLong(formData.getId()));
+			// 3.return flag
+			return ResponseEntity.ok("\"Test updated successfully\"");
+		}catch(Exception e){
+			String message = "Error updating Test : " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
@@ -187,6 +229,15 @@ public class ConnectedController {
 	public PracticeDTO getPractice(@PathVariable Long id) {
 		Practice work = connectedService.getPractice(id);
 		PracticeDTO dto = new PracticeDTO(work);
+		return dto;
+	}
+
+	// get test
+	@GetMapping("/getTest/{id}")
+	@ResponseBody
+	public TestDTO getTest(@PathVariable Long id) {
+		Test work = connectedService.getTest(id);
+		TestDTO dto = new TestDTO(work);
 		return dto;
 	}
 
@@ -243,6 +294,21 @@ public class ConnectedController {
 		return "practiceListPage";
 	}
 
+	@GetMapping("/filterTest")
+	public String listTests(
+			@RequestParam(value = "listTestType", required = false) String testType,
+			@RequestParam(value = "listGrade", required = false) String grade,
+			@RequestParam(value = "listVolume", required = false) String volume,
+			Model model) {
+		List<TestDTO> dtos = new ArrayList();
+		String filteredType = StringUtils.defaultString(testType, "0");
+		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
+		String filteredVolume = StringUtils.defaultString(volume, "0");
+		dtos = connectedService.listTest(Integer.parseInt(filteredType), filteredGrade, Integer.parseInt(filteredVolume));		
+		model.addAttribute(JaeConstants.TEST_LIST, dtos);
+		return "testListPage";
+	}
+
 	// bring summary of extrawork
 	@GetMapping("/summaryExtrawork/{grade}")
 	@ResponseBody
@@ -293,14 +359,21 @@ public class ConnectedController {
 		return ResponseEntity.ok("\"Success\"");
     }
 
-		// check if PracticeAnswer exists or not
-	@GetMapping("/checkAnswer/{practiceId}")
+	// check if PracticeAnswer exists or not
+	@GetMapping("/checkPracticeAnswer/{practiceId}")
 	@ResponseBody
-	public PracticeAnswerDTO findAnswer(@PathVariable Long practiceId) {
+	public PracticeAnswerDTO findPracticeAnswer(@PathVariable Long practiceId) {
 		PracticeAnswerDTO answer = connectedService.findPracticeAnswerByPractice(practiceId);
 		return answer;
 	}
 
+	// check if TestAnswer exists or not
+	@GetMapping("/checkTestAnswer/{testId}")
+	@ResponseBody
+	public TestAnswerDTO findTestAnswer(@PathVariable Long testId) {
+		TestAnswerDTO answer = connectedService.findTestAnswerByTest(testId);
+		return answer;
+	}
 
 	// helper method converting answers Map to List
 	private List<Integer> convertAnswers(List<Map<String, Object>> answers) {

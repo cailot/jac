@@ -43,6 +43,7 @@ public class SqlScriptRunner {
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/grade.sql")); // Grade
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testType.sql")); // TestType
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceType.sql")); // TestType
+			// ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testType.sql")); // TestType
 			
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/braybrook_student.sql")); // Student
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/attendance_test.sql")); // attendane_test

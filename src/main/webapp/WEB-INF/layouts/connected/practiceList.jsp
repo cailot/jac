@@ -222,7 +222,7 @@ function displayAnswerSheet(practiceId) {
 	// if exists, then display info
 	// if not, show empty form to register
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/checkAnswer/' + practiceId,
+		url: '${pageContext.request.contextPath}/connected/checkPracticeAnswer/' + practiceId,
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;

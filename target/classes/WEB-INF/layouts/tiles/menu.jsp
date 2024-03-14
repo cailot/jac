@@ -114,6 +114,7 @@
 			  	<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
 				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/practiceList">Practice</a>
+				<a class="dropdown-item" style="color: #212529;" href="${pageContext.request.contextPath}/testList">Test</a>
 			</div>
 		</li>
 		<li class="nav-item dropdown">

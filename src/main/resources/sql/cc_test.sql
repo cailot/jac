@@ -49,5 +49,44 @@ INSERT INTO jae.Extrawork (active,name,pdfPath,registerDate,videoPath,gradeId) V
 INSERT INTO jae.Extrawork (active,name,pdfPath,registerDate,videoPath,gradeId) VALUES (1,'Terms Symbols','https://vod.writingand.com/documents/pdf/2014/K2/VOL3/English_workbook_level2_volume3_Set_25.pdf','2024-03-07','https://djyb0v5s4sgfh.cloudfront.net/2019/MathsTopic/K2/3D_Shapes.mp4',1);
 INSERT INTO jae.Extrawork (active,name,pdfPath,registerDate,videoPath,gradeId) VALUES (1,'Chance','https://vod.writingand.com/documents/pdf/2014/K2/VOL3/English_workbook_level2_volume3_Set_25.pdf','2024-03-07','https://djyb0v5s4sgfh.cloudfront.net/2019/MathsTopic/K2/3D_Shapes.mp4',1);
 
+-- Practice
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'5 QQ','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,4);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,5);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,6);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'practiceId - 4','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',2,1,4);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'test','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',3,1,4);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'s4','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',4,1,4);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'5','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',5,1,4);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',5,2,2);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-10',1,1,1);
+INSERT INTO jae.Practice (active,info,pdfPath,registerDate,volume,gradeId,practiceTypeId) VALUES (1,'w','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-12',2,12,1);
+
+-- PracticeAnswer
+INSERT INTO jae.PracticeAnswer (pdfPath,practiceId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',3,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.PracticeAnswer (pdfPath,practiceId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',1,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.PracticeAnswer (pdfPath,practiceId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',5,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.PracticeAnswer (pdfPath,practiceId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',4,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.PracticeAnswer (pdfPath,practiceId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',2,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+
+-- Test
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'5 QQ','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,4);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,5);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-08',1,1,6);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'practiceId - 4','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',2,1,4);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'test','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',3,1,4);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'s4','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',4,1,4);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'5','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',5,1,4);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-09',5,2,2);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-10',1,1,1);
+INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'w','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-12',2,12,1);
+
+-- TestAnswer
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',3,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',1,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',5,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',4,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',2,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+
+
 
 COMMIT;

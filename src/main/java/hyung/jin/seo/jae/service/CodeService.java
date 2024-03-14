@@ -12,6 +12,7 @@ import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.State;
 import hyung.jin.seo.jae.model.Subject;
+import hyung.jin.seo.jae.model.TestType;
 
 public interface CodeService {
 
@@ -80,5 +81,11 @@ public interface CodeService {
 
 	// list for initial practice type value
 	List<SimpleBasketDTO> loadPracticeType();
+
+	// get test type
+	TestType getTestType(Long id);
+
+	// list for initial test type value
+	List<SimpleBasketDTO> loadTestType();
 
 }

@@ -1,7 +1,6 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
-import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.Test;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

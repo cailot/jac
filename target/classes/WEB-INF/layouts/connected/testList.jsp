@@ -14,7 +14,7 @@
 
 <script>
 $(document).ready(function () {
-	$('#practiceListTable').DataTable({
+	$('#testListTable').DataTable({
 		language: {
 			search: 'Filter:'
 		},
@@ -34,59 +34,37 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
-	listPracticeType('#listPracticeType');
-	listPracticeType('#addPracticeType');
-	listPracticeType('#editPracticeType');
-
-	// duration field is disabled & make duration empty for Pdf
-	// document.getElementById('addPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('addDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('addVideo').addEventListener('change', function() {
-    //     document.getElementById('addDuration').disabled = !this.checked;
-    // });
-	// document.getElementById('editPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('editDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('editVideo').addEventListener('change', function() {
-    //     document.getElementById('editDuration').disabled = !this.checked;
-    // });
+	listTestType('#listTestType');
+	listTestType('#addTestType');
+	listTestType('#editTestType');
 
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Practice
+//		Register Test
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function addPractice() {
+function addTest() {
 	// Get from form data
-	var practice = {
-		practiceType : $("#addPracticeType").val(),
+	var testItem = {
+		testType : $("#addTestType").val(),
 		grade: $("#addGrade").val(),
 		volume: $("#addVolume").val(),
 		info : $("#addInfo").val(),
 		pdfPath : $("#addPdfPath").val()
 	}
-	console.log(practice);
+	console.log(testItem);
 
 	// Send AJAX to server
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/addPractice',
+		url: '${pageContext.request.contextPath}/connected/addTest',
 		type: 'POST',
 		dataType: 'json',
-		data: JSON.stringify(practice),
+		data: JSON.stringify(testItem),
 		contentType: 'application/json',
 		success: function (data) {
 			// Display the success alert
 			$('#success-alert .modal-body').text(
-				'New Practice is registered successfully.');
+				'New Test is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -101,34 +79,34 @@ function addPractice() {
 			}
 		}
 	});
-	$('#registerPracticeModal').modal('hide');
+	$('#registerTestModal').modal('hide');
 	// flush all registered data
-	document.getElementById("practiceRegister").reset();
+	document.getElementById("testRegister").reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Practice
+//		Retrieve Test
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrievePracticeInfo(id) {
+function retrieveTestInfo(id) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPractice/' + id,
+		url: '${pageContext.request.contextPath}/connected/getTest/' + id,
 		type: 'GET',
-		success: function (practice) {
+		success: function (testItem) {
 			// console.log(homework);
-			$("#editId").val(practice.id);
-			$("#editPracticeType").val(practice.practiceType);
-			$("#editGrade").val(practice.grade);
-			$("#editVolume").val(practice.volume);
-			$("#editInfo").val(practice.info);
-			$("#editPdfPath").val(practice.pdfPath);	
-			$("#editActive").val(practice.active);
-			if (practice.active == true) {
+			$("#editId").val(testItem.id);
+			$("#editTestType").val(testItem.testType);
+			$("#editGrade").val(testItem.grade);
+			$("#editVolume").val(testItem.volume);
+			$("#editInfo").val(testItem.info);
+			$("#editPdfPath").val(testItem.pdfPath);	
+			$("#editActive").val(testItem.active);
+			if (testItem.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			$('#editPracticeModal').modal('show');
+			$('#editTestModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -149,14 +127,14 @@ function updateEditActiveValue(checkbox) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Practice
+//		Update Test
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function updatePracticeInfo() {
+function updateTestInfo() {
 	var workId = $("#editId").val();
 	// get from formData
-	var practice = {
+	var testItem = {
 		id: workId,
-		practiceType : $("#editPracticeType").val(),
+		testType : $("#editTestType").val(),
 		grade: $("#editGrade").val(),
 		volume: $("#editVolume").val(),
 		info: $("#editInfo").val(),
@@ -166,10 +144,10 @@ function updatePracticeInfo() {
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updatePractice',
+		url: '${pageContext.request.contextPath}/connected/updateTest',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(practice),
+		data: JSON.stringify(testItem),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -185,7 +163,7 @@ function updatePracticeInfo() {
 		}
 	});
 
-	$('#editPracticeModal').modal('hide');
+	$('#editTestModal').modal('hide');
 	// flush all registered data
 	clearPracticeForm("practiceEdit");
 }
@@ -212,9 +190,9 @@ function updateEditActiveValue(checkbox) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Answer Sheet
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function displayAnswerSheet(practiceId) {
-	//save practiceId 
-	document.getElementById("practiceId4Answer").value = practiceId;
+function displayAnswerSheet(testId) {
+	//save testId 
+	document.getElementById("testId4Answer").value = testId;
 	// clear answerId
 	document.getElementById("answerId").value = '';
 
@@ -222,7 +200,7 @@ function displayAnswerSheet(practiceId) {
 	// if exists, then display info
 	// if not, show empty form to register
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/checkPracticeAnswer/' + practiceId,
+		url: '${pageContext.request.contextPath}/connected/checkTestAnswer/' + testId,
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
@@ -274,35 +252,13 @@ function displayAnswerSheet(practiceId) {
 				answerQuestionNumberSelect.value = "1";
 			}
 			// Display the modal
-			$('#registerPracticeAnswerModal').modal('show');
+			$('#registerTestAnswerModal').modal('show');
 		},
 		error: function (error) {
             // Handle error response
             console.error(error);
         }
     });
-
-
-
-
-
-
-
-
-
-
-
-
-	// Clear or reset the values in registerPracticeAnswerModal
-    // document.getElementById("addAnswerVideoPath").value = "";
-    // document.getElementById("addAnswerPdfPath").value = "";
-	// var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-    // answerSheetTableBody.innerHTML = "";
-	// var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
-    // answerQuestionNumberSelect.value = "1";
-
-	// display modal
-	// $('#registerPracticeAnswerModal').modal('show');
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -375,7 +331,7 @@ function addAnswerToTable() {
 function collectAndSubmitAnswers() {
     // Collect values from the modal
 	var answerId = document.getElementById("answerId").value;
-	var practiceId = document.getElementById("practiceId4Answer").value;
+	var practiceId = document.getElementById("testId4Answer").value;
     var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
     var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
 
@@ -422,9 +378,9 @@ function collectAndSubmitAnswers() {
             // Handle success response
             console.log(response);
 			// clear practionId to avoid confusion
-			document.getElementById("practiceId4Answer").value = '';
+			document.getElementById("testId4Answer").value = '';
     		// Optionally, close the modal after submitting
-    		$('#registerPracticeAnswerModal').modal('hide');
+    		$('#registerTestAnswerModal').modal('hide');
 			$('#success-alert .modal-body').html('Answer Sheet is successfully updated.');
 	        $('#success-alert').modal('show');
 			// Attach an event listener to the success alert close event
@@ -439,26 +395,19 @@ function collectAndSubmitAnswers() {
             console.error(error);
         }
     });
-
-	
 }
-
-
-
-
-
 
 </script>
 
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterPractice">
+		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterTest">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-3">
-						<label for="listPracticeType" class="label-form">Practice Type</label>
-						<select class="form-control" id="listPracticeType" name="listPracticeType">
+						<label for="listTestType" class="label-form">Test Type</label>
+						<select class="form-control" id="listTestType" name="listTestType">
 							<option value="0">All</option>
 						</select>
 					</div>
@@ -475,26 +424,20 @@ function collectAndSubmitAnswers() {
 						<script>
 							// Get a reference to the select element
 							var selectElement = document.getElementById("listVolume");
-
 							// Create a new option element for 'All'
 							var allOption = document.createElement("option");
-
 							// Set the value and text content for the 'All' option
 							allOption.value = "0";
 							allOption.textContent = "All";
-
 							// Append the 'All' option to the select element
 							selectElement.appendChild(allOption);
-
 							// Loop to add options from 1 to 50
 							for (var i = 1; i <= 50; i++) {
 								// Create a new option element
 								var option = document.createElement("option");
-
 								// Set the value and text content for the option
 								option.value = i;
 								option.textContent = i;
-
 								// Append the option to the select element
 								selectElement.appendChild(option);
 							}
@@ -507,7 +450,7 @@ function collectAndSubmitAnswers() {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerPracticeModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -515,10 +458,10 @@ function collectAndSubmitAnswers() {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="practiceListTable" class="table table-striped table-bordered">
+							<table id="testListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Practice Type</th>
+										<th>Test Type</th>
 										<th>Grade</th>
 										<th>Set</th>
 										<th>Document Path</th>
@@ -529,27 +472,25 @@ function collectAndSubmitAnswers() {
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${PracticeList != null}">
-											<c:forEach items="${PracticeList}" var="practice">
+										<c:when test="${TestList != null}">
+											<c:forEach items="${TestList}" var="testItem">
 												<tr>
 													<td class="small ellipsis">
 														<span>
 															<c:choose>
-																<c:when test="${practice.practiceType == '1'}">Mega English</c:when>
-																<c:when test="${practice.practiceType == '2'}">Mega Mathematics</c:when>
-																<c:when test="${practice.practiceType == '3'}">Mega General Ability</c:when>
-																<c:when test="${practice.practiceType == '4'}">NAPLAN Math</c:when>
-																<c:when test="${practice.practiceType == '5'}">NAPLAN Reading</c:when>
-																<c:when test="${practice.practiceType == '6'}">NAPLAN LC</c:when>
-																<c:when test="${practice.practiceType == '7'}">Revision English</c:when>
-																<c:when test="${practice.practiceType == '8'}">Revision Mathematics</c:when>
-																<c:when test="${practice.practiceType == '9'}">Revision Science</c:when>
-																<c:when test="${practice.practiceType == '10'}">Reeading Comprehension (EDU)</c:when>
-																<c:when test="${practice.practiceType == '11'}">Verbal Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '12'}">Mathematics (EDU)</c:when>
-																<c:when test="${practice.practiceType == '13'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '14'}">Humanities (ACER)</c:when>
-																<c:when test="${practice.practiceType == '15'}">Mathematics (ACER)</c:when>
+																<c:when test="${testItem.testType == '1'}">Mega English</c:when>
+																<c:when test="${testItem.testType == '2'}">Mega Mathematics</c:when>
+																<c:when test="${testItem.testType == '3'}">Mega General Ability</c:when>
+																<c:when test="${testItem.testType == '4'}">Revision English</c:when>
+																<c:when test="${testItem.testType == '5'}">Revision Mathematics</c:when>
+																<c:when test="${testItem.testType == '6'}">Revision Science</c:when>
+																<c:when test="${testItem.testType == '7'}">Reeading Comprehension (EDU)</c:when>
+																<c:when test="${testItem.testType == '8'}">Verbal Reasoning (EDU)</c:when>
+																<c:when test="${testItem.testType == '9'}">Mathematics (EDU)</c:when>
+																<c:when test="${testItem.testType == '10'}">Numerical Reasoning (EDU)</c:when>
+																<c:when test="${testItem.testType == '11'}">Humanities (ACER)</c:when>
+																<c:when test="${testItem.testType == '12'}">Mathematics (ACER)</c:when>
+																<c:when test="${testItem.testType == '13'}">Mock Test</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -557,46 +498,46 @@ function collectAndSubmitAnswers() {
 													<td class="small ellipsis">
 														<span>
 															<c:choose>
-																<c:when test="${practice.grade == '1'}">P2</c:when>
-																<c:when test="${practice.grade == '2'}">P3</c:when>
-																<c:when test="${practice.grade == '3'}">P4</c:when>
-																<c:when test="${practice.grade == '4'}">P5</c:when>
-																<c:when test="${practice.grade == '5'}">P6</c:when>
-																<c:when test="${practice.grade == '6'}">S7</c:when>
-																<c:when test="${practice.grade == '7'}">S8</c:when>
-																<c:when test="${practice.grade == '8'}">S9</c:when>
-																<c:when test="${practice.grade == '9'}">S10</c:when>
-																<c:when test="${practice.grade == '10'}">S10E</c:when>
-																<c:when test="${practice.grade == '11'}">TT6</c:when>
-																<c:when test="${practice.grade == '12'}">TT8</c:when>
-																<c:when test="${practice.grade == '13'}">TT8E</c:when>
-																<c:when test="${practice.grade == '14'}">SRW4</c:when>
-																<c:when test="${practice.grade == '15'}">SRW5</c:when>
-																<c:when test="${practice.grade == '16'}">SRW6</c:when>
-																<c:when test="${practice.grade == '17'}">SRW7</c:when>
-																<c:when test="${practice.grade == '18'}">SRW8</c:when>
-																<c:when test="${practice.grade == '19'}">JMSS</c:when>
-																<c:when test="${practice.grade == '20'}">VCE</c:when>
+																<c:when test="${testItem.grade == '1'}">P2</c:when>
+																<c:when test="${testItem.grade == '2'}">P3</c:when>
+																<c:when test="${testItem.grade == '3'}">P4</c:when>
+																<c:when test="${testItem.grade == '4'}">P5</c:when>
+																<c:when test="${testItem.grade == '5'}">P6</c:when>
+																<c:when test="${testItem.grade == '6'}">S7</c:when>
+																<c:when test="${testItem.grade == '7'}">S8</c:when>
+																<c:when test="${testItem.grade == '8'}">S9</c:when>
+																<c:when test="${testItem.grade == '9'}">S10</c:when>
+																<c:when test="${testItem.grade == '10'}">S10E</c:when>
+																<c:when test="${testItem.grade == '11'}">TT6</c:when>
+																<c:when test="${testItem.grade == '12'}">TT8</c:when>
+																<c:when test="${testItem.grade == '13'}">TT8E</c:when>
+																<c:when test="${testItem.grade == '14'}">SRW4</c:when>
+																<c:when test="${testItem.grade == '15'}">SRW5</c:when>
+																<c:when test="${testItem.grade == '16'}">SRW6</c:when>
+																<c:when test="${testItem.grade == '17'}">SRW7</c:when>
+																<c:when test="${testItem.grade == '18'}">SRW8</c:when>
+																<c:when test="${testItem.grade == '19'}">JMSS</c:when>
+																<c:when test="${testItem.grade == '20'}">VCE</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${practice.volume}" />
+															<c:out value="${testItem.volume}" />
 														</span>
 													</td>
 													<td class="small text-truncate" style="max-width: 250px;">
 														<span>
-															<c:out value="${practice.pdfPath}" />
+															<c:out value="${testItem.pdfPath}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${practice.info}" />
+															<c:out value="${testItem.info}" />
 														</span>
 													</td>
-													<c:set var="active" value="${practice.active}" />
+													<c:set var="active" value="${testItem.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
@@ -610,9 +551,9 @@ function collectAndSubmitAnswers() {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrievePracticeInfo('${practice.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveTestInfo('${testItem.id}')">
 														</i>&nbsp;&nbsp;
-														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${practice.id}')">
+														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
 														</i>
 													</td>
 												</tr>
@@ -630,18 +571,18 @@ function collectAndSubmitAnswers() {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerPracticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerTestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Registration</header>
-					<form id="practiceRegister">
+					<header class="text-primary font-weight-bold">Test Registration</header>
+					<form id="testRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
 								<div class="col-md-8">
-									<label for="addPracticeType" class="label-form">Practice Type</label>
-									<select class="form-control" id="addPracticeType" name="addPracticeType">
+									<label for="addTestType" class="label-form">Test Type</label>
+									<select class="form-control" id="addTestType" name="addTestType">
 									</select>
 								</div>
 								<div class="col-md-2">
@@ -688,8 +629,8 @@ function collectAndSubmitAnswers() {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addPractice()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="addTest()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -698,7 +639,7 @@ function collectAndSubmitAnswers() {
 </div>
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editPracticeModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="editTestModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
@@ -708,8 +649,8 @@ function collectAndSubmitAnswers() {
 						<div class="form-group">
 							<div class="form-row mt-3">
 								<div class="col-md-8">
-									<label for="editPracticeType" class="label-form">Practice Type</label>
-									<select class="form-control" id="editPracticeType" name="editPracticeType" disabled>
+									<label for="editTestType" class="label-form">Practice Type</label>
+									<select class="form-control" id="editTestType" name="editTestType" disabled>
 									</select>
 								</div>
 								<div class="col-md-2">
@@ -765,7 +706,7 @@ function collectAndSubmitAnswers() {
 						<input type="hidden" id="editId" name="editId" />
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updatePracticeInfo()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-primary" onclick="updateTestInfo()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -776,13 +717,12 @@ function collectAndSubmitAnswers() {
 
 
 <!-- Add Answer Form Dialogue -->
-<div class="modal fade" id="registerPracticeAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerTestAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Answer Sheet</header>
-					<!-- <form id="practiceAnswerRegister"> -->
+					<header class="text-primary font-weight-bold">Test Answer Sheet</header>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
@@ -801,11 +741,12 @@ function collectAndSubmitAnswers() {
 						</div>
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 60%; margin-left: auto; margin-right: auto;">
+								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
 											<th data-field="question">Question #</th>
 											<th data-field="answer">Answer</th>
+											<th data-field="answer">Topic</th>
 											<th data-field="answer">Remove</th>
 										</tr>
 									</thead>
@@ -814,23 +755,27 @@ function collectAndSubmitAnswers() {
 								</table>
 							</div>
 						</div>
+						<%--
 						<div class="form-group">
 							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
 										<c:forEach var="i" begin="1" end="50">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>
 								</div>
-								<div class="col-md-7" style="text-align: right;">
+								<div class="col-md-5" style="text-align: center;">
 									<style>
+										
 										.form-check-input {
-											margin-right: 5px;
+											margin-right: 10px;
 										}
+										
 										.form-check-label {
-											margin-right: 25px;
+											margin-right: 15px;
 										}
+										
 									</style>
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
 									<label class="form-check-label" for="inlineRadio1">A</label>
@@ -843,16 +788,50 @@ function collectAndSubmitAnswers() {
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
 									<label class="form-check-label" for="inlineRadio5">E</label>
 								</div>
+								<div class="col-md-3">
+									<input type="text" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
+								</div>
 								<div class="col-md-2">
 									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
 								</div>
+							</div>
 						</div>
+						--%>
+
+
+						<div class="form-group">
+							<div class="form-row align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+								<div class="col-md-3">
+									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
+										<c:forEach var="i" begin="1" end="50">
+											<option value="${i}">${i}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="col-md-2">
+									<select class="form-control" id="inlineRadioOptions" name="inlineRadioOptions">
+										<c:forEach var="i" begin="1" end="5">
+											<option value="${i}">${i}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="col-md-5">
+									<input type="text" class="form-control" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
+								</div>
+								<div class="col-md-2">
+									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
+								</div>
+							</div>
+						</div>
+						
+
+
 						<input type="hidden" id="answerId" name="answerId" />
-						<input type="hidden" id="practiceId4Answer" name="practiceId4Answer" />
+						<input type="hidden" id="testId4Answer" name="testId4Answer" />
 					<!-- </form> -->
 					<div class="mt-4 d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
