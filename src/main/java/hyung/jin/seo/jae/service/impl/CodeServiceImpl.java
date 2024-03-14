@@ -15,11 +15,13 @@ import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.State;
 import hyung.jin.seo.jae.model.Subject;
+import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.repository.BranchRepository;
 import hyung.jin.seo.jae.repository.GradeRepository;
 import hyung.jin.seo.jae.repository.PracticeTypeRepository;
 import hyung.jin.seo.jae.repository.StateRepository;
 import hyung.jin.seo.jae.repository.SubjectRepository;
+import hyung.jin.seo.jae.repository.TestTypeRepository;
 import hyung.jin.seo.jae.service.CodeService;
 
 @Service
@@ -39,6 +41,9 @@ public class CodeServiceImpl implements CodeService {
 
 	@Autowired
 	private PracticeTypeRepository practiceTypeRepository;
+
+	@Autowired
+	private TestTypeRepository testTypeRepository;
 
 	@Override
 	public List<StateDTO> allStates() {
@@ -305,6 +310,17 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public TestType getTestType(Long id) {
+		TestType type = null;
+		try{
+			type = testTypeRepository.findById(id).get();
+		}catch(Exception e){
+			System.out.println("No TestType found");
+		}
+		return type;
+	}
+
+	@Override
 	public List<SimpleBasketDTO> loadPracticeType() {
 		List<Object[]> objects = new ArrayList<>();
 		try{
@@ -318,7 +334,23 @@ public class CodeServiceImpl implements CodeService {
 			dtos.add(dto);
 		}
 		return dtos;
-
 	}
+
+	@Override
+	public List<SimpleBasketDTO> loadTestType() {
+		List<Object[]> objects = new ArrayList<>();
+		try{
+			objects = testTypeRepository.loadTestType();
+		}catch(Exception e){
+			System.out.println("No PracticeType found");
+		}
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			SimpleBasketDTO dto = new SimpleBasketDTO(object);
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+
 
 }
