@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
@@ -37,6 +40,8 @@ import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.model.Test;
+import hyung.jin.seo.jae.model.TestAnswer;
+import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
@@ -319,9 +324,9 @@ public class ConnectedController {
 		return dtos;
 	}
 	
-	@PostMapping(value = "/saveAnswerSheet")
+	@PostMapping(value = "/savePracticeAnswerSheet")
 	@ResponseBody
-    public ResponseEntity<String> saveAnswerSheet(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> savePracticeAnswerSheet(@RequestBody Map<String, Object> payload) {
         // Extract practiceId and answers from the payload
 		String answerId = payload.get("answerId").toString();
 		String practiceId = payload.get("practiceId").toString();
@@ -355,6 +360,58 @@ public class ConnectedController {
 			pa.setAnswers(answer);
 			// 3. update PracticeAnswer
 			connectedService.updatePracticeAnswer(pa, Long.parseLong(answerId));
+		}
+		return ResponseEntity.ok("\"Success\"");
+    }
+
+	@PostMapping(value = "/saveTestAnswerSheet")
+	@ResponseBody
+    public ResponseEntity<String> saveTestAnswerSheet(@RequestBody Map<String, Object> payload) {
+        // Extract practiceId and answers from the payload
+		String answerId = payload.get("answerId").toString();
+		String testId = payload.get("testId").toString();
+		String video = payload.get("videoPath").toString();
+		String pdf = payload.get("pdfPath").toString();
+		List<TestAnswerItem> items = new ArrayList<>();
+		// convert the answers list from the payload to a List<Map<String, Object>>
+		ObjectMapper mapper = new ObjectMapper();
+		List<Map<String, Object>> answerList = mapper.convertValue(payload.get("answers"), new TypeReference<List<Map<String, Object>>>() {});
+
+		// Now iterate over answerList to access question, answer, and topic for each entry
+		for (Map<String, Object> answer : answerList) {
+			String question = StringUtils.defaultString(answer.get("question").toString(), "0");
+			String selectedAnswer = StringUtils.defaultString(answer.get("answer").toString(), "0");
+			String topic = StringUtils.defaultString(answer.get("topic").toString());
+			// create TestAnswerItem and put it into items
+			TestAnswerItem item = new TestAnswerItem(Integer.parseInt(question), Integer.parseInt(selectedAnswer), topic);
+			items.add(item);
+		}
+
+		// if answerId has some value, update TestAnswer; otherwise register.
+		if(StringUtils.isBlank(answerId)){
+			// ADD
+			// 1. create bare bone
+			TestAnswer ta = new TestAnswer();
+			// 2. populate PracticeAnswer
+			ta.setVideoPath(video);
+			ta.setPdfPath(pdf);
+			ta.setAnswers(items);
+			// 3. get Test
+			Test test = connectedService.getTest(Long.parseLong(testId));
+			// 4. associate Test
+			ta.setTest(test);
+			// 5. register TestAnswer
+			connectedService.addTestAnswer(ta);
+		}else{
+			// UPDATE
+			// 1. get TestAnswer
+			TestAnswer ta = connectedService.getTestAnswer(Long.parseLong(answerId));
+			// 2. populate PracticeAnswer
+			ta.setVideoPath(video);
+			ta.setPdfPath(pdf);
+			ta.setAnswers(items);
+			// 3. update PracticeAnswer
+			connectedService.updateTestAnswer(ta, Long.parseLong(answerId));
 		}
 		return ResponseEntity.ok("\"Success\"");
     }
