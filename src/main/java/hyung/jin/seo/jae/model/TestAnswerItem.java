@@ -12,11 +12,17 @@ import javax.persistence.Embeddable;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @Embeddable
 public class TestAnswerItem {
     
-	private int number;
+	private int question;
 	private int answer;
 	private String topic;
+
+	public TestAnswerItem(int question, int answer, String topic){
+		this.question = question;
+		this.answer = answer;
+		this.topic = topic;
+	}
 }

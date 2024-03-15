@@ -204,7 +204,7 @@ function displayAnswerSheet(testId) {
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
-			//console.log(answerSheet);
+			console.log(answerSheet);
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
@@ -214,7 +214,6 @@ function displayAnswerSheet(testId) {
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
 				var numToChar = ['', 'A', 'B', 'C', 'D', 'E'];  // add 0 index = ''
-
 				function createRow(i, answerSheet, numToChar, answerSheetTableBody) {
 					// Create a new row
 					var newRow = answerSheetTableBody.insertRow(answerSheetTableBody.rows.length);
@@ -222,13 +221,17 @@ function displayAnswerSheet(testId) {
 					var cell1 = newRow.insertCell(0);
 					var cell2 = newRow.insertCell(1);
 					var cell3 = newRow.insertCell(2);
+					var cell4 = newRow.insertCell(3);
 					// Align the content of the cells to the center
 					cell1.style.textAlign = "center";
 					cell2.style.textAlign = "center";
-					cell3.style.textAlign = "center";
+					cell3.style.textAlign = "left";
+					cell4.style.textAlign = "center";
 					// Populate cells with data
-					cell1.innerHTML = i;
-					cell2.innerHTML = numToChar[answerSheet.answers[i]];
+					console.log(answerSheet.answers[i]);
+					cell1.innerHTML = answerSheet.answers[i].question;
+					cell2.innerHTML = numToChar[answerSheet.answers[i].answer];
+					cell3.innerHTML = answerSheet.answers[i].topic;
 					// Create a remove button in the third cell
 					var removeIcon = document.createElement("i");
 					removeIcon.className = "bi bi-trash icon-button text-danger";
@@ -236,10 +239,29 @@ function displayAnswerSheet(testId) {
 						answerSheetTableBody.removeChild(newRow);
 					});
 					// Append the remove button to the third cell
-					cell3.appendChild(removeIcon);
-				}
+					cell4.appendChild(removeIcon);
 
-				for (var i = 1; i < answerSheet.answers.length; i++) {
+					// Find the correct position to insert the new row based on the 'question' order
+					var newRowQuestion = parseInt(answerSheet.answers[i].question);
+					var rows = answerSheetTableBody.getElementsByTagName("tr");
+					var insertIndex = 0;
+					for (var j = 0; j < rows.length; j++) {
+						var rowQuestion = parseInt(rows[j].getElementsByTagName("td")[0].innerHTML);
+						if (newRowQuestion < rowQuestion) {
+							insertIndex = j;
+							break;
+						} else {
+							insertIndex = j + 1;
+						}
+					}
+					// Insert the new row at the correct position
+					if (insertIndex >= rows.length) {
+						answerSheetTableBody.appendChild(newRow);
+					} else {
+						answerSheetTableBody.insertBefore(newRow, rows[insertIndex]);
+					}
+				}
+				for (var i = 0; i < answerSheet.answers.length; i++) {
 					createRow(i, answerSheet, numToChar, answerSheetTableBody);
 				}
 			} else {
@@ -250,6 +272,10 @@ function displayAnswerSheet(testId) {
 				answerSheetTableBody.innerHTML = "";
 				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
 				answerQuestionNumberSelect.value = "1";
+				var correctAnswerSelect = document.getElementById("correctAnswerOption");
+				correctAnswerSelect.value = "1";
+				var answerTopicSelect = document.getElementById("answerTopic");
+				answerTopicSelect.value = "";
 			}
 			// Display the modal
 			$('#registerTestAnswerModal').modal('show');
@@ -265,63 +291,52 @@ function displayAnswerSheet(testId) {
 //		Add Answer To Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function addAnswerToTable() {
-    // Get the selected question number
+    // Get user selections
     var questionNumber = document.getElementById("answerQuestionNumber").value;
+	var selectedAnswerOption = document.getElementById("correctAnswerOption").value;
+	var answerTopicDescription = document.getElementById("answerTopic").value;
 
-    // Get the selected radio button
-    var selectedRadioButton = document.querySelector('input[name="inlineRadioOptions"]:checked');
+	// Map numeric values to corresponding letters
+    var letterMapping = ['A', 'B', 'C', 'D', 'E'];
+    var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
 
-    // Check if a radio button is selected
-    if (selectedRadioButton) {
-        // Get the selected radio button value
-        var radioButtonValue = selectedRadioButton.value;
+	// Get the table body
+	var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+	// Create a new row
+	var newRow = tableBody.insertRow(tableBody.rows.length);
+	// Insert cells into the row
+	var cell1 = newRow.insertCell(0);
+	var cell2 = newRow.insertCell(1);
+	var cell3 = newRow.insertCell(2);
+	var cell4 = newRow.insertCell(3);
+	// Align the content of the cells to the center
+	cell1.style.textAlign = "center";
+	cell2.style.textAlign = "center";
+	cell3.style.textAlign = "left";
+	cell4.style.textAlign = "center";
+	// Populate cells with data
+	cell1.innerHTML = questionNumber;
+	cell2.innerHTML = letterValue;
+	cell3.innerHTML = answerTopicDescription;
 
-        // Map numeric values to corresponding letters
-        var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-        var letterValue = letterMapping[parseInt(radioButtonValue) - 1];
+	// Create a remove button in the third cell
+	var removeButton = document.createElement("button");
+	// Remove the row when the button is clicked
+	var removeIcon = document.createElement("i");
+	removeIcon.className = "bi bi-trash icon-button text-danger";
+	removeIcon.addEventListener('click', function() {
+		tableBody.removeChild(newRow);
+	});
 
-        // Get the table body
-        var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+	// Append the remove button to the third cell
+	cell4.appendChild(removeIcon);
 
-        // Create a new row
-        var newRow = tableBody.insertRow(tableBody.rows.length);
+	// Automatically choose the next question number
+	var nextQuestionNumber = parseInt(questionNumber) + 1;
+	document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
+	// Clear the topic input value
+	document.getElementById("answerTopic").value = "";
 
-        // Insert cells into the row
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-
-		// Align the content of the cells to the center
-		cell1.style.textAlign = "center";
-		cell2.style.textAlign = "center";
-		cell3.style.textAlign = "center";
-
-        // Populate cells with data
-        cell1.innerHTML = questionNumber;
-        cell2.innerHTML = letterValue;
-
-        // Create a remove button in the third cell
-        var removeButton = document.createElement("button");
-        // Remove the row when the button is clicked
-		var removeIcon = document.createElement("i");
-    	removeIcon.className = "bi bi-trash icon-button text-danger";
-    	removeIcon.addEventListener('click', function() {
-            tableBody.removeChild(newRow);
-        });
-
-        // Append the remove button to the third cell
-        cell3.appendChild(removeIcon);
-
-        // Automatically choose the next question number
-        var nextQuestionNumber = parseInt(questionNumber) + 1;
-        document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
-
-        // Clear the selected radio button
-        selectedRadioButton.checked = false;
-    } else {
-        // Display an alert if no radio button is selected
-        alert("Please choose an answer option before adding.");
-    }
 }
 
 
@@ -331,7 +346,7 @@ function addAnswerToTable() {
 function collectAndSubmitAnswers() {
     // Collect values from the modal
 	var answerId = document.getElementById("answerId").value;
-	var practiceId = document.getElementById("testId4Answer").value;
+	var testId = document.getElementById("testId4Answer").value;
     var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
     var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
 
@@ -355,21 +370,22 @@ function collectAndSubmitAnswers() {
         var questionNumber = cells[0].innerHTML;
         // var selectedRadioValue = cells[1].innerHTML;
 		var selectedRadioValue = charToNum[cells[1].innerHTML];  // Convert the character to a number
+		var answerTopic = cells[2].innerHTML;
 
         answerList.push({
             question: questionNumber,
-            answer: selectedRadioValue
+            answer: selectedRadioValue,
+			topic : answerTopic
         });
     }
-
     // Send the formData to the Spring controller using AJAX or other means
     $.ajax({
-        url: '${pageContext.request.contextPath}/connected/saveAnswerSheet', // Replace with your actual Spring controller endpoint
+        url: '${pageContext.request.contextPath}/connected/saveTestAnswerSheet', // Replace with your actual Spring controller endpoint
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
 			answerId : answerId,
-			practiceId : practiceId,
+			testId : testId,
 			videoPath : answerVideoPath,
 			pdfPath : answerPdfPath,
 			answers : answerList
@@ -715,7 +731,6 @@ function collectAndSubmitAnswers() {
 	</div>
 </div>
 
-
 <!-- Add Answer Form Dialogue -->
 <div class="modal fade" id="registerTestAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -744,10 +759,10 @@ function collectAndSubmitAnswers() {
 								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
-											<th data-field="question">Question #</th>
-											<th data-field="answer">Answer</th>
-											<th data-field="answer">Topic</th>
-											<th data-field="answer">Remove</th>
+											<th data-field="question" style="width: 10%;">Question#</th>
+											<th data-field="answer" style="width: 10%;">Answer</th>
+											<th data-field="topic" style="width: 70%;">Topic</th>
+											<th data-field="remove" style="width: 10%;">Remove</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -755,53 +770,10 @@ function collectAndSubmitAnswers() {
 								</table>
 							</div>
 						</div>
-						<%--
-						<div class="form-group">
-							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
-								<div class="col-md-2">
-									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
-											<option value="${i}">${i}</option>
-										</c:forEach>
-									</select>
-								</div>
-								<div class="col-md-5" style="text-align: center;">
-									<style>
-										
-										.form-check-input {
-											margin-right: 10px;
-										}
-										
-										.form-check-label {
-											margin-right: 15px;
-										}
-										
-									</style>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
-									<label class="form-check-label" for="inlineRadio1">A</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
-									<label class="form-check-label" for="inlineRadio2">B</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3">
-									<label class="form-check-label" for="inlineRadio3">C</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4">
-									<label class="form-check-label" for="inlineRadio4">D</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
-									<label class="form-check-label" for="inlineRadio5">E</label>
-								</div>
-								<div class="col-md-3">
-									<input type="text" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
-								</div>
-								<div class="col-md-2">
-									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
-								</div>
-							</div>
-						</div>
-						--%>
-
-
 						<div class="form-group">
 							<div class="form-row align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="col-md-3">
+									<label for="answerQuestionNumber" class="label-form">Number</label>
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
 										<c:forEach var="i" begin="1" end="50">
 											<option value="${i}">${i}</option>
@@ -809,26 +781,27 @@ function collectAndSubmitAnswers() {
 									</select>
 								</div>
 								<div class="col-md-2">
-									<select class="form-control" id="inlineRadioOptions" name="inlineRadioOptions">
-										<c:forEach var="i" begin="1" end="5">
-											<option value="${i}">${i}</option>
-										</c:forEach>
+									<label for="correctAnswerOption" class="label-form">Answer</label>
+									<select class="form-control" id="correctAnswerOption" name="correctAnswerOption">
+										<option value="1">A</option>
+										<option value="2">B</option>
+										<option value="3">C</option>
+										<option value="4">D</option>
+										<option value="5">E</option>
 									</select>
 								</div>
 								<div class="col-md-5">
+									<label for="answerTopic" class="label-form">Topic</label>
 									<input type="text" class="form-control" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
 								</div>
 								<div class="col-md-2">
+									<label for="" class="label-form">&nbsp;</label>
 									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
 								</div>
 							</div>
 						</div>
-						
-
-
 						<input type="hidden" id="answerId" name="answerId" />
 						<input type="hidden" id="testId4Answer" name="testId4Answer" />
-					<!-- </form> -->
 					<div class="mt-4 d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
@@ -838,9 +811,6 @@ function collectAndSubmitAnswers() {
 		</div>
 	</div>
 </div>
-
-
-
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">

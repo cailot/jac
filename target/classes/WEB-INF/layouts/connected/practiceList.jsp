@@ -408,7 +408,7 @@ function collectAndSubmitAnswers() {
 
     // Send the formData to the Spring controller using AJAX or other means
     $.ajax({
-        url: '${pageContext.request.contextPath}/connected/saveAnswerSheet', // Replace with your actual Spring controller endpoint
+        url: '${pageContext.request.contextPath}/connected/savePracticeAnswerSheet', // Replace with your actual Spring controller endpoint
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
