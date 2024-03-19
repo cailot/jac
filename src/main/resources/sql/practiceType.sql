@@ -7,7 +7,7 @@ INSERT INTO jae.PracticeType(name, registerDate) VALUES ('NAPLAN LC', sysdate())
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Revision English', sysdate());
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Revision Mathematics', sysdate());
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Revision Science', sysdate());
-INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Reeading Comprehension (EDU)', sysdate());
+INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Reading Comprehension (EDU)', sysdate());
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Verbal Reasoning (EDU)', sysdate());
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Mathematics (EDU)', sysdate());
 INSERT INTO jae.PracticeType(name, registerDate) VALUES ('Numerical Reasoning (EDU)', sysdate());
