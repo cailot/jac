@@ -264,6 +264,21 @@ function displayAnswerSheet(practiceId) {
 				for (var i = 1; i < answerSheet.answers.length; i++) {
 					createRow(i, answerSheet, numToChar, answerSheetTableBody);
 				}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			} else {
 				// Display an empty form to register the answer sheet
 				$("#addAnswerVideoPath").val("");
@@ -309,65 +324,57 @@ function displayAnswerSheet(practiceId) {
 //		Add Answer To Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function addAnswerToTable() {
-    // Get the selected question number
-    var questionNumber = document.getElementById("answerQuestionNumber").value;
-
-    // Get the selected radio button
-    var selectedRadioButton = document.querySelector('input[name="inlineRadioOptions"]:checked');
-
-    // Check if a radio button is selected
-    if (selectedRadioButton) {
-        // Get the selected radio button value
-        var radioButtonValue = selectedRadioButton.value;
-
-        // Map numeric values to corresponding letters
-        var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-        var letterValue = letterMapping[parseInt(radioButtonValue) - 1];
-
-        // Get the table body
-        var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-
-        // Create a new row
-        var newRow = tableBody.insertRow(tableBody.rows.length);
-
-        // Insert cells into the row
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-
+	// Get the selected question number
+	var questionNumber = parseInt(document.getElementById("answerQuestionNumber").value);
+	// Get the selected radio button
+	var selectedRadioButton = document.querySelector('input[name="inlineRadioOptions"]:checked');
+	// Check if a radio button is selected
+	if (selectedRadioButton) {
+		// Get the selected radio button value
+		var radioButtonValue = selectedRadioButton.value;
+		// Map numeric values to corresponding letters
+		var letterMapping = ['A', 'B', 'C', 'D', 'E'];
+		var letterValue = letterMapping[parseInt(radioButtonValue) - 1];
+		// Get the table body
+		var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+		// Find the correct position to insert the new row
+		var position = 0;
+		for (; position < tableBody.rows.length; position++) {
+			if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
+				break;
+			}
+		}
+		// Create a new row at the correct position
+		var newRow = tableBody.insertRow(position);
+		// Insert cells into the row
+		var cell1 = newRow.insertCell(0);
+		var cell2 = newRow.insertCell(1);
+		var cell3 = newRow.insertCell(2);
 		// Align the content of the cells to the center
 		cell1.style.textAlign = "center";
 		cell2.style.textAlign = "center";
 		cell3.style.textAlign = "center";
-
-        // Populate cells with data
-        cell1.innerHTML = questionNumber;
-        cell2.innerHTML = letterValue;
-
-        // Create a remove button in the third cell
-        var removeButton = document.createElement("button");
-        // Remove the row when the button is clicked
+		// Populate cells with data
+		cell1.innerHTML = questionNumber;
+		cell2.innerHTML = letterValue;
+		// Create a remove button in the third cell
 		var removeIcon = document.createElement("i");
-    	removeIcon.className = "bi bi-trash icon-button text-danger";
-    	removeIcon.addEventListener('click', function() {
-            tableBody.removeChild(newRow);
-        });
-
-        // Append the remove button to the third cell
-        cell3.appendChild(removeIcon);
-
-        // Automatically choose the next question number
-        var nextQuestionNumber = parseInt(questionNumber) + 1;
-        document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
-
-        // Clear the selected radio button
-        selectedRadioButton.checked = false;
-    } else {
-        // Display an alert if no radio button is selected
-        alert("Please choose an answer option before adding.");
-    }
+		removeIcon.className = "bi bi-trash icon-button text-danger";
+		removeIcon.addEventListener('click', function () {
+			tableBody.deleteRow(newRow.rowIndex);
+		});
+		// Append the remove button to the third cell
+		cell3.appendChild(removeIcon);
+		// Automatically choose the next question number
+		var nextQuestionNumber = questionNumber + 1;
+		document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
+		// Clear the selected radio button
+		selectedRadioButton.checked = false;
+	} else {
+		// Display an alert if no radio button is selected
+		alert("Please choose an answer option before adding.");
+	}
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Collect Answer And Send 
