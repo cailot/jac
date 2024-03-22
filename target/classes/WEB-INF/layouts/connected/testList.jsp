@@ -291,19 +291,24 @@ function displayAnswerSheet(testId) {
 //		Add Answer To Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function addAnswerToTable() {
-    // Get user selections
-    var questionNumber = document.getElementById("answerQuestionNumber").value;
+	// Get user selections
+	var questionNumber = parseInt(document.getElementById("answerQuestionNumber").value);
 	var selectedAnswerOption = document.getElementById("correctAnswerOption").value;
 	var answerTopicDescription = document.getElementById("answerTopic").value;
-
 	// Map numeric values to corresponding letters
-    var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-    var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
-
+	var letterMapping = ['A', 'B', 'C', 'D', 'E'];
+	var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
 	// Get the table body
 	var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-	// Create a new row
-	var newRow = tableBody.insertRow(tableBody.rows.length);
+	// Find the correct position to insert the new row
+	var position = 0;
+	for (; position < tableBody.rows.length; position++) {
+		if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
+			break;
+		}
+	}
+	// Create a new row at the correct position
+	var newRow = tableBody.insertRow(position);
 	// Insert cells into the row
 	var cell1 = newRow.insertCell(0);
 	var cell2 = newRow.insertCell(1);
@@ -318,7 +323,6 @@ function addAnswerToTable() {
 	cell1.innerHTML = questionNumber;
 	cell2.innerHTML = letterValue;
 	cell3.innerHTML = answerTopicDescription;
-
 	// Create a remove button in the third cell
 	var removeButton = document.createElement("button");
 	// Remove the row when the button is clicked
@@ -327,18 +331,14 @@ function addAnswerToTable() {
 	removeIcon.addEventListener('click', function() {
 		tableBody.removeChild(newRow);
 	});
-
 	// Append the remove button to the third cell
 	cell4.appendChild(removeIcon);
-
 	// Automatically choose the next question number
-	var nextQuestionNumber = parseInt(questionNumber) + 1;
+	var nextQuestionNumber = questionNumber + 1;
 	document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
 	// Clear the topic input value
 	document.getElementById("answerTopic").value = "";
-
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Collect Answer And Send 
