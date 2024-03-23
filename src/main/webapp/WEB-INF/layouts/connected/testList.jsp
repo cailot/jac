@@ -208,7 +208,7 @@ function displayAnswerSheet(testId) {
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
-				$("#addAnswerVideoPath").val(answerSheet.videoPath);
+				// $("#addAnswerVideoPath").val(answerSheet.videoPath);
 				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
 				// Display the answer sheet table
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
@@ -266,7 +266,7 @@ function displayAnswerSheet(testId) {
 				}
 			} else {
 				// Display an empty form to register the answer sheet
-				$("#addAnswerVideoPath").val("");
+				// $("#addAnswerVideoPath").val("");
 				$("#addAnswerPdfPath").val("");
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
@@ -347,7 +347,7 @@ function collectAndSubmitAnswers() {
     // Collect values from the modal
 	var answerId = document.getElementById("answerId").value;
 	var testId = document.getElementById("testId4Answer").value;
-    var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
+    // var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
     var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
 
     // Collect question number and selected value from the answerSheetTable
@@ -386,7 +386,7 @@ function collectAndSubmitAnswers() {
         data: JSON.stringify({
 			answerId : answerId,
 			testId : testId,
-			videoPath : answerVideoPath,
+			// videoPath : answerVideoPath,
 			pdfPath : answerPdfPath,
 			answers : answerList
 		}),
@@ -738,17 +738,17 @@ function collectAndSubmitAnswers() {
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Test Answer Sheet</header>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
 									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
 									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12">
+								<div class="col-md-12 mt-4">
 									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
 									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>

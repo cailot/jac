@@ -21,7 +21,7 @@ public class TestAnswerDTO implements Serializable {
 
 	private String id;
 
-	private String videoPath;
+	// private String videoPath;
 
 	private String pdfPath;
 
@@ -31,7 +31,7 @@ public class TestAnswerDTO implements Serializable {
 
 	public TestAnswerDTO(TestAnswer work){
 		this.id = String.valueOf(work.getId());
-		this.videoPath = work.getVideoPath();
+		// this.videoPath = work.getVideoPath();
 		this.pdfPath = work.getPdfPath();
 		this.testId = work.getTest().getId();
 		this.answers = work.getAnswers();
