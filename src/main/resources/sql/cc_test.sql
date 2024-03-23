@@ -81,11 +81,11 @@ INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId
 INSERT INTO jae.Test (active,info,pdfPath,registerDate,volume,gradeId,testTypeId) VALUES (1,'w','https://vod.writingand.com/documents/pdf/2020/K9/Year_9_Short_Answer_Set_50.pdf','2024-03-12',2,12,1);
 
 -- TestAnswer
-INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',3,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
-INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',1,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
-INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',5,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
-INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',4,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
-INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',2,'https://djyb0v5s4sgfh.cloudfront.net/vaiim1/HoJu/Naplan/Yr3/Math/EXAM_NAPLAN_Math_Diana_1st_Level3_set1.mp4');
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',3);
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',1);
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',5);
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',4);
+INSERT INTO jae.TestAnswer (pdfPath,testId,videoPath) VALUES ('https://vod.writingand.com/documents/pdf/2023/K8/2023_Revision_Maths_Year_8_Revision_Test_SC.pdf',2);
 
 
 
