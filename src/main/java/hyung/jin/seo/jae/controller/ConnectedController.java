@@ -370,7 +370,7 @@ public class ConnectedController {
         // Extract practiceId and answers from the payload
 		String answerId = payload.get("answerId").toString();
 		String testId = payload.get("testId").toString();
-		String video = payload.get("videoPath").toString();
+		// String video = payload.get("videoPath").toString();
 		String pdf = payload.get("pdfPath").toString();
 		List<TestAnswerItem> items = new ArrayList<>();
 		// convert the answers list from the payload to a List<Map<String, Object>>
@@ -393,7 +393,7 @@ public class ConnectedController {
 			// 1. create bare bone
 			TestAnswer ta = new TestAnswer();
 			// 2. populate PracticeAnswer
-			ta.setVideoPath(video);
+			// ta.setVideoPath(video);
 			ta.setPdfPath(pdf);
 			ta.setAnswers(items);
 			// 3. get Test
@@ -407,7 +407,7 @@ public class ConnectedController {
 			// 1. get TestAnswer
 			TestAnswer ta = connectedService.getTestAnswer(Long.parseLong(answerId));
 			// 2. populate PracticeAnswer
-			ta.setVideoPath(video);
+			// ta.setVideoPath(video);
 			ta.setPdfPath(pdf);
 			ta.setAnswers(items);
 			// 3. update PracticeAnswer

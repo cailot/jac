@@ -369,8 +369,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 		// search by getId
 		TestAnswer existing = testAnswerRepository.findById(id).get();
 		// update info
-		String newVideoPath = StringUtils.defaultString(newWork.getVideoPath());
-        existing.setVideoPath(newVideoPath);
+		// String newVideoPath = StringUtils.defaultString(newWork.getVideoPath());
+        // existing.setVideoPath(newVideoPath);
         String newPdfPath = StringUtils.defaultString(newWork.getPdfPath());
         existing.setPdfPath(newPdfPath);
         List newAns = newWork.getAnswers();
