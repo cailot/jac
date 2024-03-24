@@ -262,5 +262,16 @@ public class StudentServiceImpl implements StudentService {
 		}
 	}
 
+	@Override
+	public Long getMaxId(String state, String branch) {
+		Long maxId = 0L;
+		try{
+			maxId = studentRepository.findMaxIdByStateAndBranch(state, branch);
+		}catch(Exception e){
+			System.out.println("Unable to get maxId from Student");
+		}
+		return maxId;
+	}
+
 
 }

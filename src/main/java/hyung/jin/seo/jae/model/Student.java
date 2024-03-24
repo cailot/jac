@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +31,8 @@ import java.util.Set;
 public class Student {
     
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
+    @GeneratedValue(generator = "jacStudentIdGenerator", strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "jacStudentIdGenerator", strategy = "hyung.jin.seo.jae.utils.JacStudentIdGenerator")
     private Long id;
     
     @Column(length = 100, nullable = false)
