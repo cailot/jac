@@ -38,28 +38,6 @@ $(document).ready(function () {
 	listPracticeType('#addPracticeType');
 	listPracticeType('#editPracticeType');
 
-	// duration field is disabled & make duration empty for Pdf
-	// document.getElementById('addPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('addDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('addVideo').addEventListener('change', function() {
-    //     document.getElementById('addDuration').disabled = !this.checked;
-    // });
-	// document.getElementById('editPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('editDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('editVideo').addEventListener('change', function() {
-    //     document.getElementById('editDuration').disabled = !this.checked;
-    // });
-
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +214,6 @@ function displayAnswerSheet(practiceId) {
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
 				var numToChar = ['', 'A', 'B', 'C', 'D', 'E'];  // add 0 index = ''
-
 				function createRow(i, answerSheet, numToChar, answerSheetTableBody) {
 					// Create a new row
 					var newRow = answerSheetTableBody.insertRow(answerSheetTableBody.rows.length);
@@ -259,25 +236,31 @@ function displayAnswerSheet(practiceId) {
 					});
 					// Append the remove button to the third cell
 					cell3.appendChild(removeIcon);
+					// Find the correct position to insert the new row based on the 'question' order
+					var newRowQuestion = i;
+					var rows = answerSheetTableBody.getElementsByTagName("tr");
+					var insertIndex = 0;
+					for (var j = 0; j < rows.length; j++) {
+						var rowQuestion = parseInt(rows[j].getElementsByTagName("td")[0].innerHTML);
+						if (newRowQuestion < rowQuestion) {
+							insertIndex = j;
+							break;
+						} else {
+							insertIndex = j + 1;
+						}
+					}
+					// Insert the new row at the correct position
+					if (insertIndex >= rows.length) {
+						answerSheetTableBody.appendChild(newRow);
+					} else {
+						answerSheetTableBody.insertBefore(newRow, rows[insertIndex]);
+					}
+
 				}
 
 				for (var i = 1; i < answerSheet.answers.length; i++) {
 					createRow(i, answerSheet, numToChar, answerSheetTableBody);
 				}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 			} else {
 				// Display an empty form to register the answer sheet
@@ -296,28 +279,6 @@ function displayAnswerSheet(practiceId) {
             console.error(error);
         }
     });
-
-
-
-
-
-
-
-
-
-
-
-
-	// Clear or reset the values in registerPracticeAnswerModal
-    // document.getElementById("addAnswerVideoPath").value = "";
-    // document.getElementById("addAnswerPdfPath").value = "";
-	// var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-    // answerSheetTableBody.innerHTML = "";
-	// var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
-    // answerQuestionNumberSelect.value = "1";
-
-	// display modal
-	// $('#registerPracticeAnswerModal').modal('show');
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -361,7 +322,7 @@ function addAnswerToTable() {
 		var removeIcon = document.createElement("i");
 		removeIcon.className = "bi bi-trash icon-button text-danger";
 		removeIcon.addEventListener('click', function () {
-			tableBody.deleteRow(newRow.rowIndex);
+			tableBody.removeChild(newRow);
 		});
 		// Append the remove button to the third cell
 		cell3.appendChild(removeIcon);
@@ -446,14 +407,7 @@ function collectAndSubmitAnswers() {
             console.error(error);
         }
     });
-
-	
 }
-
-
-
-
-
 
 </script>
 
