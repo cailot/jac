@@ -204,7 +204,7 @@ function displayAnswerSheet(testId) {
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
-			console.log(answerSheet);
+			// console.log(answerSheet);
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
@@ -228,7 +228,7 @@ function displayAnswerSheet(testId) {
 					cell3.style.textAlign = "left";
 					cell4.style.textAlign = "center";
 					// Populate cells with data
-					console.log(answerSheet.answers[i]);
+					// console.log(answerSheet.answers[i]);
 					cell1.innerHTML = answerSheet.answers[i].question;
 					cell2.innerHTML = numToChar[answerSheet.answers[i].answer];
 					cell3.innerHTML = answerSheet.answers[i].topic;
@@ -324,8 +324,6 @@ function addAnswerToTable() {
 	cell2.innerHTML = letterValue;
 	cell3.innerHTML = answerTopicDescription;
 	// Create a remove button in the third cell
-	var removeButton = document.createElement("button");
-	// Remove the row when the button is clicked
 	var removeIcon = document.createElement("i");
 	removeIcon.className = "bi bi-trash icon-button text-danger";
 	removeIcon.addEventListener('click', function() {
