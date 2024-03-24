@@ -19,6 +19,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
 	
 	Student findByIdAndEndDateIsNull(Long id);
 	
+        // search max Id based on state & branch to assign new student Id
+        Long findMaxIdByStateAndBranch(String state, String branch);
+
 	long countByEndDateIsNull();
 	
 	@Modifying

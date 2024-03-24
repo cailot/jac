@@ -44,4 +44,7 @@ public interface StudentService {
 
 	// update student grade as batch for next year
 	void batchUpdateGrade(List<Long> ids, String grade);
+
+	// get maxId based on state & branch
+	Long getMaxId(String state, String branch);
 }
