@@ -20,6 +20,9 @@
 	
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/>
+<!-- Google Icons -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
 
 </head>
 <body>
