@@ -41,11 +41,6 @@
 		<put-attribute name="title" value="Class List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/classList.jsp" />
 	</definition>
-	<!--Online Class -->
-	<definition name="onlineListPage" extends="base.definition">
-		<put-attribute name="title" value="Online Class List" />
-		<put-attribute name="body" value="/WEB-INF/layouts/course/onlineList.jsp" />
-	</definition>
 	<!--Grade -->
 	<definition name="gradeListPage" extends="base.definition">
 		<put-attribute name="title" value="Grade List" />
@@ -53,6 +48,11 @@
 	</definition>
 
 	<!-- Connected Class -->
+	<!--Online Class -->
+	<definition name="onlineListPage" extends="base.definition">
+		<put-attribute name="title" value="Online Class List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/onlineList.jsp" />
+	</definition>
 	<!--Homework -->
 	<definition name="homeworkListPage" extends="base.definition">
 		<put-attribute name="title" value="Homework List" />

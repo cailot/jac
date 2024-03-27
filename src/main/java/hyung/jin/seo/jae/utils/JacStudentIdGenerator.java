@@ -13,14 +13,13 @@ public class JacStudentIdGenerator implements IdentifierGenerator{
     Student student = (Student)object;
     String state = student.getState();
     String branch = student.getBranch();
-    // String query = "SELECT COALESCE(MAX(id), 0) + 1 as id FROM Student WHERE state = '" + state + "' AND branch = '" + branch + "'";
-    String query = "SELECT COALESCE(MAX(id), 0) + 1 as id FROM Student WHERE branch = '" + branch + "'";
+    String query = "SELECT COALESCE(MAX(id), 0) + 1 as id FROM Student WHERE state = '" + state + "' AND branch = '" + branch + "'";
+    //String query = "SELECT COALESCE(MAX(id), 0) + 1 as id FROM Student WHERE branch = '" + branch + "'";
     Long maxId = (Long) session.createQuery(query).getSingleResult();
     // generate the next Id
-    Long nextId = (maxId != 1) ? maxId : Long.parseLong(branch + "0001");
+    Long nextId = (maxId != 1) ? maxId : Long.parseLong(state + branch + "00001");
     // generate custom Id based on state, branch and nextId
-    // String customId = state + branch + String.format("%05d", nextId);
-    String customId = String.format("%06d", nextId);
+    String customId = String.format("%08d", nextId);
     return Long.parseLong(customId);
   }
  }
