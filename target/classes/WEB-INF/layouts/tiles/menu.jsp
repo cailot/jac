@@ -11,7 +11,7 @@
 		<!-- Student -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons mr-2 custom-icon">school</span><span class="h5">Student</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Student</span>
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
@@ -24,16 +24,17 @@
 		<!-- Teacher -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons mr-2 custom-icon">face</span><span class="h5">Teacher</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
 			</a>
 			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">User List</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
 			</div>
 		</li>
 		<!-- Class -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons mr-2 custom-icon">menu_book</span><span class="h5">Class Management</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Lecture</span>
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course List</a>
@@ -44,19 +45,19 @@
 		<!-- Jac Study -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons mr-2 custom-icon">cast_for_education</span><span class="h5">JAC Study</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Jac Study</span>
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>				
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/practiceList">Practice</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/testList">Test</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/testList">Class Test</a>
 			</div>
 		</li>
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons mr-2 custom-icon">settings</span><span class="h5">Setting</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Setting</span>
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
