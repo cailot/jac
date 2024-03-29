@@ -34,8 +34,8 @@ public class TestAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
 
-    // @Column(length = 300, nullable = true)
-    // private String videoPath;
+    @Column(length = 300, nullable = true)
+    private String videoPath;
 
     @Column(length = 300, nullable = true)
     private String pdfPath;
