@@ -63,16 +63,28 @@
 		<put-attribute name="title" value="Extrawork List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/extraworkList.jsp" />
 	</definition>
-	<!--Practice -->
+	<!--Practice List -->
 	<definition name="practiceListPage" extends="base.definition">
 		<put-attribute name="title" value="Practice List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/practiceList.jsp" />
 	</definition>
-	<!--Test -->
+	<!--Practice Schedule -->
+	<definition name="practiceSchedulePage" extends="base.definition">
+		<put-attribute name="title" value="Schedule List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/practiceSchedule.jsp" />
+	</definition>
+	<!--Test List -->
 	<definition name="testListPage" extends="base.definition">
 		<put-attribute name="title" value="Test List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/testList.jsp" />
 	</definition>
+	<!--Test Schedule -->
+	<definition name="testSchedulePage" extends="base.definition">
+		<put-attribute name="title" value="Schedule List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/testSchedule.jsp" />
+	</definition>
+
+
 
 	<!--Academic Cycle -->
 	<definition name="cyclePage" extends="base.definition">
