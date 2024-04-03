@@ -108,4 +108,14 @@ public class JaeController {
 		return "testListPage";
 	}
 
+	@GetMapping("/practiceSchedule")
+	public String practiceSchedule(HttpSession session) {
+		return "practiceSchedulePage";
+	}
+
+	@GetMapping("/testSchedule")
+	public String testSchedule(HttpSession session) {
+		return "testSchedulePage";
+	}
+
 }
