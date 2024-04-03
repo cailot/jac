@@ -51,8 +51,32 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>				
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/practiceList">Practice</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/testList">Class Test</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/practiceList">Practice</a> -->
+
+
+				<!-- Practice submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="practiceDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Practice
+					</a>
+					<div class="dropdown-menu" aria-labelledby="practiceDropdown">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/practiceList">List</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/practiceSchedule">Schedule</a>
+					</div>
+				</div>
+
+				<!-- Class Test submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Class Test
+					</a>
+					<div class="dropdown-menu" aria-labelledby="Practice">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/testList">List</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/testSchedule">Schedule</a>
+					</div>
+				</div>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/testList">Class Test</a> -->
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/scheduleList">Schedules</a> -->
 			</div>
 		</li>
 		<li class="nav-item dropdown">
@@ -74,7 +98,7 @@
 					<span class="card-text text-warning font-weight-bold font-italic h6" style="margin-left: 5px; cursor: pointer;" id="studentName" onclick="clearPassword();retrieveStudentInfo()">Jinhyung Seo</span>
 					<span class="h6" style="color: white; align-items: center; justify-content: center;">&nbsp;(Administrator)</span>
 				</div>
-				<form:form action="${pageContext.request.contextPath}/staff/logout" method="POST" id="logout" style="margin-bottom: 0px;">
+				<form:form action="${pageContext.request.contextPath}/logout" method="POST" id="logout" style="margin-bottom: 0px;">
 					<button class="btn mr-1"><i class="bi bi-box-arrow-right custom-icon text-warning" title="Log Out"></i></button>
 				</form:form>
 			</div>
