@@ -147,6 +147,10 @@ public interface ConnectedService {
 	// delete existing record to take test again
 	void deleteStudentPractice(Long studentId, Long practiceId); 
 
+	// list Practice by type & grade
+	List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade);
+
+
 	/////////////////////////////////////////////////////////
 	//
 	//	TEST

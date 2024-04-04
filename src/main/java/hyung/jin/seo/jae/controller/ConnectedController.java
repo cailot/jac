@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
@@ -430,6 +431,14 @@ public class ConnectedController {
 	public TestAnswerDTO findTestAnswer(@PathVariable Long testId) {
 		TestAnswerDTO answer = connectedService.findTestAnswerByTest(testId);
 		return answer;
+	}
+
+	// list practice type for schedule
+	@GetMapping("/practice4Schedule/{type}/{grade}")
+	@ResponseBody
+	List<PracticeDTO> getPracticeForSchedule(@PathVariable int type, @PathVariable String grade) {
+		List<PracticeDTO> dtos = connectedService.listPracticeByTypeNGrade(type, grade); 
+		return dtos;
 	}
 
 	// helper method converting answers Map to List
