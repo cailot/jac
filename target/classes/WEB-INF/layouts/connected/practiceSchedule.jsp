@@ -30,15 +30,48 @@ $(document).ready(function () {
 		],
 	});
 
+	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
+	$('#practiceTypeSearch').change(function () {
+		getPracticeByTypeNGrade();
+	});
+	$('#gradeSearch').change(function () {
+		getPracticeByTypeNGrade();
+	});
+		
 	// initialise state list when loading
-	listGrade('#listGrade');
-	listGrade('#addGrade');
-	listGrade('#editGrade');
-	listTestType('#listTestType');
-	listTestType('#addTestType');
-	listTestType('#editTestType');
+	listGrade('#gradeSearch');
+	// listGrade('#addGrade');
+	// listGrade('#editGrade');
+	// listTestType('#listTestType');
+	// listTestType('#addTestType');
+	// listTestType('#editTestType');
 
 });
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Populate Practice by type and grade
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getPracticeByTypeNGrade() {
+	// debugger;
+	var type = $('#practiceTypeSearch').val();
+	var grade = $('#gradeSearch').val();
+
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/practice4Schedule/' + type + '/' + grade,
+		method: 'GET',
+		success: function (data) {
+			$.each(data, function (index, value) {
+				console.log(value.volume);
+				$('#setSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
+			});
+		},
+		error: function (xhr, status, error) {
+			console.error(xhr.responseText);
+		}
+	});
+	}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Register Test
@@ -79,7 +112,7 @@ function addTest() {
 			}
 		}
 	});
-	$('#registerTestModal').modal('hide');
+	$('#registerPracticeModal').modal('hide');
 	// flush all registered data
 	document.getElementById("testRegister").reset();
 }
@@ -464,7 +497,7 @@ function collectAndSubmitAnswers() {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerPracticeModal" onclick="getPracticeByTypeNGrade()"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -585,7 +618,7 @@ function collectAndSubmitAnswers() {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerTestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerPracticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
@@ -594,18 +627,28 @@ function collectAndSubmitAnswers() {
 					<form id="testRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
-								<div class="col-md-8">
-									<label for="addTestType" class="label-form">Test Type</label>
-									<select class="form-control" id="addTestType" name="addTestType">
+								<div class="col-md-7">
+									<label for="addYear" class="label-form">Academic Year</label>
+									<select class="form-control" id="addYear" name="addYear">
+										<%
+											Calendar addNow = Calendar.getInstance();
+											int addCurrentYear = addNow.get(Calendar.YEAR);
+											int addNextYear = addCurrentYear + 1;
+										%>
+										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear) %>/<%= (addCurrentYear)+1 %></option>
+										<%
+											// Adding the last three years
+											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
+										%>
+											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
+										<%
+										}
+										%>
 									</select>
 								</div>
-								<div class="col-md-2">
-									<label for="addGrade" class="label-form">Grade</label>
-									<select class="form-control" id="addGrade" name="addGrade">
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="addVolume" class="label-form">Set</label>
+								<!-- <div class="offset-md-1"></div> -->
+								<div class="col-md-5">
+									<label for="addVolume" class="label-form">Set Schedule</label>
 									<select class="form-control" id="addVolume" name="addVolume">
 									</select>
 									<script>
@@ -617,19 +660,24 @@ function collectAndSubmitAnswers() {
 										  var option = document.createElement("option");
 										  // Set the value and text content for the option
 										  option.value = i;
-										  option.textContent = i;
+										  //option.textContent = i;
+										  if (i === 10) {
+											option.textContent = 'Volume 1 (' + i + ')';
+										  }else if (i === 20) {
+											option.textContent = 'Volume 2 (' + i + ')';
+										  } else if (i === 30) {
+											option.textContent = 'Volume 3 (' + i + ')';
+										  } else if (i === 40) {
+											option.textContent = 'Volume 4 (' + i + ')';
+										  } else if ((i === 49) || (i === 50)) {
+											option.textContent = 'Volume 5 (' + i + ')';
+										  } else {
+												option.textContent = i;
+										  }
 										  // Append the option to the select element
 										  selectElement.appendChild(option);
 										}
 									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="addPdfPath" class="label-form">Document Path</label>
-									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>
 							</div>
 						</div>
@@ -641,6 +689,65 @@ function collectAndSubmitAnswers() {
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="practiceScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 70%;">Practice Type</th>
+											<th data-field="grade" style="width: 10%;">Grade</th>
+											<th data-field="set" style="width: 10%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+								<div class="form-row">
+									<div class="col-md-7">
+										<label for="practiceTypeSearch" class="label-form">Practice Type</label>
+										<select class="form-control" id="practiceTypeSearch" name="practiceTypeSearch">
+											<option value="1">Mega English</option>
+											<option value="2">Mega Mathematics</option>
+											<option value="3">Mega General Ability</option>
+											<option value="4">NAPLAN Math</option>
+											<option value="5">NAPLAN Reading</option>
+											<option value="6">NAPLAN LC</option>
+											<option value="7">Revision English</option>
+											<option value="8">Revision Mathematics</option>
+											<option value="9">Revision Science</option>
+											<option value="10">Reading Comprehension (EDU)</option>
+											<option value="11">Verbal Reasoning (EDU)</option>
+											<option value="12">Mathematics (EDU)</option>
+											<option value="13">Numerical Reasoning (EDU)</option>
+											<option value="14">Humanities (ACER)</option>
+											<option value="15">Mathematics (ACER)</option>
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="gradeSearch" class="label-form">Grade</label>
+										<select class="form-control" id="gradeSearch" name="gradeSearch">
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="setSearch" class="label-form">Set</label>
+										<select class="form-control" id="setSearch" name="setSearch">
+										</select>
+									</div>
+									<div class="col-md-1 d-flex flex-column justify-content-center">
+										<label for="setSearch" class="label-form text-white">Add</label>
+										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addClazz()"><i class="bi bi-plus"></i></button>
+									</div>
+								</div>
+							</div>
+						</div>
+
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="addTest()">Create</button>&nbsp;&nbsp;

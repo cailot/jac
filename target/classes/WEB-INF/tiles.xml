@@ -70,7 +70,7 @@
 	</definition>
 	<!--Practice Schedule -->
 	<definition name="practiceSchedulePage" extends="base.definition">
-		<put-attribute name="title" value="Schedule List" />
+		<put-attribute name="title" value="Practice Schedule" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/practiceSchedule.jsp" />
 	</definition>
 	<!--Test List -->
@@ -80,7 +80,7 @@
 	</definition>
 	<!--Test Schedule -->
 	<definition name="testSchedulePage" extends="base.definition">
-		<put-attribute name="title" value="Schedule List" />
+		<put-attribute name="title" value="Test Schedule" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/testSchedule.jsp" />
 	</definition>
 

@@ -721,5 +721,16 @@ public class ConnectedServiceImpl implements ConnectedService {
 		return dto;
 	}
 
+	@Override
+	public List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade) {
+		List<PracticeDTO> dtos = new ArrayList<>();
+		try{
+			dtos = practiceRepository.filterPracticeByTypeNGradeNVolume(type, grade, 0);
+		}catch(Exception e){
+			System.out.println("No Practice found");
+		}
+		return dtos;
+	}
+
 
 }
