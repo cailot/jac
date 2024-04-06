@@ -25,11 +25,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
+import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
@@ -38,6 +38,7 @@ import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
+import hyung.jin.seo.jae.model.PracticeSchedule;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.model.Test;
@@ -143,6 +144,27 @@ public class ConnectedController {
 		return dto;
 	}
 
+	// register practice schedule
+	@PostMapping("/addPracticeSchedule")
+	@ResponseBody
+	public PracticeScheduleDTO registerPracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
+		PracticeSchedule schedule = formData.convertToPracticeSchedule();
+		List<PracticeDTO> practices = formData.getPractices();
+		// associate practice to schedule
+		for(PracticeDTO practice : practices){
+			String practiceId = practice.getId();
+			Practice prac = connectedService.getPractice(Long.parseLong(practiceId));
+			schedule.addPractice(prac);
+		}
+		schedule.setActive(true);
+		// save practice schedule
+		schedule = connectedService.addPracticeSchedule(schedule);
+		PracticeScheduleDTO dto = new PracticeScheduleDTO(schedule);
+		// return dto
+		return dto;
+	}
+	
+
 	// update existing homework
 	@PutMapping("/updateHomework")
 	@ResponseBody
@@ -210,6 +232,31 @@ public class ConnectedController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
+
+	// update existing practice schedule
+	@PutMapping("/updatePracticeSchedule")
+	@ResponseBody
+	public ResponseEntity<String> updatePracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
+		try{
+			// 1. create barebone PracticeSchedule
+			PracticeSchedule work = formData.convertToPracticeSchedule();
+			// 2. update associated Practices
+			List<PracticeDTO> practices = formData.getPractices();
+			for(PracticeDTO practice : practices){
+				// 2.1 get Practice
+				Practice prac = connectedService.getPractice(Long.parseLong(practice.getId()));
+				// 2.2 update Practice
+				work.addPractice(prac);
+			}
+			// 3. update PracticeSchedule
+			work = connectedService.updatePracticeSchedule(work, Long.parseLong(formData.getId()));
+			// 4.return flag
+			return ResponseEntity.ok("\"Practice Schedule updated successfully\"");
+		}catch(Exception e){
+			String message = "Error updating Practice Schedule : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
 	
 	// get homework
 	@GetMapping("/getHomework/{id}")
@@ -244,6 +291,23 @@ public class ConnectedController {
 	public TestDTO getTest(@PathVariable Long id) {
 		Test work = connectedService.getTest(id);
 		TestDTO dto = new TestDTO(work);
+		return dto;
+	}
+
+	// get practice schedule
+	@GetMapping("/getPracticeSchedule/{id}")
+	@ResponseBody
+	public PracticeScheduleDTO getPracticeSchedule(@PathVariable Long id) {
+		PracticeSchedule work = connectedService.getPracticeSchedule(id);
+		PracticeScheduleDTO dto = new PracticeScheduleDTO(work);
+		List<Practice> practices = work.getPractices();
+		for(Practice practice : practices){
+			PracticeDTO prac = new PracticeDTO(practice);
+			// get PracticeType name
+			String name =  connectedService.getPracticeTypeName(practice.getId());
+			prac.setName(name);
+			dto.addPractice(prac);
+		}
 		return dto;
 	}
 
@@ -313,6 +377,19 @@ public class ConnectedController {
 		dtos = connectedService.listTest(Integer.parseInt(filteredType), filteredGrade, Integer.parseInt(filteredVolume));		
 		model.addAttribute(JaeConstants.TEST_LIST, dtos);
 		return "testListPage";
+	}
+
+	@GetMapping("/filterPracticeSchedule")
+	public String listPracticeSchedules(
+			@RequestParam(value = "listYear", required = false) String listYear,
+			@RequestParam(value = "listWeek", required = false) String listWeek,
+			Model model) {
+		List<PracticeScheduleDTO> dtos = new ArrayList();
+		String filteredYear = StringUtils.defaultString(listYear, "0");
+		String filteredWeek = StringUtils.defaultString(listWeek, "0");
+		dtos = connectedService.listPracticeSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		model.addAttribute(JaeConstants.PRACTICE_SCHEDULE_LIST, dtos);
+		return "practiceSchedulePage";
 	}
 
 	// bring summary of extrawork
@@ -456,4 +533,6 @@ public class ConnectedController {
 		}
 		return answerList;
 	}
+
+
 }

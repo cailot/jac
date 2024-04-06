@@ -19,209 +19,266 @@
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 
 <script>
-	$(document).ready(function () {
-		$('#teacherListTable').DataTable({
-			language: {
-				search: 'Filter:'
+$(document).ready(function () {
+	$('#teacherListTable').DataTable({
+		language: {
+			search: 'Filter:'
+		},
+		dom: 'Blfrtip',
+		buttons: [
+			'excelHtml5',
+			{
+				extend: 'pdfHtml5',
+				download: 'open',
+				pageSize: 'A0'
 			},
-			dom: 'Blfrtip',
-			buttons: [
-				'excelHtml5',
-				{
-					extend: 'pdfHtml5',
-					download: 'open',
-					pageSize: 'A0'
-				},
-				'print'
-			],
-			//pageLength: 20
-		});
-
-		$('table .password').on('click', function () {
-			var username = $(this).parent().find('#username').val();
-			$('#passwordModal #usernamepassword').val(username);
-		});
-
-		// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-		$('#clazzGrade').change(function () {
-			getClazzByGrade();
-		});
-		$('#clazzYear').change(function () {
-			getClazzByGrade();
-		});
-
-		$('#clazzList').on('shown.bs.modal', function () {
-			getClazzByGrade();
-		});
-
-		// initialise state list when loading
-		listState('#listState');
-		listState('#addState');
-		listState('#editState');
-		listBranch('#listBranch');
-		listBranch('#addBranch');
-		listBranch('#editBranch');
-		listGrade('#clazzGrade');
+			'print'
+		],
+		//pageLength: 20
 	});
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Populate class by grade
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function getClazzByGrade() {
-		// debugger;
-		var grade = $('#clazzGrade').val();
-		var year = $('#clazzYear').val();
-		var state = $('#clazzState').val();
-		var branch = $('#clazzBranch').val();
-		$.ajax({
-			url: '${pageContext.request.contextPath}/class/classes4Teacher',
-			method: 'GET',
-			data: {
-				grade: grade,
-				year: year,
-				state: state,
-				branch: branch
-			},
-			success: function (data) {
-				$('#clazzId').empty(); // clear the previous options
-				$.each(data, function (index, value) {
-					const cleaned = cleanUpJson(value);
-					console.log(cleaned);
-					$('#clazzId').append($("<option value='" + value.id + "'>").text(value.name).val(value.id)); // add new option
-				});
-			},
-			error: function (xhr, status, error) {
-				console.error(xhr.responseText);
-			}
-		});
+	$('table .password').on('click', function () {
+		var username = $(this).parent().find('#username').val();
+		$('#passwordModal #usernamepassword').val(username);
+	});
+
+	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
+	$('#clazzGrade').change(function () {
+		getClazzByGrade();
+	});
+	$('#clazzYear').change(function () {
+		getClazzByGrade();
+	});
+
+	$('#clazzList').on('shown.bs.modal', function () {
+		getClazzByGrade();
+	});
+
+	// initialise state list when loading
+	listState('#listState');
+	listState('#addState');
+	listState('#editState');
+	listBranch('#listBranch');
+	listBranch('#addBranch');
+	listBranch('#editBranch');
+	listGrade('#clazzGrade');
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Populate class by grade
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getClazzByGrade() {
+	// debugger;
+	var grade = $('#clazzGrade').val();
+	var year = $('#clazzYear').val();
+	var state = $('#clazzState').val();
+	var branch = $('#clazzBranch').val();
+	$.ajax({
+		url: '${pageContext.request.contextPath}/class/classes4Teacher',
+		method: 'GET',
+		data: {
+			grade: grade,
+			year: year,
+			state: state,
+			branch: branch
+		},
+		success: function (data) {
+			$('#clazzId').empty(); // clear the previous options
+			$.each(data, function (index, value) {
+				const cleaned = cleanUpJson(value);
+				console.log(cleaned);
+				$('#clazzId').append($("<option value='" + value.id + "'>").text(value.name).val(value.id)); // add new option
+			});
+		},
+		error: function (xhr, status, error) {
+			console.error(xhr.responseText);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Register Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function addTeacher() {
+	// Get from form data
+	var teacher = {
+		state: $("#addState").val(),
+		branch: $("#addBranch").val(),
+		title: $("#addTitle").val(),
+		firstName: $("#addFirstName").val(),
+		lastName: $("#addLastName").val(),
+		email: $("#addEmail").val(),
+		phone: $("#addPhone").val(),
+		password : $("#addPassword").val(),
+		address: $("#addAddress").val(),
+		bank: $("#addBank").val(),
+		bsb: $("#addBsb").val(),
+		accountNumber: $("#addAccountNumber").val(),
+		tfn: $("#addTfn").val(),
+		superannuation: $("#addSuperannuation").val(),
+		vitNumber: $("#addVitNumber").val(),
+		superMember: $("#addSuperMember").val(),
+		memo: $("#addMemo").val(),
+	}
+	// console.log(teacher);
+
+	// Send AJAX to server
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/register',
+		type: 'POST',
+		dataType: 'json',
+		data: JSON.stringify(teacher),
+		contentType: 'application/json',
+		success: function (teacher) {
+
+			// Display the success alert
+			$('#success-alert .modal-body').text('New teacher is registered successfully.');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+	$('#registerModal').modal('hide');
+	// flush all registered data
+	document.getElementById("teacherRegister").reset();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Get Teacher Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function retreiveTeacherInfo(std) {
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/get/' + std,
+		type: 'GET',
+		success: function (teacher) {
+			// Update display info
+			console.log(teacher);
+			$("#editId").val(teacher.id);
+			$("#editFirstName").val(teacher.firstName);
+			$("#editLastName").val(teacher.lastName);
+			$("#editEmail").val(teacher.email);
+			$("#editTitle").val(teacher.title);
+			$("#editAddress").val(teacher.address);
+			$("#editPhone").val(teacher.phone);
+			$("#editState").val(teacher.state);
+			$("#editBranch").val(teacher.branch);
+			$("#editBank").val(teacher.bank);
+			$("#editBsb").val(teacher.bsb);
+			$("#editAccountNumber").val(teacher.accountNumber);
+			$("#editSuperannuation").val(teacher.superannuation);
+			$("#editVitNumber").val(teacher.vitNumber);
+			$("#editSuperMember").val(teacher.superMember);
+			$("#editTfn").val(teacher.tfn);
+			$("#editMemo").val(teacher.memo);
+			// display modal
+			$('#editModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Teacher Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateTeacherInfo() {
+	// get from formData
+	var teacher = {
+		id: $('#editId').val(),
+		firstName: $("#editFirstName").val(),
+		lastName: $("#editLastName").val(),
+		email: $("#editEmail").val(),
+		address: $("#editAddress").val(),
+		title: $("#editTitle").val(),
+		phone: $("#editPhone").val(),
+		memo: $("#editMemo").val(),
+		state: $("#editState").val(),
+		branch: $("#editBranch").val(),
+		bank: $("#editBank").val(),
+		bsb: $("#editBsb").val(),
+		accountNumber: $("#editAccountNumber").val(),
+		tfn: $("#editTfn").val(),
+		superannuation: $("#editSuperannuation").val(),
+		vitNumber: $("#editVitNumber").val(),
+		superMember: $("#editSuperMember").val()
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Register Teacher
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addTeacher() {
-		// Get from form data
-		var teacher = {
-			state: $("#addState").val(),
-			branch: $("#addBranch").val(),
-			title: $("#addTitle").val(),
-			firstName: $("#addFirstName").val(),
-			lastName: $("#addLastName").val(),
-			email: $("#addEmail").val(),
-			phone: $("#addPhone").val(),
-			password : $("#addPassword").val(),
-			address: $("#addAddress").val(),
-			bank: $("#addBank").val(),
-			bsb: $("#addBsb").val(),
-			accountNumber: $("#addAccountNumber").val(),
-			tfn: $("#addTfn").val(),
-			superannuation: $("#addSuperannuation").val(),
-			vitNumber: $("#addVitNumber").val(),
-			superMember: $("#addSuperMember").val(),
-			memo: $("#addMemo").val(),
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/update',
+		type: 'PUT',
+		dataType: 'json',
+		data: JSON.stringify(teacher),
+		contentType: 'application/json',
+		success: function (value) {
+			// disappear modal
+			$('#editModal').modal('hide');
+			// Display the success alert
+			$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
 		}
-		// console.log(teacher);
+	});
 
-		// Send AJAX to server
+	// flush all registered data
+	document.getElementById("teacherEdit").reset();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Ativate Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function activateTeacher(id) {
+	if (confirm("Are you sure you want to activate this teacher?")) {
+		// send query to controller
 		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/register',
-			type: 'POST',
-			dataType: 'json',
-			data: JSON.stringify(teacher),
-			contentType: 'application/json',
-			success: function (teacher) {
-
+			url: '${pageContext.request.contextPath}/teacher/activate/' + id,
+			type: 'PUT',
+			success: function (data) {
 				// Display the success alert
-				$('#success-alert .modal-body').text('New teacher is registered successfully.');
+				$('#success-alert .modal-body').text('ID : ' + id + ' is now activated again.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
 				});
-
 			},
 			error: function (xhr, status, error) {
 				console.log('Error : ' + error);
 			}
 		});
-		$('#registerModal').modal('hide');
-		// flush all registered data
-		document.getElementById("teacherRegister").reset();
+	} else {
+		return;
 	}
+}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Get Teacher Info
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function retreiveTeacherInfo(std) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Teacher
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function inactivateTeacher(id) {
+	if (confirm("Are you sure you want to de-activate this teacher?")) {
 		// send query to controller
 		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/get/' + std,
-			type: 'GET',
-			success: function (teacher) {
-				// Update display info
-				console.log(teacher);
-				$("#editId").val(teacher.id);
-				$("#editFirstName").val(teacher.firstName);
-				$("#editLastName").val(teacher.lastName);
-				$("#editEmail").val(teacher.email);
-				$("#editTitle").val(teacher.title);
-				$("#editAddress").val(teacher.address);
-				$("#editPhone").val(teacher.phone);
-				$("#editState").val(teacher.state);
-				$("#editBranch").val(teacher.branch);
-				$("#editBank").val(teacher.bank);
-				$("#editBsb").val(teacher.bsb);
-				$("#editAccountNumber").val(teacher.accountNumber);
-				$("#editSuperannuation").val(teacher.superannuation);
-				$("#editVitNumber").val(teacher.vitNumber);
-				$("#editSuperMember").val(teacher.superMember);
-				$("#editTfn").val(teacher.tfn);
-				$("#editMemo").val(teacher.memo);
-				// display modal
-				$('#editModal').modal('show');
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Update Teacher Info
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function updateTeacherInfo() {
-		// get from formData
-		var teacher = {
-			id: $('#editId').val(),
-			firstName: $("#editFirstName").val(),
-			lastName: $("#editLastName").val(),
-			email: $("#editEmail").val(),
-			address: $("#editAddress").val(),
-			title: $("#editTitle").val(),
-			phone: $("#editPhone").val(),
-			memo: $("#editMemo").val(),
-			state: $("#editState").val(),
-			branch: $("#editBranch").val(),
-			bank: $("#editBank").val(),
-			bsb: $("#editBsb").val(),
-			accountNumber: $("#editAccountNumber").val(),
-			tfn: $("#editTfn").val(),
-			superannuation: $("#editSuperannuation").val(),
-			vitNumber: $("#editVitNumber").val(),
-			superMember: $("#editSuperMember").val()
-		}
-
-		// send query to controller
-		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/update',
+			url: '${pageContext.request.contextPath}/teacher/inactivate/' + id,
 			type: 'PUT',
-			dataType: 'json',
-			data: JSON.stringify(teacher),
-			contentType: 'application/json',
-			success: function (value) {
-				// disappear modal
-				$('#editModal').modal('hide');
+			success: function (data) {
+				// clear existing form
+				// $('#success-alert .modal-body').text(
+				// 		'ID : ' + id + ' is now inactivated');
+				// $('#success-alert').modal('show');
+				//clearStudentForm();
 				// Display the success alert
-				$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
+				$('#success-alert .modal-body').text('ID : ' + id + ' is now inactivated.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -231,136 +288,29 @@
 				console.log('Error : ' + error);
 			}
 		});
-
-		// flush all registered data
-		document.getElementById("teacherEdit").reset();
+	} else {
+		return;
 	}
+}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Ativate Teacher
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function activateTeacher(id) {
-		if (confirm("Are you sure you want to activate this teacher?")) {
-			// send query to controller
-			$.ajax({
-				url: '${pageContext.request.contextPath}/teacher/activate/' + id,
-				type: 'PUT',
-				success: function (data) {
-					// Display the success alert
-					$('#success-alert .modal-body').text('ID : ' + id + ' is now activated again.');
-					$('#success-alert').modal('show');
-					$('#success-alert').on('hidden.bs.modal', function (e) {
-						location.reload();
-					});
-				},
-				error: function (xhr, status, error) {
-					console.log('Error : ' + error);
-				}
-			});
-		} else {
-			return;
-		}
-	}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Get Clazz Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function retreiveClazzInfo(id, state, branch) {
+	// console.log('retreiveClazzInfo : ' + id + ' - ' + state + ' - ' + branch);
+	$('#clazzTeacher').val(id);
+	$('#clazzState').val(state);
+	$('#clazzBranch').val(branch);
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		De-activate Teacher
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function inactivateTeacher(id) {
-		if (confirm("Are you sure you want to de-activate this teacher?")) {
-			// send query to controller
-			$.ajax({
-				url: '${pageContext.request.contextPath}/teacher/inactivate/' + id,
-				type: 'PUT',
-				success: function (data) {
-					// clear existing form
-					// $('#success-alert .modal-body').text(
-					// 		'ID : ' + id + ' is now inactivated');
-					// $('#success-alert').modal('show');
-					//clearStudentForm();
-					// Display the success alert
-					$('#success-alert .modal-body').text('ID : ' + id + ' is now inactivated.');
-					$('#success-alert').modal('show');
-					$('#success-alert').on('hidden.bs.modal', function (e) {
-						location.reload();
-					});
-				},
-				error: function (xhr, status, error) {
-					console.log('Error : ' + error);
-				}
-			});
-		} else {
-			return;
-		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Get Clazz Info
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function retreiveClazzInfo(id, state, branch) {
-		// console.log('retreiveClazzInfo : ' + id + ' - ' + state + ' - ' + branch);
-		$('#clazzTeacher').val(id);
-		$('#clazzState').val(state);
-		$('#clazzBranch').val(branch);
-
-		$('#clazzListResultTable tbody').empty();
-		// send query to controller
-		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/getClazz/' + id,
-			type: 'GET',
-			success: function (data) {
-				$.each(data, function (index, value) {
-					// const cleaned = cleanUpJson(value);
-					// console.log(cleaned);
-					var row = $("<tr>");
-					row.append($('<td>').text(value.name));
-					row.append($('<td>').text(value.description));
-					row.append($('<td>').text(value.day));
-					var gradeText = gradeName(value.grade);
-					row.append($('<td>').text(gradeText));
-					row.append($('<td>').text(value.year));
-					var isOnline = value.online;
-					var onlineIcon = isOnline ? $('<i class="bi bi-check-circle-fill text-secondary h6"></i>') : $('<i class="bi bi-check-circle-fill text-success h6"></i>');
-					row.append($('<td>').addClass('text-center').append(onlineIcon));
-					var isActived = value.active;
-					var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
-					row.append($('<td>').addClass('text-center').append(activeIcon));
-					row.append($('<td hidden>').addClass("clazzId").text(value.id));
-					// Create the bin icon and add an onClick event
-					var binIcon = $('<i class="bi bi-trash h5"></i>');
-					var binIconLink = $("<a>")
-						.attr("href", "javascript:void(0)")
-						.attr("title", "Delete Class")
-						.click(function () {
-							removeClazz(id, value.id);
-							row.remove(); // Remove the corresponding <tr>
-						});
-					binIconLink.append(binIcon);
-					row.append($("<td>").addClass('text-center').append(binIconLink));
-
-					$('#clazzListResultTable > tbody').append(row);
-				});
-				$('#clazzList').modal('show');
-				// display modal
-				//$('#editModal').modal('show');
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Add Clazz
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addClazz() {
-		var teacherId = $('#clazzTeacher').val();
-		var clazzId = $('#clazzId').val();
-		// console.log('addClazz : ' + teacherId + ' - ' + clazzId);
-		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/addClazz/' + teacherId + '/' + clazzId,
-			type: 'PUT',
-			success: function (value) {
-				// console.log('addClazz : ' + data);
+	$('#clazzListResultTable tbody').empty();
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/getClazz/' + id,
+		type: 'GET',
+		success: function (data) {
+			$.each(data, function (index, value) {
+				// const cleaned = cleanUpJson(value);
+				// console.log(cleaned);
 				var row = $("<tr>");
 				row.append($('<td>').text(value.name));
 				row.append($('<td>').text(value.description));
@@ -388,38 +338,87 @@
 				row.append($("<td>").addClass('text-center').append(binIconLink));
 
 				$('#clazzListResultTable > tbody').append(row);
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
+			});
+			$('#clazzList').modal('show');
+			// display modal
+			//$('#editModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Remove Clazz
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function removeClazz(teacher, clazz) {
-		$.ajax({
-			url: '${pageContext.request.contextPath}/teacher/updateClazz/' + teacher + '/' + clazz,
-			type: 'PUT',
-			success: function (data) {
-				// console.log('removeClazz : ' + data);
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Add Clazz
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function addClazz() {
+	var teacherId = $('#clazzTeacher').val();
+	var clazzId = $('#clazzId').val();
+	// console.log('addClazz : ' + teacherId + ' - ' + clazzId);
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/addClazz/' + teacherId + '/' + clazzId,
+		type: 'PUT',
+		success: function (value) {
+			// console.log('addClazz : ' + data);
+			var row = $("<tr>");
+			row.append($('<td>').text(value.name));
+			row.append($('<td>').text(value.description));
+			row.append($('<td>').text(value.day));
+			var gradeText = gradeName(value.grade);
+			row.append($('<td>').text(gradeText));
+			row.append($('<td>').text(value.year));
+			var isOnline = value.online;
+			var onlineIcon = isOnline ? $('<i class="bi bi-check-circle-fill text-secondary h6"></i>') : $('<i class="bi bi-check-circle-fill text-success h6"></i>');
+			row.append($('<td>').addClass('text-center').append(onlineIcon));
+			var isActived = value.active;
+			var activeIcon = isActived ? $('<i class="bi bi-toggle-on text-success h5"></i>') : $('<i class="bi bi-toggle-off text-secondary h5"></i>');
+			row.append($('<td>').addClass('text-center').append(activeIcon));
+			row.append($('<td hidden>').addClass("clazzId").text(value.id));
+			// Create the bin icon and add an onClick event
+			var binIcon = $('<i class="bi bi-trash h5"></i>');
+			var binIconLink = $("<a>")
+				.attr("href", "javascript:void(0)")
+				.attr("title", "Delete Class")
+				.click(function () {
+					removeClazz(id, value.id);
+					row.remove(); // Remove the corresponding <tr>
+				});
+			binIconLink.append(binIcon);
+			row.append($("<td>").addClass('text-center').append(binIconLink));
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Clear existing values on state & branch
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	function clearStateNBranch() {
-		$('#clazzTeacher').val('');
-		$('#clazzState').val('');
-		$('#clazzBranch').val('');
-	}
+			$('#clazzListResultTable > tbody').append(row);
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Remove Clazz
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function removeClazz(teacher, clazz) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/teacher/updateClazz/' + teacher + '/' + clazz,
+		type: 'PUT',
+		success: function (data) {
+			// console.log('removeClazz : ' + data);
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clear existing values on state & branch
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearStateNBranch() {
+	$('#clazzTeacher').val('');
+	$('#clazzState').val('');
+	$('#clazzBranch').val('');
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 			Update password
@@ -952,7 +951,7 @@ function clearPassword() {
 							<select class="form-control" id="clazzId" name="clazzId">
 							</select>
 						</div>
-						<div class="offset-md-2"></div>
+						<div class="offset-md-1"></div>
 						<div class="col mx-auto">
 							<label for="addCourse" class="label-form">&nbsp;</label>
 

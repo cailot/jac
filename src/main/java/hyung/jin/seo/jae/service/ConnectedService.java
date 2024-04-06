@@ -6,6 +6,7 @@ import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
+import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentPracticeDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
@@ -15,6 +16,7 @@ import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
+import hyung.jin.seo.jae.model.PracticeSchedule;
 import hyung.jin.seo.jae.model.StudentPractice;
 import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
@@ -150,6 +152,9 @@ public interface ConnectedService {
 	// list Practice by type & grade
 	List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade);
 
+	// get PracticeType name by id
+	String getPracticeTypeName(Long id);
+
 
 	/////////////////////////////////////////////////////////
 	//
@@ -219,4 +224,29 @@ public interface ConnectedService {
 
 	// delete existing record to take test again
 	void deleteStudentTest(Long studentId, Long testId); 	
+
+	/////////////////////////////////////////////////////////
+	//
+	//	PRACTICE SCHEDULE
+	//
+	/////////////////////////////////////////////////////////
+
+	// list all Practice Schedules
+	List<PracticeSchedule> allPracticeSchedules();
+
+	// list Practice Schedule by year & week
+	List<PracticeScheduleDTO> listPracticeSchedule(int year, int week);
+
+	// retrieve Practice Schedule by Id
+	PracticeSchedule getPracticeSchedule(Long id);
+	
+	// register Practice Schedule
+	PracticeSchedule addPracticeSchedule(PracticeSchedule ps);
+	
+	// update Practice Schedule info by Id
+	PracticeSchedule updatePracticeSchedule(PracticeSchedule newWork, Long id);
+	
+	// delete Practice Schedule
+	void deletePracticeSchedule(Long id);
+
 }
