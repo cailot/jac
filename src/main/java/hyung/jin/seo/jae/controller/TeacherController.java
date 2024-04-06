@@ -45,19 +45,6 @@ public class TeacherController {
 		return dto;
 	}
 
-	// // search teacher with keyword - ID, firstName & lastName
-	// @GetMapping("/search")
-	// @ResponseBody
-	// List<TeacherDTO> searchTeachers(@RequestParam("keyword") String keyword) {
-	// 	List<Teacher> teachers = teacherService.searchTeachers(keyword);
-	// 	List<TeacherDTO> dtos = new ArrayList<TeacherDTO>();
-	// 	for (Teacher teacher : teachers) {
-	// 		TeacherDTO dto = new TeacherDTO(teacher);
-	// 		dtos.add(dto);
-	// 	}
-	// 	return dtos;
-	// }
-
 	// search teacher by ID
 	@GetMapping("/get/{id}")
 	@ResponseBody

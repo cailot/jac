@@ -36,16 +36,18 @@ public class PracticeDTO implements Serializable {
 
 	private String registerDate;
 
+	private String name;
+
 	
-	public PracticeDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long practiceType, LocalDate registerDate){
+	public PracticeDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long practiceType, String name, LocalDate registerDate){
 		this.id = String.valueOf(id);
 		this.pdfPath = pdfPath;
 		this.volume = volume;
-		// this.questionCount = questionCount;
 		this.active = active;
 		this.info = info;
 		this.grade = grade;
 		this.practiceType = practiceType;
+		this.name = name;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
@@ -53,7 +55,6 @@ public class PracticeDTO implements Serializable {
     	Practice work = new Practice();
 		work.setPdfPath(this.pdfPath);
 		work.setVolume(this.volume);
-		// work.setQuestionCount(this.questionCount);
 		work.setActive(this.active);
 		work.setInfo(this.info);
 		return work;
@@ -63,7 +64,6 @@ public class PracticeDTO implements Serializable {
 		this.id = String.valueOf(work.getId());
 		this.pdfPath = work.getPdfPath();
 		this.volume = work.getVolume();
-		// this.questionCount = work.getQuestionCount();
 		this.active = work.isActive();
 		this.info = work.getInfo();
 		this.grade = work.getGrade().getCode();

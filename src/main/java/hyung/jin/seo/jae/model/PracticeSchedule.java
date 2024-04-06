@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,15 +9,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,33 +28,38 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Practice")
-public class Practice {
+@Table(name="PracticeSchedule")
+public class PracticeSchedule {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
-
-    @Column(length = 300, nullable = true)
-    private String pdfPath;
+    
+    @Column(length = 4, nullable = true)
+    private Integer year;
 
     @Column(length = 2, nullable = true)
-    private Integer volume;
+    private Integer week;
 
-    @Column(length = 50, nullable = true)
+    @Column(length = 50, nullable = false)
     private String info;
 
     @Column
     private boolean active;
-
+    
     @CreationTimestamp
     private LocalDate registerDate;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gradeId")
-    private Grade grade;
-	
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "practiceTypeId")
-    private PracticeType practiceType;
-}
+
+    @ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		name = "PracticeScheculeLink",
+		joinColumns = { @JoinColumn(name = "practiceScheduleId")},
+		inverseJoinColumns = { @JoinColumn(name = "practiceId")}
+	)
+	private List<Practice> practices = new ArrayList<>();
+
+    public void addPractice(Practice practice){
+        practices.add(practice);
+    }
+
+ }

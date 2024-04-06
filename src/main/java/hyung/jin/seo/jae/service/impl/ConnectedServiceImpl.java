@@ -14,6 +14,7 @@ import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
+import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentPracticeDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
@@ -23,6 +24,7 @@ import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
+import hyung.jin.seo.jae.model.PracticeSchedule;
 import hyung.jin.seo.jae.model.StudentPractice;
 import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
@@ -32,6 +34,7 @@ import hyung.jin.seo.jae.repository.ExtraworkRepository;
 import hyung.jin.seo.jae.repository.HomeworkRepository;
 import hyung.jin.seo.jae.repository.PracticeAnswerRepository;
 import hyung.jin.seo.jae.repository.PracticeRepository;
+import hyung.jin.seo.jae.repository.PracticeScheduleRepository;
 import hyung.jin.seo.jae.repository.StudentPracticeRepository;
 import hyung.jin.seo.jae.repository.StudentTestRepository;
 import hyung.jin.seo.jae.repository.TestAnswerRepository;
@@ -64,6 +67,9 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Autowired
 	private StudentTestRepository studentTestRepository;
+
+	@Autowired
+	private PracticeScheduleRepository practiceScheduleRepository;
 
 	
 	@Override
@@ -106,6 +112,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 			dtos = testRepository.findAll();
 		}catch(Exception e){
 			System.out.println("No Test found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<PracticeSchedule> allPracticeSchedules() {
+		List<PracticeSchedule> dtos = new ArrayList<>();
+		try{
+			dtos = practiceScheduleRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No Practice Schedule found");
 		}
 		return dtos;
 	}
@@ -162,6 +179,13 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Override
 	public StudentTest getStudentTest(Long id) {
 		Optional<StudentTest> test = studentTestRepository.findById(id);
+		if(!test.isPresent()) return null;
+		return test.get();
+	}
+
+	@Override
+	public PracticeSchedule getPracticeSchedule(Long id) {
+		Optional<PracticeSchedule> test = practiceScheduleRepository.findById(id);
 		if(!test.isPresent()) return null;
 		return test.get();
 	}
@@ -229,6 +253,15 @@ public class ConnectedServiceImpl implements ConnectedService {
 		StudentTest test = studentTestRepository.save(crs);
 		return test;
 	}
+
+	@SuppressAjWarnings("null")
+	@Override
+	@Transactional
+	public PracticeSchedule addPracticeSchedule(PracticeSchedule ps) {
+		PracticeSchedule schedule = practiceScheduleRepository.save(ps);
+		return schedule;
+	}
+
 
 	@Override
 	@Transactional
@@ -397,6 +430,28 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
+	public PracticeSchedule updatePracticeSchedule(PracticeSchedule newWork, Long id) {
+		// search by getId
+		PracticeSchedule existing = practiceScheduleRepository.findById(id).get();
+		// update info
+		int newYear = newWork.getYear();
+		existing.setYear(newYear);
+		int newWeek = newWork.getWeek();
+		existing.setWeek(newWeek);
+		boolean newActive = newWork.isActive();
+		existing.setActive(newActive);
+		String newInfo = newWork.getInfo();
+		existing.setInfo(newInfo);
+		List<Practice> newPracs = newWork.getPractices();
+		existing.setPractices(newPracs);
+		// update the existing record
+		PracticeSchedule updated = practiceScheduleRepository.save(existing);
+		return updated;	
+	}
+
+
+	@Override
+	@Transactional
 	public void deleteHomework(Long id) {
 		try{
 		    homeworkRepository.deleteById(id);
@@ -539,6 +594,18 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public List<PracticeScheduleDTO> listPracticeSchedule(int year, int week) {
+		List<PracticeScheduleDTO> dtos = new ArrayList<>();
+		try{
+			dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
+		}catch(Exception e){
+			System.out.println("No Practice Schedule found");
+		}
+		return dtos;
+	}
+
+
+	@Override
 	public List<SimpleBasketDTO> loadExtrawork(String grade) {
 		List<Object[]> objects = new ArrayList<>();
 		try{
@@ -585,11 +652,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}
 		return dtos;
 	}
-
-
-
-
-
 
 	@Override
 	public List<Integer> getAnswersByPractice(Long practiceId) {
@@ -725,12 +787,34 @@ public class ConnectedServiceImpl implements ConnectedService {
 	public List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade) {
 		List<PracticeDTO> dtos = new ArrayList<>();
 		try{
-			dtos = practiceRepository.filterPracticeByTypeNGradeNVolume(type, grade, 0);
+			dtos = practiceRepository.filterActivePracticeByTypeNGradeNVolume(type, grade, 0);
 		}catch(Exception e){
 			System.out.println("No Practice found");
 		}
 		return dtos;
 	}
 
+
+
+
+	@Override
+	@Transactional
+	public void deletePracticeSchedule(Long id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'deletePracticeSchedule'");
+	}
+
+	@Override
+	public String getPracticeTypeName(Long id) {
+		String name = "";
+		try{
+			name = practiceRepository.getPracticeTypeName(id);
+		}catch(Exception e){
+			System.out.println("No Practice found");
+		}
+		return name;
+	}
+
+	
 
 }
