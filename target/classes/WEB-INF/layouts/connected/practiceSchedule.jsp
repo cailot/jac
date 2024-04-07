@@ -190,12 +190,12 @@ function retrieveScheduleInfo(id) {
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-
+			// clear all rows on editScheduleTable
+			$("#editScheduleTable").find("tr:gt(0)").remove();	
 			// append Practice Info into table
 			var practices = scheduleItem.practices;
 			$.each(practices, function (index, value) {
 				// Get the values from the select elements
-
 				var gradeSelect = document.getElementById("editGradeSearch");
 				var grade = gradeSelect.options[value.grade].text;
 				// Get a reference to the table
@@ -262,7 +262,7 @@ function updateScheduleInfo() {
 			practiceDtos.push({id : practiceId});
 		}
 	});
-	var schedule = {
+	var scheduleItem = {
 		id: $("#editId").val(),
 		year: $("#editYear").val(),
 		week: $("#editWeek").val(),
@@ -325,223 +325,34 @@ function updateEditActiveValue(checkbox) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Answer Sheet
+//		Confirm before deleting PracticeSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function displayAnswerSheet(testId) {
-	//save testId 
-	document.getElementById("testId4Answer").value = testId;
-	// clear answerId
-	document.getElementById("answerId").value = '';
+function confirmDelete(practiceId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
 
-	// check if answer exists or not
-	// if exists, then display info
-	// if not, show empty form to register
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/checkTestAnswer/' + testId,
-		type: 'GET',
-		success: function (answerSheet) {
-			// debugger;
-			// console.log(answerSheet);
-			if (answerSheet != null && answerSheet != '') {
-				// Display the answer sheet info
-				$("#answerId").val(answerSheet.id);				
-				$("#addAnswerVideoPath").val(answerSheet.videoPath);
-				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
-				// Display the answer sheet table
-				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-				answerSheetTableBody.innerHTML = "";
-				var numToChar = ['', 'A', 'B', 'C', 'D', 'E'];  // add 0 index = ''
-				function createRow(i, answerSheet, numToChar, answerSheetTableBody) {
-					// Create a new row
-					var newRow = answerSheetTableBody.insertRow(answerSheetTableBody.rows.length);
-					// Insert cells into the row
-					var cell1 = newRow.insertCell(0);
-					var cell2 = newRow.insertCell(1);
-					var cell3 = newRow.insertCell(2);
-					var cell4 = newRow.insertCell(3);
-					// Align the content of the cells to the center
-					cell1.style.textAlign = "center";
-					cell2.style.textAlign = "center";
-					cell3.style.textAlign = "left";
-					cell4.style.textAlign = "center";
-					// Populate cells with data
-					// console.log(answerSheet.answers[i]);
-					cell1.innerHTML = answerSheet.answers[i].question;
-					cell2.innerHTML = numToChar[answerSheet.answers[i].answer];
-					cell3.innerHTML = answerSheet.answers[i].topic;
-					// Create a remove button in the third cell
-					var removeIcon = document.createElement("i");
-					removeIcon.className = "bi bi-trash icon-button text-danger";
-					removeIcon.addEventListener('click', function () {
-						answerSheetTableBody.removeChild(newRow);
-					});
-					// Append the remove button to the third cell
-					cell4.appendChild(removeIcon);
-
-					// Find the correct position to insert the new row based on the 'question' order
-					var newRowQuestion = parseInt(answerSheet.answers[i].question);
-					var rows = answerSheetTableBody.getElementsByTagName("tr");
-					var insertIndex = 0;
-					for (var j = 0; j < rows.length; j++) {
-						var rowQuestion = parseInt(rows[j].getElementsByTagName("td")[0].innerHTML);
-						if (newRowQuestion < rowQuestion) {
-							insertIndex = j;
-							break;
-						} else {
-							insertIndex = j + 1;
-						}
-					}
-					// Insert the new row at the correct position
-					if (insertIndex >= rows.length) {
-						answerSheetTableBody.appendChild(newRow);
-					} else {
-						answerSheetTableBody.insertBefore(newRow, rows[insertIndex]);
-					}
-				}
-				for (var i = 0; i < answerSheet.answers.length; i++) {
-					createRow(i, answerSheet, numToChar, answerSheetTableBody);
-				}
-			} else {
-				// Display an empty form to register the answer sheet
-				// $("#addAnswerVideoPath").val("");
-				$("#addAnswerPdfPath").val("");
-				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-				answerSheetTableBody.innerHTML = "";
-				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
-				answerQuestionNumberSelect.value = "1";
-				var correctAnswerSelect = document.getElementById("correctAnswerOption");
-				correctAnswerSelect.value = "1";
-				var answerTopicSelect = document.getElementById("answerTopic");
-				answerTopicSelect.value = "";
-			}
-			// Display the modal
-			$('#registerTestAnswerModal').modal('show');
-		},
-		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deletePracticeSchedule(practiceId);
+        $('#deleteConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Add Answer To Table
+//		Delete PracticeSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function addAnswerToTable() {
-	// Get user selections
-	var questionNumber = parseInt(document.getElementById("answerQuestionNumber").value);
-	var selectedAnswerOption = document.getElementById("correctAnswerOption").value;
-	var answerTopicDescription = document.getElementById("answerTopic").value;
-	// Map numeric values to corresponding letters
-	var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-	var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
-	// Get the table body
-	var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-	// Find the correct position to insert the new row
-	var position = 0;
-	for (; position < tableBody.rows.length; position++) {
-		if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
-			break;
-		}
-	}
-	// Create a new row at the correct position
-	var newRow = tableBody.insertRow(position);
-	// Insert cells into the row
-	var cell1 = newRow.insertCell(0);
-	var cell2 = newRow.insertCell(1);
-	var cell3 = newRow.insertCell(2);
-	var cell4 = newRow.insertCell(3);
-	// Align the content of the cells to the center
-	cell1.style.textAlign = "center";
-	cell2.style.textAlign = "center";
-	cell3.style.textAlign = "left";
-	cell4.style.textAlign = "center";
-	// Populate cells with data
-	cell1.innerHTML = questionNumber;
-	cell2.innerHTML = letterValue;
-	cell3.innerHTML = answerTopicDescription;
-	// Create a remove button in the third cell
-	var removeIcon = document.createElement("i");
-	removeIcon.className = "bi bi-trash icon-button text-danger";
-	removeIcon.addEventListener('click', function() {
-		tableBody.removeChild(newRow);
-	});
-	// Append the remove button to the third cell
-	cell4.appendChild(removeIcon);
-	// Automatically choose the next question number
-	var nextQuestionNumber = questionNumber + 1;
-	document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
-	// Clear the topic input value
-	document.getElementById("answerTopic").value = "";
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Collect Answer And Send 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function collectAndSubmitAnswers() {
-    // Collect values from the modal
-	var answerId = document.getElementById("answerId").value;
-	var testId = document.getElementById("testId4Answer").value;
-    var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
-    var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
-
-    // Collect question number and selected value from the answerSheetTable
-    var answerList = [];
-    var answerTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-    var rows = answerTableBody.getElementsByTagName("tr");
-
-	// Create a mapping object
-	var charToNum = {
-		'A': 1,
-		'B': 2,
-		'C': 3,
-		'D': 4,
-		'E': 5
-		// Add more mappings if needed
-	};
-
-    for (var i = 0; i < rows.length; i++) {
-        var cells = rows[i].getElementsByTagName("td");
-        var questionNumber = cells[0].innerHTML;
-        // var selectedRadioValue = cells[1].innerHTML;
-		var selectedRadioValue = charToNum[cells[1].innerHTML];  // Convert the character to a number
-		var answerTopic = cells[2].innerHTML;
-
-        answerList.push({
-            question: questionNumber,
-            answer: selectedRadioValue,
-			topic : answerTopic
-        });
-    }
-    // Send the formData to the Spring controller using AJAX or other means
-    $.ajax({
-        url: '${pageContext.request.contextPath}/connected/saveTestAnswerSheet', // Replace with your actual Spring controller endpoint
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-			answerId : answerId,
-			testId : testId,
-			videoPath : answerVideoPath,
-			pdfPath : answerPdfPath,
-			answers : answerList
-		}),
-        success: function (response) {
-            // Handle success response
-            console.log(response);
-			// clear practionId to avoid confusion
-			document.getElementById("testId4Answer").value = '';
-    		// Optionally, close the modal after submitting
-    		$('#registerTestAnswerModal').modal('hide');
-			$('#success-alert .modal-body').html('Answer Sheet is successfully updated.');
-	        $('#success-alert').modal('show');
-			// Attach an event listener to the success alert close event
-			$('#success-alert').on('hidden.bs.modal', function () {
-				// Reload the page after the success alert is closed
-				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+function deletePracticeSchedule(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/deletePracticeSchedule/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Practice Schedule deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
 			});
-
-        },
-        error: function (error) {
+		},
+		error: function (error) {
             // Handle error response
             console.error(error);
         }
@@ -679,11 +490,11 @@ function collectAndSubmitAnswers() {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit Practice Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
 														</i>
-														<!-- &nbsp;&nbsp;
-														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${scheduleItem.id}')">
-														</i> -->
+														&nbsp;&nbsp;
+														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete Practice Schedule" onclick="confirmDelete('${scheduleItem.id}')">
+														</i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -1049,50 +860,21 @@ function collectAndSubmitAnswers() {
 	</div>
 </div>
 
-<!-- Warning Alert -->
-<div id="warning-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Error Alert -->
-<div id="error-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger alert-dialog-display">
-			<i class="fa fa-times-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Confirmation Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Delete Confirmation Alert -->
-<div id="delete-confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmDeleteAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Schedule Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to delete Practice Schedule ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>
