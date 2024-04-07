@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -300,7 +302,7 @@ public class ConnectedController {
 	public PracticeScheduleDTO getPracticeSchedule(@PathVariable Long id) {
 		PracticeSchedule work = connectedService.getPracticeSchedule(id);
 		PracticeScheduleDTO dto = new PracticeScheduleDTO(work);
-		List<Practice> practices = work.getPractices();
+		Set<Practice> practices = work.getPractices();
 		for(Practice practice : practices){
 			PracticeDTO prac = new PracticeDTO(practice);
 			// get PracticeType name
@@ -517,6 +519,14 @@ public class ConnectedController {
 		List<PracticeDTO> dtos = connectedService.listPracticeByTypeNGrade(type, grade); 
 		return dtos;
 	}
+
+	@DeleteMapping(value = "/deletePracticeSchedule/{practiceScheduleId}")
+	@ResponseBody
+    public ResponseEntity<String> removePracticeSchedule(@PathVariable String practiceScheduleId) {
+        Long id = Long.parseLong(StringUtils.defaultString(practiceScheduleId, "0"));
+		connectedService.deletePracticeSchedule(id);
+		return ResponseEntity.ok("\"Practice Schedule deleted successfully\"");
+    }
 
 	// helper method converting answers Map to List
 	private List<Integer> convertAnswers(List<Map<String, Object>> answers) {

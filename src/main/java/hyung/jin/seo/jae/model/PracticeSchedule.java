@@ -19,8 +19,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -56,7 +56,7 @@ public class PracticeSchedule {
 		joinColumns = { @JoinColumn(name = "practiceScheduleId")},
 		inverseJoinColumns = { @JoinColumn(name = "practiceId")}
 	)
-	private List<Practice> practices = new ArrayList<>();
+	private Set<Practice> practices = new LinkedHashSet();
 
     public void addPractice(Practice practice){
         practices.add(practice);

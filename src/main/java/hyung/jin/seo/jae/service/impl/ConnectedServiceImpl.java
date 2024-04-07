@@ -1,8 +1,10 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -442,7 +444,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 		existing.setActive(newActive);
 		String newInfo = newWork.getInfo();
 		existing.setInfo(newInfo);
-		List<Practice> newPracs = newWork.getPractices();
+		Set<Practice> newPracs = newWork.getPractices();
 		existing.setPractices(newPracs);
 		// update the existing record
 		PracticeSchedule updated = practiceScheduleRepository.save(existing);
@@ -509,6 +511,25 @@ public class ConnectedServiceImpl implements ConnectedService {
 			System.out.println("Nothing to delete");
 		}
 	}
+
+	@Override
+	@Transactional
+	public void deletePracticeSchedule(Long id) {
+		PracticeSchedule practiceSchedule = practiceScheduleRepository.findById(id).orElse(null);
+		if (practiceSchedule != null) {
+			// Retrieve the associated practices
+			Set<Practice> practices = practiceSchedule.getPractices();		
+			// Remove the associations between PracticeSchedule and Practice entities
+			practiceSchedule.setPractices(new LinkedHashSet<>());
+			practiceScheduleRepository.save(practiceSchedule); // Update to remove associations
+			// Now you can safely delete the PracticeSchedule record
+			practiceScheduleRepository.delete(practiceSchedule);
+		} else {
+			// Handle the case where the PracticeSchedule record doesn't exist
+		}
+
+	}
+
 
 	@Override
 	public HomeworkDTO getHomeworkInfo(int subject, int year, int week) {
@@ -792,16 +813,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 			System.out.println("No Practice found");
 		}
 		return dtos;
-	}
-
-
-
-
-	@Override
-	@Transactional
-	public void deletePracticeSchedule(Long id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'deletePracticeSchedule'");
 	}
 
 	@Override
