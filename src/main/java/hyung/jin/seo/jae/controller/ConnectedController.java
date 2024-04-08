@@ -520,6 +520,14 @@ public class ConnectedController {
 		return dtos;
 	}
 
+	// list test type for schedule
+	@GetMapping("/test4Schedule/{type}/{grade}")
+	@ResponseBody
+	List<TestDTO> getTestForSchedule(@PathVariable int type, @PathVariable String grade) {
+		List<TestDTO> dtos = connectedService.listTestByTypeNGrade(type, grade); 
+		return dtos;
+	}
+	
 	@DeleteMapping(value = "/deletePracticeSchedule/{practiceScheduleId}")
 	@ResponseBody
     public ResponseEntity<String> removePracticeSchedule(@PathVariable String practiceScheduleId) {

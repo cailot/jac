@@ -22,6 +22,7 @@ import hyung.jin.seo.jae.dto.StudentPracticeDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
+import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Practice;
@@ -32,6 +33,7 @@ import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswer;
 import hyung.jin.seo.jae.model.TestAnswerItem;
+import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.repository.ExtraworkRepository;
 import hyung.jin.seo.jae.repository.HomeworkRepository;
 import hyung.jin.seo.jae.repository.PracticeAnswerRepository;
@@ -451,7 +453,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 		return updated;	
 	}
 
-
 	@Override
 	@Transactional
 	public void deleteHomework(Long id) {
@@ -529,7 +530,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}
 
 	}
-
 
 	@Override
 	public HomeworkDTO getHomeworkInfo(int subject, int year, int week) {
@@ -624,7 +624,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}
 		return dtos;
 	}
-
 
 	@Override
 	public List<SimpleBasketDTO> loadExtrawork(String grade) {
@@ -816,6 +815,18 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public List<TestDTO> listTestByTypeNGrade(int type, String grade) {
+		List<TestDTO> dtos = new ArrayList<>();
+		try{
+			dtos = testRepository.filterActiveTestByTypeNGradeNVolume(type, grade, 0);
+		}catch(Exception e){
+			System.out.println("No Practice found");
+		}
+		return dtos;
+	}
+
+
+	@Override
 	public String getPracticeTypeName(Long id) {
 		String name = "";
 		try{
@@ -825,6 +836,43 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}
 		return name;
 	}
+
+	@Override
+	public List<TestSchedule> allTestSchedules() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'allTestSchedules'");
+	}
+
+	@Override
+	public List<TestScheduleDTO> listTestSchedule(int year, int week) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'listTestSchedule'");
+	}
+
+	@Override
+	public TestSchedule getTestSchedule(Long id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getTestSchedule'");
+	}
+
+	@Override
+	public TestSchedule addTestSchedule(TestSchedule ps) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'addTestSchedule'");
+	}
+
+	@Override
+	public TestSchedule updateTestSchedule(TestSchedule newWork, Long id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'updateTestSchedule'");
+	}
+
+	@Override
+	public void deleteTestSchedule(Long id) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'deleteTestSchedule'");
+	}
+
 
 	
 
