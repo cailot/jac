@@ -11,10 +11,13 @@
 <script src="${pageContext.request.contextPath}/js/vfs_fonts.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
+<!-- Date Time picker -->
+<script src="${pageContext.request.contextPath}/js/jquery-ui-timepicker-addon-1.6.3.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui-timepicker-addon-1.6.3.min.css"></link>
 
 <script>
 $(document).ready(function () {
-	$('#testListTable').DataTable({
+	$('#scheduleListTable').DataTable({
 		language: {
 			search: 'Filter:'
 		},
@@ -30,87 +33,221 @@ $(document).ready(function () {
 		],
 	});
 
+
+	$("#addStart").datetimepicker({
+		dateFormat: 'dd/mm/yy',
+		timeFormat: 'HH:mm'
+	});
+	$("#addEnd").datetimepicker({
+		dateFormat: 'dd/mm/yy',
+		timeFormat: 'HH:mm'
+	});
+
+	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
+	$('#addTestTypeSearch').change(function () {
+		getTestByTypeNGrade('add');
+	});
+	$('#addGradeSearch').change(function () {
+		getTestByTypeNGrade('add');
+	});
+	$('#editTestTypeSearch').change(function () {
+		getTestByTypeNGrade('edit');
+	});
+	$('#editGradeSearch').change(function () {
+		getTestByTypeNGrade('edit');
+	});
+		
 	// initialise state list when loading
-	listGrade('#listGrade');
-	listGrade('#addGrade');
-	listGrade('#editGrade');
-	listTestType('#listTestType');
-	listTestType('#addTestType');
-	listTestType('#editTestType');
+	listGrade('#addGradeSearch');
+	listGrade('#editGradeSearch');
+	listTestType('#addTestTypeSearch');
+	listTestType('#editTestTypeSearch');
 
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Test
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function addTest() {
-	// Get from form data
-	var testItem = {
-		testType : $("#addTestType").val(),
-		grade: $("#addGrade").val(),
-		volume: $("#addVolume").val(),
-		info : $("#addInfo").val(),
-		pdfPath : $("#addPdfPath").val()
-	}
-	console.log(testItem);
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Populate Practice by type and grade
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getTestByTypeNGrade(action) {
+	// debugger;
+	var type = $('#'+action+'TestTypeSearch').val();
+	var grade = $('#'+action+'GradeSearch').val();
+
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/test4Schedule/' + type + '/' + grade,
+		method: 'GET',
+		success: function (data) {
+			// clean up existing options
+			$('#'+action+'SetSearch').empty();
+			$.each(data, function (index, value) {
+				// console.log(value.volume);
+				$('#'+action+'SetSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
+			});
+		},
+		error: function (xhr, status, error) {
+			console.error(xhr.responseText);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Add Test into Table
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function addTest(action) {
+	// Get the values from the select elements
+	var testTypeSelect = document.getElementById(action + "TestTypeSearch");
+	var testType = testTypeSelect.options[testTypeSelect.selectedIndex].text;
+
+	var gradeSelect = document.getElementById(action + "GradeSearch");
+	var grade = gradeSelect.options[gradeSelect.selectedIndex].text;
+
+	var setSelect = document.getElementById(action + "SetSearch");
+	var set = setSelect.options[setSelect.selectedIndex].text;
+	var testId = document.getElementById(action + "SetSearch").value;
+
+	// Get a reference to the table
+	var table = document.getElementById(action + "ScheduleTable");
+
+	/// Create a new row
+	var row = $("<tr>");
+
+	// Create the cells for the row
+	var cell1 = $("<td>").text(testType);
+	var cell2 = $("<td>").text(grade);
+	var cell3 = $("<td>").text(set);
+
+	// cell4
+	var binIcon = $('<i class="bi bi-trash h5"></i>');
+	var binIconLink = $("<a>")
+		.attr("href", "javascript:void(0)")
+		.attr("title", "Delete Practice")
+		.click(function () {
+			row.remove();
+		});
+	binIconLink.append(binIcon);
+	var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+
+	// hidden td for testId
+	var td = $("<td>").css("display", "none").addClass("testId").text(testId);
+
+	// Append cells to the row
+	row.append(cell1, cell2, cell3, cell4, td);
+
+	// Append the row to the table
+	$("#"+ action +"ScheduleTable").append(row);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Register Test Schedule
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function registerSchedule() {
+	// Get testIds form addScheduleTable
+	var testDtos = [];
+	$('#addScheduleTable tr').each(function () {
+		var testId = $(this).find('.testId').text();
+		if (testId != '') {
+			testDtos.push({id : testId});
+		}
+	});
+	var schedule = {
+		year: $("#addYear").val(),
+		week: $("#addVolume").val(),
+		info: $("#addInfo").val(),
+		practices: testDtos
+	}
 	// Send AJAX to server
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/addTest',
+		url: '${pageContext.request.contextPath}/connected/addPracticeSchedule',
 		type: 'POST',
 		dataType: 'json',
-		data: JSON.stringify(testItem),
+		data: JSON.stringify(schedule),
 		contentType: 'application/json',
-		success: function (data) {
+		success: function (dto) {
 			// Display the success alert
-			$('#success-alert .modal-body').text(
-				'New Test is registered successfully.');
+			$('#success-alert .modal-body').text('New Practice Schedule is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
 			});
-		},
-		error: function (xhr, status, error) {
-			if(xhr.status==417){
-				$('#warning-alert .modal-body').text(xhr.responseJSON);
-				$('#warning-alert').modal('show');
-			}else{
-				console.log('Error : ' + error);
-			}
-		}
-	});
-	$('#registerTestModal').modal('hide');
-	// flush all registered data
-	document.getElementById("testRegister").reset();
-}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Test
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrieveTestInfo(id) {
-	// send query to controller
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getTest/' + id,
-		type: 'GET',
-		success: function (testItem) {
-			// console.log(homework);
-			$("#editId").val(testItem.id);
-			$("#editTestType").val(testItem.testType);
-			$("#editGrade").val(testItem.grade);
-			$("#editVolume").val(testItem.volume);
-			$("#editInfo").val(testItem.info);
-			$("#editPdfPath").val(testItem.pdfPath);	
-			$("#editActive").val(testItem.active);
-			if (testItem.active == true) {
-				$("#editActiveCheckbox").prop('checked', true);
-			} else {
-				$("#editActiveCheckbox").prop('checked', false);
-			}
-			$('#editTestModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
 		}
+	});
+	$('#registerScheduleModal').modal('hide');
+	// flush all registered data
+	document.getElementById("scheduleRegister").reset();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Retrieve Practice Schedule
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function retrieveScheduleInfo(id) {
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/getPracticeSchedule/' + id,
+		type: 'GET',
+		success: function (scheduleItem) {
+			console.log(scheduleItem);
+			$("#editId").val(scheduleItem.id);
+			$("#editYear").val(scheduleItem.year);
+			$("#editWeek").val(scheduleItem.week);
+			$("#editInfo").val(scheduleItem.info);
+			$("#editActive").val(scheduleItem.active);
+			if (scheduleItem.active == true) {
+				$("#editActiveCheckbox").prop('checked', true);
+			} else {
+				$("#editActiveCheckbox").prop('checked', false);
+			}
+			// clear all rows on editScheduleTable
+			$("#editScheduleTable").find("tr:gt(0)").remove();	
+			// append Practice Info into table
+			var practices = scheduleItem.practices;
+			$.each(practices, function (index, value) {
+				// Get the values from the select elements
+				var gradeSelect = document.getElementById("editGradeSearch");
+				var grade = gradeSelect.options[value.grade].text;
+				// Get a reference to the table
+				var table = document.getElementById("editScheduleTable");
+				// Create a new row
+				var row = $("<tr>");
+				// Create the cells for the row
+				var cell1 = $("<td>").text(value.name);
+				var cell2 = $("<td>").text(grade);
+				var cell3 = $("<td>").text(value.volume);
+
+				// cell4
+				var binIcon = $('<i class="bi bi-trash h5"></i>');
+				var binIconLink = $("<a>")
+					.attr("href", "javascript:void(0)")
+					.attr("title", "Delete Practice")
+					.click(function () {
+						row.remove();
+					});
+				binIconLink.append(binIcon);
+				var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+
+				// hidden td for testId
+				var td = $("<td>").css("display", "none").addClass("testId").text(value.id);
+
+				// Append cells to the row
+				row.append(cell1, cell2, cell3, cell4, td);
+
+				// Append the row to the table
+				$("#editScheduleTable").append(row);
+			});
+			// display available set to be ready to select
+			getTestByTypeNGrade('edit');
+			$('#editScheduleModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+
 	});
 }
 
@@ -127,27 +264,32 @@ function updateEditActiveValue(checkbox) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Test
+//		Update Practice Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateTestInfo() {
-	var workId = $("#editId").val();
+function updateScheduleInfo() {
 	// get from formData
-	var testItem = {
-		id: workId,
-		testType : $("#editTestType").val(),
-		grade: $("#editGrade").val(),
-		volume: $("#editVolume").val(),
+	var practiceDtos = [];
+	$('#editScheduleTable tr').each(function () {
+		var testId = $(this).find('.testId').text();
+		if (testId != '') {
+			practiceDtos.push({id : testId});
+		}
+	});
+	var scheduleItem = {
+		id: $("#editId").val(),
+		year: $("#editYear").val(),
+		week: $("#editWeek").val(),
 		info: $("#editInfo").val(),
-		pdfPath: $("#editPdfPath").val(),
 		active: $("#editActive").val(),
+		practices: practiceDtos
 	}
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updateTest',
+		url: '${pageContext.request.contextPath}/connected/updatePracticeSchedule',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(testItem),
+		data: JSON.stringify(scheduleItem),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -163,16 +305,24 @@ function updateTestInfo() {
 		}
 	});
 
-	$('#editTestModal').modal('hide');
-	// flush all registered data
-	clearPracticeForm("practiceEdit");
+	$('#editScheduleModal').modal('hide');
+	// flush edit data
+	clearForm("scheduleEdit");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Clear class register form
+//		Clear Form
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function clearPracticeForm(elementId) {
+function clearForm(elementId) {
 	document.getElementById(elementId).reset();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clear Table
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function clearTable(action) {
+	var table = document.getElementById(action + "ScheduleTable");
+	table.getElementsByTagName('tbody')[0].innerHTML = "";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,223 +338,34 @@ function updateEditActiveValue(checkbox) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Answer Sheet
+//		Confirm before deleting PracticeSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function displayAnswerSheet(testId) {
-	//save testId 
-	document.getElementById("testId4Answer").value = testId;
-	// clear answerId
-	document.getElementById("answerId").value = '';
+function confirmDelete(testId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
 
-	// check if answer exists or not
-	// if exists, then display info
-	// if not, show empty form to register
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/checkTestAnswer/' + testId,
-		type: 'GET',
-		success: function (answerSheet) {
-			// debugger;
-			// console.log(answerSheet);
-			if (answerSheet != null && answerSheet != '') {
-				// Display the answer sheet info
-				$("#answerId").val(answerSheet.id);				
-				$("#addAnswerVideoPath").val(answerSheet.videoPath);
-				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
-				// Display the answer sheet table
-				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-				answerSheetTableBody.innerHTML = "";
-				var numToChar = ['', 'A', 'B', 'C', 'D', 'E'];  // add 0 index = ''
-				function createRow(i, answerSheet, numToChar, answerSheetTableBody) {
-					// Create a new row
-					var newRow = answerSheetTableBody.insertRow(answerSheetTableBody.rows.length);
-					// Insert cells into the row
-					var cell1 = newRow.insertCell(0);
-					var cell2 = newRow.insertCell(1);
-					var cell3 = newRow.insertCell(2);
-					var cell4 = newRow.insertCell(3);
-					// Align the content of the cells to the center
-					cell1.style.textAlign = "center";
-					cell2.style.textAlign = "center";
-					cell3.style.textAlign = "left";
-					cell4.style.textAlign = "center";
-					// Populate cells with data
-					// console.log(answerSheet.answers[i]);
-					cell1.innerHTML = answerSheet.answers[i].question;
-					cell2.innerHTML = numToChar[answerSheet.answers[i].answer];
-					cell3.innerHTML = answerSheet.answers[i].topic;
-					// Create a remove button in the third cell
-					var removeIcon = document.createElement("i");
-					removeIcon.className = "bi bi-trash icon-button text-danger";
-					removeIcon.addEventListener('click', function () {
-						answerSheetTableBody.removeChild(newRow);
-					});
-					// Append the remove button to the third cell
-					cell4.appendChild(removeIcon);
-
-					// Find the correct position to insert the new row based on the 'question' order
-					var newRowQuestion = parseInt(answerSheet.answers[i].question);
-					var rows = answerSheetTableBody.getElementsByTagName("tr");
-					var insertIndex = 0;
-					for (var j = 0; j < rows.length; j++) {
-						var rowQuestion = parseInt(rows[j].getElementsByTagName("td")[0].innerHTML);
-						if (newRowQuestion < rowQuestion) {
-							insertIndex = j;
-							break;
-						} else {
-							insertIndex = j + 1;
-						}
-					}
-					// Insert the new row at the correct position
-					if (insertIndex >= rows.length) {
-						answerSheetTableBody.appendChild(newRow);
-					} else {
-						answerSheetTableBody.insertBefore(newRow, rows[insertIndex]);
-					}
-				}
-				for (var i = 0; i < answerSheet.answers.length; i++) {
-					createRow(i, answerSheet, numToChar, answerSheetTableBody);
-				}
-			} else {
-				// Display an empty form to register the answer sheet
-				// $("#addAnswerVideoPath").val("");
-				$("#addAnswerPdfPath").val("");
-				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-				answerSheetTableBody.innerHTML = "";
-				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
-				answerQuestionNumberSelect.value = "1";
-				var correctAnswerSelect = document.getElementById("correctAnswerOption");
-				correctAnswerSelect.value = "1";
-				var answerTopicSelect = document.getElementById("answerTopic");
-				answerTopicSelect.value = "";
-			}
-			// Display the modal
-			$('#registerTestAnswerModal').modal('show');
-		},
-		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deletePracticeSchedule(testId);
+        $('#deleteConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Add Answer To Table
+//		Delete PracticeSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function addAnswerToTable() {
-	// Get user selections
-	var questionNumber = parseInt(document.getElementById("answerQuestionNumber").value);
-	var selectedAnswerOption = document.getElementById("correctAnswerOption").value;
-	var answerTopicDescription = document.getElementById("answerTopic").value;
-	// Map numeric values to corresponding letters
-	var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-	var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
-	// Get the table body
-	var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-	// Find the correct position to insert the new row
-	var position = 0;
-	for (; position < tableBody.rows.length; position++) {
-		if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
-			break;
-		}
-	}
-	// Create a new row at the correct position
-	var newRow = tableBody.insertRow(position);
-	// Insert cells into the row
-	var cell1 = newRow.insertCell(0);
-	var cell2 = newRow.insertCell(1);
-	var cell3 = newRow.insertCell(2);
-	var cell4 = newRow.insertCell(3);
-	// Align the content of the cells to the center
-	cell1.style.textAlign = "center";
-	cell2.style.textAlign = "center";
-	cell3.style.textAlign = "left";
-	cell4.style.textAlign = "center";
-	// Populate cells with data
-	cell1.innerHTML = questionNumber;
-	cell2.innerHTML = letterValue;
-	cell3.innerHTML = answerTopicDescription;
-	// Create a remove button in the third cell
-	var removeIcon = document.createElement("i");
-	removeIcon.className = "bi bi-trash icon-button text-danger";
-	removeIcon.addEventListener('click', function() {
-		tableBody.removeChild(newRow);
-	});
-	// Append the remove button to the third cell
-	cell4.appendChild(removeIcon);
-	// Automatically choose the next question number
-	var nextQuestionNumber = questionNumber + 1;
-	document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
-	// Clear the topic input value
-	document.getElementById("answerTopic").value = "";
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Collect Answer And Send 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function collectAndSubmitAnswers() {
-    // Collect values from the modal
-	var answerId = document.getElementById("answerId").value;
-	var testId = document.getElementById("testId4Answer").value;
-    var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
-    var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
-
-    // Collect question number and selected value from the answerSheetTable
-    var answerList = [];
-    var answerTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-    var rows = answerTableBody.getElementsByTagName("tr");
-
-	// Create a mapping object
-	var charToNum = {
-		'A': 1,
-		'B': 2,
-		'C': 3,
-		'D': 4,
-		'E': 5
-		// Add more mappings if needed
-	};
-
-    for (var i = 0; i < rows.length; i++) {
-        var cells = rows[i].getElementsByTagName("td");
-        var questionNumber = cells[0].innerHTML;
-        // var selectedRadioValue = cells[1].innerHTML;
-		var selectedRadioValue = charToNum[cells[1].innerHTML];  // Convert the character to a number
-		var answerTopic = cells[2].innerHTML;
-
-        answerList.push({
-            question: questionNumber,
-            answer: selectedRadioValue,
-			topic : answerTopic
-        });
-    }
-    // Send the formData to the Spring controller using AJAX or other means
-    $.ajax({
-        url: '${pageContext.request.contextPath}/connected/saveTestAnswerSheet', // Replace with your actual Spring controller endpoint
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-			answerId : answerId,
-			testId : testId,
-			videoPath : answerVideoPath,
-			pdfPath : answerPdfPath,
-			answers : answerList
-		}),
-        success: function (response) {
-            // Handle success response
-            console.log(response);
-			// clear practionId to avoid confusion
-			document.getElementById("testId4Answer").value = '';
-    		// Optionally, close the modal after submitting
-    		$('#registerTestAnswerModal').modal('hide');
-			$('#success-alert .modal-body').html('Answer Sheet is successfully updated.');
-	        $('#success-alert').modal('show');
-			// Attach an event listener to the success alert close event
-			$('#success-alert').on('hidden.bs.modal', function () {
-				// Reload the page after the success alert is closed
-				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+function deletePracticeSchedule(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/deletePracticeSchedule/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Practice Schedule deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
 			});
-
-        },
-        error: function (error) {
+		},
+		error: function (error) {
             // Handle error response
             console.error(error);
         }
@@ -416,28 +377,35 @@ function collectAndSubmitAnswers() {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterTest">
+		<form id="scheduleList" method="get" action="${pageContext.request.contextPath}/connected/filterPracticeSchedule">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-3">
-						<label for="listTestType" class="label-form">Test Type</label>
-						<select class="form-control" id="listTestType" name="listTestType">
+					<div class="col-md-4">
+						<label for="listYear" class="label-form">Academic Year</label>
+						<select class="form-control" id="listYear" name="listYear">
 							<option value="0">All</option>
+							<%
+								Calendar listNow = Calendar.getInstance();
+								int listCurrentYear = listNow.get(Calendar.YEAR);
+							%>
+							<option value="<%= listCurrentYear %>">Academic Year <%= (listCurrentYear) %>/<%= (listCurrentYear)+1 %></option>
+							<%
+								// Adding the last three years
+								for (int i = listCurrentYear - 1; i >= listCurrentYear - 3; i--) {
+							%>
+								<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
+							<%
+							}
+							%>
 						</select>
 					</div>
-					<div class="col-md-2">
-						<label for="listGrade" class="label-form">Grade</label>
-						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listVolume" class="label-form">Set</label>
-						<select class="form-control" id="listVolume" name="listVolume">
+					<div class="col-md-3">
+						<label for="listWeek" class="label-form">Set Schedule</label>
+						<select class="form-control" id="listWeek" name="listWeek">
 						</select>
 						<script>
 							// Get a reference to the select element
-							var selectElement = document.getElementById("listVolume");
+							var selectElement = document.getElementById("listWeek");
 							// Create a new option element for 'All'
 							var allOption = document.createElement("option");
 							// Set the value and text content for the 'All' option
@@ -451,20 +419,32 @@ function collectAndSubmitAnswers() {
 								var option = document.createElement("option");
 								// Set the value and text content for the option
 								option.value = i;
-								option.textContent = i;
+								if (i === 10) {
+									option.textContent = 'Volume 1 (' + i + ')';
+								}else if (i === 20) {
+									option.textContent = 'Volume 2 (' + i + ')';
+								} else if (i === 30) {
+									option.textContent = 'Volume 3 (' + i + ')';
+								} else if (i === 40) {
+									option.textContent = 'Volume 4 (' + i + ')';
+								} else if ((i === 49) || (i === 50)) {
+									option.textContent = 'Volume 5 (' + i + ')';
+								} else {
+									option.textContent = i;
+								}
 								// Append the option to the select element
 								selectElement.appendChild(option);
 							}
 						</script>
 					</div>
-					<div class="offset-md-1"></div>
+					<!-- <div class="offset-md-1"></div> -->
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerScheduleModal" onclick="getTestByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -472,13 +452,11 @@ function collectAndSubmitAnswers() {
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="testListTable" class="table table-striped table-bordered">
+							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Test Type</th>
-										<th>Grade</th>
+										<th>Academic Year</th>
 										<th>Set</th>
-										<th>Document Path</th>
 										<th>Information</th>
 										<th data-orderable="false">Activated</th>
 										<th data-orderable="false">Action</th>
@@ -486,72 +464,32 @@ function collectAndSubmitAnswers() {
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${TestList != null}">
-											<c:forEach items="${TestList}" var="testItem">
+										<c:when test="${PracticeScheduleList != null}">
+											<c:forEach items="${PracticeScheduleList}" var="scheduleItem">
 												<tr>
 													<td class="small ellipsis">
 														<span>
-															<c:choose>
-																<c:when test="${testItem.testType == '1'}">Mega English</c:when>
-																<c:when test="${testItem.testType == '2'}">Mega Mathematics</c:when>
-																<c:when test="${testItem.testType == '3'}">Mega General Ability</c:when>
-																<c:when test="${testItem.testType == '4'}">Revision English</c:when>
-																<c:when test="${testItem.testType == '5'}">Revision Mathematics</c:when>
-																<c:when test="${testItem.testType == '6'}">Revision Science</c:when>
-																<c:when test="${testItem.testType == '7'}">Reeading Comprehension (EDU)</c:when>
-																<c:when test="${testItem.testType == '8'}">Verbal Reasoning (EDU)</c:when>
-																<c:when test="${testItem.testType == '9'}">Mathematics (EDU)</c:when>
-																<c:when test="${testItem.testType == '10'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${testItem.testType == '11'}">Humanities (ACER)</c:when>
-																<c:when test="${testItem.testType == '12'}">Mathematics (ACER)</c:when>
-																<c:when test="${testItem.testType == '13'}">Mock Test</c:when>
-																<c:otherwise></c:otherwise>
-															</c:choose>
+															Academic Year <c:out value="${scheduleItem.year}" />/<c:out value="${scheduleItem.year+1}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
 														<span>
 															<c:choose>
-																<c:when test="${testItem.grade == '1'}">P2</c:when>
-																<c:when test="${testItem.grade == '2'}">P3</c:when>
-																<c:when test="${testItem.grade == '3'}">P4</c:when>
-																<c:when test="${testItem.grade == '4'}">P5</c:when>
-																<c:when test="${testItem.grade == '5'}">P6</c:when>
-																<c:when test="${testItem.grade == '6'}">S7</c:when>
-																<c:when test="${testItem.grade == '7'}">S8</c:when>
-																<c:when test="${testItem.grade == '8'}">S9</c:when>
-																<c:when test="${testItem.grade == '9'}">S10</c:when>
-																<c:when test="${testItem.grade == '10'}">S10E</c:when>
-																<c:when test="${testItem.grade == '11'}">TT6</c:when>
-																<c:when test="${testItem.grade == '12'}">TT8</c:when>
-																<c:when test="${testItem.grade == '13'}">TT8E</c:when>
-																<c:when test="${testItem.grade == '14'}">SRW4</c:when>
-																<c:when test="${testItem.grade == '15'}">SRW5</c:when>
-																<c:when test="${testItem.grade == '16'}">SRW6</c:when>
-																<c:when test="${testItem.grade == '17'}">SRW7</c:when>
-																<c:when test="${testItem.grade == '18'}">SRW8</c:when>
-																<c:when test="${testItem.grade == '19'}">JMSS</c:when>
-																<c:when test="${testItem.grade == '20'}">VCE</c:when>
-																<c:otherwise></c:otherwise>
+																<c:when test="${scheduleItem.week == 10}">End of Volume 1 (10)</c:when>
+																<c:when test="${scheduleItem.week == 20}">End of Volume 2 (20)</c:when>
+																<c:when test="${scheduleItem.week == 30}">End of Volume 3 (30)</c:when>
+																<c:when test="${scheduleItem.week == 40}">End of Volume 4 (40)</c:when>
+																<c:when test="${scheduleItem.week >= 49}">End of Volume 5 (50)</c:when>
+																<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small text-truncate" style="min-width: 300px;">
 														<span>
-															<c:out value="${testItem.volume}" />
+															<c:out value="${scheduleItem.info}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 250px;">
-														<span>
-															<c:out value="${testItem.pdfPath}" />
-														</span>
-													</td>
-													<td class="small ellipsis">
-														<span>
-															<c:out value="${testItem.info}" />
-														</span>
-													</td>
-													<c:set var="active" value="${testItem.active}" />
+													<c:set var="active" value="${scheduleItem.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center">
@@ -565,9 +503,10 @@ function collectAndSubmitAnswers() {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveTestInfo('${testItem.id}')">
-														</i>&nbsp;&nbsp;
-														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit Practice Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
+														</i>
+														&nbsp;&nbsp;
+														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete Practice Schedule" onclick="confirmDelete('${scheduleItem.id}')">
 														</i>
 													</td>
 												</tr>
@@ -585,27 +524,36 @@ function collectAndSubmitAnswers() {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerTestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Test Schedule</header>
-					<form id="testRegister">
+					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
-								<div class="col-md-8">
-									<label for="addTestType" class="label-form">Test Type</label>
-									<select class="form-control" id="addTestType" name="addTestType">
+								<div class="col-md-7">
+									<label for="addYear" class="label-form">Academic Year</label>
+									<select class="form-control" id="addYear" name="addYear">
+										<%
+											Calendar addNow = Calendar.getInstance();
+											int addCurrentYear = addNow.get(Calendar.YEAR);
+										%>
+										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear) %>/<%= (addCurrentYear)+1 %></option>
+										<%
+											// Adding the last three years
+											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
+										%>
+											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
+										<%
+										}
+										%>
 									</select>
 								</div>
-								<div class="col-md-2">
-									<label for="addGrade" class="label-form">Grade</label>
-									<select class="form-control" id="addGrade" name="addGrade">
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="addVolume" class="label-form">Set</label>
+								<!-- <div class="offset-md-1"></div> -->
+								<div class="col-md-5">
+									<label for="addVolume" class="label-form">Set Schedule</label>
 									<select class="form-control" id="addVolume" name="addVolume">
 									</select>
 									<script>
@@ -617,7 +565,20 @@ function collectAndSubmitAnswers() {
 										  var option = document.createElement("option");
 										  // Set the value and text content for the option
 										  option.value = i;
-										  option.textContent = i;
+										  //option.textContent = i;
+										  if (i === 10) {
+											option.textContent = 'Volume 1 (' + i + ')';
+										  }else if (i === 20) {
+											option.textContent = 'Volume 2 (' + i + ')';
+										  } else if (i === 30) {
+											option.textContent = 'Volume 3 (' + i + ')';
+										  } else if (i === 40) {
+											option.textContent = 'Volume 4 (' + i + ')';
+										  } else if ((i === 49) || (i === 50)) {
+											option.textContent = 'Volume 5 (' + i + ')';
+										  } else {
+												option.textContent = i;
+										  }
 										  // Append the option to the select element
 										  selectElement.appendChild(option);
 										}
@@ -627,9 +588,13 @@ function collectAndSubmitAnswers() {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12">
-									<label for="addPdfPath" class="label-form">Document Path</label>
-									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
+								<div class="col-md-6">
+									<label for="addStart" class="label-form">Start Date & Time</label>
+									<input type="text" class="form-control" id="addStart" name="addStart" title="Please enter additional information" />
+								</div>
+								<div class="col-md-6">
+									<label for="addEnd" class="label-form">End Date & Time</label>
+									<input type="text" class="form-control" id="addEnd" name="addEnd" title="Please enter additional information" />
 								</div>
 							</div>
 						</div>
@@ -641,10 +606,51 @@ function collectAndSubmitAnswers() {
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 70%;">Test</th>
+											<th data-field="grade" style="width: 10%;">Grade</th>
+											<th data-field="set" style="width: 10%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+								<div class="form-row">
+									<div class="col-md-7">
+										<label for="addTestTypeSearch" class="label-form">Test</label>
+										<select class="form-control" id="addTestTypeSearch" name="addTestTypeSearch">
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="addGradeSearch" class="label-form">Grade</label>
+										<select class="form-control" id="addGradeSearch" name="addGradeSearch">
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="addSetSearch" class="label-form">Set</label>
+										<select class="form-control" id="addSetSearch" name="addSetSearch">
+										</select>
+									</div>
+									<div class="col-md-1 d-flex flex-column justify-content-center">
+										<label class="label-form text-white">Add</label>
+										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addTest('add')"><i class="bi bi-plus"></i></button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addTest()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleRegister'); clearTable('add')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -653,51 +659,64 @@ function collectAndSubmitAnswers() {
 </div>
 
 <!-- Edit Form Dialogue -->
-<div class="modal fade" id="editTestModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
+<div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Edit</header>
-					<form id="practiceEdit">
+					<header class="text-primary font-weight-bold">Practice Schedule Edit</header>
+					<form id="scheduleEdit">
 						<div class="form-group">
 							<div class="form-row mt-3">
-								<div class="col-md-8">
-									<label for="editTestType" class="label-form">Practice Type</label>
-									<select class="form-control" id="editTestType" name="editTestType" disabled>
+								<div class="col-md-7">
+									<label for="editYear" class="label-form">Academic Year</label>
+									<select class="form-control" id="editYear" name="editYear">
+										<%
+											Calendar editNow = Calendar.getInstance();
+											int editCurrentYear = editNow.get(Calendar.YEAR);
+										%>
+										<option value="<%= editCurrentYear %>">Academic Year <%= (editCurrentYear) %>/<%= (editCurrentYear)+1 %></option>
+										<%
+											// Adding the last three years
+											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
+										%>
+											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
+										<%
+										}
+										%>
 									</select>
 								</div>
-								<div class="col-md-2">
-									<label for="editGrade" class="label-form">Grade</label>
-									<select class="form-control" id="editGrade" name="editGrade" disabled>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="editVolume" class="label-form">Set</label>
-									<select class="form-control" id="editVolume" name="editVolume">
+								<div class="col-md-5">
+									<label for="editWeek" class="label-form">Set</label>
+									<select class="form-control" id="editWeek" name="editWeek">
 									</select>
 									<script>
 										// Get a reference to the select element
-										var selectElement = document.getElementById("editVolume");
+										var selectElement = document.getElementById("editWeek");
 										// Loop to add options from 1 to 50
 										for (var i = 1; i <= 50; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 										  // Set the value and text content for the option
 										  option.value = i;
-										  option.textContent = i;
+										//   option.textContent = i;
+										  if (i === 10) {
+											option.textContent = 'Volume 1 (' + i + ')';
+										  }else if (i === 20) {
+											option.textContent = 'Volume 2 (' + i + ')';
+										  } else if (i === 30) {
+											option.textContent = 'Volume 3 (' + i + ')';
+										  } else if (i === 40) {
+											option.textContent = 'Volume 4 (' + i + ')';
+										  } else if ((i === 49) || (i === 50)) {
+											option.textContent = 'Volume 5 (' + i + ')';
+										  } else {
+												option.textContent = i;
+										  }
 										  // Append the option to the select element
 										  selectElement.appendChild(option);
 										}
 									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group mt-4">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
@@ -717,11 +736,52 @@ function collectAndSubmitAnswers() {
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 70%;">Practice</th>
+											<th data-field="grade" style="width: 10%;">Grade</th>
+											<th data-field="set" style="width: 10%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+								<div class="form-row">
+									<div class="col-md-7">
+										<label for="editTestTypeSearch" class="label-form">Practice</label>
+										<select class="form-control" id="editTestTypeSearch" name="editTestTypeSearch">
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="editGradeSearch" class="label-form">Grade</label>
+										<select class="form-control" id="editGradeSearch" name="editGradeSearch">
+										</select>
+									</div>
+									<div class="col-md-2">
+										<label for="editSetSearch" class="label-form">Set</label>
+										<select class="form-control" id="editSetSearch" name="editSetSearch">
+										</select>
+									</div>
+									<div class="col-md-1 d-flex flex-column justify-content-center">
+										<label class="label-form text-white">Add</label>
+										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addTest('edit')"><i class="bi bi-plus"></i></button>
+									</div>
+								</div>
+							</div>
+						</div>
 						<input type="hidden" id="editId" name="editId" />
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateTestInfo()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" onclick="updateScheduleInfo()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleEdit'); clearTable('edit')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -802,7 +862,7 @@ function collectAndSubmitAnswers() {
 						<input type="hidden" id="testId4Answer" name="testId4Answer" />
 					<div class="mt-4 d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -820,50 +880,21 @@ function collectAndSubmitAnswers() {
 	</div>
 </div>
 
-<!-- Warning Alert -->
-<div id="warning-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Error Alert -->
-<div id="error-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger alert-dialog-display">
-			<i class="fa fa-times-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Confirmation Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Delete Confirmation Alert -->
-<div id="delete-confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmDeleteAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Schedule Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to delete Practice Schedule ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>

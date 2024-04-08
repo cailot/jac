@@ -658,12 +658,12 @@ function collectAndSubmitAnswers() {
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Edit</header>
+					<header class="text-primary font-weight-bold">Test Edit</header>
 					<form id="practiceEdit">
 						<div class="form-group">
 							<div class="form-row mt-3">
 								<div class="col-md-8">
-									<label for="editTestType" class="label-form">Practice Type</label>
+									<label for="editTestType" class="label-form">Test Type</label>
 									<select class="form-control" id="editTestType" name="editTestType" disabled>
 									</select>
 								</div>
