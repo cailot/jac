@@ -711,11 +711,6 @@ function deletePracticeSchedule(id) {
 								</div>
 							</div>
 						</div>
-
-
-
-
-
 						<div class="form-group">
 							<div class="form-row mt-4">
 								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
