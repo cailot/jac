@@ -104,7 +104,9 @@ public interface JaeConstants {
 	String TEST_LIST = "TestList";
 
 	String PRACTICE_SCHEDULE_LIST = "PracticeScheduleList";
-	
+
+	String TEST_SCHEDULE_LIST = "TestScheduleList";
+
 	String VSSE = "VSSE";
 
 	String ACADEMIC_CYCLES = "academicCycles";

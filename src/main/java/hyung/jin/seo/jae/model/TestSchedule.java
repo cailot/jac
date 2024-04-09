@@ -1,7 +1,7 @@
 package hyung.jin.seo.jae.model;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,13 +46,13 @@ public class TestSchedule {
     @Column(length = 50, nullable = false)
     private String info;
 
-    @CreatedDate
+    @Column
     private boolean active;
 
-    @CreatedDate
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime startDate;
-    
-    @Column
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime endDate;
     
     @CreationTimestamp

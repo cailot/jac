@@ -33,12 +33,19 @@ $(document).ready(function () {
 		],
 	});
 
-
 	$("#addStart").datetimepicker({
 		dateFormat: 'dd/mm/yy',
 		timeFormat: 'HH:mm'
 	});
 	$("#addEnd").datetimepicker({
+		dateFormat: 'dd/mm/yy',
+		timeFormat: 'HH:mm'
+	});
+	$("#editStart").datetimepicker({
+		dateFormat: 'dd/mm/yy',
+		timeFormat: 'HH:mm'
+	});
+	$("#editEnd").datetimepicker({
 		dateFormat: 'dd/mm/yy',
 		timeFormat: 'HH:mm'
 	});
@@ -151,27 +158,31 @@ function registerSchedule() {
 			testDtos.push({id : testId});
 		}
 	});
+	var startTime = $("#addStart").val();
+	var endTime = $("#addEnd").val();
+	//debugger;
 	var schedule = {
 		year: $("#addYear").val(),
 		week: $("#addVolume").val(),
+		startDate: startTime,
+		endDate: endTime,
 		info: $("#addInfo").val(),
-		practices: testDtos
+		tests: testDtos
 	}
 	// Send AJAX to server
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/addPracticeSchedule',
+		url: '${pageContext.request.contextPath}/connected/addTestSchedule',
 		type: 'POST',
 		dataType: 'json',
 		data: JSON.stringify(schedule),
 		contentType: 'application/json',
 		success: function (dto) {
 			// Display the success alert
-			$('#success-alert .modal-body').text('New Practice Schedule is registered successfully.');
+			$('#success-alert .modal-body').text('New Test Schedule is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
 			});
-
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -182,20 +193,21 @@ function registerSchedule() {
 	document.getElementById("scheduleRegister").reset();
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Practice Schedule
+//		Retrieve Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function retrieveScheduleInfo(id) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPracticeSchedule/' + id,
+		url: '${pageContext.request.contextPath}/connected/getTestSchedule/' + id,
 		type: 'GET',
 		success: function (scheduleItem) {
-			console.log(scheduleItem);
+			// console.log(scheduleItem);
 			$("#editId").val(scheduleItem.id);
 			$("#editYear").val(scheduleItem.year);
 			$("#editWeek").val(scheduleItem.week);
+			$("#editStart").val(scheduleItem.startDate);
+			$("#editEnd").val(scheduleItem.endDate);
 			$("#editInfo").val(scheduleItem.info);
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
@@ -205,9 +217,9 @@ function retrieveScheduleInfo(id) {
 			}
 			// clear all rows on editScheduleTable
 			$("#editScheduleTable").find("tr:gt(0)").remove();	
-			// append Practice Info into table
-			var practices = scheduleItem.practices;
-			$.each(practices, function (index, value) {
+			// append Test Info into table
+			var tests = scheduleItem.tests;
+			$.each(tests, function (index, value) {
 				// Get the values from the select elements
 				var gradeSelect = document.getElementById("editGradeSearch");
 				var grade = gradeSelect.options[value.grade].text;
@@ -224,7 +236,7 @@ function retrieveScheduleInfo(id) {
 				var binIcon = $('<i class="bi bi-trash h5"></i>');
 				var binIconLink = $("<a>")
 					.attr("href", "javascript:void(0)")
-					.attr("title", "Delete Practice")
+					.attr("title", "Delete Test")
 					.click(function () {
 						row.remove();
 					});
@@ -264,29 +276,31 @@ function updateEditActiveValue(checkbox) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Practice Schedule
+//		Update Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
 	// get from formData
-	var practiceDtos = [];
+	var testDtos = [];
 	$('#editScheduleTable tr').each(function () {
 		var testId = $(this).find('.testId').text();
 		if (testId != '') {
-			practiceDtos.push({id : testId});
+			testDtos.push({id : testId});
 		}
 	});
 	var scheduleItem = {
 		id: $("#editId").val(),
 		year: $("#editYear").val(),
 		week: $("#editWeek").val(),
+		startDate: $("#editStart").val(),
+		endDate: $("#editEnd").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
-		practices: practiceDtos
+		tests: testDtos
 	}
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updatePracticeSchedule',
+		url: '${pageContext.request.contextPath}/connected/updateTestSchedule',
 		type: 'PUT',
 		dataType: 'json',
 		data: JSON.stringify(scheduleItem),
@@ -338,7 +352,7 @@ function updateEditActiveValue(checkbox) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before deleting PracticeSchedule
+//		Confirm before deleting TestSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function confirmDelete(testId) {
     // Show the warning modal
@@ -346,20 +360,20 @@ function confirmDelete(testId) {
 
     // Attach the click event handler to the "I agree" button
     $('#agreeConfirmation').one('click', function() {
-        deletePracticeSchedule(testId);
+        deleteTestSchedule(testId);
         $('#deleteConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete PracticeSchedule
+//		Delete TestSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function deletePracticeSchedule(id) {
+function deleteTestSchedule(id) {
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/deletePracticeSchedule/' + id,
+		url: '${pageContext.request.contextPath}/connected/deleteTestSchedule/' + id,
 		type: 'DELETE',
 		success: function (result) {
-			$('#success-alert .modal-body').text('Practice Schedule deleted successfully');
+			$('#success-alert .modal-body').text('Test Schedule deleted successfully');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -377,7 +391,7 @@ function deletePracticeSchedule(id) {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="scheduleList" method="get" action="${pageContext.request.contextPath}/connected/filterPracticeSchedule">
+		<form id="scheduleList" method="get" action="${pageContext.request.contextPath}/connected/filterTestSchedule">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-4">
@@ -457,6 +471,8 @@ function deletePracticeSchedule(id) {
 									<tr>
 										<th>Academic Year</th>
 										<th>Set</th>
+										<th>Start</th>
+										<th>End</th>
 										<th>Information</th>
 										<th data-orderable="false">Activated</th>
 										<th data-orderable="false">Action</th>
@@ -464,8 +480,8 @@ function deletePracticeSchedule(id) {
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${PracticeScheduleList != null}">
-											<c:forEach items="${PracticeScheduleList}" var="scheduleItem">
+										<c:when test="${TestScheduleList != null}">
+											<c:forEach items="${TestScheduleList}" var="scheduleItem">
 												<tr>
 													<td class="small ellipsis">
 														<span>
@@ -482,6 +498,16 @@ function deletePracticeSchedule(id) {
 																<c:when test="${scheduleItem.week >= 49}">End of Volume 5 (50)</c:when>
 																<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
 															</c:choose>
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${scheduleItem.startDate}" />
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${scheduleItem.endDate}" />
 														</span>
 													</td>
 													<td class="small text-truncate" style="min-width: 300px;">
@@ -590,11 +616,11 @@ function deletePracticeSchedule(id) {
 							<div class="form-row">
 								<div class="col-md-6">
 									<label for="addStart" class="label-form">Start Date & Time</label>
-									<input type="text" class="form-control" id="addStart" name="addStart" title="Please enter additional information" />
+									<input type="text" class="form-control" id="addStart" name="addStart" title="Please set Start Date & Time" />
 								</div>
 								<div class="col-md-6">
 									<label for="addEnd" class="label-form">End Date & Time</label>
-									<input type="text" class="form-control" id="addEnd" name="addEnd" title="Please enter additional information" />
+									<input type="text" class="form-control" id="addEnd" name="addEnd" title="Please set End Date & Time" />
 								</div>
 							</div>
 						</div>
@@ -717,6 +743,18 @@ function deletePracticeSchedule(id) {
 										  selectElement.appendChild(option);
 										}
 									</script>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-6">
+									<label for="editStart" class="label-form">Start Date & Time</label>
+									<input type="text" class="form-control" id="editStart" name="editStart" title="Please set Start Date & Time" />
+								</div>
+								<div class="col-md-6">
+									<label for="editEnd" class="label-form">End Date & Time</label>
+									<input type="text" class="form-control" id="editEnd" name="editEnd" title="Please set End Date & Time" />
 								</div>
 							</div>
 						</div>
@@ -885,11 +923,11 @@ function deletePracticeSchedule(id) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Schedule Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Test Schedule Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to delete Practice Schedule ?</p>	
+                <p> Are you sure to delete Test Schedule ?</p>	
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>

@@ -1,5 +1,7 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -43,6 +45,7 @@ import hyung.jin.seo.jae.repository.StudentPracticeRepository;
 import hyung.jin.seo.jae.repository.StudentTestRepository;
 import hyung.jin.seo.jae.repository.TestAnswerRepository;
 import hyung.jin.seo.jae.repository.TestRepository;
+import hyung.jin.seo.jae.repository.TestScheduleRepository;
 import hyung.jin.seo.jae.service.ConnectedService;
 
 @Service
@@ -75,7 +78,9 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Autowired
 	private PracticeScheduleRepository practiceScheduleRepository;
 
-	
+	@Autowired
+	private TestScheduleRepository testScheduleRepository;
+
 	@Override
 	public List<Homework> allHomeworks() {
 		List<Homework> dtos = new ArrayList<>();
@@ -125,6 +130,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 		List<PracticeSchedule> dtos = new ArrayList<>();
 		try{
 			dtos = practiceScheduleRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No Practice Schedule found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<TestSchedule> allTestSchedules() {
+		List<TestSchedule> dtos = new ArrayList<>();
+		try{
+			dtos = testScheduleRepository.findAll();
 		}catch(Exception e){
 			System.out.println("No Practice Schedule found");
 		}
@@ -190,6 +206,13 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Override
 	public PracticeSchedule getPracticeSchedule(Long id) {
 		Optional<PracticeSchedule> test = practiceScheduleRepository.findById(id);
+		if(!test.isPresent()) return null;
+		return test.get();
+	}
+
+	@Override
+	public TestSchedule getTestSchedule(Long id) {
+		Optional<TestSchedule> test = testScheduleRepository.findById(id);
 		if(!test.isPresent()) return null;
 		return test.get();
 	}
@@ -265,7 +288,13 @@ public class ConnectedServiceImpl implements ConnectedService {
 		PracticeSchedule schedule = practiceScheduleRepository.save(ps);
 		return schedule;
 	}
-
+	@SuppressAjWarnings("null")
+	@Override
+	@Transactional
+	public TestSchedule addTestSchedule(TestSchedule ps) {
+		TestSchedule schedule = testScheduleRepository.save(ps);
+		return schedule;
+	}
 
 	@Override
 	@Transactional
@@ -455,6 +484,31 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
+	public TestSchedule updateTestSchedule(TestSchedule newWork, Long id) {
+		// search by getId
+		TestSchedule existing = testScheduleRepository.findById(id).get();
+		// update info
+		int newYear = newWork.getYear();
+		existing.setYear(newYear);
+		int newWeek = newWork.getWeek();
+		existing.setWeek(newWeek);
+		boolean newActive = newWork.isActive();
+		existing.setActive(newActive);
+		String newInfo = newWork.getInfo();
+		existing.setInfo(newInfo);
+		LocalDateTime newStart = newWork.getStartDate();
+		existing.setStartDate(newStart);
+		LocalDateTime newEnd = newWork.getEndDate();
+		existing.setEndDate(newEnd);
+		Set<Test> newTests = newWork.getTests();
+		existing.setTests(newTests);
+		// update the existing record
+		TestSchedule updated = testScheduleRepository.save(existing);
+		return updated;	
+	}
+
+	@Override
+	@Transactional
 	public void deleteHomework(Long id) {
 		try{
 		    homeworkRepository.deleteById(id);
@@ -528,8 +582,25 @@ public class ConnectedServiceImpl implements ConnectedService {
 		} else {
 			// Handle the case where the PracticeSchedule record doesn't exist
 		}
-
 	}
+
+	@Override
+	@Transactional
+	public void deleteTestSchedule(Long id) {
+		TestSchedule testSchedule = testScheduleRepository.findById(id).orElse(null);
+		if (testSchedule != null) {
+			// Retrieve the associated tests
+			Set<Test> tests = testSchedule.getTests();		
+			// Remove the associations between PracticeSchedule and Practice entities
+			testSchedule.setTests(new LinkedHashSet<>());
+			testScheduleRepository.save(testSchedule); // Update to remove associations
+			// Now you can safely delete the PracticeSchedule record
+			testScheduleRepository.delete(testSchedule);
+		} else {
+			// Handle the case where the PracticeSchedule record doesn't exist
+		}	
+	}
+
 
 	@Override
 	public HomeworkDTO getHomeworkInfo(int subject, int year, int week) {
@@ -621,6 +692,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 			dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
 		}catch(Exception e){
 			System.out.println("No Practice Schedule found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<TestScheduleDTO> listTestSchedule(int year, int week) {
+		List<TestScheduleDTO> dtos = new ArrayList<>();
+		try{
+			dtos = testScheduleRepository.filterTestScheduleByYearNWeek(year, week);
+		}catch(Exception e){
+			System.out.println("No Test Schedule found");
 		}
 		return dtos;
 	}
@@ -838,42 +920,14 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public List<TestSchedule> allTestSchedules() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'allTestSchedules'");
+	public String getTestTypeName(Long id) {
+		String name = "";
+		try{
+			name = testRepository.getTestTypeName(id);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return name;	
 	}
-
-	@Override
-	public List<TestScheduleDTO> listTestSchedule(int year, int week) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'listTestSchedule'");
-	}
-
-	@Override
-	public TestSchedule getTestSchedule(Long id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getTestSchedule'");
-	}
-
-	@Override
-	public TestSchedule addTestSchedule(TestSchedule ps) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'addTestSchedule'");
-	}
-
-	@Override
-	public TestSchedule updateTestSchedule(TestSchedule newWork, Long id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'updateTestSchedule'");
-	}
-
-	@Override
-	public void deleteTestSchedule(Long id) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'deleteTestSchedule'");
-	}
-
-
-	
 
 }
