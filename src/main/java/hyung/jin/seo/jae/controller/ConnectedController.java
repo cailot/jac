@@ -35,6 +35,7 @@ import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
+import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
@@ -46,6 +47,7 @@ import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswer;
 import hyung.jin.seo.jae.model.TestAnswerItem;
+import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
@@ -166,6 +168,25 @@ public class ConnectedController {
 		return dto;
 	}
 	
+	// register test schedule
+	@PostMapping("/addTestSchedule")
+	@ResponseBody
+	public TestScheduleDTO registerTestSchedule(@RequestBody TestScheduleDTO formData) {
+		TestSchedule schedule = formData.convertToTestSchedule();
+		List<TestDTO> tests = formData.getTests();
+		// associate practice to schedule
+		for(TestDTO test : tests){
+			String testId = test.getId();
+			Test prac = connectedService.getTest(Long.parseLong(testId));
+			schedule.addTest(prac);
+		}
+		schedule.setActive(true);
+		// save practice schedule
+		schedule = connectedService.addTestSchedule(schedule);
+		TestScheduleDTO dto = new TestScheduleDTO(schedule);
+		// return dto
+		return dto;
+	}
 
 	// update existing homework
 	@PutMapping("/updateHomework")
@@ -259,6 +280,31 @@ public class ConnectedController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
+
+	// update existing test schedule
+	@PutMapping("/updateTestSchedule")
+	@ResponseBody
+	public ResponseEntity<String> updateTestSchedule(@RequestBody TestScheduleDTO formData) {
+		try{
+			// 1. create barebone TestSchedule
+			TestSchedule work = formData.convertToTestSchedule();
+			// 2. update associated Practices
+			List<TestDTO> tests = formData.getTests();
+			for(TestDTO test : tests){
+				// 2.1 get Test
+				Test prac = connectedService.getTest(Long.parseLong(test.getId()));
+				// 2.2 update Test
+				work.addTest(prac);
+			}
+			// 3. update PracticeSchedule
+			work = connectedService.updateTestSchedule(work, Long.parseLong(formData.getId()));
+			// 4.return flag
+			return ResponseEntity.ok("\"Test Schedule updated successfully\"");
+		}catch(Exception e){
+			String message = "Error updating Test Schedule : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
 	
 	// get homework
 	@GetMapping("/getHomework/{id}")
@@ -309,6 +355,23 @@ public class ConnectedController {
 			String name =  connectedService.getPracticeTypeName(practice.getId());
 			prac.setName(name);
 			dto.addPractice(prac);
+		}
+		return dto;
+	}
+
+	// get test schedule
+	@GetMapping("/getTestSchedule/{id}")
+	@ResponseBody
+	public TestScheduleDTO getTestSchedule(@PathVariable Long id) {
+		TestSchedule work = connectedService.getTestSchedule(id);
+		TestScheduleDTO dto = new TestScheduleDTO(work);
+		Set<Test> tests = work.getTests();
+		for(Test test : tests){
+			TestDTO prac = new TestDTO(test);
+			// get TestType name
+			String name =  connectedService.getTestTypeName(test.getId());
+			prac.setName(name);
+			dto.addTest(prac);
 		}
 		return dto;
 	}
@@ -392,6 +455,19 @@ public class ConnectedController {
 		dtos = connectedService.listPracticeSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
 		model.addAttribute(JaeConstants.PRACTICE_SCHEDULE_LIST, dtos);
 		return "practiceSchedulePage";
+	}
+
+	@GetMapping("/filterTestSchedule")
+	public String listTestSchedules(
+			@RequestParam(value = "listYear", required = false) String listYear,
+			@RequestParam(value = "listWeek", required = false) String listWeek,
+			Model model) {
+		List<TestScheduleDTO> dtos = new ArrayList();
+		String filteredYear = StringUtils.defaultString(listYear, "0");
+		String filteredWeek = StringUtils.defaultString(listWeek, "0");
+		dtos = connectedService.listTestSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		model.addAttribute(JaeConstants.TEST_SCHEDULE_LIST, dtos);
+		return "testSchedulePage";
 	}
 
 	// bring summary of extrawork
@@ -534,6 +610,14 @@ public class ConnectedController {
         Long id = Long.parseLong(StringUtils.defaultString(practiceScheduleId, "0"));
 		connectedService.deletePracticeSchedule(id);
 		return ResponseEntity.ok("\"Practice Schedule deleted successfully\"");
+    }
+
+	@DeleteMapping(value = "/deleteTestSchedule/{testScheduleId}")
+	@ResponseBody
+    public ResponseEntity<String> removeTestSchedule(@PathVariable String testScheduleId) {
+        Long id = Long.parseLong(StringUtils.defaultString(testScheduleId, "0"));
+		connectedService.deleteTestSchedule(id);
+		return ResponseEntity.ok("\"Test Schedule deleted successfully\"");
     }
 
 	// helper method converting answers Map to List

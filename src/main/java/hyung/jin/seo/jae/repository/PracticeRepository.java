@@ -35,5 +35,4 @@ public interface PracticeRepository extends JpaRepository<Practice, Long>{
 	// get Practice name by id
 	@Query("SELECT p.practiceType.name FROM Practice p WHERE p.id = ?1")
 	String getPracticeTypeName(Long id);
-	
 }

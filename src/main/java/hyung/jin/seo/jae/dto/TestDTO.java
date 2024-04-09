@@ -36,8 +36,10 @@ public class TestDTO implements Serializable {
 
 	private String registerDate;
 
+	private String name;
+
 	
-	public TestDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long testType, LocalDate registerDate){
+	public TestDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long testType, String name, LocalDate registerDate){
 		this.id = String.valueOf(id);
 		this.pdfPath = pdfPath;
 		this.volume = volume;
@@ -46,6 +48,7 @@ public class TestDTO implements Serializable {
 		this.info = info;
 		this.grade = grade;
 		this.testType = testType;
+		this.name = name;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 

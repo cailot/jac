@@ -154,7 +154,7 @@ public interface ConnectedService {
 	// list Practice by type & grade
 	List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade);
 
-	// get PracticeType name by id
+	// get PracticeType name by practice id
 	String getPracticeTypeName(Long id);
 
 
@@ -230,6 +230,8 @@ public interface ConnectedService {
 	// list Test by type & grade
 	List<TestDTO> listTestByTypeNGrade(int type, String grade);
 
+	// get TestType name by test id
+	String getTestTypeName(Long id);
 
 	/////////////////////////////////////////////////////////
 	//

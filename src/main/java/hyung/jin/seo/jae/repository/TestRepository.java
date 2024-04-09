@@ -18,19 +18,22 @@ public interface TestRepository extends JpaRepository<Test, Long>{
 	Optional<Test> findById(Long id);
 	
 	// bring PracticeDTO by type, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.registerDate) FROM Test t WHERE (t.testType.id = ?1) AND (t.grade.code = ?2) AND (t.volume = ?3)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.testType.name, t.registerDate) FROM Test t WHERE (t.testType.id = ?1) AND (t.grade.code = ?2) AND (t.volume = ?3)")
 	TestDTO findTest(int type, String grade, int volume);
 
 	// filter PracticeDTO by type, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.registerDate) FROM Test t WHERE (?1 = 0 OR t.testType.id = ?1) AND (?2 = 'All' OR t.grade.code = ?2) AND (?3 = 0 OR t.volume = ?3)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.testType.name, t.registerDate) FROM Test t WHERE (?1 = 0 OR t.testType.id = ?1) AND (?2 = 'All' OR t.grade.code = ?2) AND (?3 = 0 OR t.volume = ?3)")
 	List<TestDTO> filterTestByTypeNGradeNVolume(int type, String grade, int volume);
 
 	// filter active PracticeDTO by type, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.registerDate) FROM Test t WHERE (?1 = 0 OR t.testType.id = ?1) AND (?2 = 'All' OR t.grade.code = ?2) AND (?3 = 0 OR t.volume = ?3) AND (t.active = 1)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.info, t.grade.code, t.testType.id, t.testType.name, t.registerDate) FROM Test t WHERE (?1 = 0 OR t.testType.id = ?1) AND (?2 = 'All' OR t.grade.code = ?2) AND (?3 = 0 OR t.volume = ?3) AND (t.active = 1)")
 	List<TestDTO> filterActiveTestByTypeNGradeNVolume(int type, String grade, int volume);
 
 	// summarise Test by grade
 	@Query(value = "SELECT t.volume, t.id FROM Test t WHERE t.testTypeId = ?1 AND t.gradeId = ?2", nativeQuery = true)   
 	List<Object[]> summaryTest(int type, int grade);
 
+	// get Test name by id
+	@Query("SELECT t.testType.name FROM Test t WHERE t.id = ?1")
+	String getTestTypeName(Long id);
 }

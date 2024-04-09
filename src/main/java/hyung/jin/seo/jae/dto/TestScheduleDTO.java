@@ -14,6 +14,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Getter
 @Setter
 @ToString
@@ -31,9 +35,11 @@ public class TestScheduleDTO implements Serializable {
 
 	private boolean active;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime startDate;
 
-    private LocalDateTime endDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+	private LocalDateTime endDate;
 
 	private String registerDate;
 
