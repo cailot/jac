@@ -90,6 +90,16 @@
 				<a class="dropdown-item" href="#">Admin Property</a>
 			</div>
 		</li>
+		<li class="nav-item dropdown">
+			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Stats</span>
+			</a>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/registerStats">Registration</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/enrolStats">Enrolment</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/deactStats">Deactivation</a>
+			</div>
+		</li>
 	</ul>
 	<ul class="navbar_icon" style="margin: 0; padding: 0;">
 		<sec:authorize access="isAuthenticated()">

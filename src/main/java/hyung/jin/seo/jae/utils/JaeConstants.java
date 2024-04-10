@@ -173,6 +173,8 @@ public interface JaeConstants {
 
 	String CRITERIA_INFO = "criteriaInfo";
 
+	String REGISTRATION_STAT_INFO = "regStatInfo";
+
 	String WEEK_HEADER = "weekHeader";
 
 	String ATTENDANCE_INFO = "attendanceInfo";

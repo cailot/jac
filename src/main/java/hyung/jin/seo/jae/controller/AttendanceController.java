@@ -32,7 +32,7 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("attendance")
-public class JaeAttendanceController {
+public class AttendanceController {
 
 	@Autowired
 	private AttendanceService attendanceService;
