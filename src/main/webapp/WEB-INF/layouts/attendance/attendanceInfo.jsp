@@ -119,18 +119,6 @@ function clearAttendanceTable() {
 
 </script>
 
-<style>
-	/* select.dayChoice {
-		-webkit-appearance: none; 
-		-moz-appearance: none; 
-		appearance: none; 
-		background: transparent; 
-		background-image: none; 
-		background-repeat: no-repeat;
-		background-position: right center;
-		padding-right: 20px; 
-	} */
-</style>
 <div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 	<form id="accetandanceForm">
 		<div class="form-group">
