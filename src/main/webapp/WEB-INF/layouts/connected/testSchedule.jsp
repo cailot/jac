@@ -690,7 +690,7 @@ function deleteTestSchedule(id) {
 		<div class="modal-content">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Schedule Edit</header>
+					<header class="text-primary font-weight-bold">Test Schedule Edit</header>
 					<form id="scheduleEdit">
 						<div class="form-group">
 							<div class="form-row mt-3">

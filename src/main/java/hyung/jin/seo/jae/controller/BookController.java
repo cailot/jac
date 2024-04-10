@@ -16,7 +16,7 @@ import hyung.jin.seo.jae.service.BookService;
 
 @Controller
 @RequestMapping("book")
-public class JaeBookController {
+public class BookController {
 
 	//private static final Logger LOG = LoggerFactory.getLogger(JaeBookController.class);
 
