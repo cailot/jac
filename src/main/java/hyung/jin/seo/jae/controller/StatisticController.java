@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +37,7 @@ import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SearchCriteriaDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
+import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
@@ -59,6 +61,7 @@ import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("stats")
@@ -71,36 +74,26 @@ public class StatisticController {
 
 	
 	// search registration
-	@GetMapping("/regSearch")
-	public String searchRegistration(@RequestParam("fromDate") String fromDate, 
-									 @RequestParam("toDate") String toDate, 
-									 Model model) {
-		
-		// 1. clear existing info from model
-		model.addAttribute(JaeConstants.CRITERIA_INFO, null);
-		model.addAttribute(JaeConstants.REGISTRATION_STAT_INFO, null);	
-
-
-		List<AttendanceListDTO> dtos = new ArrayList<>();
-		
-		// 2. set search criteria
-		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-		criteria.setFromDate(fromDate);
-		criteria.setToDate(toDate);
-		model.addAttribute(JaeConstants.CRITERIA_INFO, criteria);	
-
-		
-		// 3. get stats info
-		// AttendanceListDTO header = new AttendanceListDTO();
-		// List<Integer> headerWks = new ArrayList<>();
-		// for(int i=startWeek; i<=endWeek; i++){
-		// 	headerWks.add(i);
-		// }
-		statsService.getRegistrationStats("2020-01-18", "2024-03-18");
-		model.addAttribute(JaeConstants.REGISTRATION_STAT_INFO, dtos);	
-
-		// 4. return redirect page
-		return "regStatPage";
+	@PostMapping("/regSearch")
+	@ResponseBody
+	public List<StatsDTO> searchRegistration(@RequestParam String fromDate, @RequestParam String toDate) {
+		// 1. get convert date format
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		// 2. get Stats
+		List<StatsDTO> dtos = statsService.getRegistrationStats(start, end);
+		// 3. return dtos
+		return dtos;
 	}
 
 

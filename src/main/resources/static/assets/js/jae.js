@@ -195,6 +195,26 @@ function listTestType(selectElementId) {
 	});
 }
 
+
+// table heeader branch
+function headerBranch(tableElementId) {
+	$.ajax({
+		url: getContextPath() + '/code/branch',
+		type: 'GET',
+		success: function (data) {
+			var headerRow = $("<tr></tr>"); // Create a new row for headers
+			$.each(data, function (index, state) {
+				var th = "<th>" + state.name + "</th>"; // Create a new table header
+				headerRow.append(th); // Append the header to the row
+			});
+			$(tableElementId).append(headerRow); // Append the row to the table
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 // get grade name
 function  gradeName(value){
 	var gradeText = '';
