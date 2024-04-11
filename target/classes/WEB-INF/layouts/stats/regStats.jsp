@@ -51,7 +51,7 @@ function searchStats() {
 					// Get the row index (assuming it's stored in item.grade)
 					var rowIndex = item.grade;
 					// Get the corresponding cell in the table body
-					var cell = $('#regStatTable tbody tr:nth-child(' + rowIndex + ') td:nth-child(' + (cellIndex + 1) + ')');
+					var cell = $('#regStatTable tbody tr:nth-child(' + rowIndex + ') td:nth-child(' + (cellIndex+2) + ')');
 					// Update the cell content
 					cell.text(item.count);
 					cell.css('color', 'red');
@@ -78,6 +78,17 @@ function clearSearchCriteria() {
 		criteriaInfoDiv.innerHTML = '';
 		criteriaInfoDiv.style.display = 'none';
 	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Generate <td>	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function generateTableCells(numCells) {
+	var cells = '';
+	for (var i = 0; i < numCells; i++) {
+		cells += '<td class="small align-middle text-center">0</td>';
+	}
+	return cells;
 }
 
 </script>
@@ -165,545 +176,125 @@ function clearSearchCriteria() {
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
+										<tr id="p2Row">
 											<td class="small align-middle text-center">P2</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('p2Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="p3Row">
 											<td class="small align-middle text-center">P3</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('p3Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="p4Row">
 											<td class="small align-middle text-center">P4</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('p4Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="p5Row">
 											<td class="small align-middle text-center">P5</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('p5Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="p6Row">
 											<td class="small align-middle text-center">P6</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('p6Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="s7Row">
 											<td class="small align-middle text-center">S7</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('s7Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="s8Row">
 											<td class="small align-middle text-center">S8</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('s8Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="s9Row">
 											<td class="small align-middle text-center">S9</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('s9Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="s10Row">
 											<td class="small align-middle text-center">S10</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('s10Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="s10eRow">
 											<td class="small align-middle text-center">S10E</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('s10eRow').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="tt6Row">
 											<td class="small align-middle text-center">TT6</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('tt6Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="tt8Row">
 											<td class="small align-middle text-center">TT8</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('tt8Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="tt8eRow">
 											<td class="small align-middle text-center">TT8E</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('tt8eRow').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="srw4Row">
 											<td class="small align-middle text-center">SRW4</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('srw4Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="srw5Row">
 											<td class="small align-middle text-center">SRW5</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('srw5Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="srw6Row">
 											<td class="small align-middle text-center">SRW6</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('srw6Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="srw7Row">
 											<td class="small align-middle text-center">SRW7</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('srw7Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="srw8Row">
 											<td class="small align-middle text-center">SRW8</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('srw8Row').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="jmssRow">
 											<td class="small align-middle text-center">JMSS</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('jmssRow').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
-										<tr>
+										<tr id="vceRow">
 											<td class="small align-middle text-center">VCE</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
-											<td class="small align-middle text-center">0</td>
+											<script>
+												document.getElementById('vceRow').innerHTML += generateTableCells(24);
+											</script>
 										</tr>
 									</tbody>
 								</table>
