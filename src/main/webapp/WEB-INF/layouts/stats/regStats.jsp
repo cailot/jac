@@ -235,7 +235,7 @@ function extractData() {
 	}
 
 	tableData = data;
-	console.log(tableData);
+	// console.log(tableData);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,14 +462,23 @@ function updateChart(){
 		  borderWidth: 1
 		 }
 
-	]
+		]
 	  },
-	  options: {
-		responsive : true,
-		interaction:{
-			mode : 'index'
+
+		options: {
+			scales: {
+				y: {
+					ticks: {
+						beginAtZero: true, // Start the y-axis at 0
+						stepSize: 1, // Set the interval between ticks to 1
+					}
+				}
+			},
+				responsive: true,
+				interaction: {
+				mode: 'index'
+			}
 		}
-	  }
 	});
 
 
