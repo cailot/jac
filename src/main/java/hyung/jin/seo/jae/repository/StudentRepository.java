@@ -76,8 +76,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
         @Query(value = "UPDATE Student s SET s.grade = ?2 WHERE s.id = ?1", nativeQuery = true)
         void updateGrade(Long id, String grade);    
 
-        @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student WHERE ((registerDate <= :startDate) OR (registerDate <= :endDate)) AND endDate is null GROUP BY state, branch, grade", nativeQuery = true)
-        List<Object[]> getActiveStudentStats(@Param("startDate") String startDate, @Param("endDate") String endDate);
+        @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student WHERE ((registerDate <= :fromDate) OR (registerDate <= :toDate)) AND endDate is null GROUP BY state, branch, grade", nativeQuery = true)
+        List<Object[]> getActiveStudentStats(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
         @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student WHERE endDate BETWEEN :startDate AND :endDate GROUP BY state, branch, grade", nativeQuery = true)
         List<Object[]> getInactiveStudentStats(@Param("startDate") String startDate, @Param("endDate") String endDate);
