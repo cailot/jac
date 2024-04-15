@@ -106,20 +106,15 @@
 
 
 	<!-- Statistics -->
-	<!--Registration Stats -->
-	<definition name="regStatPage" extends="base.definition">
+	<!--Active Student Stats -->
+	<definition name="activeStatPage" extends="base.definition">
 		<put-attribute name="title" value="Registration Statistics" />
-		<put-attribute name="body" value="/WEB-INF/layouts/stats/regStats.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/stats/activeStats.jsp" />
 	</definition>
-	<!--Enrolment Stats -->
-	<definition name="enrolStatPage" extends="base.definition">
-		<put-attribute name="title" value="Enrolment Statistics" />
-		<put-attribute name="body" value="/WEB-INF/layouts/stats/enrolStats.jsp" />
-	</definition>
-	<!--Deactive Stats -->
-	<definition name="deactStatPage" extends="base.definition">
+	<!--Inactive Student Stats -->
+	<definition name="inactiveStatPage" extends="base.definition">
 		<put-attribute name="title" value="Deactivation Statistics" />
-		<put-attribute name="body" value="/WEB-INF/layouts/stats/deactStats.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/stats/inactiveStats.jsp" />
 	</definition>
 
 
