@@ -95,9 +95,8 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Stats</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/registerStats">Registration</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/enrolStats">Enrolment</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/deactStats">Deactivation</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
 			</div>
 		</li>
 	</ul>
