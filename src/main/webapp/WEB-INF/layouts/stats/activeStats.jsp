@@ -39,7 +39,7 @@ function searchStats() {
 		return;
 	}
 	$.ajax({
-		url: '${pageContext.request.contextPath}/stats/regSearch',
+		url: '${pageContext.request.contextPath}/stats/activeSearch',
 		type: 'POST',
 		data: {
 			fromDate: start,
@@ -68,7 +68,16 @@ function searchStats() {
 					// Update the cell content
 					cell.text(item.count);
 					cell.addClass('text-primary');
-					// cell.css('color', 'red');
+					// Add branch and grade as attributes to the cell
+					cell.attr('branch', branchCode);
+					cell.attr('grade', rowIndex);
+					 // Add click event to call studentList function
+					cell.click(function() {
+						studentList(branchCode, rowIndex);
+					});
+					// Change cursor to hand pointer on hover
+    				cell.css('cursor', 'pointer');
+    
 				} else {
 					console.error('No th element found with code ' + branchCode);
 				}
@@ -89,6 +98,61 @@ function searchStats() {
 	statDiv.style.display = 'block';
 	var instDiv = document.getElementById("instruction");
 	instDiv.style.display = 'none'
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Bring up Students	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function studentList(branch, grade){
+	//warn if keyword is empty
+	var start = document.getElementById("fromDate").value;
+	var end = document.getElementById("toDate").value;
+	if (start == "" || end == "") {
+		$('#warning-alert .modal-body').text('Please select date range beforel your search');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$('#studentListResultTable tbody').empty();
+	$.ajax({
+		url : '${pageContext.request.contextPath}/stats/getStudents',
+		type : 'GET',
+		data : {
+			start : $("#fromDate").val(),
+			end : $("#toDate").val(),
+			branch : branch,
+			grade : grade
+		},
+		success : function(data) {
+			//console.log('search - ' + data);
+			if (data == '') {
+				$('#warning-alert .modal-body').html('No student record found');
+				$('#warning-alert').modal('toggle');
+				return;
+			}
+			$.each(data, function(index, value) {
+				var row = $("<tr>");		
+				row.append($('<td>').text(value.id));
+				row.append($('<td>').text(value.firstName));
+				row.append($('<td>').text(value.lastName));
+				var gradeText = gradeName(value.grade);
+				row.append($('<td>').text(gradeText));
+				row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
+				row.append($('<td>').text(formatDate(value.registerDate)));
+				row.append($('<td>').text(formatDate(value.endDate)));
+				row.append($('<td>').text(value.email1));
+				row.append($('<td>').text(value.contactNo1));
+				row.append($('<td>').text(value.email2));
+				row.append($('<td>').text(value.contactNo2));
+				row.append($('<td>').text(value.address));
+				$('#studentListResultTable > tbody').append(row);
+			});
+			$('#studentListResult').modal('show');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +298,7 @@ function extractData() {
 		}
 	}
 
-	tableData = data;
+	tableData = data; 
 	// console.log(tableData);
 }
 
@@ -242,7 +306,7 @@ function extractData() {
 //		Add <tr> to table	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function addRows(){
-	// Define the rows data
+	// Define the rows dat
 	var rowsData = [
 		{ id: 'p2Row', text: 'P2' },
 		{ id: 'p3Row', text: 'P3' },
@@ -474,15 +538,16 @@ function updateChart(){
 					}
 				}
 			},
-				responsive: true,
-				interaction: {
+			responsive: true,
+			animation: {
+				duration: 2000, // Animation duration in milliseconds
+				easing: 'linear' // Animation easing function
+        	},
+			interaction: {
 				mode: 'index'
 			}
 		}
-	});
-
-
-	
+	});	
 }
 </script>
 
@@ -644,5 +709,55 @@ function updateChart(){
 		</div>
 	</div>
 </div>
+
+<!-- Search Result Dialog -->
+<div class="modal fade" id="studentListResult">
+	<div class="modal-dialog modal-xl modal-dialog-centered">
+	  <div class="modal-content">
+		<div class="modal-header bg-primary text-white">
+		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
+		  <button type="button" class="close" data-dismiss="modal">
+			<span>&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body table-wrap">
+		  <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
+			<thead class="thead-light">
+			  <tr>
+				<th data-field="id">ID</th>
+				<th data-field="firstname">First Name</th>
+				<th data-field="lastname">Last Name</th>
+				<th data-field="grade">Grade</th>
+				<th data-field="grade">Gender</th>
+				<th data-field="startdate">Start Date</th>
+				<th data-field="enddate">End Date</th>
+				<th data-field="email">Main Email</th>
+				<th data-field="contact1">Main Contact</th>
+				<th data-field="email">Sub Email</th>
+				<th data-field="contact2">Sub Contact</th>
+				<th data-field="address">Address</th>
+			  </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		  </table>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+</div>
+  
+<style>
+	.table-wrap {
+	  overflow-x: auto;
+	}
+	#studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+	.form-group{
+		margin-bottom: 30px;
+	}
+</style>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

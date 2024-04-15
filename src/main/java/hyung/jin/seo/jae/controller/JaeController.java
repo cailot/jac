@@ -118,19 +118,14 @@ public class JaeController {
 		return "testSchedulePage";
 	}
 
-	@GetMapping("/registerStats")
-	public String registerStats(HttpSession session) {
-		return "regStatPage";
+	@GetMapping("/activeStats")
+	public String activeStudentStats(HttpSession session) {
+		return "activeStatPage";
 	}
 
-	@GetMapping("/enrolStats")
-	public String enrolStats(HttpSession session) {
-		return "enrolStatPage";
-	}
-
-	@GetMapping("/deactStats")
-	public String deactStats(HttpSession session) {
-		return "deactStatPage";
+	@GetMapping("/inactiveStats")
+	public String inactiveStudentStats(HttpSession session) {
+		return "inactiveStatPage";
 	}
 
 }
