@@ -69,10 +69,10 @@ public class StatisticController {
 		return dtos;
 	}
 
-	// search student with branch, grade, start/endDate
-	@GetMapping("/getStudents")
+	// search active student with branch, grade, start/endDate
+	@GetMapping("/activeStudent")
 	@ResponseBody
-	List<StudentDTO> searchStudents(@RequestParam("branch") String branch, 
+	List<StudentDTO> listActiveStudents(@RequestParam("branch") String branch, 
 									@RequestParam("grade") String grade,
 									@RequestParam("start") String fromDate,
 									@RequestParam("end") String toDate) {
@@ -88,7 +88,30 @@ public class StatisticController {
 		} catch (ParseException e){
 			end = "2099-12-31";
 		}
-		List<StudentDTO> dtos = statsService.listStudent4Stats(branch, grade, start, end, JaeConstants.ACTIVE);
+		List<StudentDTO> dtos = statsService.listActiveStudent4Stats(branch, grade, start, end);
+		return dtos;
+	}
+
+	// search inactive student with branch, grade, start/endDate
+	@GetMapping("/inactiveStudent")
+	@ResponseBody
+	List<StudentDTO> listInactiveStudents(@RequestParam("branch") String branch, 
+									@RequestParam("grade") String grade,
+									@RequestParam("start") String fromDate,
+									@RequestParam("end") String toDate) {
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		List<StudentDTO> dtos = statsService.listInactiveStudent4Stats(branch, grade, start, end);
 		return dtos;
 	}
 

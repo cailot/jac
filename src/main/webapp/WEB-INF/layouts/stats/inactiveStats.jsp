@@ -39,7 +39,7 @@ function searchStats() {
 		return;
 	}
 	$.ajax({
-		url: '${pageContext.request.contextPath}/stats/activeSearch',
+		url: '${pageContext.request.contextPath}/stats/inactiveSearch',
 		type: 'POST',
 		data: {
 			fromDate: start,
@@ -115,7 +115,7 @@ function studentList(branch, grade){
 	// send query to controller
 	$('#studentListResultTable tbody').empty();
 	$.ajax({
-		url : '${pageContext.request.contextPath}/stats/activeStudent',
+		url : '${pageContext.request.contextPath}/stats/inactiveStudent',
 		type : 'GET',
 		data : {
 			start : $("#fromDate").val(),

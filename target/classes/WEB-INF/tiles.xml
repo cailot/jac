@@ -108,12 +108,12 @@
 	<!-- Statistics -->
 	<!--Active Student Stats -->
 	<definition name="activeStatPage" extends="base.definition">
-		<put-attribute name="title" value="Registration Statistics" />
+		<put-attribute name="title" value="Active Student Statistics" />
 		<put-attribute name="body" value="/WEB-INF/layouts/stats/activeStats.jsp" />
 	</definition>
 	<!--Inactive Student Stats -->
 	<definition name="inactiveStatPage" extends="base.definition">
-		<put-attribute name="title" value="Deactivation Statistics" />
+		<put-attribute name="title" value="Inactive Student Statistics" />
 		<put-attribute name="body" value="/WEB-INF/layouts/stats/inactiveStats.jsp" />
 	</definition>
 

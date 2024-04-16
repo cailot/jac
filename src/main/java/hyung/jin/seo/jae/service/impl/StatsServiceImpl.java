@@ -44,13 +44,27 @@ public class StatsServiceImpl implements StatsService {
 	}
 
 	@Override
-	public List<StudentDTO> listStudent4Stats(String branch, String grade, String from, String to, int active) {
+	public List<StudentDTO> listActiveStudent4Stats(String branch, String grade, String from, String to) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate fromDate = LocalDate.parse(from, formatter);
 			LocalDate toDate = LocalDate.parse(to, formatter);
-			dtos = studentRepository.listStudent4Stats(branch, grade, fromDate, toDate, active);
+			dtos = studentRepository.listActiveStudent4Stats(branch, grade, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No Student found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<StudentDTO> listInactiveStudent4Stats(String branch, String grade, String from, String to) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate fromDate = LocalDate.parse(from, formatter);
+			LocalDate toDate = LocalDate.parse(to, formatter);
+			dtos = studentRepository.listInactiveStudent4Stats(branch, grade, fromDate, toDate);
 		}catch(Exception e){
 			System.out.println("No Student found");
 		}

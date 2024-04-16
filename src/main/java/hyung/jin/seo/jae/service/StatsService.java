@@ -13,7 +13,10 @@ public interface StatsService {
 	// search inactive student stats
 	List<StatsDTO> getInactiveStats(String from, String to);
 
-	// list students by branch, grade, date & active
-	List<StudentDTO> listStudent4Stats(String branch, String grade, String from, String to, int active);
+	// list active students by branch, grade, date & active
+	List<StudentDTO> listActiveStudent4Stats(String branch, String grade, String from, String to);
+
+	// list inactive students by branch, grade, date & active
+	List<StudentDTO> listInactiveStudent4Stats(String branch, String grade, String from, String to);
 
 }

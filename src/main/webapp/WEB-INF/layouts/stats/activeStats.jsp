@@ -115,7 +115,7 @@ function studentList(branch, grade){
 	// send query to controller
 	$('#studentListResultTable tbody').empty();
 	$.ajax({
-		url : '${pageContext.request.contextPath}/stats/getStudents',
+		url : '${pageContext.request.contextPath}/stats/activeStudent',
 		type : 'GET',
 		data : {
 			start : $("#fromDate").val(),
@@ -144,7 +144,6 @@ function studentList(branch, grade){
 				row.append($('<td>').text(value.contactNo1));
 				row.append($('<td>').text(value.email2));
 				row.append($('<td>').text(value.contactNo2));
-				row.append($('<td>').text(value.address));
 				$('#studentListResultTable > tbody').append(row);
 			});
 			$('#studentListResult').modal('show');
@@ -735,7 +734,6 @@ function updateChart(){
 				<th data-field="contact1">Main Contact</th>
 				<th data-field="email">Sub Email</th>
 				<th data-field="contact2">Sub Contact</th>
-				<th data-field="address">Address</th>
 			  </tr>
 			</thead>
 			<tbody>
