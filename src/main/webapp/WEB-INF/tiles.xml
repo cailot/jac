@@ -138,6 +138,12 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/invoice/invoice.jsp" />
 	</definition>
 
+	<!-- Login from Single Base -->
+	<definition name="loginPage" extends="single.definition">
+		<put-attribute name="title" value="James An College Admin Login Page" />
+		<put-attribute name="body" value="/WEB-INF/layouts/login.jsp" />
+	</definition>
+
 
 
 	<!-- Setting : Student -->
