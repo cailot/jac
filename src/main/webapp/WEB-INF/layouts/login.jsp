@@ -55,9 +55,9 @@
     <div class="background-animation"></div>
     <div class="row h-100 justify-content-center align-items-center">		
 		<div class="card">
-            <h3 class="card-header bg-primary text-white text-center">Connected Class</h3>
+            <h3 class="card-header bg-primary text-white text-center">Jac Manager Login</h3>
 			<div class="card-body">
-                <form:form  action="${pageContext.request.contextPath}/connected/processLogin" method="POST">
+                <form:form  action="${pageContext.request.contextPath}/processLogin" method="POST">
                     <div class="row mb-1">
 						<div class="col-md-12">
 							<div class="form-group">
