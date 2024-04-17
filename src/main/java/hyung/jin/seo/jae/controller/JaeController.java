@@ -8,6 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class JaeController {
 
+	@GetMapping("/login")
+	public String showLogin() {
+		return "loginPage";
+	}
+
+	@GetMapping("/logout")
+	public String redirectConnectedLogin() {
+		return "redirect:/login";
+	}
 
 	@GetMapping("/studentAdmin")
 	public String adminJob(HttpSession session) {
