@@ -138,7 +138,7 @@ function getInvoice(studentId) {
 //		Display Payment History in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
-	var url = getContextPath() + '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId;  
+	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId;  
 	var win = window.open(url, '_blank');
 	win.focus();
 }

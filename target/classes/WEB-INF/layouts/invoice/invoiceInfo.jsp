@@ -312,7 +312,7 @@ function displayInfoInNewTab(paymentType){
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
   var lastName = $('#formLastName').val();
-  var url = getContextPath() + '/' + paymentType + '?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName;  
+  var url = '/' + paymentType + '?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName;  
   var win = window.open(url, '_blank');
   win.focus();
 }
@@ -322,7 +322,7 @@ function displayInfoInNewTab(paymentType){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function openPaymentHistory(){
   var studentId = $('#formId').val();
-  var url = getContextPath() + '/invoice/history?studentKeyword=' + studentId;  
+  var url = '/invoice/history?studentKeyword=' + studentId;  
   var win = window.open(url, '_blank');
   win.focus();
 }
