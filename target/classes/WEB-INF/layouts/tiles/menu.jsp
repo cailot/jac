@@ -86,8 +86,8 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/branch">Branch Management</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/setting">Admin Automation</a>
-				<a class="dropdown-item" href="#">Admin Property</a>
+			  	<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/setting">Admin Automation</a>
+				<a class="dropdown-item" href="#">Admin Property</a> -->
 			</div>
 		</li>
 		<li class="nav-item dropdown">
