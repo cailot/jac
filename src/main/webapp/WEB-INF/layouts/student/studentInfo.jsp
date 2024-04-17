@@ -334,7 +334,7 @@ function displayStudentInfo(value) {
 		$("#formContact1").val(value['contactNo1']).css("color", "black").prop('disabled', false);
 		$("#formContact2").val(value['contactNo2']).css("color", "black").prop('disabled', false);
 		$("#formMemo").val(value['memo']).css("color", "black").prop('disabled', false);
-		$("#formState").prop('disabled', false);
+		$("#formState").prop('disabled', true);
 		$("#formBranch").prop('disabled', false);
 		$("#formRegisterDate").prop('disabled', false);
 		$('#formActive').prop('checked', true);
@@ -506,7 +506,7 @@ function clearCourseRegisteration(){
 					<div class="form-row mt-2">
 						<div class="col-md-4">
 							<label for="addState" class="label-form">State</label> 
-							<select class="form-control" id="addState" name="addState">
+							<select class="form-control" id="addState" name="addState" disabled>
 							</select>
 						</div>
 						<div class="col-md-5">
@@ -519,12 +519,18 @@ function clearCourseRegisteration(){
 							<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="dd/mm/yyyy">
 						</div>
 						<script>
-							var today = new Date();
-							var day = today.getDate();
-							var month = today.getMonth() + 1; // Note: January is 0
-							var year = today.getFullYear();
-							var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-							document.getElementById('addRegisterDate').value = formattedDate;
+							function setTodayDate() {
+								var today = new Date();
+								var day = today.getDate();
+								var month = today.getMonth() + 1; // Note: January is 0
+								var year = today.getFullYear();
+								var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+								document.getElementById('addRegisterDate').value = formattedDate;
+							}
+							// Assuming your modal has an id of 'myModal'
+    						$('#registerModal').on('shown.bs.modal', function () {
+								setTodayDate();
+							});
 						</script>
 					</div>
 					<div class="form-row mt-2">
@@ -690,7 +696,7 @@ function clearCourseRegisteration(){
 		<div class="form-row mt-3">
 			<div class="col-md-4">
 				<label for="formState" class="label-form">State</label> 
-				<select class="form-control" id="formState" name="formState">
+				<select class="form-control" id="formState" name="formState" disabled>
 				</select>
 			</div>
 			<div class="col-md-4">
