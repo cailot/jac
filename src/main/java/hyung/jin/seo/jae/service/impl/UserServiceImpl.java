@@ -35,6 +35,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
+	public User addUser(User user) {
+		User add = userRepository.save(user);
+		return add;
+	}
+
+	@Override
 	public User getUser(Long id) {
 		User std = null;
 		try{
@@ -69,12 +76,6 @@ public class UserServiceImpl implements UserService {
 		throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
 	}
 
-	@Override
-	@Transactional
-	public int addUser(User user) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'addUser'");
-	}
 
 	@Override
 	@Transactional

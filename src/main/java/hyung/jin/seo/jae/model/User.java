@@ -52,10 +52,23 @@ public class User implements UserDetails {
 
     @Column(length = 50, nullable = false)
     private String role;
-
     
     @CreationTimestamp
     private LocalDate registerDate;
+
+
+    @Column(length = 100, nullable = true)
+    private String email;
+
+    @Column(length = 100, nullable = true)
+    private String phone;
+
+    @Column(length = 2, nullable = true)
+    private String state;
+    
+    @Column(length = 2, nullable = true)
+    private String branch;
+
 
 
 	public User(Object[] columns) {
@@ -67,6 +80,10 @@ public class User implements UserDetails {
 		this.firstName = StringUtils.defaultString((String) columns[4], "");
 		this.lastName = StringUtils.defaultString((String) columns[5], "");
 		this.role = StringUtils.defaultString((String) columns[6], "");
+        this.state = StringUtils.defaultString((String) columns[7], "0");
+		this.branch = StringUtils.defaultString((String) columns[8], "0");
+		this.email = StringUtils.defaultString((String) columns[9], "");
+        this.phone = StringUtils.defaultString((String) columns[10], "");
 	}
 
 

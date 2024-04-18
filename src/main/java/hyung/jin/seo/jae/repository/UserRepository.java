@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	@Query(value = "UPDATE User u SET u.password = ?2 WHERE u.id = ?1 AND ACTIVE = 0", nativeQuery = true)
     void updatePassword(Long id, String password);    
 
-    @Query(value = "SELECT u.id, u.username, u.password, u.enabled, u.firstName, u.lastName, u.role FROM User u WHERE u.username =?1 AND u.enabled = 0", nativeQuery = true)   
+    @Query(value = "SELECT u.id, u.username, u.password, u.enabled, u.firstName, u.lastName, u.role, u.state, u.branch, u.email, u.phone FROM User u WHERE u.username =?1 AND u.enabled = 0", nativeQuery = true)   
 	Object[] checkUserAccount(String username);
 
 }

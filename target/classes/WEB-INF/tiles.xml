@@ -47,6 +47,22 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/course/gradeList.jsp" />
 	</definition>
 
+
+	<!-- Users-->
+	<!--User -->
+	<definition name="userListPage" extends="base.definition">
+		<put-attribute name="title" value="User List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/user/userList.jsp" />
+	</definition>
+	<!--Teacher -->
+	<definition name="teacherListPage" extends="base.definition">
+		<put-attribute name="title" value="Teacher List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/user/teacherList.jsp" />
+	</definition>
+
+
+
+
 	<!-- Connected Class -->
 	<!--Online Class -->
 	<definition name="onlineListPage" extends="base.definition">
@@ -97,13 +113,8 @@
 		<put-attribute name="title" value="Branch List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/branch.jsp" />
 	</definition>
-
-	<!--Teacher -->
-	<definition name="teacherListPage" extends="base.definition">
-		<put-attribute name="title" value="Teacher List" />
-		<put-attribute name="body" value="/WEB-INF/layouts/teacher/teacherList.jsp" />
-	</definition>
-
+	
+	
 
 	<!-- Statistics -->
 	<!--Active Student Stats -->
