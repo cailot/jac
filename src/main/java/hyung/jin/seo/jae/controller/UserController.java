@@ -6,21 +6,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.dto.UserDTO;
+import hyung.jin.seo.jae.model.User;
 import hyung.jin.seo.jae.service.StatsService;
+import hyung.jin.seo.jae.service.UserService;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
-@RequestMapping("stats")
-public class StatisticController {
+@RequestMapping("user")
+public class UserController {
 
 	@Autowired
-	private StatsService statsService;
+	private UserService userService;
+
+
+
+	// register new user
+	@PostMapping("/registerUser")
+	@ResponseBody
+	public UserDTO registerTeacher(@RequestBody UserDTO formData) {
+		User user = formData.convertToUser();
+		user.setUsername("sign");
+		user = userService.addUser(user);
+		UserDTO dto = new UserDTO(user);
+		return dto;
+	}
+
+
+
+
+
+
+	/*
 
 	// search registration
 	@PostMapping("/activeSearch")
@@ -113,5 +137,12 @@ public class StatisticController {
 		List<StudentDTO> dtos = statsService.listInactiveStudent4Stats(branch, grade, start, end);
 		return dtos;
 	}
+
+
+
+*/
+
+
+
 
 }
