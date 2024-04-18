@@ -73,6 +73,11 @@ public class JaeController {
 		return "branchPage";
 	}
 
+	@GetMapping("/userList")
+	public String user(HttpSession session) {
+		return "userListPage";
+	}
+
 	@GetMapping("/teacherList")
 	public String teacher(HttpSession session) {
 		return "teacherListPage";

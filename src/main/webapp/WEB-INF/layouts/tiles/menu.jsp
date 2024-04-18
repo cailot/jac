@@ -21,13 +21,13 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
 			</div>
 		</li>
-		<!-- Teacher -->
+		<!-- User -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
 			</a>
 			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">User List</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User List</a>
 				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
 			</div>
 		</li>
