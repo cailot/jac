@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import hyung.jin.seo.jae.dto.UserDTO;
 import hyung.jin.seo.jae.model.User;
 
 public interface UserService extends UserDetailsService{
 	
-	// get User info
-	User getUser(Long id);
+	// list Users
+	List<UserDTO> listUsers(String role, String state, String branch);
 
 	// retrieve user
 	User getUser(String username);

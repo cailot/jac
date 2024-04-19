@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import hyung.jin.seo.jae.dto.UserDTO;
 import hyung.jin.seo.jae.model.User;
 import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.service.UserService;
+import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
@@ -33,13 +35,29 @@ public class UserController {
 	@ResponseBody
 	public UserDTO registerTeacher(@RequestBody UserDTO formData) {
 		User user = formData.convertToUser();
-		user.setUsername("sign");
+		// user.setUsername("sign");
+		// String role = formData.getRole();
+		// if (role.equals("1")) {
+		// 	user.setRole(JaeConstants.ROLE_ADMIN);
+		// } else if (role.equals("2")) {
+		// 	user.setRole(JaeConstants.ROLE_STAFF);
+		// }
 		user = userService.addUser(user);
 		UserDTO dto = new UserDTO(user);
 		return dto;
 	}
 
 
+	// search student list with state, branch or active
+	@GetMapping("/list")
+	public String listUsers(@RequestParam(value = "listRole", required = false) String role,
+		@RequestParam(value = "listState", required = false) String state,
+		@RequestParam(value = "listBranch", required = false) String branch,		
+		Model model) {
+		List<UserDTO> dtos = userService.listUsers(role, state, branch);
+		model.addAttribute(JaeConstants.USER_LIST, dtos);
+		return "userListPage";
+	}
 
 
 

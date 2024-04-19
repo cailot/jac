@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hyung.jin.seo.jae.dto.UserDTO;
 import hyung.jin.seo.jae.model.User;
 import hyung.jin.seo.jae.repository.UserRepository;
 import hyung.jin.seo.jae.service.UserService;
@@ -42,15 +44,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUser(Long id) {
-		User std = null;
-		try{
-			std = userRepository.findById(id).get();
-		}catch(Exception e){
-			System.out.println("No User found");
+	public List<UserDTO> listUsers(String role, String state, String branch) {
+		List<UserDTO> users = new ArrayList<>();
+		try {
+			users = userRepository.listUsers(role, state, branch);
+		} catch (Exception e) {
+			System.out.println("No user found");
 		}
-		return std;
+		return users;
 	}
+
+	// @Override
+	// public User getUser(Long id) {
+	// 	User std = null;
+	// 	try{
+	// 		std = userRepository.findById(id).get();
+	// 	}catch(Exception e){
+	// 		System.out.println("No User found");
+	// 	}
+	// 	return std;
+	// }
 
 	@Override
 	@Transactional
@@ -90,4 +103,5 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
 	}
+
 }
