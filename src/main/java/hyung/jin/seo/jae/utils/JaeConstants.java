@@ -93,6 +93,8 @@ public interface JaeConstants {
 	
 	String TEACHER_LIST = "TeacherList";
 
+	String USER_LIST = "UserList";
+
 	String ONLINE_LIST = "OnlineList";
 	
 	String HOMEWORK_LIST = "HomeworkList";
@@ -240,5 +242,15 @@ public interface JaeConstants {
 	////////////////////////////////////
 
 	String PRACTICE_COMPLETE = "DONE";
+
+	////////////////////////////////////
+	//
+	//	USER ROLE
+	//
+	////////////////////////////////////
+
+	String ROLE_ADMIN = "Role_Administrator";
+
+	String ROLE_STAFF = "Role_Staff";
 
 }
