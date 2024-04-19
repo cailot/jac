@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @ToString
 public class UserDTO implements Serializable{
     
-    private String id;
+    // private String id;
     
     private String username;
 
@@ -45,7 +45,7 @@ public class UserDTO implements Serializable{
     private int enabled;
   
 	public UserDTO(User user) {
-    	this.id = (user.getId()!=null) ? user.getId().toString() : "";
+    	// this.id = (user.getId()!=null) ? user.getId().toString() : "";
         this.firstName = (user.getFirstName()!=null) ? user.getFirstName() : "";
         this.lastName = (user.getLastName()!=null) ? user.getLastName() : "";
         this.username = (user.getUsername()!=null) ? user.getUsername() : "";
@@ -58,10 +58,22 @@ public class UserDTO implements Serializable{
         this.registerDate = (user.getRegisterDate()!=null) ? user.getRegisterDate().toString() : "";
         this.enabled = user.getEnabled();
     }
+
+    public UserDTO(String username, String firstName, String lastName, int enabled, String phone, String email, String role, String state, String branch){
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.enabled = enabled;
+        this.phone = phone;
+        this.email = email;
+        this.role = role;
+        this.state = state;
+        this.branch = branch;
+    }
     
     public User convertToUser() {
     	User user = new User();
-    	if(StringUtils.isNotBlank(id)) user.setId(Long.parseLong(this.id));
+    	// if(StringUtils.isNotBlank(id)) user.setId(Long.parseLong(this.id));
     	if(StringUtils.isNotBlank(firstName)) user.setFirstName(this.firstName);
     	if(StringUtils.isNotBlank(lastName)) user.setLastName(this.lastName);
     	if(StringUtils.isNotBlank(username)) user.setUsername(this.username);

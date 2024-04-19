@@ -31,8 +31,8 @@ import java.util.Set;
 public class Student {
     
 	@Id
-    @GeneratedValue(generator = "jacStudentIdGenerator", strategy = GenerationType.IDENTITY)
-    @GenericGenerator(name = "jacStudentIdGenerator", strategy = "hyung.jin.seo.jae.utils.JacStudentIdGenerator")
+    @GeneratedValue(generator = "studentIdGenerator", strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "studentIdGenerator", strategy = "hyung.jin.seo.jae.utils.StudentIdGenerator")
     private Long id;
     
     @Column(length = 100, nullable = false)

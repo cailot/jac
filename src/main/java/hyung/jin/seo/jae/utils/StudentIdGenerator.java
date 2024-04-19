@@ -6,7 +6,7 @@ import org.hibernate.id.IdentifierGenerator;
 import hyung.jin.seo.jae.model.Student;
 import java.io.Serializable;
 
-public class JacStudentIdGenerator implements IdentifierGenerator{
+public class StudentIdGenerator implements IdentifierGenerator{
 
   @Override
   public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {

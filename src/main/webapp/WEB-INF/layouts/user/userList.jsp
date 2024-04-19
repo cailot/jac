@@ -37,23 +37,22 @@ $(document).ready(function () {
 		//pageLength: 20
 	});
 
+
+	$('#addRole').change(function() {
+		if ($(this).val() == 'Role_Administrator') {
+			$('#addBranch').val('90').prop('disabled', true);
+		} else {
+			$('#addBranch').prop('disabled', false);
+		}
+    });
+
+
 	$('table .password').on('click', function () {
 		var username = $(this).parent().find('#username').val();
 		$('#passwordModal #usernamepassword').val(username);
 	});
 
-	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-	$('#clazzGrade').change(function () {
-		getClazzByGrade();
-	});
-	$('#clazzYear').change(function () {
-		getClazzByGrade();
-	});
-
-	$('#clazzList').on('shown.bs.modal', function () {
-		getClazzByGrade();
-	});
-
+	
 	// initialise state list when loading
 	listState('#listState');
 	listState('#addState');
@@ -481,9 +480,16 @@ function clearPassword() {
 <div class="row">
 	<div class="modal-body">
 		<form id="teacherList" method="get"
-			action="${pageContext.request.contextPath}/teacher/list">
+			action="${pageContext.request.contextPath}/user/list">
 			<div class="form-group">
 				<div class="form-row">
+					<div class="col-md-2">
+						<select class="form-control" id="listRole" name="listRole">
+							<option value="All">All</option>
+							<option value="Role_Administrator">Adminitrator</option>
+							<option value="Role_Staff">Staff</option>
+						</select>
+					</div>
 					<div class="col-md-2">
 						<select class="form-control" id="listState" name="listState">
 							<option value="All">All State</option>
@@ -495,7 +501,7 @@ function clearPassword() {
 						</select>
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-4">
+					<div class="offset-md-2">
 					</div>
 					<div class="col-md-2">
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
@@ -514,90 +520,119 @@ function clearPassword() {
 							<table id="userListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<!-- <th>ID</th> -->
-										<th>First Name</th>
+										<th>Username</th>
 										<th>Last Name</th>
-										<th>Title</th>
+										<th>First Name</th>
+										<th>Role</th>
 										<th>Phone</th>
 										<th>Email</th>
-										<th>Address</th>
-										<th>TFN</th>
-										<th>VIT/WWCC</th>
-										<th>Start Date</th>
-										<th>End Date</th>
+										<th>State</th>
+										<th>Branch</th>
+										<th data-orderable="false">Enabled</th>
 										<th data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-teacher-body">
 									<c:choose>
-										<c:when test="${TeacherList != null}">
+										<c:when test="${UserList != null}">
 
-											<c:forEach items="${TeacherList}" var="teacher">
+											<c:forEach items="${UserList}" var="user">
 
 												<tr>
-													<!-- <td class="small ellipsis" id="teacherId" name="teacherId"><span>
-															<c:out value="${teacher.id}" />
-														</span></td> -->
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.firstName}" />
-														</span></td>
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.lastName}" />
-														</span></td>
-													<td class="small text-capitalize align-middle">
-														<c:out value="${teacher.title}" />
-													</td>
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.phone}" />
-														</span></td>
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.email}" />
-														</span></td>
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.address}" />
-														</span></td>
-													<td class="small ellipsis"><span>
-															<c:out value="${teacher.tfn}" />
-														</span></td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${teacher.vitNumber}" />
+															<c:out value="${user.username}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
-														<fmt:parseDate var="teacherStartDate" value="${teacher.startDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${teacherStartDate}" pattern="dd/MM/yyyy" />
-											
+														<span>
+															<c:out value="${user.lastName}" />
+														</span>
 													</td>
 													<td class="small ellipsis">
-														<fmt:parseDate var="teacherEndDate" value="${teacher.endDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${teacherEndDate}" pattern="dd/MM/yyyy" />
-									
+														<span>
+															<c:out value="${user.firstName}" />
+														</span>
 													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${user.role}" />
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${user.phone}" />
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:out value="${user.email}" />
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:choose>
+																<c:when test="${user.state == '1'}">Victoria</c:when>
+																<c:when test="${user.state == '2'}">New South Wales</c:when>
+																<c:when test="${user.state == '3'}">Queensland</c:when>
+																<c:when test="${user.state == '4'}">South Australia</c:when>
+																<c:when test="${user.state == '5'}">Tasmania</c:when>
+																<c:when test="${user.state == '6'}">Western Australia</c:when>
+																<c:when test="${user.state == '7'}">Northern Territory</c:when>
+																<c:when test="${user.state == '8'}">ACT</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
+														</span>
+													</td>
+													<td class="small ellipsis">
+														<span>
+															<c:choose>
+																<c:when test="${user.branch == '12'}">Box Hill</c:when>
+																<c:when test="${user.branch == '13'}">Braybrook</c:when>
+																<c:when test="${user.branch == '14'}">Chadstone</c:when>
+																<c:when test="${user.branch == '15'}">Cranbourne</c:when>
+																<c:when test="${user.branch == '16'}">Epping</c:when>
+																<c:when test="${user.branch == '17'}">Glen Waverley</c:when>
+																<c:when test="${user.branch == '18'}">Narre Warren</c:when>
+																<c:when test="${user.branch == '19'}">Mitcham</c:when>
+																<c:when test="${user.branch == '20'}">Preston</c:when>
+																<c:when test="${user.branch == '21'}">Richimond</c:when>
+																<c:when test="${user.branch == '22'}">Springvale</c:when>
+																<c:when test="${user.branch == '23'}">St Albans</c:when>
+																<c:when test="${user.branch == '24'}">Werribee</c:when>
+																<c:when test="${user.branch == '25'}">Balwyn</c:when>
+																<c:when test="${user.branch == '26'}">Rowville</c:when>
+																<c:when test="${user.branch == '27'}">Caroline Springs</c:when>
+																<c:when test="${user.branch == '28'}">Bayswater</c:when>
+																<c:when test="${user.branch == '29'}">Point Cook</c:when>
+																<c:when test="${user.branch == '30'}">Craigieburn</c:when>
+																<c:when test="${user.branch == '31'}">Mernda</c:when>
+																<c:when test="${user.branch == '32'}">Melton</c:when>
+																<c:when test="${user.branch == '33'}">Glenroy</c:when>
+																<c:when test="${user.branch == '34'}">Packenham</c:when>
+																<c:when test="${user.branch == '90'}">JAC Head Office VIC</c:when>
+																<c:when test="${user.branch == '99'}">Testing</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
+														</span>
+													</td>
+													<c:set var="active" value="${user.enabled}" />
+													<c:choose>
+														<c:when test="${active == 0}">
+															<td class="text-center">
+																<i class="bi bi-check-circle-fill text-success" title="Enabled"></i>
+															</td>
+														</c:when>
+														<c:otherwise>
+															<td class="text-center">
+																<i class="bi bi-check-circle-fill text-secondary" title="Disabled"></i>
+															</td>
+														</c:otherwise>
+													</c:choose>
 													<td>
-														<i class="bi bi-pencil-square text-primary"
-															data-toggle="tooltip" title="Edit"
-															onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
-														<i class="bi bi-link-45deg text-success"
-															data-toggle="tooltip"
-															title="Class Association"
-															onclick="retreiveClazzInfo('${teacher.id}','${teacher.state}','${teacher.branch}')"></i>&nbsp;
-
-														<i	class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
-														<c:choose>
-															<c:when test="${empty teacher.endDate}">
-																<i class="bi bi-x-circle-fill text-danger"
-																	data-toggle="tooltip"
-																	title="Suspend"
-																	onclick="inactivateTeacher('${teacher.id}')"></i>
-															</c:when>
-															<c:otherwise>
-																<i class="bi bi-arrow-clockwise text-success"
-																	data-toggle="tooltip"
-																	title="Activate"
-																	onclick="activateTeacher('${teacher.id}')"></i>
-															</c:otherwise>
-														</c:choose>
+														<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveTeacherInfo('${user.username}')"></i>&nbsp;
+														<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
+														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateTeacher('${user.username}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -655,8 +690,8 @@ function clearPassword() {
 							<div class="col-md-5">
 								<label for="addRole" class="label-form">Role</label>
 								<select class="form-control" id="addRole" name="addRole">
-									<option value="1">Administrator</option>
-									<option value="2">Staff</option>
+									<option value="Role_Staff">Staff</option>
+									<option value="Role_Administrator">Administrator</option>
 								</select>
 							</div>
 						</div>
