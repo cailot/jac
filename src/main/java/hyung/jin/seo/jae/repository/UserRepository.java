@@ -12,6 +12,8 @@ public interface UserRepository extends JpaRepository<User, String>{
 	
 	@SuppressWarnings("null")
 	List<User> findAll();
+
+	User findByUsername(String username);
 	
 	@Query(value = "UPDATE User u SET u.password = ?2 WHERE u.id = ?1 AND ACTIVE = 0", nativeQuery = true)
     void updatePassword(Long id, String password);    

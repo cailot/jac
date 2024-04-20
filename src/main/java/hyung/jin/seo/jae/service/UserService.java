@@ -13,7 +13,7 @@ public interface UserService extends UserDetailsService{
 	List<UserDTO> listUsers(String role, String state, String branch);
 
 	// retrieve user
-	User getUser(String username);
+	UserDTO getUser(String username);
 
 	// update password
 	void updatePassword(Long id, String password);
@@ -25,7 +25,7 @@ public interface UserService extends UserDetailsService{
 	User addUser(User user);
 
 	// modify user 
-	int modifyUser(User user);
+	User updateUser(User user, String username);
 	
 	// delete user
 	int deleteUser(String username);

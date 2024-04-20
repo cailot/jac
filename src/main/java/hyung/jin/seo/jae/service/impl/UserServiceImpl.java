@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -54,6 +55,47 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
+	@Override
+	public UserDTO getUser(String username) {
+		UserDTO dto = null;
+		try{
+			User user = userRepository.findByUsername(username);
+			dto = new UserDTO(user);
+		}catch(Exception e){
+			System.out.println("No user found");
+		}
+		return dto;
+	}
+
+	@Override
+	@Transactional
+	public User updateUser(User newVal, String username) {
+		// search by getId
+		User existing = userRepository.findByUsername(username);
+		// Update info
+		String newFirstName = StringUtils.defaultString(newVal.getFirstName());
+		existing.setFirstName(newFirstName);
+		String newLastName = StringUtils.defaultString(newVal.getLastName());
+		existing.setLastName(newLastName);
+		// String newRole = StringUtils.defaultString(newVal.getRole());
+		// existing.setRole(newRole);
+		String newPhone = StringUtils.defaultString(newVal.getPhone());
+		existing.setPhone(newPhone);
+		String newEmail = StringUtils.defaultString(newVal.getEmail());
+		existing.setEmail(newEmail);
+		// String newState = StringUtils.defaultString(newVal.getState());
+		// existing.setState(newState);
+		// String newBranch = StringUtils.defaultString(newVal.getBranch());
+		// existing.setBranch(newBranch);
+		int newEnabled = newVal.getEnabled();
+		existing.setEnabled(newEnabled);
+		// update the existing record
+		User updated = userRepository.save(existing);
+		return updated;
+	}
+
+	
+
 	// @Override
 	// public User getUser(Long id) {
 	// 	User std = null;
@@ -78,24 +120,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User getUser(String username) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getUser'");
-	}
-
-	@Override
 	public List<User> getAllUsers() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
 	}
 
 
-	@Override
-	@Transactional
-	public int modifyUser(User user) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'modifyUser'");
-	}
+	
 
 	@Override
 	@Transactional
@@ -103,5 +134,6 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
 	}
+
 
 }
