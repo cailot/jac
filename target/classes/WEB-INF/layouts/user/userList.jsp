@@ -94,15 +94,13 @@ function addUser() {
 		dataType: 'json',
 		data: JSON.stringify(user),
 		contentType: 'application/json',
-		success: function (teacher) {
-
+		success: function (value) {
 			// Display the success alert
-			$('#success-alert .modal-body').text('New user is registered successfully.');
+			$('#success-alert .modal-body').html('New user <b>'  + value.username + '</b> is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
 			});
-
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -266,6 +264,45 @@ function clearPassword() {
 	$("#confirmPwd").val('');
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Delete User
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteUser(username) {
+	//warn if Id is empty
+	if (username == '') {
+		$('#warning-alert .modal-body').text('Please search user before deleting');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/user/delete/' + username,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html(data);
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+window.showWarning = function(id) {
+    // Show the warning modal
+    $('#deleteModal').modal('show');
+    // Attach the click event handler to the "Delete" button
+    $('#agreeDelete').one('click', function() {
+        deleteUser(id);
+        $('#deleteModal').modal('hide');
+    });
+}
 
 </script>
 
@@ -349,7 +386,8 @@ function clearPassword() {
 													</td>
 													<td class="small ellipsis">
 														<span>
-															<c:out value="${user.role}" />
+															<c:set var="roleArray" value="${fn:split(user.role, '_')}" />
+        													<c:out value="${roleArray[1]}" />
 														</span>
 													</td>
 													<td class="small ellipsis">
@@ -425,7 +463,7 @@ function clearPassword() {
 													<td>
 														<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveUserInfo('${user.username}')"></i>&nbsp;
 														<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
-														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateTeacher('${user.username}')"></i>
+														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="showWarning('${user.username}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -641,6 +679,25 @@ function clearPassword() {
             <div class="modal-footer">
                 <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+<!-- Delete Dialogue -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;User Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to delete this user ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-x"></i>Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i> Close</button>
             </div>
     	</div>
 	</div>
