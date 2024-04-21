@@ -92,31 +92,28 @@ public class UserServiceImpl implements UserService {
 		// update the existing record
 		User updated = userRepository.save(existing);
 		return updated;
-	}
-
-	
-
-	// @Override
-	// public User getUser(Long id) {
-	// 	User std = null;
-	// 	try{
-	// 		std = userRepository.findById(id).get();
-	// 	}catch(Exception e){
-	// 		System.out.println("No User found");
-	// 	}
-	// 	return std;
-	// }
+	}	
 
 	@Override
 	@Transactional
-	public void updatePassword(Long id, String password) {
+	public void updatePassword(String username, String password) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encodedPassword = passwordEncoder.encode(password);
 		try{
-			userRepository.updatePassword(id, encodedPassword);
+			userRepository.updatePassword(username, encodedPassword);
 		}catch(Exception e){
 			System.out.println("No User found");
 		}	
+	}
+
+	@Override
+	@Transactional
+	public void deleteUser(String username) {
+		try{
+			userRepository.deleteByUsername(username);
+		}catch(Exception e){
+			System.out.println("Nothing to delete");
+		}
 	}
 
 	@Override
@@ -124,16 +121,5 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
 	}
-
-
-	
-
-	@Override
-	@Transactional
-	public int deleteUser(String username) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
-	}
-
 
 }
