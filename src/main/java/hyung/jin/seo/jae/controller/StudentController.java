@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.controller;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,10 @@ public class StudentController {
 	public StudentDTO registerStudent(@RequestBody StudentDTO formData) {
 		// 1. create Student without elearning
 		Student std = formData.convertToOnlyStudent();
+		String password = formData.getPassword();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(password);
+		std.setPassword(encodedPassword);
 		std = studentService.addStudent(std);
 		StudentDTO dto = new StudentDTO(std);
 		return dto;
@@ -93,9 +98,9 @@ public class StudentController {
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody
 	public void updatePassword(@PathVariable Long id, @PathVariable String pwd) {
-		String newPwd = pwd;
-		newPwd = "$2a$12$6F/62L8H5oThbI1cD74ElOm7MC.aLCZjNY4TMLH7Vfh.kq0zeLbOi";
-		studentService.updatePassword(id, newPwd);
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(pwd);
+		studentService.updatePassword(id, encodedPassword);
 	}
 
 	// search student list with state, branch, grade, start date or active

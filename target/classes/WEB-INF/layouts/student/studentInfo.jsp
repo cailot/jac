@@ -632,7 +632,7 @@ function clearCourseRegisteration(){
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Password Reset</h4>
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Student Password Reset</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
