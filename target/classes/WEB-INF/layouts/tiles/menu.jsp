@@ -1,5 +1,20 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<sec:authorize access="isAuthenticated()">
+<sec:authentication var="role" property='principal.authorities'/>
+<sec:authentication var="id" property="principal.username"/>
+<sec:authentication var="firstName" property="principal.firstName"/>
+<sec:authentication var="lastName" property="principal.lastName"/>
+	<script>
+		var role = '${role}';
+		var userId = '${id}';
+		var firstName = '${firstName}';
+		var lastName = '${lastName}';
+	</script>
+</sec:authorize>
+
 
 <div class="container-fluid jae-header">
 <nav class="navbar">
@@ -102,15 +117,15 @@
 	</ul>
 	<ul class="navbar_icon" style="margin: 0; padding: 0;">
 		<sec:authorize access="isAuthenticated()">
-			<div class="card-body jae-background-color text-right" style="display: flex; justify-content: space-between; padding-top: 20px;">
-				<div>
-					<span class="card-text text-warning font-weight-bold font-italic h6" style="margin-left: 5px; cursor: pointer;" id="studentName" onclick="clearPassword();retrieveStudentInfo()">Jinhyung Seo</span>
-					<span class="h6" style="color: white; align-items: center; justify-content: center;">&nbsp;(Administrator)</span>
-				</div>
-				<form:form action="${pageContext.request.contextPath}/logout" method="POST" id="logout" style="margin-bottom: 0px;">
-					<button class="btn mr-1"><i class="bi bi-box-arrow-right custom-icon text-warning" title="Log Out"></i></button>
-				</form:form>
-			</div>
+<div class="card-body jae-background-color text-right" style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px;">
+    <div style="display: flex; align-items: center; margin-top: 5px;">
+        <span class="card-text text-warning font-weight-bold font-italic h6" style="margin-left: 5px;">${firstName} ${lastName}</span>
+        <span class="h6" style="color: white;">&nbsp;${role}</span>
+    </div>
+    <form:form action="${pageContext.request.contextPath}/logout" method="POST" id="logout" style="margin-bottom: 0px;">
+        <button class="btn mr-1"><i class="bi bi-box-arrow-right custom-icon text-warning" title="Log Out"></i></button>
+    </form:form>
+</div>
 		</sec:authorize> 
 	</ul>
 </nav>
