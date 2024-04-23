@@ -9,7 +9,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.repository.StudentRepository;
 import hyung.jin.seo.jae.service.StudentService;
-import hyung.jin.seo.jae.specification.StudentSpecification;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
@@ -85,24 +83,20 @@ public class StudentServiceImpl implements StudentService {
 	}
 	
 	@Override
-	public List<Student> searchStudents(String keyword) {
-		List<Student> students = new ArrayList<>();
-		Specification<Student> spec = Specification.where(null);
-		
-		if(StringUtils.isNumericSpace(keyword)) {
-			spec = spec.and(StudentSpecification.idEquals(keyword));
-		}else {
-			// firstName or lastName search
-			spec = spec.and(StudentSpecification.nameContains(keyword));
-		}
+	public List<StudentDTO> searchByKeyword(String keyword, String state, String branch) {
+		List<StudentDTO> dtos = new ArrayList<>();
 		try{
-			students = studentRepository.findAll(spec);
+			if(StringUtils.isNumericSpace(keyword)) {
+				dtos = studentRepository.searchStudentByKeywordId(Long.parseLong(keyword), state, branch);
+			}else{
+				dtos = studentRepository.searchStudentByKeywordName(keyword, state, branch);
+			}
 		}catch(Exception e){
 			System.out.println("No student found");
-		}		
-// students = studentRepository.findAll(spec);
-		return students;
+		}
+		return dtos;
 	}
+
 
 	@Override
 	public Student getStudent(Long id) {
@@ -272,6 +266,7 @@ public class StudentServiceImpl implements StudentService {
 		}
 		return maxId;
 	}
+
 
 
 }

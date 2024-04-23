@@ -1,11 +1,9 @@
 package hyung.jin.seo.jae.repository;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 
-public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student>{  
+public interface StudentRepository extends JpaRepository<Student, Long>{  
 	
 	List<Student> findAllByEndDateIsNull();
 	
@@ -89,5 +87,17 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
         // retrieve inactive student by state, branch & grade called from studentList.jsp
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.branch = ?1) AND (s.grade = ?2) AND (endDate >= ?3) AND (registerDate <= ?4) AND (active = 1)")
 	List<StudentDTO> listInactiveStudent4Stats(String branch, String grade, LocalDate from, LocalDate to);
+
+
+
+
+
+        // search student by keyword for Id
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.id = ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+	List<StudentDTO> searchStudentByKeywordId(Long keyword, String state, String branch);
+
+        // search student by keyword for Name
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.firstName LIKE ?1 OR s.lastName LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+	List<StudentDTO> searchStudentByKeywordName(String keyword, String state, String branch);
 
 }
