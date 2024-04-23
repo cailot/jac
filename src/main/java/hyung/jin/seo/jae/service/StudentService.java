@@ -20,7 +20,7 @@ public interface StudentService {
 	List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active);
 	
 	// search student list base on keyword where id, firstName or lastName
-	List<Student> searchStudents(String keyword);
+	List<StudentDTO> searchByKeyword(String keyword, String state, String branch);
 
 	// bring student list base on grade
 	List<StudentDTO> showGradeStudents(String state, String branch, String grade);	

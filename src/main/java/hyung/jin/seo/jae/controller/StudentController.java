@@ -45,13 +45,16 @@ public class StudentController {
 	// search student with keyword - ID, firstName & lastName
 	@GetMapping("/search")
 	@ResponseBody
-	List<StudentDTO> searchStudents(@RequestParam("keyword") String keyword) {
-		List<Student> students = studentService.searchStudents(keyword);
-		List<StudentDTO> dtos = new ArrayList<StudentDTO>();
-		for (Student std : students) {
-			StudentDTO dto = new StudentDTO(std);
-			dtos.add(dto);
-		}
+	List<StudentDTO> searchStudents(@RequestParam("keyword") String keyword,
+									@RequestParam("state") String state,
+									@RequestParam("branch") String branch) {
+		// List<Student> students = studentService.searchStudents(keyword, state, branch);
+		// List<StudentDTO> dtos = new ArrayList<StudentDTO>();
+		// for (Student std : students) {
+		// 	StudentDTO dto = new StudentDTO(std);
+		// 	dtos.add(dto);
+		// }
+		List<StudentDTO> dtos = studentService.searchByKeyword(keyword, state, branch);
 		return dtos;
 	}
 	
