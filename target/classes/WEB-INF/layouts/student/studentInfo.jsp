@@ -21,6 +21,21 @@ $(function() {
 	listBranch('#addBranch');
 	listGrade('#formGrade')
 	listGrade('#addGrade');
+
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#formBranch").val(window.branch);
+				$("#addBranch").val(window.branch);
+				// Disable #formBranch and #addBranch
+				$("#formBranch").prop('disabled', true);
+				$("#addBranch").prop('disabled', true);
+			}
+		});
+	}
 });
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -224,7 +239,9 @@ function searchStudent() {
 		url : '${pageContext.request.contextPath}/student/search',
 		type : 'GET',
 		data : {
-			keyword : $("#formKeyword").val()
+			keyword : $("#formKeyword").val(),
+			state : window.state,
+			branch : window.branch
 		},
 		success : function(data) {
 			//console.log('search - ' + data);
