@@ -32,7 +32,8 @@ public interface StudentService {
     
  	long checkCount();
     
-	Student updateStudent(Student newStudent, Long id);
+	// Student updateStudent(Student newStudent, Long id);
+	Student updateStudent(StudentDTO newStudent, String user);
 
 	void deactivateStudent(Long id);
 	
