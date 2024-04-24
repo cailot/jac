@@ -56,6 +56,30 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		//var hiddenInput = false;
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				$("#addBranch").val(window.branch);
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+				$("#addBranch").prop('disabled', true);
+				$("#editBranch").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+    document.getElementById("studentList").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+    });
+
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,17 +154,19 @@ function updateStudentInfo(){
 		gender : $("#editGender").val(),
 		registerDate : $("#editRegisterDate").val()
 	}
+
+	var user = window.username;
 		
 	// send query to controller
 	$.ajax({
 		url : '${pageContext.request.contextPath}/student/update',
 		type : 'PUT',
 		dataType : 'json',
-		data : JSON.stringify(std),
+		data : JSON.stringify({student: std, user: user}),
 		contentType : 'application/json',
 		success : function(value) {
 			// Display success alert
-			$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
+			$('#success-alert .modal-body').html('ID : <b>' + std.id + '</b> is updated successfully.');
 			$('#success-alert').modal('show');
 			// fetch data again
 			$('#success-alert').on('hidden.bs.modal', function(e) {
@@ -157,62 +183,6 @@ function updateStudentInfo(){
 	// flush all registered data
 	document.getElementById("studentEdit").reset();
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		De-activate Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function inactivateStudent(id) {
-	if(confirm("Are you sure you want to suspend this student?")){
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/inactivate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now suspended');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function(e) {
-					location.reload();
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}else{
-		return;
-	}
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		De-activate Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function activateStudent(id) {
-	if(confirm("Are you sure you want to re-activate this student?")){
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/activate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now re-activated');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function(e) {
-					location.reload();
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}else{
-		return;
-	}
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Student by User's click	
@@ -314,6 +284,67 @@ function clearPassword() {
 	$("#confirmPwd").val('');
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Inactivate Student
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function inactiveStudent(id) {
+    // Show the warning modal
+    $('#deactivateModal').modal('show');
+    // Attach the click event handler to the "I agree" button
+    $('#agreeInactive').one('click', function() {
+        inactivateStudent(id);
+        $('#deactivateModal').modal('hide');
+    });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Student
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function inactivateStudent(id) {
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/inactivate/' + id,
+		type : 'PUT',
+		success : function(data) {
+			// clear existing form
+			$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now suspended');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	}); 
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Student
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function activateStudent(id) {
+	if(confirm("Are you sure you want to re-activate this student?")){
+		// send query to controller
+		$.ajax({
+			url : '${pageContext.request.contextPath}/student/activate/' + id,
+			type : 'PUT',
+			success : function(data) {
+				// clear existing form
+				$('#success-alert .modal-body').text(
+						'ID : ' + id + ' is now re-activated');
+				$('#success-alert').modal('show');
+				$('#success-alert').on('hidden.bs.modal', function(e) {
+					location.reload();
+				});
+			},
+			error : function(xhr, status, error) {
+				console.log('Error : ' + error);
+			}
+		}); 
+	}else{
+		return;
+	}
+}
+
 </script>
 
 <!-- List Body -->
@@ -324,8 +355,7 @@ function clearPassword() {
 				<div class="form-row">
 					<div class="col-md-1">
 						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
+						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -453,7 +483,7 @@ function clearPassword() {
 													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
 														<c:when test="${empty student.endDate}">
-															<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactivateStudent('${student.id}')"></i>
+															<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
 														</c:when>
 														<c:otherwise>
 															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
@@ -485,7 +515,7 @@ function clearPassword() {
 						<div class="form-row mt-2">
 							<div class="col-md-4">
 								<label for="addState" class="label-form">State</label> 
-								<select class="form-control" id="addState" name="addState">
+								<select class="form-control" id="addState" name="addState" disabled>
 								</select>
 							</div>
 							<div class="col-md-5">
@@ -611,7 +641,8 @@ function clearPassword() {
 						<form id="studentEdit">
 						<div class="form-row mt-2">
 							<div class="col-md-4">
-								<label for="editState" class="label-form">State</label> <select class="form-control" id="editState" name="editState">
+								<label for="editState" class="label-form">State</label> 
+								<select class="form-control" id="editState" name="editState" disabled>
 								</select>
 							</div>
 							<div class="col-md-5">
@@ -723,7 +754,7 @@ function clearPassword() {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Password Reset</h4>
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Student Password Reset</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -790,7 +821,7 @@ function clearPassword() {
                 <p> Do you want to suspend this student?</p>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" onclick="inactivateStudent()"><i class="bi bi-x"></i> Suspend</button>
+                <button type="submit" class="btn btn-danger" id="agreeInactive" name="agreeInactive"><i class="bi bi-x"></i> Suspend</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check"></i> Close</button>
             </div>
     	</div>

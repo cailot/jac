@@ -4,7 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="container-fluid jae-header">
 <c:set var="isAdmin" value="${false}" />
-<c:set var="username" value="" />
 <c:set var="role" value="" />
 <c:set var="firstName" value="" />
 <c:set var="lastName" value="" />
@@ -19,13 +18,13 @@
 	<c:if test="${role == '[Administrator]'}" >
 		<c:set var="isAdmin" value="${true}" />
 	</c:if>
-	<c:set var="usrname" value="${id}" />
 	<c:set var="role" value="${role}" />
 	<c:set var="firstName" value="${firstName}" />
 	<c:set var="lastName" value="${lastName}" />
 	<!-- Save global variables -->
 	<script>
 		window.isAdmin = "${isAdmin}";
+		window.username = "${id}";
 		window.state = "${state}";
 		window.branch = "${branch}";
 		// Check if window.isAdmin is "true"
@@ -51,7 +50,7 @@
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">Enrolment List</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 				<c:if test="${isAdmin}">

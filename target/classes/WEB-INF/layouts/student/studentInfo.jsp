@@ -22,7 +22,6 @@ $(function() {
 	listGrade('#formGrade')
 	listGrade('#addGrade');
 
-
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
 		$(document).ajaxComplete(function(event, xhr, settings) {
@@ -311,17 +310,18 @@ function updateStudentInfo() {
 		grade : $("#formGrade").val(),
 		registerDate : $("#formRegisterDate").val(),
 	}
+	var user = window.username;
 		
 	// send query to controller
 	$.ajax({
 		url : '${pageContext.request.contextPath}/student/update',
 		type : 'PUT',
 		dataType : 'json',
-		data : JSON.stringify(std),
+		data : JSON.stringify({student: std, user: user}),
 		contentType : 'application/json',
 		success : function(value) {
 			// Display success alert
-			$('#success-alert .modal-body').html('ID : <b>' + value.id + '</b> is updated successfully.');
+			$('#success-alert .modal-body').html('ID : <b>' + $("#formId").val() + '</b> is updated successfully.');
 			$('#success-alert').modal('toggle');
 		},
 		error : function(xhr, status, error) {
@@ -352,7 +352,9 @@ function displayStudentInfo(value) {
 		$("#formContact2").val(value['contactNo2']).css("color", "black").prop('disabled', false);
 		$("#formMemo").val(value['memo']).css("color", "black").prop('disabled', false);
 		$("#formState").prop('disabled', true);
-		$("#formBranch").prop('disabled', false);
+		if(!JSON.parse(window.isAdmin)){ // if staff, disable branch choice
+			$("#formBranch").prop('disabled', true);
+		}
 		$("#formRegisterDate").prop('disabled', false);
 		$('#formActive').prop('checked', true);
 		$("#formActive").prop("disabled", true);
