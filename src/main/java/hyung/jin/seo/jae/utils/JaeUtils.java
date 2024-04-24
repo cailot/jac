@@ -206,11 +206,11 @@ public class JaeUtils {
 	}
 
 	// return date info for Student Memo
-	public static String getTodayForMemo(){
+	public static String getTodayForMemo(String user){
 		String pattern = "dd/MM/yyyy";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		String date = simpleDateFormat.format(new Date());
-		return " [" + date + "]";
+		return " [" + user + " at "+ date + "]";
 	}
 	
 	// check wether Today is between from and to

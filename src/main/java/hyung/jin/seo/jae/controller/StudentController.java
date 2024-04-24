@@ -1,8 +1,11 @@
 package hyung.jin.seo.jae.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.StudentService;
@@ -26,6 +31,8 @@ public class StudentController {
 
 	@Autowired
 	private StudentService studentService;
+
+	private ObjectMapper objectMapper = new ObjectMapper();
 	
 	// register new student
 	@PostMapping("/register")
@@ -48,12 +55,6 @@ public class StudentController {
 	List<StudentDTO> searchStudents(@RequestParam("keyword") String keyword,
 									@RequestParam("state") String state,
 									@RequestParam("branch") String branch) {
-		// List<Student> students = studentService.searchStudents(keyword, state, branch);
-		// List<StudentDTO> dtos = new ArrayList<StudentDTO>();
-		// for (Student std : students) {
-		// 	StudentDTO dto = new StudentDTO(std);
-		// 	dtos.add(dto);
-		// }
 		List<StudentDTO> dtos = studentService.searchByKeyword(keyword, state, branch);
 		return dtos;
 	}
@@ -68,16 +69,22 @@ public class StudentController {
 		return dto;
 	}
 	
-	// update existing student
 	@PutMapping("/update")
 	@ResponseBody
-	public StudentDTO updateStudent(@RequestBody StudentDTO formData) {
-		Student std = formData.convertToStudent();
-		// 1. update Student
-		std = studentService.updateStudent(std, std.getId());
-		// 2. convert Student to StudentDTO
-		StudentDTO dto = new StudentDTO(std);
-		return dto;
+	public ResponseEntity<String> updateStudent(@RequestBody Map<String, Object> formData) {
+		try{
+			// 1. get StudentDTO
+			StudentDTO request = objectMapper.convertValue(formData.get("student"), StudentDTO.class);
+			// 2. get user
+			String user = (String) formData.get("user");
+			// 3. update Student
+			studentService.updateStudent(request, user);
+			// 4. return flag
+			return ResponseEntity.ok("\"Student updated successfully\"");
+		}catch(Exception e){
+			String message = "\"Error updating Student : " + e.getMessage() + "\"";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
 	}
 	
 	// de-activate student by Id
@@ -101,9 +108,9 @@ public class StudentController {
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody
 	public void updatePassword(@PathVariable Long id, @PathVariable String pwd) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encodedPassword = passwordEncoder.encode(pwd);
-		studentService.updatePassword(id, encodedPassword);
+		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		// String encodedPassword = passwordEncoder.encode(pwd);
+		studentService.updatePassword(id, pwd);
 	}
 
 	// search student list with state, branch, grade, start date or active
@@ -111,7 +118,7 @@ public class StudentController {
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
 		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, year, active);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
-		return "studentListPage";
+		return "studentEnrolPage";
 	}
 
 	// list student list with state, branch, grade
