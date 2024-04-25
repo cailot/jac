@@ -63,6 +63,27 @@ $(document).ready(function () {
 	// initialise state list when loading
 	listState('#listState');
 	listBranch('#listBranch');
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		//var hiddenInput = false;
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+    document.getElementById("studentInvoice").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+    });
+
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +103,9 @@ function searchStudent() {
 		url : '${pageContext.request.contextPath}/student/search',
 		type : 'GET',
 		data : {
-			keyword : $("#studentKeyword").val()
+			keyword : $("#studentKeyword").val(),
+			state: $("#listState").val(),
+			branch: $("#listBranch").val()
 		},
 		success : function(data) {
 			// console.log('search - ' + data);
@@ -193,7 +216,7 @@ function addInformation(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentInfo() {
 	$("#studentKeyword").val('');
-	document.getElementById("studentInvoice").reset();
+	//document.getElementById("studentInvoice").reset();
 	var studentInfoDiv = document.getElementById("studentInfo");
 	if (studentInfoDiv) {
   		studentInfoDiv.innerHTML = '';
@@ -242,14 +265,13 @@ function clearStudentInfo() {
 				<div class="form-row">
 					<div class="col-md-2">
 						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
+						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
 						<label for="listBranch" class="label-form">Branch</label> 
 						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
+							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<div class="col-md-2">

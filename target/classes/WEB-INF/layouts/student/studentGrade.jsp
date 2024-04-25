@@ -49,6 +49,11 @@ $(document).ready(function () {
         $('#list-student-body input[type="checkbox"]').prop('checked', $(this).prop('checked'));
     });
 
+	// send diabled select value via <form>
+	document.getElementById("studentList").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+	});
+
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,14 +118,13 @@ function updateStudentInfo(){
 							<c:when test="${empty UpgradeList}">
 								<div class="col-md-2">
 									<label for="listState" class="label-form">State</label> 
-									<select class="form-control" id="listState" name="listState">
-										<option value="All">All State</option>
+									<select class="form-control" id="listState" name="listState" disabled>
 									</select>
 								</div>
 								<div class="col-md-2">
 									<label for="listBranch" class="label-form">Branch</label> 
 									<select class="form-control" id="listBranch" name="listBranch">
-										<option value="All">All Branch</option>
+										<option value="0">All Branch</option>
 									</select>
 								</div>
 								<div class="col-md-1">

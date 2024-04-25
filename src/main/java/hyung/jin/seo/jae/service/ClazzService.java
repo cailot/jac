@@ -1,8 +1,6 @@
 package hyung.jin.seo.jae.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.model.Clazz;
 
