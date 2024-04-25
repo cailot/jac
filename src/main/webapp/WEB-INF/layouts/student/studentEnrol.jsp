@@ -361,13 +361,13 @@ function activateStudent(id) {
 					<div class="col-md-2">
 						<label for="listBranch" class="label-form">Branch</label> 
 						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
+							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label> 
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
