@@ -78,6 +78,27 @@ $(document).ready(function () {
 	listState('#listState');
 	listBranch('#listBranch');
 	listGrade('#listGrade');
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+    document.getElementById("studentAttend").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+    });
+
+
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +115,7 @@ function fetchOptions() {
 		url: '${pageContext.request.contextPath}/class/filterClass?listState=' + stateVal + '&listBranch=' + branchVal + '&listGrade=' + gradeVal,
 		type: 'GET',
 		success: function (data) {
-			$('#listClass').append($('<option>').text('All').attr('value', 'All'));
+			$('#listClass').append($('<option>').text('All').attr('value', '0'));
 			$.each(data, function (index, value) {
 				$('#listClass').append($('<option>').text(value.name).attr('value', value.id));
 			});
@@ -161,7 +182,7 @@ function updateAttendanceInfo(clazzId, studentId, weeks, rowId) {
 //		Clear Attendance Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearAttendanceInfo() {
-	document.getElementById("studentAttend").reset();
+	//document.getElementById("studentAttend").reset();
 	// Hide the studentInfo div
 	var criteriaInfoDiv = document.getElementById("criteriaInfo");
 	if (criteriaInfoDiv) {
@@ -247,27 +268,25 @@ function clearAttendanceInfo() {
 				<div class="form-row">
 					<div class="col-md-1">
 						<label for="listState" class="label-form">State</label>
-						<select class="form-control" id="listState" name="listState" onchange="fetchOptions()">
-							<option value="All">All</option>							
+						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
 						<label for="listBranch" class="label-form">Branch</label>
 						<select class="form-control" id="listBranch" name="listBranch" onchange="fetchOptions()">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
-						<select class="form-control" id="listGrade" name="listGrade"
-							onchange="fetchOptions()">
-							<option value="All">All</option>
+						<select class="form-control" id="listGrade" name="listGrade" onchange="fetchOptions()">
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-2">
 						<label for="listClass" class="label-form">Class</label>
 						<select class="form-control" id="listClass" name="listClass">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -323,6 +342,9 @@ function clearAttendanceInfo() {
 					</c:choose>
 					<c:set var="criteriaBranch" value="${criteria.branch}" />
 					<c:choose>
+						<c:when test="${criteriaBranch eq '0'}">
+							<c:set var="criteriaBranch" value="All" />
+						</c:when>
 						<c:when test="${criteriaBranch eq '12'}">
 							<c:set var="criteriaBranch" value="Box Hill" />
 						</c:when>
@@ -421,6 +443,7 @@ function clearAttendanceInfo() {
 							<td class="text-left">Grade : 
 								<span class="font-weight-bold">
 									<c:choose>
+										<c:when test="${criteriaGrade == '0'}">All</c:when>
 										<c:when test="${criteriaGrade == '1'}">P2</c:when>
 										<c:when test="${criteriaGrade == '2'}">P3</c:when>
 										<c:when test="${criteriaGrade == '3'}">P4</c:when>

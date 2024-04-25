@@ -81,7 +81,7 @@ public class AttendanceController {
 		criteria.setBranch(branch);
 		criteria.setGrade(grade);
 		String clazzId = clazz;
-		String clazzName = (clazzId.equalsIgnoreCase(JaeConstants.ALL)) ? "All" : clazzService.getName(Long.parseLong(clazzId));
+		String clazzName = (clazzId.equalsIgnoreCase("0")) ? "All" : clazzService.getName(Long.parseLong(clazzId));
 		criteria.setClazzId(clazzId);
 		criteria.setClazzName(clazzName);
 		criteria.setFromDate(fromDate);
@@ -103,7 +103,7 @@ public class AttendanceController {
 
 		// 4. search AttendanceListDTO
 		// 4-1. if clazzId is "All", then search all clazz Ids
-		if(criteria.getClazzId().equalsIgnoreCase(JaeConstants.ALL)) {
+		if(criteria.getClazzId().equalsIgnoreCase("0")) {
 			List<ClazzDTO> clazzs = clazzService.filterOnSiteClazz(criteria.getState(), criteria.getBranch(), criteria.getGrade()); // except online class	
 			for(ClazzDTO claz : clazzs) {
 				

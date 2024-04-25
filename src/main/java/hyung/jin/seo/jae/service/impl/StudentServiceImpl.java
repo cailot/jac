@@ -66,20 +66,15 @@ public class StudentServiceImpl implements StudentService {
 
 
 	@Override
-	public List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active) {
-		
-		String stateParam = StringUtils.equalsIgnoreCase(state, JaeConstants.ALL) ? "%" : state;
-		String branchParam = StringUtils.equalsIgnoreCase(branch, JaeConstants.ALL) ? "%" : branch;
-		String gradeParam = StringUtils.equalsAnyIgnoreCase(grade, JaeConstants.ALL) ? "%" : grade;
-		int yearParam = StringUtils.equalsAnyIgnoreCase(year, JaeConstants.ALL) ? 0 : Integer.parseInt(year);
-		
+	public List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active) {		
+		int yearParam = Integer.parseInt(year);
 		List<StudentDTO> dtos = null;
 		switch(active){
 			case JaeConstants.CURRENT:
-				dtos = studentRepository.listActiveStudent(stateParam, branchParam, gradeParam, yearParam);
+				dtos = studentRepository.listActiveStudent(state, branch, grade, yearParam);
 				break;
 			case JaeConstants.STOPPED:
-				dtos = studentRepository.listInactiveStudent(stateParam, branchParam, gradeParam, yearParam);
+				dtos = studentRepository.listInactiveStudent(state, branch, grade, yearParam);
 		}
 		return dtos;
 	}
@@ -288,12 +283,12 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDTO> showGradeStudents(String state, String branch, String grade) {
-		String stateParam = StringUtils.equalsIgnoreCase(state, JaeConstants.ALL) ? "%" : state;
-		String branchParam = StringUtils.equalsIgnoreCase(branch, JaeConstants.ALL) ? "%" : branch;
-		String gradeParam = StringUtils.equalsAnyIgnoreCase(grade, JaeConstants.ALL) ? "%" : grade;
+		// String stateParam = StringUtils.equalsIgnoreCase(state, JaeConstants.ALL) ? "%" : state;
+		// String branchParam = StringUtils.equalsIgnoreCase(branch, JaeConstants.ALL) ? "%" : branch;
+		// String gradeParam = StringUtils.equalsAnyIgnoreCase(grade, JaeConstants.ALL) ? "%" : grade;
 		
 		List<StudentDTO> dtos = null;
-		dtos = studentRepository.listActiveStudent(stateParam, branchParam, gradeParam);
+		dtos = studentRepository.listActiveStudent(state, branch, grade);
 		
 		return dtos;
 	}
