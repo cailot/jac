@@ -160,14 +160,14 @@ public class TeacherController {
 	// update student password
 	@PutMapping("/updatePassword/{email}/{pwd}")
 	@ResponseBody
-	public void updatePassword(@PathVariable String email, @PathVariable String pwd) {
-		String id = email;
-		String newPwd = pwd;
-		Teacher teacher = new Teacher();
-		teacher.setEmail(id);
-		teacher.setPassword(newPwd);
-		teacherService.updatePassword(teacher);
-		// return result;
+	public ResponseEntity<String> updatePassword(@PathVariable String email, @PathVariable String pwd) {
+		try{
+			teacherService.updatePassword(email, pwd);
+			return ResponseEntity.ok("Password updated successfully");
+		}catch(Exception e){
+			String message = "Error updating password : " + e.getMessage();
+			return ResponseEntity.status(500).body(message);
+		}
 	}
 	
 }

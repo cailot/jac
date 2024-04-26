@@ -51,19 +51,19 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	List<ClazzDTO> findOnSiteClassForStateNBranchNGradeNYear(String state, String branch, String grade, int year);
 
 	// list class Ids for state, branch, grade
-	@Query("SELECT c.id FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3)")
+	@Query("SELECT c.id FROM Clazz c WHERE (?1 = '0' OR c.state = ?1) AND (?2 = '0' OR c.branch = ?2) AND (?3 = '0' OR c.course.grade = ?3)")
 	List<Long> findClassIdsForStateNBranchNGrade(String state, String branch, String grade);
 
 	// list all class for state, branch, grade, year
-	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3) AND c.cycle.year = ?4")
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = '0' OR c.state = ?1) AND (?2 = '0' OR c.branch = ?2) AND (?3 = '0' OR c.course.grade = ?3) AND c.cycle.year = ?4")
 	List<ClazzDTO> findClassForStateNBranchNGradeNYear(String state, String branch, String grade, int year);
 
 	// list all class for state, branch, grade, year
-	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3) AND c.cycle.year = ?4 AND c.course.online = 0")
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = '0' OR c.state = ?1) AND (?2 = '0' OR c.branch = ?2) AND (?3 = '0' OR c.course.grade = ?3) AND c.cycle.year = ?4 AND c.course.online = 0")
 	List<ClazzDTO> findOnsiteClassForStateNBranchNGradeNYear(String state, String branch, String grade, int year);
 
 	// list all class for state, branch, grade, year
-	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = 'All' OR c.state = ?1) AND (?2 = 'All' OR c.branch = ?2) AND (?3 = 'All' OR c.course.grade = ?3) AND c.cycle.year = ?4 AND c.course.online = 1")
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.price, c.day, c.name, c.startDate, c.active, c.course.id, c.cycle.id, c.course.grade, c.course.online, c.course.description, c.cycle.year) FROM Clazz c WHERE (?1 = '0' OR c.state = ?1) AND (?2 = '0' OR c.branch = ?2) AND (?3 = '0' OR c.course.grade = ?3) AND c.cycle.year = ?4 AND c.course.online = 1")
 	List<ClazzDTO> findOnlineClassForStateNBranchNGradeNYear(String state, String branch, String grade, int year);
 
 	// get price by class id

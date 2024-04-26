@@ -40,6 +40,12 @@ public interface CodeService {
 	// get branch
 	BranchDTO getBranch(Long id);
 
+	// get branch by code
+	BranchDTO getBranch(String code);
+
+	// get branch by state & code
+	BranchDTO getBranch(String state, String code);
+
 	// add branch
 	Branch addBranch(Branch branch);
 

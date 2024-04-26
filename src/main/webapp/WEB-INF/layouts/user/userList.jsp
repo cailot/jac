@@ -67,7 +67,34 @@ $(document).ready(function () {
 	listBranch('#listBranch');
 	listBranch('#addBranch');
 	listBranch('#editBranch');
-	listGrade('#clazzGrade');
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		//var hiddenInput = false;
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				$("#addBranch").val(window.branch);
+				$("#listRole").val('Role_Staff');
+				
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+				$("#addBranch").prop('disabled', true);
+				$("#editBranch").prop('disabled', true);
+				$("#listRole").prop('disabled', true);
+				$("#addRole").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+	document.getElementById("userList").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+		document.getElementById("listRole").disabled = false;
+    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,34 +336,38 @@ window.showWarning = function(id) {
 <!-- List Body -->
 <div class="row">
 	<div class="modal-body">
-		<form id="teacherList" method="get"
+		<form id="userList" method="get"
 			action="${pageContext.request.contextPath}/user/list">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
+						<label for="listState" class="label-form">State</label>
+						<select class="form-control" id="listState" name="listState" disabled>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label for="listBranch" class="label-form">Branch</label>
+						<select class="form-control" id="listBranch" name="listBranch">
+							<option value="0">All Branch</option>
+						</select>
+					</div>
+					<div class="col-md-2">
+						<label for="listRole" class="label-form">Role</label>
 						<select class="form-control" id="listRole" name="listRole">
-							<option value="All">All</option>
+							<option value="0">All</option>
 							<option value="Role_Administrator">Adminitrator</option>
 							<option value="Role_Staff">Staff</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
 						</select>
 					</div>
 					<!-- put blank col-md-2 -->
 					<div class="offset-md-2">
 					</div>
 					<div class="col-md-2">
+						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
+						<label class="label-form-white">Registration</label> 
 						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerModal">
 							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
 						</button>
