@@ -62,6 +62,29 @@ $(document).ready(function () {
 	listBranch('#addBranch');
 	listBranch('#editBranch');
 	listGrade('#clazzGrade');
+
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				$("#addBranch").val(window.branch);
+				
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+				$("#addBranch").prop('disabled', true);
+				$("#editBranch").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+	document.getElementById("teacherList").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+	});
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +244,7 @@ function updateTeacherInfo() {
 			// disappear modal
 			$('#editModal').modal('hide');
 			// Display the success alert
-			$('#success-alert .modal-body').text('ID : ' + value.id + ' is updated successfully.');
+			$('#success-alert .modal-body').text('Teacher is updated successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -494,13 +517,12 @@ function clearPassword() {
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
+						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
 						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
+							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<!-- put blank col-md-2 -->
@@ -635,7 +657,7 @@ function clearPassword() {
 						<div class="form-row mt-2">
 							<div class="col-md-4">
 								<label for="addState" class="label-form">State</label>
-								<select class="form-control" id="addState" name="addState">
+								<select class="form-control" id="addState" name="addState" disabled>
 								</select>
 							</div>
 							<div class="col-md-6">
@@ -766,7 +788,7 @@ function clearPassword() {
 						<div class="form-row mt-2">
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label>
-								<select class="form-control" id="editState" name="editState">
+								<select class="form-control" id="editState" name="editState" disabled>
 								</select>
 							</div>
 							<div class="col-md-6">
@@ -786,11 +808,6 @@ function clearPassword() {
 							</div>
 						</div>
 						<div class="form-row mt-2">
-							<!-- <div class="col-md-2">
-								<label for="editId" class="label-form">Id:</label>
-								<input type="text" class="form-control" id="editId" name="editId"
-									readonly>
-							</div> -->
 							<input type="hidden" id="editId" name="editId" />
 							<div class="col-md-6">
 								<label for="editFirstName" class="label-form">First Name:</label>

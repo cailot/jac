@@ -126,6 +126,30 @@ public class CodeController {
 		return dto;
 	}
 
+	@GetMapping("/getBranchByCode/{code}")
+	@ResponseBody
+	public BranchDTO getBranchByCode(@PathVariable("code") String code) {
+		BranchDTO dto = new BranchDTO();
+		try{
+			dto = codeService.getBranch(code);
+		}catch(Exception e){
+			System.out.println("No branch found");
+		}
+		return dto;
+	}
+
+	@GetMapping("/showBranch/{state}/{code}")
+	@ResponseBody
+	public BranchDTO showBranch(@PathVariable("state") String state, @PathVariable("code") String code) {
+		BranchDTO dto = new BranchDTO();
+		try{
+			dto = codeService.getBranch(state, code);
+		}catch(Exception e){
+			System.out.println("No branch found");
+		}
+		return dto;
+	}
+
 	// update existing branch
 	@PutMapping("/updateBranch")
 	@ResponseBody

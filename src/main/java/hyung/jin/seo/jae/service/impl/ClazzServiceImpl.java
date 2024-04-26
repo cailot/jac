@@ -127,7 +127,7 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> listClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = null;
-		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, "0"))) {
 			dtos = clazzRepository.findClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
 		} else {
 			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
@@ -259,7 +259,7 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> listOnsiteClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = null;
-		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, "0"))) {
 			dtos = clazzRepository.findOnsiteClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
 		} else {
 			dtos = clazzRepository.findOnsiteClassForStateNBranchNGrade(state, branch, grade);
@@ -270,7 +270,7 @@ public class ClazzServiceImpl implements ClazzService {
 	@Override
 	public List<ClazzDTO> listOnlineClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = null;
-		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {
+		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, "0"))) {
 			dtos = clazzRepository.findOnlineClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
 		} else {
 			dtos = clazzRepository.findOnlineClassForStateNBranchNGrade(state, branch, grade);

@@ -39,5 +39,5 @@ public interface TeacherService {
 
 	List<Long> getClazzIdByTeacher(Long id);
 
-	void updatePassword(Teacher teacher);
+	void updatePassword(String email, String password);
 }

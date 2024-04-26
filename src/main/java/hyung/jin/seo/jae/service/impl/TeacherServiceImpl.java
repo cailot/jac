@@ -9,6 +9,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +60,8 @@ public class TeacherServiceImpl implements TeacherService {
 	@Override
 	public List<Teacher> listTeachers(String state, String branch) {
 		List<Teacher> teachers = teacherRepository.findByState(state);
-		boolean isStateAll = StringUtils.equals(state, JaeConstants.ALL);
-		boolean isBranchAll = StringUtils.equals(branch, JaeConstants.ALL);
+		boolean isStateAll = StringUtils.equals(state, "0");
+		boolean isBranchAll = StringUtils.equals(branch, "0");
 		if(isStateAll){
 			// branch 
 			if(isBranchAll){
@@ -261,11 +262,13 @@ public class TeacherServiceImpl implements TeacherService {
 
 	@Override
 	@Transactional
-	public void updatePassword(Teacher teacher) {
-		String email = teacher.getEmail();
-		String password = teacher.getPassword();
+	public void updatePassword(String email, String password) {
+		// String email = teacher.getEmail();
+		// String password = teacher.getPassword();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(password);
 		try{
-			teacherRepository.updatePassword(email, password);
+			teacherRepository.updatePassword(email, encodedPassword);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

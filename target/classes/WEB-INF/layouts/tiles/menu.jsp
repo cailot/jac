@@ -39,7 +39,7 @@
 
 <nav class="navbar">
 	<div class="navbar_logo">
-		<img src="${pageContext.request.contextPath}/image/logo.png" style="filter: brightness(0) invert(1);width:45px;" >
+		<img src="${pageContext.request.contextPath}/image/logo.png" style="filter: brightness(0) invert(1);width:45px;" />
 		James An College
 	</div>
 	<ul class="navbar_menu">
@@ -74,9 +74,10 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Lecture</span>
 			</a>
 			<div class="dropdown-menu">
+				<c:if test="${isAdmin}">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course List</a>
+				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class List</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/gradeList">Grade List</a> -->
 			</div>
 		</li>
 		<!-- Jac Study -->
@@ -117,8 +118,10 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Setting</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/branch">Branch Management</a>
+				<c:if test="${isAdmin}">
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
+				</c:if>
 			</div>
 		</li>
 		<c:if test="${isAdmin}">

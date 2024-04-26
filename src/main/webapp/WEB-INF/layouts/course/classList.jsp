@@ -68,6 +68,32 @@ $(document).ready(function () {
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+		// avoid execute several times
+		//var hiddenInput = false;
+		$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in listBranch
+			if (settings.url === '/code/branch') {
+				$("#listBranch").val(window.branch);
+				$("#addBranch").val(window.branch);
+				$("#listRole").val('Role_Staff');
+				
+				// Disable #listBranch and #addBranch
+				$("#listBranch").prop('disabled', true);
+				$("#addBranch").prop('disabled', true);
+				$("#editBranch").prop('disabled', true);
+				$("#listRole").prop('disabled', true);
+				$("#addRole").prop('disabled', true);
+			}
+		});
+	}
+
+	// send diabled select value via <form>
+	document.getElementById("classList").addEventListener("submit", function() {
+        document.getElementById("listState").disabled = false;
+		document.getElementById("listBranch").disabled = false;
+    });
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,18 +299,17 @@ function editInitialiseCourseByGrade(grade, courseId) {
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All State</option>
+						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
 						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="All">All Branch</option>
+							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<div class="col-md-1">
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -294,7 +319,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 								int currentYear = now.get(Calendar.YEAR);
 								int nextYear = currentYear + 1;
 							%>
-							<option value="All">All</option>
+							<option value="0">All</option>
 							<option value="<%= currentYear %>"><%= currentYear %></option>
 							<%
 								// Adding the last five years
@@ -308,7 +333,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 					</div>
 					<div class="col-md-2">
 						<select class="form-control" id="listType" name="listType">
-							<option value="All">All</option>
+							<option value="0">All</option>
 							<option value="Onsite">Onsite</option>
 							<option value="Online">Online</option>
 						</select>
@@ -499,7 +524,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							<div class="form-row mt-3">
 								<div class="col-md-6">
 									<label for="addState" class="label-form">State</label> 
-									<select class="form-control" id="addState" name="addState">
+									<select class="form-control" id="addState" name="addState" disabled>
 									</select>
 								</div>
 								<div class="col-md-6">
@@ -589,7 +614,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							<div class="form-row">
 								<div class="col-md-4">
 									<label for="editState" class="label-form">State</label> 
-									<select class="form-control" id="editState" name="editState">
+									<select class="form-control" id="editState" name="editState" disabled>
 									</select>
 								</div>
 								<div class="col-md-5">

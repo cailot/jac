@@ -1,6 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -12,146 +13,192 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
-	$(document).ready(function () {
-		// initialise state list when loading
+$(document).ready(function () {
+	// initialise state list when loading
+	// only for Admin
+	if(JSON.parse(window.isAdmin)){
 		listState('#listState');
 		listState('#addState');
-		listState('#editState');
+	}
+	listState('#editState');
 
+
+	// only for Admin
+	if(JSON.parse(window.isAdmin)){
+		// send diabled select value via <form>
+		document.getElementById("branchList").addEventListener("submit", function() {
+        	document.getElementById("listState").disabled = false;
+   		});
+	}
+
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Register Branch
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function addBranch() {
+	// Get from form data
+	var branch = {
+		stateId: $("#addState").val(),
+		code: $("#addCode").val(),
+		name: $("#addName").val(),
+		phone: $("#addPhone").val(),
+		email: $("#addEmail").val(),
+		address: $("#addAddress").val(),
+		abn: $("#addAbn").val(),
+		bank: $("#addBank").val(),
+		bsb: $("#addBsb").val(),
+		accountNumber: $("#addAccountNumber").val(),
+		accountName: $("#addAccountName").val(),
+		info: $("#addInfo").val()
+	}
+	// Send AJAX to server
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/registerBranch',
+		type: 'POST',
+		dataType: 'json',
+		data: JSON.stringify(branch),
+		contentType: 'application/json',
+		success: function (student) {
+			// Display the success alert
+			$('#success-alert .modal-body').text(
+				'New Branch is registered successfully.');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+	$('#registerBranchModal').modal('hide');
+	// flush all registered data
+	document.getElementById("branchRegister").reset();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Retrieve Branch
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function retrieveBranch(branchId) {
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/getBranch/' + branchId,
+		type: 'GET',
+		success: function (branch) {
+			// console.log(branch);
+			$("#editId").val(branch.id);
+			$("#editState").val(branch.stateId);
+			$("#editState").prop('disabled', true);
+			$("#editCode").val(branch.code);
+			$("#editName").val(branch.name);
+			$("#editPhone").val(branch.phone);
+			$("#editEmail").val(branch.email);
+			$("#editAddress").val(branch.address);
+			$("#editAbn").val(branch.abn);
+			$("#editBank").val(branch.bank);
+			$("#editBsb").val(branch.bsb);
+			$("#editAccountNumber").val(branch.accountNumber);
+			$("#editAccountName").val(branch.accountName);
+			$("#editInfo").val(branch.info);
+
+			// show dialog
+			$('#editBranchModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Show Branch with branch code
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function retrieveBranchCode(code) {
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/getBranchByCode/' + code,
+		type: 'GET',
+		success: function (branch) {
+			// console.log(branch);
+			$("#editId").val(branch.id);
+			$("#editState").val(branch.stateId);
+			$("#editState").prop('disabled', true);
+			$("#editCode").val(branch.code);
+			$("#editName").val(branch.name);
+			$("#editPhone").val(branch.phone);
+			$("#editEmail").val(branch.email);
+			$("#editAddress").val(branch.address);
+			$("#editAbn").val(branch.abn);
+			$("#editBank").val(branch.bank);
+			$("#editBsb").val(branch.bsb);
+			$("#editAccountNumber").val(branch.accountNumber);
+			$("#editAccountName").val(branch.accountName);
+			$("#editInfo").val(branch.info);
+
+			// show dialog
+			$('#editBranchModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Branch
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateBranchInfo() {
+	var branchId = $("#editId").val();
+	var branchName = $("#editName").val();
+	// get from formData
+	var branch = {
+		id: branchId,
+		stateId: $("#editState").val(),
+		code: $("#editCode").val(),
+		name: branchName,
+		phone: $("#editPhone").val(),
+		email: $("#editEmail").val(),
+		address: $("#editAddress").val(),
+		abn: $("#editAbn").val(),
+		bank: $("#editBank").val(),
+		bsb: $("#editBsb").val(),
+		accountNumber: $("#editAccountNumber").val(),
+		accountName: $("#editAccountName").val(),
+		info: $("#editInfo").val()
+	}
+
+	//console.log(cycle);
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/updateBranch',
+		type: 'PUT',
+		dataType: 'json',
+		data: JSON.stringify(branch),
+		contentType: 'application/json',
+		success: function (value) {
+			// Display success alert
+			$('#success-alert .modal-body').text(
+				'ID : ' + branchName + ' is updated successfully.');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
 	});
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Register Branch
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function addBranch() {
-		// Get from form data
-		var branch = {
-			stateId: $("#addState").val(),
-			code: $("#addCode").val(),
-			name: $("#addName").val(),
-			phone: $("#addPhone").val(),
-			email: $("#addEmail").val(),
-			address: $("#addAddress").val(),
-			abn: $("#addAbn").val(),
-			bank: $("#addBank").val(),
-			bsb: $("#addBsb").val(),
-			accountNumber: $("#addAccountNumber").val(),
-			accountName: $("#addAccountName").val(),
-			info: $("#addInfo").val()
-		}
-		// Send AJAX to server
-		$.ajax({
-			url: '${pageContext.request.contextPath}/code/registerBranch',
-			type: 'POST',
-			dataType: 'json',
-			data: JSON.stringify(branch),
-			contentType: 'application/json',
-			success: function (student) {
-				// Display the success alert
-				$('#success-alert .modal-body').text(
-					'New Branch is registered successfully.');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function (e) {
-					location.reload();
-				});
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-		$('#registerBranchModal').modal('hide');
-		// flush all registered data
-		document.getElementById("branchRegister").reset();
-	}
+	$('#editBranchModal').modal('hide');
+	// flush all registered data
+	clearFormData("branchEdit");
+}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Retrieve Branch
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function retrieveBranchInfo(branchId) {
-		// send query to controller
-		$.ajax({
-			url: '${pageContext.request.contextPath}/code/getBranch/' + branchId,
-			type: 'GET',
-			success: function (branch) {
-				// console.log(branch);
-				$("#editId").val(branch.id);
-				$("#editState").val(branch.stateId);
-				$("#editState").prop('disabled', true);
-				$("#editCode").val(branch.code);
-				$("#editName").val(branch.name);
-				$("#editPhone").val(branch.phone);
-				$("#editEmail").val(branch.email);
-				$("#editAddress").val(branch.address);
-				$("#editAbn").val(branch.abn);
-				$("#editBank").val(branch.bank);
-				$("#editBsb").val(branch.bsb);
-				$("#editAccountNumber").val(branch.accountNumber);
-				$("#editAccountName").val(branch.accountName);
-				$("#editInfo").val(branch.info);
-
-				// show dialog
-				$('#editBranchModal').modal('show');
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Update Branch
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function updateBranchInfo() {
-		var branchId = $("#editId").val();
-		var branchName = $("#editName").val();
-		// get from formData
-		var branch = {
-			id: branchId,
-			stateId: $("#editState").val(),
-			code: $("#editCode").val(),
-			name: branchName,
-			phone: $("#editPhone").val(),
-			email: $("#editEmail").val(),
-			address: $("#editAddress").val(),
-			abn: $("#editAbn").val(),
-			bank: $("#editBank").val(),
-			bsb: $("#editBsb").val(),
-			accountNumber: $("#editAccountNumber").val(),
-			accountName: $("#editAccountName").val(),
-			info: $("#editInfo").val()
-		}
-
-		//console.log(cycle);
-		// send query to controller
-		$.ajax({
-			url: '${pageContext.request.contextPath}/code/updateBranch',
-			type: 'PUT',
-			dataType: 'json',
-			data: JSON.stringify(branch),
-			contentType: 'application/json',
-			success: function (value) {
-				// Display success alert
-				$('#success-alert .modal-body').text(
-					'ID : ' + branchName + ' is updated successfully.');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function (e) {
-					location.reload();
-				});
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-
-		$('#editBranchModal').modal('hide');
-		// flush all registered data
-		clearFormData("branchEdit");
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Delete Branch
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function deleteBranch(id) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Branch
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteBranch(id) {
 	if(confirm("Are you sure you want to delete this Branch ?")){
 		// send query to controller
 		$.ajax({
@@ -175,107 +222,201 @@
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Show Branch Info
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showBranchInfo(state, branch){
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/showBranch/' + state + '/' + branch,
+		type: 'GET',
+		success: function (branch) {
+			$('#detailTable #name').html(branch.name);
+			$('#detailTable #phone').html(branch.phone);
+			$('#detailTable #email').html(branch.email);
+			$('#detailTable #address').html(branch.address);
+			$('#detailTable #abn').html(branch.abn);
+			$('#detailTable #bank').html(branch.bank);
+			$('#detailTable #bsb').html(branch.bsb);
+			$('#detailTable #accountNumber').html(branch.accountNumber);
+			$('#detailTable #accountName').html(branch.accountName);
+			//$('#detailTable #information').html(branch.info);
+			$('#detailTable #information').html(branch.info.replace(/\n/g, '<br>'));
+			$('#detailTable #branchId').html(branch.id);
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 
 </script>
 
-<!-- List Body -->
-<div class="row">
-	<div class="modal-body">
-		<form id="branchList" method="get" action="${pageContext.request.contextPath}/code/listBranch">
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-2">
-						<select class="form-control" id="listState" name="listState">
-							<option value="All">All</option>
-						</select>
-					</div>
-					<div class="offset-md-5"></div>
-					<div class="col mx-auto">
-						<button type="submit" class="btn btn-primary btn-block"> <i
-								class="bi bi-search"></i>&nbsp;Search</button>
-					</div>
-					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerBranchModal">
-							<i class="bi bi-plus"></i>&nbsp;New</button>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-12">
-						<div class="table-wrap">
-							<table id="branchListTable" class="table table-striped table-bordered">
-								<thead class="table-primary">
-									<tr>
-										<th>Code</th>
-										<th>State</th>
-										<th>Name</th>
-										<th>Phone</th>
-										<th>Email</th>
-										<th>Address</th>
-										<th>ABN</th>
-										<th data-orderable="false">Action</th>
-									</tr>
-								</thead>
-								<tbody id="list-class-body">
-									<c:choose>
-										<c:when test="${BranchList != null}">
-											<c:forEach items="${BranchList}" var="branch">
-												<tr>
-													<td class="small ellipsis">
-														<c:out value="${branch.code}" />
-													</td>
-													<td class="small ellipsis">
-														<span style="text-transform: capitalize;">
-															<c:choose>
-															<c:when test="${branch.stateId eq '1'}">Victoria</c:when>
-															<c:when test="${branch.stateId eq '2'}">New South Wales</c:when>
-															<c:when test="${branch.stateId eq '3'}">Queensland</c:when>
-															<c:when test="${branch.stateId eq '4'}">South Australia</c:when>
-															<c:when test="${branch.stateId eq '5'}">Tasmania</c:when>
-															<c:when test="${branch.stateId eq '6'}">Western Australia</c:when>
-															<c:when test="${branch.stateId eq '7'}">Northern Territory</c:when>
-															<c:when test="${branch.stateId eq '8'}">Australian Capital Territory</c:when>
-															<c:otherwise>Unknown State</c:otherwise>
-															</c:choose>
-														</span>
-													</td>
-													<td class="small ellipsis">
-														<span style="text-transform: capitalize;">
-															<c:out value="${branch.name}" />
-														</span>
-													</td>
-													<td class="small ellipsis">
-														<c:out value="${branch.phone}" />
-													</td>
-													<td class="small ellipsis">
-														<c:out value="${branch.email}" />
-													</td>
-													<td class="small ellipsis">
-														<c:out value="${branch.address}" />
-													</td>
-													<td class="small ellipsis">
-														<c:out value="${branch.abn}" />
-													</td>
-													<td class="text-center">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranchInfo('${branch.id}')"></i>&nbsp;
-														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
-													</td>
-												</tr>
-											</c:forEach>
 
-										</c:when>
-									</c:choose>
-								</tbody>
-							</table>
+<sec:authorize access="isAuthenticated()">
+<sec:authentication var="role" property='principal.authorities'/>
+<sec:authentication var="state" property="principal.state"/>
+<sec:authentication var="branch" property="principal.branch"/>
+	<c:choose>
+		<c:when test="${role == '[Administrator]'}">
+			<!-- List Body -->
+			<div class="row">
+				<div class="modal-body">
+					<form id="branchList" method="get" action="${pageContext.request.contextPath}/code/listBranch">
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-3">
+									<select class="form-control" id="listState" name="listState" disabled>
+									</select>
+								</div>
+								<div class="offset-md-4"></div>
+								<div class="col mx-auto">
+									<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+								</div>
+								<div class="col mx-auto">
+									<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerBranchModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+								</div>
+							</div>
 						</div>
-					</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<div class="table-wrap">
+										<table id="branchListTable" class="table table-striped table-bordered">
+											<thead class="table-primary">
+												<tr>
+													<th>Code</th>
+													<th>State</th>
+													<th>Name</th>
+													<th>Phone</th>
+													<th>Email</th>
+													<th>Address</th>
+													<th>ABN</th>
+													<th data-orderable="false">Action</th>
+												</tr>
+											</thead>
+											<tbody id="list-class-body">
+												<c:choose>
+													<c:when test="${BranchList != null}">
+														<c:forEach items="${BranchList}" var="branch">
+															<tr>
+																<td class="small ellipsis">
+																	<c:out value="${branch.code}" />
+																</td>
+																<td class="small ellipsis">
+																	<span style="text-transform: capitalize;">
+																		<c:choose>
+																		<c:when test="${branch.stateId eq '1'}">Victoria</c:when>
+																		<c:when test="${branch.stateId eq '2'}">New South Wales</c:when>
+																		<c:when test="${branch.stateId eq '3'}">Queensland</c:when>
+																		<c:when test="${branch.stateId eq '4'}">South Australia</c:when>
+																		<c:when test="${branch.stateId eq '5'}">Tasmania</c:when>
+																		<c:when test="${branch.stateId eq '6'}">Western Australia</c:when>
+																		<c:when test="${branch.stateId eq '7'}">Northern Territory</c:when>
+																		<c:when test="${branch.stateId eq '8'}">Australian Capital Territory</c:when>
+																		<c:otherwise>Unknown State</c:otherwise>
+																		</c:choose>
+																	</span>
+																</td>
+																<td class="small ellipsis">
+																	<span style="text-transform: capitalize;">
+																		<c:out value="${branch.name}" />
+																	</span>
+																</td>
+																<td class="small ellipsis">
+																	<c:out value="${branch.phone}" />
+																</td>
+																<td class="small ellipsis">
+																	<c:out value="${branch.email}" />
+																</td>
+																<td class="small ellipsis">
+																	<c:out value="${branch.address}" />
+																</td>
+																<td class="small ellipsis">
+																	<c:out value="${branch.abn}" />
+																</td>
+																<td class="text-center">
+																	<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
+																	<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
+																</td>
+															</tr>
+														</c:forEach>
+
+													</c:when>
+												</c:choose>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</form>
 				</div>
 			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="row h-100 justify-content-center align-items-center" style="width: 50%; margin:0 auto;">
+				<table class="table table-hover" id="detailTable">
+				<thead>
+					<tr height="10px">
+						<span class="text-dark mt-5 mb-5 h3">Branch Information</span>
+					</tr>
+				</thead>
+				<tr height="80px">
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>State </b></td>
+					<td id="state" class="left-cell" style="vertical-align: middle;">Victoria</td>
+					<td class="text-center text-primary" style="vertical-align: middle;"><b>Code</b></td>
+					<td class="left-cell" style="vertical-align: middle;">${branch}</td>
+					<td class="text-center text-primary" style="vertical-align: middle;"><b>Name</b></td>
+					<td id="name" class="left-cell" style="vertical-align: middle;" colspan="2"></td>
+				</tr>
+				<tr height="80px">
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Phone</b></td>
+					<td id="phone" class="left-cell" colspan="2" style="vertical-align: middle;"></td>
+					<td class="text-center text-primary" style="vertical-align: middle;"><b>Email</b></td>
+					<td id="email" class="left-cell" colspan="2" style="vertical-align: middle;"></td>
+				</tr>
+				<tr height="80px">
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Address</b></td>
+					<td id="address" class="left-cell" colspan="5" style="vertical-align: middle;"></td>
+				</tr>
+				<tr height="80px">
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>ABN</b></td>
+					<td id="abn" class="left-cell" style="vertical-align: middle;"></td>
+					<td class="text-center text-primary" style="vertical-align: middle;"><b>Brank</b></td>
+					<td id="bank" class="left-cell" style="vertical-align: middle;"></td>
+					<td class="text-center text-primary" style="vertical-align: middle;"><b>BSB</b></td>
+					<td id="bsb" class="left-cell" style="vertical-align: middle;"></td>
+				</tr>
+				<tr height="80px">
+					<td class="left-cell text-primary" colspan="1" style="vertical-align: middle;"><b>Account #</b></td>
+					<td id="accountNumber" colspan="2" class="text-center" style="vertical-align: middle;"></td>
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Account Name</b></td>
+					<td id="accountName" colspan="2" class="left-cell" style="vertical-align: middle;"></td>
+				</tr>
+				<tr height="80px">
+					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Information</b></td>
+					<td id="information" class="left-cell p-5" colspan="5" style="line-height: 1.8;"></td>
+				</tr>
+				<tr height="80px" style="display: none;">
+					<td class="left-cell"><b>Id</b></td>
+					<td id="branchId" class="left-cell" colspan="5"></td>
+				</tr>
+				<tr height="80px">
+					<td colspan="6" style="text-align: right;">
+						<button type="button" class="btn btn-primary" style="width: 120px;" onclick="retrieveBranchCode('${branch}')"><i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Edit</button>
+					</td>
+				</tr>
+				</table> 
+			</div>
+			<script>
+				showBranchInfo('${state}', '${branch}');
+			</script>
+		</c:otherwise>
+	</c:choose>
+</sec:authorize>
 
-		</form>
-	</div>
-</div>
 
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerBranchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
