@@ -94,7 +94,14 @@ $(document).ready(
         	var updatedValue = $(this).text();
        	 	$('#onlineStart').text(updatedValue);
     	});
-
+		$('#basketTable').on('input', '#onsiteEnd', function() {
+        	var updatedValue = $(this).text();
+       	 	$('#onlineEnd').text(updatedValue);
+    	});
+		$('#basketTable').on('input', '#onsiteWeeks', function() {
+        	var updatedValue = $(this).text();
+       	 	$('#onlineWeeks').text(updatedValue);
+    	});
 	}
 );
 	
@@ -250,7 +257,7 @@ $.ajax({
 		});
 		row.append(startWeekCell);
 		
-		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(end_week); // end week
+		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onsiteEnd').text(end_week); // end week
 			endWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -267,7 +274,7 @@ $.ajax({
 		});
 		row.append(endWeekCell);
 
-		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text((end_week - start_week) + 1);// weeks  
+		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onsiteWeeks').text((end_week - start_week) + 1);// weeks  
 		weeksCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -398,9 +405,9 @@ $.ajax({
 									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 									var onlineStartWeek = startWeekCell.clone().attr('id', 'onlineStart').text(start_week);
 									row.append(onlineStartWeek);
-									var onlineEndWeek = endWeekCell.clone().text(end_week);
+									var onlineEndWeek = endWeekCell.clone().attr('id', 'onlineEnd').text(end_week);
 									row.append(onlineEndWeek);
-									var onlineWeeks = weeksCell.clone().text((end_week - start_week) + 1);
+									var onlineWeeks = weeksCell.clone().attr('id', 'onlineWeeks').text((end_week - start_week) + 1);
 									row.append(onlineWeeks);
 									row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
 									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
