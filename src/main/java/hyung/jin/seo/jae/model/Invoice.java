@@ -19,9 +19,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.CascadeType;
@@ -34,9 +38,11 @@ import javax.persistence.CascadeType;
 @Entity
 @Table(name="Invoice")
 public class Invoice{ 
+	
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
-    private Long id;
+	@GeneratedValue(generator = "invoiceIdGenerator", strategy = GenerationType.IDENTITY)
+	@GenericGenerator(name = "invoiceIdGenerator", strategy = "hyung.jin.seo.jae.utils.InvoiceIdGenerator")
+ 	private Long id;
     
 	@OneToMany(mappedBy = "invoice", cascade = {
      	CascadeType.PERSIST,
@@ -109,5 +115,9 @@ public class Invoice{
 
 	@Column(length = 100)
     private String info;
+
+	@Transient // not persistent to DB
+	@JsonIgnore // ignore serialisation/deserialisation via Json
+	private Long studentId;	
 
 }
