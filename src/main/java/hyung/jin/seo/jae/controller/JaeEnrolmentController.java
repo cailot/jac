@@ -365,7 +365,14 @@ public class JaeEnrolmentController {
 		// 4. get Student to associate to Enrolment later
 		Student student = studentService.getStudent(studentId);
 		// 5. if no Invoice or Invoice is already paid, create new Invoice; otherwise use existing Invoice
-		Invoice invoice = (isInvoiceExist) ? invo : invoiceService.addInvoice(new Invoice());
+		Invoice invoice = null;
+		if(isInvoiceExist){
+			invoice = invo;
+		}else{
+			Invoice empty = new Invoice();
+			empty.setStudentId(studentId);
+			invoice = invoiceService.addInvoice(empty);
+		}		
 		// 6. get registered enrolments by invoice id
 		List<Long> registeredIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
 
