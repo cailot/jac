@@ -22,8 +22,8 @@ $(document).ready(
 	function() {
 		// load grades
 		listGrade('#registerGrade');
-		// make an AJAX call on page load
-		// to get the academic year and week
+
+		// make an AJAX call on page load to get the academic year and week
 		$.ajax({
 			url : '${pageContext.request.contextPath}/class/academy',
 			method: "GET",
@@ -88,6 +88,13 @@ $(document).ready(
 			tr.remove();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
+
+
+		$('#basketTable').on('input', '#onsiteStart', function() {
+        var updatedValue = $(this).text();
+        $('#onlineStart').text(updatedValue);
+    	});
+
 	}
 );
 	
@@ -175,7 +182,7 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		console.log(data);
+		// console.log(data);
 		// console.log(value);
 	
 		var start_week, end_week;        
@@ -226,7 +233,7 @@ $.ajax({
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(start_week); // start week
+		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onsiteStart').text(start_week); // start week
 		startWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -389,7 +396,7 @@ $.ajax({
 									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
 									row.append($('<td class="smaller-table-font day">').text('All')); // day
 									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-									var onlineStartWeek = startWeekCell.clone().text(start_week);
+									var onlineStartWeek = startWeekCell.clone().attr('id', 'onlineStart').text(start_week);
 									row.append(onlineStartWeek);
 									var onlineEndWeek = endWeekCell.clone().text(end_week);
 									row.append(onlineEndWeek);
