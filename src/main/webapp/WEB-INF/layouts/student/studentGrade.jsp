@@ -292,7 +292,7 @@ function updateStudentInfo(){
 <!-- Confirmation Dialogue -->
 <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
                <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Grade Update</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -302,7 +302,7 @@ function updateStudentInfo(){
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" onclick="updateStudentInfo()"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
 	</div>

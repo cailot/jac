@@ -91,17 +91,40 @@ $(document).ready(
 
 		// synchronise value between onsite and online class
 		$('#basketTable').on('input', '#onsiteStart', function() {
-        	var updatedValue = $(this).text();
-       	 	$('#onlineStart').text(updatedValue);
+        	// var updatedValue = $(this).text();
+       	 	// $('#onlineStart').text(updatedValue);
+			// sync weeks
+			syncValues();
     	});
 		$('#basketTable').on('input', '#onsiteEnd', function() {
-        	var updatedValue = $(this).text();
-       	 	$('#onlineEnd').text(updatedValue);
+        	// var updatedValue = $(this).text();
+       	 	// $('#onlineEnd').text(updatedValue);
+			// sync weeks	
+			syncValues();
+    	});
+		$('#basketTable').on('input', '#onsiteCredit', function() {
+        	// var updatedValue = $(this).text();
+       	 	// $('#onlineCredit').text(updatedValue);
+			syncValues();
     	});
 		$('#basketTable').on('input', '#onsiteWeeks', function() {
-        	var updatedValue = $(this).text();
-       	 	$('#onlineWeeks').text(updatedValue);
+        	// var updatedValue = $(this).text();
+       	 	// $('#onlineWeeks').text(updatedValue);
+			syncValues();
     	});
+
+
+		function syncValues() {
+			// Parse integer values from onsite start and end dates
+			var onsiteStartValue = parseInt($('#onsiteStart').text(), 10);
+			$('#onlineStart').text(onsiteStartValue);
+			var onsiteEndValue = parseInt($('#onsiteEnd').text(), 10);
+			$('#onlineEnd').text(onsiteEndValue);
+			var onsiteWeeksValue = parseInt($('#onsiteWeeks').text(), 10);
+			$('#onlineWeeks').text(onsiteWeeksValue);
+			var onsiteCreditValue = parseInt($('#onsiteCredit').text(), 10);
+			$('#onlineCredit').text(onsiteCreditValue);
+    	}
 	}
 );
 	
@@ -290,7 +313,7 @@ $.ajax({
 		});
 		row.append(weeksCell);
 
-		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(0); // credit
+		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').attr('id','onsiteCredit').addClass('credit').text(0); // credit
 		var previousCredit = parseInt(creditCell.text());
 		creditCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
@@ -409,7 +432,7 @@ $.ajax({
 									row.append(onlineEndWeek);
 									var onlineWeeks = weeksCell.clone().attr('id', 'onlineWeeks').text((end_week - start_week) + 1);
 									row.append(onlineWeeks);
-									row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center credit" id="onlineCredit" contenteditable="true">').text(0));
 									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
 									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
 									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
