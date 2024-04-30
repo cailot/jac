@@ -453,7 +453,7 @@ function clearStudentInfo() {
 <!-- Search Result Dialog -->
 <div class="modal fade" id="studentListResult">
 	<div class="modal-dialog modal-xl modal-dialog-centered">
-	  <div class="modal-content">
+	  <div class="modal-content jae-border-primary">
 		<div class="modal-header bg-primary text-white">
 		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
 		  <button type="button" class="close" data-dismiss="modal">
@@ -492,7 +492,7 @@ function clearStudentInfo() {
 <!-- Info Dialogue -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 				<header class="text-primary font-weight-bold">Information</header>

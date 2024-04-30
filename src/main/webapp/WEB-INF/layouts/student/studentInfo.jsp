@@ -443,31 +443,10 @@ function clearCourseRegisteration(){
 
 </script>
 
-
-<!-- Deactivate Dialogue -->
-<div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Suspend</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p> Do you want to suspend this student?</p>	
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" onclick="inactivateStudent()"><i class="bi bi-x"></i> Suspend</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i> Close</button>
-            </div>
-    	</div>
-	</div>
-</div>
-
-
 <!-- Search Result Dialog -->
 <div class="modal fade" id="studentListResult">
 	<div class="modal-dialog modal-xl modal-dialog-centered">
-	  <div class="modal-content">
+	  <div class="modal-content jae-border-primary">
 		<div class="modal-header bg-primary text-white">
 		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
 		  <button type="button" class="close" data-dismiss="modal">
@@ -513,177 +492,6 @@ function clearCourseRegisteration(){
 	}
 </style>
 
-
-<!-- Register Form Dialogue -->
-<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-				<header class="text-primary font-weight-bold">Student Registration</header>
-				<form id="studentRegister">
-					<div class="form-row mt-2">
-						<div class="col-md-4">
-							<label for="addState" class="label-form">State</label> 
-							<select class="form-control" id="addState" name="addState" disabled>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<label for="addBranch" class="label-form">Branch</label> 
-							<select class="form-control" id="addBranch" name="addBranch">
-							</select>
-						</div>
-						<div class="col-md-3">
-							<label for="addRegisterDate" class="label-form">Registration</label> 
-							<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="dd/mm/yyyy">
-						</div>
-						<script>
-							function setTodayDate() {
-								var today = new Date();
-								var day = today.getDate();
-								var month = today.getMonth() + 1; // Note: January is 0
-								var year = today.getFullYear();
-								var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-								document.getElementById('addRegisterDate').value = formattedDate;
-							}
-							// Assuming your modal has an id of 'myModal'
-    						$('#registerModal').on('shown.bs.modal', function () {
-								setTodayDate();
-							});
-						</script>
-					</div>
-					<div class="form-row mt-2">
-						<div class="col-md-5">
-							<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
-						</div>
-						<div class="col-md-4">
-							<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
-						</div>
-						<div class="col-md-3">
-							<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade"></select>
-						</div>
-					</div>
-					<div class="form-row mt-2">
-						<div class="col-md-3">
-							<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
-								<option value="male">Male</option>
-								<option value="female">Female</option>
-							</select>
-						</div>
-						<div class="col-md-9">
-							<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
-						</div>
-					</div>
-					<div class="form-row mt-2">
-						<div class="col-md-12">
-							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="col-md-12 mt-4">
-							<section class="fieldset rounded" style="padding: 10px;">
-								<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-							<div class="row">
-								<div class="col-md-8">
-									<input type="text" class="form-control" id="addContact1" name="addContact1" placeholder="Contact No">
-								</div>
-								<div class="col-md-4">
-									<select class="form-control" id="addRelation1" name="addRelation1">
-										<option value="mother">Mother</option>
-										<option value="father">Father</option>
-										<option value="sibling">Sibling</option>
-										<option value="other">Other</option>
-									</select>
-								</div>	
-							</div>
-							<div class="row mt-2">
-								<div class="col-md-12">
-									<input type="text" class="form-control" id="addEmail1" name="addEmail1" placeholder="Email">
-								</div>
-							</div>
-							</section>
-						</div>
-					</div>
-					<div class="form-row">
-						<div class="col-md-12 mt-4">
-							<section class="fieldset rounded" style="padding: 10px;">
-								<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-							<div class="row">
-								<div class="col-md-8">
-									<input type="text" class="form-control" id="addContact2" name="addContact2" placeholder="Contact No">
-								</div>
-								<div class="col-md-4">
-									<select class="form-control" id="addRelation2" name="addRelation2">
-										<option value="mother">Mother</option>
-										<option value="father">Father</option>
-										<option value="sibling">Sibling</option>
-										<option value="other">Other</option>
-									</select>
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-md-12">
-									<input type="text" class="form-control" id="addEmail2" name="addEmail2" placeholder="Email">
-								</div>
-							</div>
-							</section>
-						</div>
-					</div>
-					<div class="form-row mt-3">
-						<div class="col-md-12">
-							<label for="addMemo" class="label-form">Memo</label>
-							<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>
-						</div>
-					</div>
-				</form>
-				<div class="d-flex justify-content-end">
-    				<button type="submit" class="btn btn-primary" onclick="addStudent()">Register</button>&nbsp;&nbsp;
-    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				</div>	
-				</section>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Password Reset Dialogue -->
-<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Student Password Reset</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <h5> Do you want to reset password for this student?</h5>
-				<p>
-					<div class="row mt-4">
-						<div class="col-md-5">
-							New Password
-						</div>
-						<div class="col-md-7">
-							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
-						</div>
-					</div>
-					<div class="row mt-4">
-						<div class="col-md-5">
-							Confirm Password
-						</div>
-						<div class="col-md-7">
-							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
-						</div>
-					</div>
-				</p>	
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
-            </div>
-    	</div>
-	</div>
-</div>
-
-
 <!-- Administration Body -->
 <div class="modal-body">
 	<form id="studentInfo">
@@ -692,18 +500,18 @@ function clearCourseRegisteration(){
 				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
 			</div>
 			<div class="col-md-4" title="Search Student by Id/Name">
-				<button type="button" class="btn btn-block btn-warning" onclick="searchStudent()"><i class="bi bi-search"></i></button>
+				<button type="button" class="btn btn-block btn-primary" onclick="searchStudent()"><i class="bi bi-search"></i></button>
 			</div>
 		</div>
 		<div class="form-row mt-3">
 			<div class="col mx-auto" title="Register New Student">
-				<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus-circle"></i></button>
+				<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus-circle"></i></button>
 			</div>
 			<div class="col mx-auto" title="Update Student Information">
-				<button type="button" class="btn btn-block btn-info" onclick="updateStudentInfo()"><i class="bi bi-pencil-square"></i></button>
+				<button type="button" class="btn btn-block btn-success" onclick="updateStudentInfo()"><i class="bi bi-pencil-square"></i></button>
 			</div>
 			<div class="col mx-auto" title="Reset Student Password">
-				<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#passwordModal" onclick="clearPassword()"><i class="bi bi-key-fill"></i></button>
+				<button type="button" class="btn btn-block btn-warning" data-toggle="modal" data-target="#passwordModal" onclick="clearPassword()"><i class="bi bi-key-fill"></i></button>
 			</div>
 			<div class="col mx-auto" title="Inactivate Student">
 				<button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#deactivateModal"><i class="bi bi-pause"></i></button>
@@ -825,7 +633,193 @@ function clearCourseRegisteration(){
 	</form>
 </div>
 
+<!-- Register Form Dialogue -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content jae-border-info">
+			<div class="modal-body">
+				<section class="fieldset rounded border-info">
+				<header class="text-info font-weight-bold">Student Registration</header>
+				<form id="studentRegister">
+					<div class="form-row mt-3">
+						<div class="col-md-4">
+							<label for="addState" class="label-form">State</label> 
+							<select class="form-control" id="addState" name="addState" disabled>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<label for="addBranch" class="label-form">Branch</label> 
+							<select class="form-control" id="addBranch" name="addBranch">
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label for="addRegisterDate" class="label-form">Registration</label> 
+							<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="dd/mm/yyyy">
+						</div>
+						<script>
+							function setTodayDate() {
+								var today = new Date();
+								var day = today.getDate();
+								var month = today.getMonth() + 1; // Note: January is 0
+								var year = today.getFullYear();
+								var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+								document.getElementById('addRegisterDate').value = formattedDate;
+							}
+							// Assuming your modal has an id of 'myModal'
+    						$('#registerModal').on('shown.bs.modal', function () {
+								setTodayDate();
+							});
+						</script>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-5">
+							<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
+						</div>
+						<div class="col-md-4">
+							<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
+						</div>
+						<div class="col-md-3">
+							<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade"></select>
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-3">
+							<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</select>
+						</div>
+						<div class="col-md-9">
+							<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-12">
+							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-12 mt-4">
+							<section class="fieldset rounded" style="padding: 10px;">
+								<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
+							<div class="row">
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="addContact1" name="addContact1" placeholder="Contact No">
+								</div>
+								<div class="col-md-4">
+									<select class="form-control" id="addRelation1" name="addRelation1">
+										<option value="mother">Mother</option>
+										<option value="father">Father</option>
+										<option value="sibling">Sibling</option>
+										<option value="other">Other</option>
+									</select>
+								</div>	
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-12">
+									<input type="text" class="form-control" id="addEmail1" name="addEmail1" placeholder="Email">
+								</div>
+							</div>
+							</section>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-12 mt-4">
+							<section class="fieldset rounded" style="padding: 10px;">
+								<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
+							<div class="row">
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="addContact2" name="addContact2" placeholder="Contact No">
+								</div>
+								<div class="col-md-4">
+									<select class="form-control" id="addRelation2" name="addRelation2">
+										<option value="mother">Mother</option>
+										<option value="father">Father</option>
+										<option value="sibling">Sibling</option>
+										<option value="other">Other</option>
+									</select>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-12">
+									<input type="text" class="form-control" id="addEmail2" name="addEmail2" placeholder="Email">
+								</div>
+							</div>
+							</section>
+						</div>
+					</div>
+					<div class="form-row mt-4">
+						<div class="col-md-12">
+							<label for="addMemo" class="label-form">Memo</label>
+							<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>
+						</div>
+					</div>
+				</form>
+				<div class="d-flex justify-content-end">
+    				<button type="submit" class="btn btn-info" onclick="addStudent()">Register</button>&nbsp;&nbsp;
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>	
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
 
+<!-- Password Reset Dialogue -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;Student Password Reset</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5> Do you want to reset password for this student?</h5>
+				<p>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							New Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							Confirm Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+						</div>
+					</div>
+				</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+<!-- Deactivate Dialogue -->
+<div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-pause"></i>&nbsp;&nbsp;Student Suspend</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to suspend this student?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" onclick="inactivateStudent()"><i class="bi bi-check-circle"></i> Suspend</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
 
 
 

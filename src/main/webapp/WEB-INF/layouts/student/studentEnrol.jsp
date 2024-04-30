@@ -483,7 +483,7 @@ function activateStudent(id) {
 													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
 														<c:when test="${empty student.endDate}">
-															<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
+															<i class="bi bi-pause-circle text-danger" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
 														</c:when>
 														<c:otherwise>
 															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
@@ -507,12 +507,12 @@ function activateStudent(id) {
 <!-- Register Form Dialogue -->
 <div class="modal fade" id="registerStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Student Registration</header>
 					<form id="studentRegister">
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-4">
 								<label for="addState" class="label-form">State</label> 
 								<select class="form-control" id="addState" name="addState" disabled>
@@ -536,7 +536,7 @@ function activateStudent(id) {
 								document.getElementById('addRegisterDate').value = formattedDate;
 							</script>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-5">
 								<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
 							</div>
@@ -548,7 +548,7 @@ function activateStudent(id) {
 								</select>
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-3">
 								<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
 									<option value="male">Male</option>
@@ -559,7 +559,7 @@ function activateStudent(id) {
 								<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-12">
 								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 							</div>
@@ -634,12 +634,12 @@ function activateStudent(id) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Student Edit</header>
 						<form id="studentEdit">
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label> 
 								<select class="form-control" id="editState" name="editState" disabled>
@@ -655,7 +655,7 @@ function activateStudent(id) {
 								<input type="text" class="form-control datepicker" id="editRegisterDate" name="editRegisterDate" placeholder="dd/mm/yyyy">
 							</div>
 						</div>	
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-3">
 								<label for="editId" class="label-form">ID:</label> <input type="text" class="form-control" id="editId" name="editId" readonly>
 							</div>
@@ -670,7 +670,7 @@ function activateStudent(id) {
 								</select>
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-3">
 								<label for="editGender" class="label-form">Gender</label> <select class="form-control" id="editGender" name="editGender">
 									<option value="male">Male</option>
@@ -752,9 +752,9 @@ function activateStudent(id) {
 <!-- Password Reset Dialogue -->
 <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Student Password Reset</h4>
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;Student Password Reset</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -780,8 +780,8 @@ function activateStudent(id) {
 				<input type="hidden" id="pwdId" name="pwdId"/>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle-fill"></i>&nbsp;Close</button>
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
             </div>
     	</div>
 	</div>
@@ -812,17 +812,17 @@ function activateStudent(id) {
 <!-- Deactivate Dialogue -->
 <div class="modal fade" id="deactivateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Student Suspend</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-pause"></i>&nbsp;&nbsp;Student Suspend</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
                 <p> Do you want to suspend this student?</p>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" id="agreeInactive" name="agreeInactive"><i class="bi bi-x"></i> Suspend</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check"></i> Close</button>
+                <button type="submit" class="btn btn-danger" id="agreeInactive" name="agreeInactive"><i class="bi bi-check-circle"></i> Suspend</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
 	</div>

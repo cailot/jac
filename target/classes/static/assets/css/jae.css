@@ -9,6 +9,26 @@
 	background-color: #2d398e;
 }
 
+.jae-border-info {
+	border: 2px solid #17a2b8 !important; 
+	border-radius: 10px !important;
+}
+
+.jae-border-primary {
+	border: 2px solid #007bff !important; 
+	border-radius: 10px !important;
+}
+
+.jae-border-warning {
+	border: 2px solid #ffc107 !important; 
+	border-radius: 10px !important;
+}
+
+.jae-border-danger {
+	border: 2px solid #DC3545 !important; 
+	border-radius: 10px !important;
+}
+
 .menu-style {
 	padding-top: 10px; 
 	padding-left: 10px;
