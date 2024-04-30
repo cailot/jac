@@ -604,7 +604,7 @@ function addInformation(){
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm"
-						onclick="inactivateStudent()">Email</button>
+						onclick="alert('test...')">Email</button>
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
@@ -645,7 +645,7 @@ function addInformation(){
 <!-- Payment Dialogue -->
 <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 				<header class="text-primary font-weight-bold">Payment</header>
@@ -717,7 +717,7 @@ function addInformation(){
 <!-- Invoice Dialogue -->
 <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 				<header class="text-primary font-weight-bold">Invoice</header>
@@ -744,10 +744,10 @@ function addInformation(){
 <!-- Info Dialogue -->
 <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-				<header class="text-primary font-weight-bold">Information</header>
+				<header class="text-primary font-weight-bold">Note</header>
 				<br>
 				Please Add Internal Information
 				<form id="showInformation">
