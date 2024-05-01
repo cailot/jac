@@ -75,9 +75,9 @@
 			</a>
 			<div class="dropdown-menu">
 				<c:if test="${isAdmin}">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course List</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course Management</a>
 				</c:if>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class List</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 			</div>
 		</li>
 		<!-- Jac Study -->

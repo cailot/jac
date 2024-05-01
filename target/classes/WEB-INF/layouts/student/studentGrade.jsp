@@ -108,8 +108,19 @@ function updateStudentInfo(){
 
 </script>
 
+<style>
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 30px;
+	}
+
+	tr { height: 50px } 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/upgrade">
 			<div class="form-group">
@@ -138,7 +149,7 @@ function updateStudentInfo(){
 										<option value="100"></option>
 									</select>
 								</div>
-								<div class="offset-md-2"></div>
+								<div class="offset-md-3"></div>
 								<div class="col mx-auto">
 									<label class="label-form-white">Search</label> 
 									<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -172,7 +183,7 @@ function updateStudentInfo(){
 										<option value=""></option>
 									</select>
 								</div>
-								<div class="offset-md-1"></div>
+								<div class="offset-md-2"></div>
 								<div class="col mx-auto">
 									<label class="label-form-white">Search</label> 
 									<button type="submit" class="btn btn-secondary btn-block" disabled> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -196,17 +207,17 @@ function updateStudentInfo(){
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>ID</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Grade</th>
-										<th>Gender</th>
-										<th>Register Date</th>
-										<th>Main Email</th>
-										<th>Main Contact</th>
-										<th>Sub Email</th>
-										<th>Sub Contact</th>
-										<th data-orderable="false">
+										<th class="align-middle text-center">ID</th>
+										<th class="align-middle text-center">First Name</th>
+										<th class="align-middle text-center">Last Name</th>
+										<th class="align-middle text-center">Grade</th>
+										<th class="align-middle text-center">Gender</th>
+										<th class="align-middle text-center">Register Date</th>
+										<th class="align-middle text-center">Main Email</th>
+										<th class="align-middle text-center">Main Contact</th>
+										<th class="align-middle text-center">Sub Email</th>
+										<th class="align-middle text-center">Sub Contact</th>
+										<th class="align-middle text-center" data-orderable="false">
 											<input type="checkbox" id="select-all" checked/>
 										</th>
 									</tr>
@@ -216,10 +227,10 @@ function updateStudentInfo(){
 									<c:when test="${UpgradeList != null}">
 										<c:forEach items="${UpgradeList}" var="student">
 											<tr>
-												<td class="small ellipsis" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small ellipsis">
+												<td class="small align-middle" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
+												<td class="small align-middle">
 													<span>
 														<c:choose>
 															<c:when test="${student.grade == '1'}">P2</c:when>
@@ -246,18 +257,18 @@ function updateStudentInfo(){
 														</c:choose>
 													</span>
 												</td>
-												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small ellipsis">
+												<td class="small align-middle"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<td class="small align-middle">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
-												<td class="small text-center"><input type="checkbox" checked value="${student.id}" id="${student.id}" /><span></span></td>											
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
+												<td class="small align-middle text-center"><input type="checkbox" checked value="${student.id}" id="${student.id}" /><span></span></td>											
 											</tr>
 										</c:forEach>
 									</c:when>

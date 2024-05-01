@@ -95,38 +95,12 @@ public class ClazzController {
 		model.addAttribute(JaeConstants.CLASS_LIST, dtos);
 		return "classListPage";
 	}
-
-	// // bring onsite classes in database
-	// @GetMapping("/listOnsiteClass")
-	// public String listOnsiteClasses(@RequestParam(value = "listState", required = false) String state,
-	// 		@RequestParam(value = "listBranch", required = false) String branch,
-	// 		@RequestParam(value = "listGrade", required = false) String grade,
-	// 		@RequestParam(value = "listYear", required = false) String year,
-	// 		@RequestParam(value = "listActive", required = false) String active, Model model) {
-	// 	// System.out.println(state + "\t" + branch + "\t" + grade + "\t" + year + "\t" + active + "\t");
-	// 	List<ClazzDTO> dtos = clazzService.listOnsiteClazz(state, branch, grade, year);
-	// 	model.addAttribute(JaeConstants.CLASS_LIST, dtos);
-	// 	return "classListPage";
-	// }
-
-	// // bring online classes in database
-	// @GetMapping("/listOnlineClass")
-	// public String listOnlineClasses(@RequestParam(value = "listState", required = false) String state,
-	// 		@RequestParam(value = "listBranch", required = false) String branch,
-	// 		@RequestParam(value = "listGrade", required = false) String grade,
-	// 		@RequestParam(value = "listYear", required = false) String year,
-	// 		@RequestParam(value = "listActive", required = false) String active, Model model) {
-	// 	// System.out.println(state + "\t" + branch + "\t" + grade + "\t" + year + "\t" + active + "\t");
-	// 	List<ClazzDTO> dtos = clazzService.listOnlineClazz(state, branch, grade, year);
-	// 	model.addAttribute(JaeConstants.CLASS_LIST, dtos);
-	// 	return "classListPage";
-	// }
 	
 	// bring all classes in database
 	@GetMapping("/listCycle")
 	public String listCycle(@RequestParam(value = "listYear", required = true) String year, Model model) {
 		List<CycleDTO> dtos = null;
-		if(StringUtils.isNotEmpty(year) && !(JaeConstants.ALL.equalsIgnoreCase(year))) {
+		if(StringUtils.isNotEmpty(year) && !("0".equalsIgnoreCase(year))) {
 			int yearParam = Integer.parseInt(year);
 			dtos = cycleService.listCycles(yearParam);
 		}else{

@@ -201,26 +201,51 @@ function updateEditActiveValue(checkbox) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/onlineSession/filterSession">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<div class="col-md-1">
+						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-2">
+						<label for="listYear" class="label-form">Academic Year</label>
 						<select class="form-control" id="listYear" name="listYear">
 							<%
 								Calendar now = Calendar.getInstance();
 								int currentYear = now.get(Calendar.YEAR);
 								int nextYear = currentYear + 1;
 							%>
-							<option value="All">All</option>
-							<!-- <option value="<%= nextYear %>">Academic Year <%= (nextYear%100) %>/<%= (nextYear%100)+1 %></option> -->
+							<option value="0">All</option>
 							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
@@ -232,11 +257,13 @@ function updateEditActiveValue(checkbox) {
 							%>
 						</select>
 					</div>
-					<div class="offset-md-5"></div>
+					<div class="offset-md-6"></div>
 					<div class="col mx-auto">
+						<label for="listState" class="label-form text-white">0</label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
+						<label for="listState" class="label-form text-white">0</label>
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerOnlineSessionModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
@@ -248,15 +275,15 @@ function updateEditActiveValue(checkbox) {
 							<table id="onlineListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Grade</th>
-										<th>Academic Year</th>
-										<th>Day</th>
-										<th>Week</th>
-										<th>Start Time</th>
-										<th>End Time</th>
-										<th>Access URL</th>
-										<th data-orderable="false">Activated</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">Grade</th>
+										<th class="text-center align-middle">Academic Year</th>
+										<th class="text-center align-middle">Day</th>
+										<th class="text-center align-middle">Week</th>
+										<th class="text-center align-middle">Start Time</th>
+										<th class="text-center align-middle">End Time</th>
+										<th class="text-center align-middle">Access URL</th>
+										<th class="text-center align-middle" data-orderable="false">Activated</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -264,7 +291,7 @@ function updateEditActiveValue(checkbox) {
 										<c:when test="${OnlineList != null}">
 											<c:forEach items="${OnlineList}" var="online">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${online.grade == '1'}">P2</c:when>
@@ -291,32 +318,32 @@ function updateEditActiveValue(checkbox) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															Year <c:out value="${online.year}" />/<c:out value="${online.year+1}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span class="text-capitalize">
 															<c:out value="${online.day}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${online.week}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${online.startTime}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${online.endTime}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 150px;">
+													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
 															<c:out value="${online.address}" />
 														</span>
@@ -324,17 +351,17 @@ function updateEditActiveValue(checkbox) {
 													<c:set var="active" value="${online.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-secondary"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveOnlineInfo('${online.id}')">
 														</i>
 													</td>

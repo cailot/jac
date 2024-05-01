@@ -333,8 +333,32 @@ window.showWarning = function(id) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="userList" method="get"
 			action="${pageContext.request.contextPath}/user/list">
@@ -360,13 +384,13 @@ window.showWarning = function(id) {
 						</select>
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-2">
+					<div class="offset-md-3">
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
 						<label class="label-form-white">Registration</label> 
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal">
 							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
@@ -381,57 +405,55 @@ window.showWarning = function(id) {
 							<table id="userListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Username</th>
-										<th>Last Name</th>
-										<th>First Name</th>
-										<th>Role</th>
-										<th>Phone</th>
-										<th>Email</th>
-										<th>State</th>
-										<th>Branch</th>
-										<th data-orderable="false">Enabled</th>
-										<th data-orderable="false">Action</th>
+										<th class="align-middle text-center">Username</th>
+										<th class="align-middle text-center">Last Name</th>
+										<th class="align-middle text-center">First Name</th>
+										<th class="align-middle text-center">Role</th>
+										<th class="align-middle text-center">Phone</th>
+										<th class="align-middle text-center">Email</th>
+										<th class="align-middle text-center">State</th>
+										<th class="align-middle text-center">Branch</th>
+										<th class="align-middle text-center" data-orderable="false">Enabled</th>
+										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-teacher-body">
 									<c:choose>
 										<c:when test="${UserList != null}">
-
 											<c:forEach items="${UserList}" var="user">
-
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${user.username}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${user.lastName}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${user.firstName}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:set var="roleArray" value="${fn:split(user.role, '_')}" />
         													<c:out value="${roleArray[1]}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${user.phone}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${user.email}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${user.state == '1'}">Victoria</c:when>
@@ -446,7 +468,7 @@ window.showWarning = function(id) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${user.branch == '12'}">Box Hill</c:when>
@@ -481,17 +503,17 @@ window.showWarning = function(id) {
 													<c:set var="active" value="${user.enabled}" />
 													<c:choose>
 														<c:when test="${active == 0}">
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success" title="Enabled"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-secondary" title="Disabled"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td>
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveUserInfo('${user.username}')"></i>&nbsp;
 														<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
 														<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Suspend" onclick="showWarning('${user.username}')"></i>
