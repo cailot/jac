@@ -229,36 +229,27 @@ function clearStudentInfo() {
 </script>
 
 <style>
-	#studentInvoiceTable th, tr {
-		padding: 15px;
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
 	}
-	#studentInvoiceTable tfoot tr th {
-    	border: none !important;
-	}
-	#studentInvoice .form-row {
-  		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-	div.dataTables_filter {
-		padding-top: 35px;
-		padding-bottom: 35px;
-	}
+
 	div.dt-buttons {
 		padding-top: 35px;
 		padding-bottom: 10px;
 	}
-	div.dataTables_length{
-		padding-top: 40px;
-		padding-bottom: 10px;
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
 	}
+
 	tr { height: 50px } 
-
-
 </style>
 
-
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="studentInvoice" method="get" action="${pageContext.request.contextPath}/invoice/history">
 			<div class="form-group">
@@ -279,13 +270,13 @@ function clearStudentInfo() {
 						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
 					</div>
 					<!-- put blank col-md-2 -->
-					<div class="offset-md-2">
+					<div class="offset-md-3">
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="button" class="btn btn-primary btn-block" onclick="return searchStudent()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
 						<label class="label-form-white">Clear</label> 
 						<button type="button" class="btn btn-block btn-success" onclick="clearStudentInfo()"><i class="bi bi-arrow-clockwise"></i>&nbsp;&nbsp;Clear</button>
 					</div>
@@ -346,15 +337,15 @@ function clearStudentInfo() {
 								<thead class="table-primary">
 									<tr>
 										<th style="display: none;">ID</th>
-										<th class="small align-middle text-center">Invoice ID</th>
-										<th class="small align-middle text-center">Payment Date</th>
-										<th class="small align-middle text-center">Method</th>
-										<th class="small align-middle text-center">Total</th>
-										<th class="small align-middle text-center">Remaining</th>
-										<th class="small align-middle text-center">Paid</th>
-										<th class="small align-middle text-center">Enrolled Course Information</th>
-										<th class="small align-middle text-center" data-orderable="false">Note</th>
-										<th class="small align-middle text-center" data-orderable="false">Receipt</th>
+										<th class="align-middle text-center">Invoice ID</th>
+										<th class="align-middle text-center">Payment Date</th>
+										<th class="align-middle text-center">Method</th>
+										<th class="align-middle text-center">Total</th>
+										<th class="align-middle text-center">Remaining</th>
+										<th class="align-middle text-center">Paid</th>
+										<th class="align-middle text-center">Enrolled Course Information</th>
+										<th class="align-middle text-center" data-orderable="false">Note</th>
+										<th class="align-middle text-center" data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
 								<tbody>

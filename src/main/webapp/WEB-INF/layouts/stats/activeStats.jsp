@@ -646,7 +646,7 @@ function updateChart(){
 	</div>
 </div>
 <div class="container pt-5" id="instruction">
-	<div class="alert alert-info" role="alert">
+	<div class="alert alert-info p-4" role="alert">
 		<h5>
 			<i class="bi bi-calendar-range-fill fa-lg"></i>&nbsp;&nbsp;Please choose <strong>Date Range</strong> and click <strong>Search</strong> button.
 		</h5>

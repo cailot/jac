@@ -217,8 +217,32 @@ function updateEditActiveValue(checkbox) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterHomework">
 			<div class="form-group">
@@ -306,15 +330,15 @@ function updateEditActiveValue(checkbox) {
 							<table id="homeworkListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Subject</th>
-										<th>Grade</th>
-										<th>Academic Year</th>
-										<th>Week</th>
-										<th>Video Path</th>
-										<th>Document Path</th>
-										<th>Information</th>
-										<th data-orderable="false">Activated</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">Subject</th>
+										<th class="text-center align-middle">Grade</th>
+										<th class="text-center align-middle">Academic Year</th>
+										<th class="text-center align-middle">Week</th>
+										<th class="text-center align-middle">Video Path</th>
+										<th class="text-center align-middle">Document Path</th>
+										<th class="text-center align-middle">Information</th>
+										<th class="text-center align-middle" data-orderable="false">Activated</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -322,7 +346,7 @@ function updateEditActiveValue(checkbox) {
 										<c:when test="${HomeworkList != null}">
 											<c:forEach items="${HomeworkList}" var="homework">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${homework.subject == '1'}">English</c:when>
@@ -342,7 +366,7 @@ function updateEditActiveValue(checkbox) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${homework.grade == '1'}">P2</c:when>
@@ -369,27 +393,27 @@ function updateEditActiveValue(checkbox) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															Year <c:out value="${homework.year}" />/<c:out value="${homework.year+1}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${homework.week}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 150px;">
+													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
 															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 150px;">
+													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
 															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${homework.info}" />
 														</span>
@@ -397,17 +421,17 @@ function updateEditActiveValue(checkbox) {
 													<c:set var="active" value="${homework.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
-															<td class="text-center">
+															<td class="align-middle text-center">
 																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="align-middle text-center">
 																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveHomeworkInfo('${homework.id}')">
 														</i>
 													</td>

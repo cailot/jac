@@ -71,13 +71,13 @@ public class OnlineSessionController {
 		List<OnlineSessionDTO> dtos = new ArrayList();
 		String filteredGrade = StringUtils.defaultString(grade);
 		String filteredYear = StringUtils.defaultString(year, "0");
-	    if (JaeConstants.ALL.equalsIgnoreCase(filteredGrade) && JaeConstants.ALL.equalsIgnoreCase(filteredYear)) {
+	    if ("0".equalsIgnoreCase(filteredGrade) && "0".equalsIgnoreCase(filteredYear)) {
 			// grade & year = all
 			dtos = onlineSessionService.allOnlineSessions();
-		} else if (JaeConstants.ALL.equalsIgnoreCase(filteredGrade)) {
+		} else if ("0".equalsIgnoreCase(filteredGrade)) {
 			// grade = all, year = some
 			dtos = onlineSessionService.filterOnlineSessionByYear(Integer.parseInt(filteredYear));
-		} else if (JaeConstants.ALL.equalsIgnoreCase(filteredYear)) {
+		} else if ("0".equalsIgnoreCase(filteredYear)) {
 			// grade = some, year = all
 			dtos = onlineSessionService.filterOnlineSessionByGrade(grade);
 		} else {

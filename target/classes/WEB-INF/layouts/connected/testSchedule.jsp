@@ -388,13 +388,37 @@ function deleteTestSchedule(id) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="scheduleList" method="get" action="${pageContext.request.contextPath}/connected/filterTestSchedule">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-4">
+					<div class="col-md-2">
 						<label for="listYear" class="label-form">Academic Year</label>
 						<select class="form-control" id="listYear" name="listYear">
 							<option value="0">All</option>
@@ -413,7 +437,7 @@ function deleteTestSchedule(id) {
 							%>
 						</select>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-2">
 						<label for="listWeek" class="label-form">Set Schedule</label>
 						<select class="form-control" id="listWeek" name="listWeek">
 						</select>
@@ -451,7 +475,7 @@ function deleteTestSchedule(id) {
 							}
 						</script>
 					</div>
-					<!-- <div class="offset-md-1"></div> -->
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -469,13 +493,13 @@ function deleteTestSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Academic Year</th>
-										<th>Set</th>
-										<th>Start</th>
-										<th>End</th>
-										<th>Information</th>
-										<th data-orderable="false">Activated</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">Academic Year</th>
+										<th class="text-center align-middle">Set</th>
+										<th class="text-center align-middle">Start</th>
+										<th class="text-center align-middle">End</th>
+										<th class="text-center align-middle">Information</th>
+										<th class="text-center align-middle" data-orderable="false">Activated</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -483,12 +507,12 @@ function deleteTestSchedule(id) {
 										<c:when test="${TestScheduleList != null}">
 											<c:forEach items="${TestScheduleList}" var="scheduleItem">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															Academic Year <c:out value="${scheduleItem.year}" />/<c:out value="${scheduleItem.year+1}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${scheduleItem.week == 10}">End of Volume 1 (10)</c:when>
@@ -500,17 +524,17 @@ function deleteTestSchedule(id) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${scheduleItem.startDate}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${scheduleItem.endDate}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="min-width: 300px;">
+													<td class="small align-middle text-truncate" style="min-width: 300px;">
 														<span>
 															<c:out value="${scheduleItem.info}" />
 														</span>
@@ -518,17 +542,17 @@ function deleteTestSchedule(id) {
 													<c:set var="active" value="${scheduleItem.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit Practice Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
 														</i>
 														&nbsp;&nbsp;

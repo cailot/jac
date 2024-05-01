@@ -347,8 +347,29 @@ function activateStudent(id) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { height: 50px } 
+</style>
+
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/list">
 			<div class="form-group">
@@ -415,19 +436,19 @@ function activateStudent(id) {
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th>ID</th>
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Grade</th>
-										<th>Gender</th>
-										<th>Register Date</th>
-										<th>Start</th>
-										<th>End</th>
-										<th>Main Email</th>
-										<th>Main Contact</th>
-										<th>Sub Email</th>
-										<th>Sub Contact</th>
-										<th data-orderable="false">Action</th>
+										<th class="align-middle text-center">ID</th>
+										<th class="align-middle text-center">First Name</th>
+										<th class="align-middle text-center">Last Name</th>
+										<th class="align-middle text-center">Grade</th>
+										<th class="align-middle text-center">Gender</th>
+										<th class="align-middle text-center">Register Date</th>
+										<th class="align-middle text-center">Start</th>
+										<th class="align-middle text-center">End</th>
+										<th class="align-middle text-center">Main Email</th>
+										<th class="align-middle text-center">Main Contact</th>
+										<th class="align-middle text-center">Sub Email</th>
+										<th class="align-middle text-center">Sub Contact</th>
+										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
@@ -435,10 +456,10 @@ function activateStudent(id) {
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
 											<tr>
-												<td class="small ellipsis" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small ellipsis">
+												<td class="small align-middle" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
+												<td class="small align-middle">
 													<span>
 														<c:choose>
 															<c:when test="${student.grade == '1'}">P2</c:when>
@@ -465,19 +486,19 @@ function activateStudent(id) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="small ellipsis"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small ellipsis">
+												<td class="small align-middle"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<td class="small align-middle">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
-												<td class="small ellipsis"><span><c:out value="${student.startWeek}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${student.endWeek}" /></span></td>	
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
-												<td class="small ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
+												<td class="small align-middle"><span><c:out value="${student.startWeek}" /></span></td>
+												<td class="small align-middle"><span><c:out value="${student.endWeek}" /></span></td>	
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
 												<td>
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
