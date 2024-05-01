@@ -155,24 +155,47 @@ function clearCourseForm(elementId) {
 	document.getElementById(elementId).reset();
 }
 
-
 </script>
+
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { height: 50px } 
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="courseList" method="get" action="${pageContext.request.contextPath}/class/listCourse">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-3">
+					<div class="col-md-2">
+						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All Grade</option>
 						</select>
 					</div>
-					<div class="offset-md-4"></div>
+					<div class="offset-md-7"></div>
 					<div class="col mx-auto">
+						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
+						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerCourseModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
@@ -183,11 +206,11 @@ function clearCourseForm(elementId) {
 						<div class="table-wrap">
 							<table id="courseListTable" class="table table-striped table-bordered"><thead class="table-primary">
 									<tr>
-										<th>Name</th>
-										<th>Description</th>
-										<th>Grade</th>
-										<th data-orderable="false">Type</th>
-										<th data-orderable="false">Action</th>
+										<th class="align-middle text-center">Name</th>
+										<th class="align-middle text-center">Description</th>
+										<th class="align-middle text-center">Grade</th>
+										<th class="align-middle text-center" data-orderable="false">Type</th>
+										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -195,9 +218,9 @@ function clearCourseForm(elementId) {
 									<c:when test="${CourseList != null}">
 										<c:forEach items="${CourseList}" var="course">
 											<tr>
-												<td class="small ellipsis"><span><c:out value="${course.name}" /></span></td>
-												<td class="small ellipsis"><span><c:out value="${course.description}" /></span></td>
-												<td class="small ellipsis">
+												<td class="small align-middle"><span><c:out value="${course.name}" /></span></td>
+												<td class="small align-middle"><span><c:out value="${course.description}" /></span></td>
+												<td class="small align-middle">
 													<span>
 														<c:choose>
 															<c:when test="${course.grade == '1'}">P2</c:when>
@@ -224,7 +247,7 @@ function clearCourseForm(elementId) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="text-center">
+												<td class="text-center align-middle">
 													<c:choose>
 														<c:when test="${course.online}">
 															<i class="bi bi-display" title="Online"></i>
@@ -235,7 +258,7 @@ function clearCourseForm(elementId) {
 													</c:choose>
 													
 												</td>
-												<td class="text-center">
+												<td class="text-center align-middle">
 													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;
 												</td>
 											</tr>

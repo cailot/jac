@@ -160,38 +160,56 @@
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/class/listCycle">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
+						<label for="listYear" class="label-form">Academic Year</label>
 						<select class="form-control" id="listYear" name="listYear">
 							<%
 								Calendar now = Calendar.getInstance();
 								int currentYear = now.get(Calendar.YEAR);
 								int nextYear = currentYear + 1;
 							%>
-							<option value="All">All</option>
-							<option value="<%= nextYear %>"><%= nextYear %></option>
-							<option value="<%= currentYear %>"><%= currentYear %></option>
+							<option value="0">All</option>
+							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
 								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
 							%>
-								<option value="<%= i %>"><%= i %></option>
+								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
 							<%
 							}
 							%>
 						</select>
 					</div>
-					<div class="offset-md-6"></div>
+					<div class="offset-md-7"></div>
 					<div class="col mx-auto">
-						<button type="submit" class="btn btn-primary btn-block"> <i
-								class="bi bi-search"></i>&nbsp;Search</button>
+						<label class="label-form text-white">0</label>
+						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
+						<label class="label-form text-white">0</label>
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerCycleModal">
 							<i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
@@ -204,13 +222,13 @@
 							<table id="cycleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Year</th>
-										<th>Description</th>
-										<th>Start Date</th>
-										<th>End Date</th>
-										<th>Vacation Start</th>
-										<th>Vacation End</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">Year</th>
+										<th class="text-center align-middle">Description</th>
+										<th class="text-center align-middle">Start Date</th>
+										<th class="text-center align-middle">End Date</th>
+										<th class="text-center align-middle">Vacation Start</th>
+										<th class="text-center align-middle">Vacation End</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -218,30 +236,30 @@
 										<c:when test="${CycleList != null}">
 											<c:forEach items="${CycleList}" var="cycle">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<c:out value="${cycle.year}" />
 													</td>
-													<td class="small ellipsis"><span
+													<td class="small align-middle"><span
 															style="text-transform: capitalize;">
 															<c:out value="${cycle.description}" />
 														</span></td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="cycleStartDate" value="${cycle.startDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleStartDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="cycleEndDate" value="${cycle.endDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleEndDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="cycleVacationStartDate" value="${cycle.vacationStartDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleVacationStartDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="cycleVactionEndDate" value="${cycle.vacationEndDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleVactionEndDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg"
 															data-toggle="tooltip" title="Edit"
 															onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;

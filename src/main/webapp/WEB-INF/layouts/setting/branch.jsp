@@ -255,8 +255,16 @@ function showBranchInfo(state, branch){
 	});
 }
 
-
 </script>
+
+<style>
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
 
 <sec:authorize access="isAuthenticated()">
 <sec:authentication var="role" property='principal.authorities'/>
@@ -265,20 +273,23 @@ function showBranchInfo(state, branch){
 	<c:choose>
 		<c:when test="${role == '[Administrator]'}">
 			<!-- List Body -->
-			<div class="row">
+			<div class="row container-fluid m-5">
 				<div class="modal-body">
 					<form id="branchList" method="get" action="${pageContext.request.contextPath}/code/listBranch">
 						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-3">
+							<div class="form-row mb-5">
+								<div class="col-md-2">
+									<label for="listState" class="label-form">State</label>
 									<select class="form-control" id="listState" name="listState" disabled>
 									</select>
 								</div>
-								<div class="offset-md-4"></div>
+								<div class="offset-md-7"></div>
 								<div class="col mx-auto">
+									<label class="label-form"><span style="color: white;">0</span></label>
 									<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 								</div>
 								<div class="col mx-auto">
+									<label class="label-form"><span style="color: white;">0</span></label>
 									<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerBranchModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 								</div>
 							</div>
@@ -290,14 +301,14 @@ function showBranchInfo(state, branch){
 										<table id="branchListTable" class="table table-striped table-bordered">
 											<thead class="table-primary">
 												<tr>
-													<th>Code</th>
-													<th>State</th>
-													<th>Name</th>
-													<th>Phone</th>
-													<th>Email</th>
-													<th>Address</th>
-													<th>ABN</th>
-													<th data-orderable="false">Action</th>
+													<th class="text-center align-middle">Code</th>
+													<th class="text-center align-middle">State</th>
+													<th class="text-center align-middle">Name</th>
+													<th class="text-center align-middle">Phone</th>
+													<th class="text-center align-middle">Email</th>
+													<th class="text-center align-middle">Address</th>
+													<th class="text-center align-middle">ABN</th>
+													<th class="text-center align-middle" data-orderable="false">Action</th>
 												</tr>
 											</thead>
 											<tbody id="list-class-body">
@@ -305,10 +316,10 @@ function showBranchInfo(state, branch){
 													<c:when test="${BranchList != null}">
 														<c:forEach items="${BranchList}" var="branch">
 															<tr>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<c:out value="${branch.code}" />
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<span style="text-transform: capitalize;">
 																		<c:choose>
 																		<c:when test="${branch.stateId eq '1'}">Victoria</c:when>
@@ -323,30 +334,29 @@ function showBranchInfo(state, branch){
 																		</c:choose>
 																	</span>
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<span style="text-transform: capitalize;">
 																		<c:out value="${branch.name}" />
 																	</span>
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<c:out value="${branch.phone}" />
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<c:out value="${branch.email}" />
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<c:out value="${branch.address}" />
 																</td>
-																<td class="small ellipsis">
+																<td class="small align-middle">
 																	<c:out value="${branch.abn}" />
 																</td>
-																<td class="text-center">
+																<td class="text-center align-middle">
 																	<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
 																	<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
 																</td>
 															</tr>
 														</c:forEach>
-
 													</c:when>
 												</c:choose>
 											</tbody>

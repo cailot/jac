@@ -188,19 +188,43 @@ function updateEditActiveValue(checkbox) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="extraworkList" method="get" action="${pageContext.request.contextPath}/connected/filterExtrawork">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="All">All</option>
 						</select>
 					</div>
-					<div class="offset-md-5"></div>
+					<div class="offset-md-8"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -218,12 +242,12 @@ function updateEditActiveValue(checkbox) {
 							<table id="extraworkListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>Name</th>
-										<th>Grade</th>
-										<th>Video Path</th>
-										<th>Document Path</th>
-										<th data-orderable="false">Activated</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">Name</th>
+										<th class="text-center align-middle">Grade</th>
+										<th class="text-center align-middle">Video Path</th>
+										<th class="text-center align-middle">Document Path</th>
+										<th class="text-center align-middle" data-orderable="false">Activated</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -231,12 +255,12 @@ function updateEditActiveValue(checkbox) {
 										<c:when test="${ExtraworkList != null}">
 											<c:forEach items="${ExtraworkList}" var="extrawork">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${extrawork.name}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${extrawork.grade == '1'}">P2</c:when>
@@ -263,12 +287,12 @@ function updateEditActiveValue(checkbox) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 200px;">
+													<td class="small align-middle text-truncate" style="max-width: 200px;">
 														<span>
 															<c:out value="${extrawork.videoPath}" />
 														</span>
 													</td>
-													<td class="small text-truncate" style="max-width: 200px;">
+													<td class="small align-middle text-truncate" style="max-width: 200px;">
 														<span>
 															<c:out value="${extrawork.pdfPath}" />
 														</span>
@@ -276,17 +300,17 @@ function updateEditActiveValue(checkbox) {
 													<c:set var="active" value="${extrawork.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveExtraworkInfo('${extrawork.id}')">
 														</i>
 													</td>

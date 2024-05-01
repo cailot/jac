@@ -508,29 +508,56 @@ function clearPassword() {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="teacherList" method="get"
 			action="${pageContext.request.contextPath}/teacher/list">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
+						<label for="listState" class="label-form">State</label>
 						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
+						<label for="listBranch" class="label-form">Branch</label>
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="0">All Branch</option>
 						</select>
 					</div>
-					<!-- put blank col-md-2 -->
-					<div class="offset-md-4">
+					<div class="offset-md-5">
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
+						<label class="label-form-white">0</label> 
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
-					<div class="col-md-2">
+					<div class="col md-auto">
+						<label class="label-form-white">0</label> 
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal">
 							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
 						</button>
@@ -544,67 +571,61 @@ function clearPassword() {
 							<table id="teacherListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<!-- <th>ID</th> -->
-										<th>First Name</th>
-										<th>Last Name</th>
-										<th>Title</th>
-										<th>Phone</th>
-										<th>Email</th>
-										<th>Address</th>
-										<th>TFN</th>
-										<th>VIT/WWCC</th>
-										<th>Start Date</th>
-										<th>End Date</th>
-										<th data-orderable="false">Action</th>
+										<th class="text-center align-middle">First Name</th>
+										<th class="text-center align-middle">Last Name</th>
+										<th class="text-center align-middle">Title</th>
+										<th class="text-center align-middle">Phone</th>
+										<th class="text-center align-middle">Email</th>
+										<th class="text-center align-middle">Address</th>
+										<th class="text-center align-middle">TFN</th>
+										<th class="text-center align-middle">VIT/WWCC</th>
+										<th class="text-center align-middle">Start Date</th>
+										<th class="text-center align-middle">End Date</th>
+										<th class="text-center align-middle" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-teacher-body">
 									<c:choose>
 										<c:when test="${TeacherList != null}">
-
 											<c:forEach items="${TeacherList}" var="teacher">
-
 												<tr>
-													<!-- <td class="small ellipsis" id="teacherId" name="teacherId"><span>
-															<c:out value="${teacher.id}" />
-														</span></td> -->
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.firstName}" />
 														</span></td>
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.lastName}" />
 														</span></td>
 													<td class="small text-capitalize align-middle">
 														<c:out value="${teacher.title}" />
 													</td>
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.phone}" />
 														</span></td>
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.email}" />
 														</span></td>
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.address}" />
 														</span></td>
-													<td class="small ellipsis"><span>
+													<td class="small align-middle"><span>
 															<c:out value="${teacher.tfn}" />
 														</span></td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${teacher.vitNumber}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="teacherStartDate" value="${teacher.startDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${teacherStartDate}" pattern="dd/MM/yyyy" />
 											
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<fmt:parseDate var="teacherEndDate" value="${teacher.endDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${teacherEndDate}" pattern="dd/MM/yyyy" />
 									
 													</td>
-													<td>
+													<td class="align-middle text-center">
 														<i class="bi bi-pencil-square text-primary"
 															data-toggle="tooltip" title="Edit"
 															onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;

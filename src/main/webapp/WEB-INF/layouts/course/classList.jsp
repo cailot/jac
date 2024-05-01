@@ -292,27 +292,55 @@ function editInitialiseCourseByGrade(grade, courseId) {
 
 </script>
 
+<style>
+	div.dataTables_length{
+		padding-left: 50px;
+		padding-top: 40px;
+		padding-bottom: 10px;
+	}
+
+	div.dt-buttons {
+		padding-top: 35px;
+		padding-bottom: 10px;
+	}
+
+	div.dataTables_filter {
+		padding-top: 35px;
+		padding-bottom: 35px;
+	}
+
+	tr { 
+		vertical-align: middle;
+		height: 50px 	
+	} 
+
+</style>
+
 <!-- List Body -->
-<div class="row">
+<div class="row container-fluid m-5">
 	<div class="modal-body">
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/class/listClass">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
+						<label for="listState" class="label-form">State</label>
 						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
+						<label for="listBranch" class="label-form">Branch</label>
 						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<div class="col-md-1">
+						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
+						<label for="listYear" class="label-form">Year</label>
 						<select class="form-control" id="listYear" name="listYear">
 							<%
 								Calendar now = Calendar.getInstance();
@@ -331,19 +359,21 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							%>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
+						<label for="listType" class="label-form">Type</label>
 						<select class="form-control" id="listType" name="listType">
 							<option value="0">All</option>
 							<option value="Onsite">Onsite</option>
 							<option value="Online">Online</option>
 						</select>
 					</div>
-					
-					<div class="offset-md-1"></div>
+					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
+						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
+						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
@@ -355,17 +385,17 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							<table id="classListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th>State</th>
-										<th>Branch</th>
-										<th>Grade</th>
-										<th>Name</th>
-										<th>Description</th>
-										<th>Start Date</th>
-										<th>Day</th>
-										<th>Year</th>
-										<th>Price</th>
-										<th data-orderable="false">Activated</th>
-										<th data-orderable="false">Action</th>
+										<th class="align-middle text-center">State</th>
+										<th class="align-middle text-center">Branch</th>
+										<th class="align-middle text-center">Grade</th>
+										<th class="align-middle text-center">Name</th>
+										<th class="align-middle text-center">Description</th>
+										<th class="align-middle text-center">Start Date</th>
+										<th class="align-middle text-center">Day</th>
+										<th class="align-middle text-center">Year</th>
+										<th class="align-middle text-center">Price</th>
+										<th class="align-middle text-center" data-orderable="false">Activated</th>
+										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -373,7 +403,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<c:when test="${ClassList != null}">
 											<c:forEach items="${ClassList}" var="clazz">
 												<tr>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span style="text-transform: capitalize;">
 														  <c:choose>
 															<c:when test="${clazz.state eq '1'}">Victoria</c:when>
@@ -388,7 +418,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 														  </c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span style="text-transform: capitalize;">
 															<c:choose>
 															<c:when test="${clazz.branch eq '12'}">Box Hill</c:when>
@@ -420,7 +450,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:choose>
 																<c:when test="${clazz.grade == '1'}">P2</c:when>
@@ -447,33 +477,33 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${clazz.name}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${clazz.description}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<fmt:parseDate var="clazzStartDate" value="${clazz.startDate}" pattern="yyyy-MM-dd" />
 															<fmt:formatDate value="${clazzStartDate}" pattern="dd/MM/yyyy" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>
 															<c:out value="${clazz.day}" />
 														</span>
 													</td>
-													<td class="small ellipsis">
+													<td class="small align-middle">
 														<span>Academic Year
 															<c:out value="${clazz.year%100}/${clazz.year%100+1}" />
 														</span>
 													</td>
-													<td class="small text-right">
+													<td class="small align-middle text-right">
 														<span>
 															<fmt:formatNumber value="${clazz.price}" type="number" minFractionDigits="2" maxFractionDigits="2" />
 														</span>
@@ -481,17 +511,17 @@ function editInitialiseCourseByGrade(grade, courseId) {
 													<c:set var="active" value="${clazz.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
-															<td class="text-center">
+															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-secondary"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center">
+													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
 														</i>
 													</td>

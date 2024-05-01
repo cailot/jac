@@ -231,8 +231,9 @@ function clearAttendanceInfo() {
 		padding-right: 10px !important;
 	}
 
+	
 	div.dataTables_wrapper {
-		width: 1200px;
+		width: 1600px;
 		margin: 0 auto;
 	}
 
@@ -261,7 +262,7 @@ function clearAttendanceInfo() {
 </style>
 
 <!-- List Body -->
-<div class="row" style="max-width: 80%;">
+<div class="row container-fluid ml-5 mr-5 mb-5 mt-4">
 	<div class="modal-body">
 		<form id="studentAttend" method="get" action="${pageContext.request.contextPath}/attendance/search">
 			<div class="form-group">
@@ -488,9 +489,7 @@ function clearAttendanceInfo() {
 							</c:when>
 							<c:otherwise>
 								<c:set var="weekSize" value="${fn:length(weekHeader)}" />
-
-								<table id="attendanceTable" class="table table-bordered"
-									style="width: 100%;">
+								<table id="attendanceTable" class="table table-bordered">
 									<thead class="table-primary">
 										<tr>
 											<th class="small text-center align-middle" rowspan="2"
