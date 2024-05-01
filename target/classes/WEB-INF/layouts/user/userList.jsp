@@ -368,7 +368,7 @@ window.showWarning = function(id) {
 					</div>
 					<div class="col-md-2">
 						<label class="label-form-white">Registration</label> 
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerModal">
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal">
 							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
 						</button>
 					</div>
@@ -515,12 +515,12 @@ window.showWarning = function(id) {
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog"
 	aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">User Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">User Registration</header>
 					<form id="userRegister">
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-5">
 								<label for="addState" class="label-form">State</label>
 								<select class="form-control" id="addState" name="addState" disabled>
@@ -532,7 +532,7 @@ window.showWarning = function(id) {
 								</select>
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-6">
 								<label for="addFirstName" class="label-form">First Name:</label>
 								<input type="text" class="form-control" id="addFirstName"
@@ -544,7 +544,7 @@ window.showWarning = function(id) {
 									name="addLastName">
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-7">
 								<label for="addPassword" class="label-form">Password</label>
 								<input type="text" class="form-control" id="addPassword" name="addPassword">
@@ -557,7 +557,7 @@ window.showWarning = function(id) {
 								</select>
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-6">
 								<label for="addEmail" class="label-form">Email</label>
 								<input type="text" class="form-control" id="addEmail"
@@ -571,7 +571,7 @@ window.showWarning = function(id) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addUser()">Register</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addUser()">Register</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-secondary"	data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -586,12 +586,12 @@ window.showWarning = function(id) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">User Edit</header>
 					<form id="userEdit">
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-3">
 								<label for="editUsername" class="label-form">Username</label>
 								<input type="text" class="form-control" id="editUsername" name="editUsername" readonly>
@@ -607,7 +607,7 @@ window.showWarning = function(id) {
 								</select>
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-3">
 							<div class="col-md-4">
 								<label for="editFirstName" class="label-form">First Name</label>
 								<input type="text" class="form-control" id="editFirstName" name="editFirstName">
@@ -680,9 +680,9 @@ window.showWarning = function(id) {
 <!-- Password Reset Dialogue -->
 <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-warning">
             <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;User Password Reset</h4>
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;User Password Reset</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -708,8 +708,8 @@ window.showWarning = function(id) {
 				<input type="hidden" id="passwordId" name="passwordId"/>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
             </div>
     	</div>
 	</div>
@@ -718,7 +718,7 @@ window.showWarning = function(id) {
 <!-- Delete Dialogue -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
                <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;User Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -727,8 +727,8 @@ window.showWarning = function(id) {
                 <p> Do you want to delete this user ?</p>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-x"></i>Delete</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i> Close</button>
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-check-circle"></i>&nbsp;Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
 	</div>

@@ -295,7 +295,7 @@ function updateEditActiveValue(checkbox) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerHomeworkModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerHomeworkModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -428,13 +428,13 @@ function updateEditActiveValue(checkbox) {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Homework Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Homework Registration</header>
 					<form id="homeworkRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-3">
 									<label for="addSubject" class="label-form">Subject</label>
 									<select class="form-control" id="addSubject" name="addSubject">
@@ -502,7 +502,7 @@ function updateEditActiveValue(checkbox) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12">
+								<div class="col-md-12 mb-4">
 									<label for="addInfo" class="label-form">Information</label>
 									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
 								</div>
@@ -510,7 +510,7 @@ function updateEditActiveValue(checkbox) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addHomework()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addHomework()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearHomeworkForm('homeworkRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -522,13 +522,13 @@ function updateEditActiveValue(checkbox) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Homework Edit</header>
 					<form id="homeworkEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-3">
 									<label for="editSubject" class="label-form">Subject</label>
 									<select class="form-control" id="editSubject" name="editSubject" disabled>

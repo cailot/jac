@@ -464,7 +464,7 @@ function collectAndSubmitAnswers() {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -587,13 +587,13 @@ function collectAndSubmitAnswers() {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerTestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Test Registration</header>
 					<form id="testRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-8">
 									<label for="addTestType" class="label-form">Test Type</label>
 									<select class="form-control" id="addTestType" name="addTestType">
@@ -626,7 +626,7 @@ function collectAndSubmitAnswers() {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mb-4">
 								<div class="col-md-12">
 									<label for="addPdfPath" class="label-form">Document Path</label>
 									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
@@ -643,7 +643,7 @@ function collectAndSubmitAnswers() {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addTest()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addTest()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -655,13 +655,13 @@ function collectAndSubmitAnswers() {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editTestModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Test Edit</header>
 					<form id="practiceEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-8">
 									<label for="editTestType" class="label-form">Test Type</label>
 									<select class="form-control" id="editTestType" name="editTestType" disabled>
@@ -732,10 +732,10 @@ function collectAndSubmitAnswers() {
 <!-- Add Answer Form Dialogue -->
 <div class="modal fade" id="registerTestAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-success">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Answer Sheet</header>
+				<section class="fieldset rounded border-success">
+					<header class="text-success font-weight-bold">Test Answer Sheet</header>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
@@ -769,7 +769,7 @@ function collectAndSubmitAnswers() {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="form-row align-items-center mb-4" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="col-md-3">
 									<label for="answerQuestionNumber" class="label-form">Number</label>
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
@@ -801,7 +801,7 @@ function collectAndSubmitAnswers() {
 						<input type="hidden" id="answerId" name="answerId" />
 						<input type="hidden" id="testId4Answer" name="testId4Answer" />
 					<div class="mt-4 d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-success" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>

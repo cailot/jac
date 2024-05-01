@@ -172,14 +172,18 @@ function updateStudentInfo(){
 										<option value=""></option>
 									</select>
 								</div>
-								<div class="offset-md-2"></div>
+								<div class="offset-md-1"></div>
 								<div class="col mx-auto">
 									<label class="label-form-white">Search</label> 
 									<button type="submit" class="btn btn-secondary btn-block" disabled> <i class="bi bi-search"></i>&nbsp;Search</button>
 								</div>
 								<div class="col mx-auto">
 									<label class="label-form-white">Upgrade</label> 
-									<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#confirmModal"><i class="bi bi bi-arrow-up-circle"></i>&nbsp;Grade Upgrade</button>
+									<button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#confirmModal"><i class="bi bi bi-arrow-up-circle"></i>&nbsp;Upgrade</button>
+								</div>
+								<div class="col mx-auto">
+									<label class="label-form-white">Clear</label> 
+									<button type="button" class="btn btn-block btn-success" onclick="window.location.href='${pageContext.request.contextPath}/studentGrade';"><i class="bi bi bi-arrow-clockwise"></i>&nbsp;Clear</button>
 								</div>
 							</c:otherwise>
 					</c:choose>

@@ -142,8 +142,7 @@
 			contentType: 'application/json',
 			success: function (value) {
 				// Display success alert
-				$('#success-alert .modal-body').text(
-					'ID : ' + cycleId + ' is updated successfully.');
+				$('#success-alert .modal-body').text('Academic cycle is updated successfully.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -193,7 +192,7 @@
 								class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerCycleModal">
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerCycleModal">
 							<i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
@@ -267,13 +266,12 @@
 <div class="modal fade" id="registerCycleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Adademic Cycle Registration</header>
-
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Adademic Cycle Registration</header>
 					<form id="cycleRegister">
-						<div class="form-row mt-3">
+						<div class="form-row mt-4">
 							<div class="offset-md-1"></div>
 							<div class="col-md-3">
 								<label for="addYear" class="label-form">Academic Year</label> 
@@ -308,7 +306,7 @@
 							</div>
 							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
+						<div class="form-row mt-3 mb-4">
 							<div class="offset-md-1"></div>
 							<div class="col-md-4">
 								<label for="addVacationStartDate" class="label-form">Vacation Start</label>
@@ -334,7 +332,7 @@
 						</script>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addCycle()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addCycle()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearFormData('cycleRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -347,13 +345,12 @@
 <div class="modal fade" id="editCycleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Academic Cycle Edit</header>
-
 					<form id="cycleEdit">
-						<div class="form-row mt-3">
+						<div class="form-row mt-4">
 							<div class="offset-md-1"></div>
 							<div class="col-md-3">
 								<label for="editYear" class="label-form">Academic Year</label> 
@@ -388,7 +385,7 @@
 							</div>
 							<div class="offset-md-1"></div>
 						</div>
-						<div class="form-row mt-3">
+						<div class="form-row mt-3 mb-4">
 							<div class="offset-md-1"></div>
 							<div class="col-md-4">
 								<label for="editVacationStartDate" class="label-form">Vacation Start</label>

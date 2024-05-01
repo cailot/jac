@@ -237,7 +237,7 @@ function updateEditActiveValue(checkbox) {
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerOnlineSessionModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerOnlineSessionModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -356,10 +356,10 @@ function updateEditActiveValue(checkbox) {
 <div class="modal fade" id="registerOnlineSessionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Online Session Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Online Session Registration</header>
 
 					<form id="onlineSessionRegister">
 						<div class="form-group">
@@ -446,7 +446,7 @@ function updateEditActiveValue(checkbox) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12">
+								<div class="col-md-12 mb-4">
 									<label for="addAddress" class="label-form">Access URL</label>
 									<input type="text" class="form-control" id="addAddress" name="addAddress" placeholder="https://" title="Please enter access address" />
 								</div>
@@ -454,10 +454,8 @@ function updateEditActiveValue(checkbox) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addOnline()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearClassForm('onlineSessionRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-info" onclick="addOnline()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearClassForm('onlineSessionRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -469,14 +467,13 @@ function updateEditActiveValue(checkbox) {
 <div class="modal fade" id="editOnlineModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Online Session Edit</header>
-
 					<form id="onlineEdit">
 						<div class="form-group">
-							<div class="form-row mt-2">
+							<div class="form-row mt-4">
 								<div class="col-md-2">
 									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
@@ -540,7 +537,7 @@ function updateEditActiveValue(checkbox) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mt-4">
 								<div class="col-md-4">
 									<input id="editStartTime" name="editStartTime" />
 								</div>
@@ -559,7 +556,7 @@ function updateEditActiveValue(checkbox) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mt-3 mb-4">
 								<div class="col-md-12">
 									<label for="editAddress" class="label-form">Access URL</label>
 									<input type="text" class="form-control" id="editAddress" name="editAddress" />

@@ -173,7 +173,7 @@ function clearCourseForm(elementId) {
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerCourseModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerCourseModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -256,10 +256,10 @@ function clearCourseForm(elementId) {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Course Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Course Registration</header>
 					<form id="courseRegister">
 						<div class="form-group mt-3">
 							<div class="form-row">
@@ -294,7 +294,7 @@ function clearCourseForm(elementId) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addCourse()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addCourse()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearCourseForm('courseRegister')" data-dismiss="modal">Close</button>	
 					</div>	
 				</section>
@@ -306,7 +306,7 @@ function clearCourseForm(elementId) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Course Edit</header>
