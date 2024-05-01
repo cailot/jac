@@ -468,7 +468,7 @@ function collectAndSubmitAnswers() {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerPracticeModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerPracticeModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -593,13 +593,13 @@ function collectAndSubmitAnswers() {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerPracticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Practice Registration</header>
 					<form id="practiceRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-8">
 									<label for="addPracticeType" class="label-form">Practice Type</label>
 									<select class="form-control" id="addPracticeType" name="addPracticeType">
@@ -640,7 +640,7 @@ function collectAndSubmitAnswers() {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mb-4">
 								<div class="col-md-12">
 									<label for="addInfo" class="label-form">Information</label>
 									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
@@ -649,7 +649,7 @@ function collectAndSubmitAnswers() {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addPractice()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addPractice()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -661,13 +661,13 @@ function collectAndSubmitAnswers() {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editPracticeModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Practice Edit</header>
 					<form id="practiceEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-8">
 									<label for="editPracticeType" class="label-form">Practice Type</label>
 									<select class="form-control" id="editPracticeType" name="editPracticeType" disabled>
@@ -739,10 +739,10 @@ function collectAndSubmitAnswers() {
 <!-- Add Answer Form Dialogue -->
 <div class="modal fade" id="registerPracticeAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-success">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Answer Sheet</header>
+				<section class="fieldset rounded border-success">
+					<header class="text-success font-weight-bold">Practice Answer Sheet</header>
 					<!-- <form id="practiceAnswerRegister"> -->
 						<div class="form-group">
 							<div class="form-row">
@@ -812,7 +812,7 @@ function collectAndSubmitAnswers() {
 						<input type="hidden" id="practiceId4Answer" name="practiceId4Answer" />
 					<!-- </form> -->
 					<div class="mt-4 d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-success" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('practiceRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>

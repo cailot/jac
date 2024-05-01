@@ -431,7 +431,7 @@ function deletePracticeSchedule(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerScheduleModal" onclick="getPracticeByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="getPracticeByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -513,13 +513,13 @@ function deletePracticeSchedule(id) {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Schedule</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Practice Schedule</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-7">
 									<label for="addYear" class="label-form">Academic Year</label>
 									<select class="form-control" id="addYear" name="addYear">
@@ -598,7 +598,7 @@ function deletePracticeSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
 									<div class="col-md-7">
 										<label for="addPracticeTypeSearch" class="label-form">Practice</label>
@@ -624,7 +624,7 @@ function deletePracticeSchedule(id) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleRegister'); clearTable('add')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -636,13 +636,13 @@ function deletePracticeSchedule(id) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Practice Schedule Edit</header>
 					<form id="scheduleEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-7">
 									<label for="editYear" class="label-form">Academic Year</label>
 									<select class="form-control" id="editYear" name="editYear">
@@ -728,7 +728,7 @@ function deletePracticeSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
 									<div class="col-md-7">
 										<label for="editPracticeTypeSearch" class="label-form">Practice</label>
@@ -858,7 +858,7 @@ function deletePracticeSchedule(id) {
 <!--Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
                <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Schedule Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -868,7 +868,7 @@ function deletePracticeSchedule(id) {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
 	</div>

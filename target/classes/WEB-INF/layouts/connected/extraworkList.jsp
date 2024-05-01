@@ -207,7 +207,7 @@ function updateEditActiveValue(checkbox) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerExtraworkModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerExtraworkModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -307,65 +307,18 @@ function updateEditActiveValue(checkbox) {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerExtraworkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Extrawork Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Extrawork Registration</header>
 					<form id="extraworkRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
-								<%--
-								<div class="col-md-3">
-									<label for="addSubject" class="label-form">Subject</label>
-									<select class="form-control" id="addSubject" name="addSubject">
-									</select>
-								</div>
-								--%>
+							<div class="form-row mt-4">
 								<div class="col-md-3">
 									<label for="addGrade" class="label-form">Grade</label>
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<%--
-								<div class="col-md-4">
-									<label for="addYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="addYear" name="addYear">
-										<%
-											Calendar addNow = Calendar.getInstance();
-											int addCurrentYear = addNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= addCurrentYear %>">Year <%= (addCurrentYear%100) %>/<%= (addCurrentYear%100)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
-								
-								<div class="col-md-2">
-									<label for="addWeek" class="label-form">Week</label>
-									<select class="form-control" id="addWeek" name="addWeek">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("addWeek");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
-								--%>
 								<div class="offset-md-1"></div>
 								<div class="col-md-8">
 									<label for="addName" class="label-form">Name</label>
@@ -382,7 +335,7 @@ function updateEditActiveValue(checkbox) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
+							<div class="form-row mb-4">
 								<div class="col-md-12">
 									<label for="addPdfPath" class="label-form">Document Path</label>
 									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
@@ -391,7 +344,7 @@ function updateEditActiveValue(checkbox) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addExtrawork()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addExtrawork()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearHomeworkForm('extraworkRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -403,7 +356,7 @@ function updateEditActiveValue(checkbox) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editExtraworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Extrawork Edit</header>

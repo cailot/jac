@@ -458,7 +458,7 @@ function deleteTestSchedule(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerScheduleModal" onclick="getTestByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="getTestByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -552,13 +552,13 @@ function deleteTestSchedule(id) {
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerScheduleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Schedule</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Class Test Schedule</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-7">
 									<label for="addYear" class="label-form">Academic Year</label>
 									<select class="form-control" id="addYear" name="addYear">
@@ -649,7 +649,7 @@ function deleteTestSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
 									<div class="col-md-7">
 										<label for="addTestTypeSearch" class="label-form">Test</label>
@@ -675,7 +675,7 @@ function deleteTestSchedule(id) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleRegister'); clearTable('add')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
@@ -687,13 +687,13 @@ function deleteTestSchedule(id) {
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Schedule Edit</header>
+					<header class="text-primary font-weight-bold">Class Test Schedule Edit</header>
 					<form id="scheduleEdit">
 						<div class="form-group">
-							<div class="form-row mt-3">
+							<div class="form-row mt-4">
 								<div class="col-md-7">
 									<label for="editYear" class="label-form">Academic Year</label>
 									<select class="form-control" id="editYear" name="editYear">
@@ -791,7 +791,7 @@ function deleteTestSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
 									<div class="col-md-7">
 										<label for="editTestTypeSearch" class="label-form">Practice</label>
@@ -827,87 +827,6 @@ function deleteTestSchedule(id) {
 	</div>
 </div>
 
-<!-- Add Answer Form Dialogue -->
-<div class="modal fade" id="registerTestAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Answer Sheet</header>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
-									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
-									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="question" style="width: 10%;">Question#</th>
-											<th data-field="answer" style="width: 10%;">Answer</th>
-											<th data-field="topic" style="width: 70%;">Topic</th>
-											<th data-field="remove" style="width: 10%;">Remove</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
-								<div class="col-md-3">
-									<label for="answerQuestionNumber" class="label-form">Number</label>
-									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
-											<option value="${i}">${i}</option>
-										</c:forEach>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="correctAnswerOption" class="label-form">Answer</label>
-									<select class="form-control" id="correctAnswerOption" name="correctAnswerOption">
-										<option value="1">A</option>
-										<option value="2">B</option>
-										<option value="3">C</option>
-										<option value="4">D</option>
-										<option value="5">E</option>
-									</select>
-								</div>
-								<div class="col-md-5">
-									<label for="answerTopic" class="label-form">Topic</label>
-									<input type="text" class="form-control" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
-								</div>
-								<div class="col-md-2">
-									<label for="" class="label-form">&nbsp;</label>
-									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
-								</div>
-							</div>
-						</div>
-						<input type="hidden" id="answerId" name="answerId" />
-						<input type="hidden" id="testId4Answer" name="testId4Answer" />
-					<div class="mt-4 d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('testRegister')" data-dismiss="modal">Close</button>
-					</div>
-				</section>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
@@ -921,9 +840,9 @@ function deleteTestSchedule(id) {
 <!--Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Test Schedule Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Class Test Schedule Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -931,7 +850,7 @@ function deleteTestSchedule(id) {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x"></i> Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
 	</div>
