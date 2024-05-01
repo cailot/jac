@@ -179,7 +179,7 @@ function updateBranchInfo() {
 		success: function (value) {
 			// Display success alert
 			$('#success-alert .modal-body').text(
-				'ID : ' + branchName + ' is updated successfully.');
+				'Branch is updated successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -199,28 +199,34 @@ function updateBranchInfo() {
 //		Delete Branch
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function deleteBranch(id) {
-	if(confirm("Are you sure you want to delete this Branch ?")){
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/code/deleteBranch/' + id,
-			type : 'PUT',
-			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now deleted');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function(e) {
-					location.reload();
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}else{
-		return;
-	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/code/deleteBranch/' + id,
+		type : 'PUT',
+		success : function(data) {
+			// clear existing form
+			$('#success-alert .modal-body').text('Branch is now deleted');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	}); 
 }
+
+window.showWarning = function(id) {
+    // Show the warning modal
+    $('#deleteModal').modal('show');
+    // Attach the click event handler to the "Delete" button
+    $('#agreeDelete').one('click', function() {
+        deleteBranch(id);
+        $('#deleteModal').modal('hide');
+    });
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Show Branch Info
@@ -252,7 +258,6 @@ function showBranchInfo(state, branch){
 
 </script>
 
-
 <sec:authorize access="isAuthenticated()">
 <sec:authentication var="role" property='principal.authorities'/>
 <sec:authentication var="state" property="principal.state"/>
@@ -274,7 +279,7 @@ function showBranchInfo(state, branch){
 									<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 								</div>
 								<div class="col mx-auto">
-									<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerBranchModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+									<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerBranchModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 								</div>
 							</div>
 						</div>
@@ -337,7 +342,7 @@ function showBranchInfo(state, branch){
 																</td>
 																<td class="text-center">
 																	<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
-																	<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="deleteBranch('${branch.id}')"></i>
+																	<i class="bi bi-x-circle-fill text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
 																</td>
 															</tr>
 														</c:forEach>
@@ -421,12 +426,12 @@ function showBranchInfo(state, branch){
 <!-- Add Form Dialogue -->
 <div class="modal fade" id="registerBranchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Branch Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Branch Registration</header>
 					<form id="branchRegister">
-						<div class="form-row mt-2">
+						<div class="form-row mt-4">
 							<div class="col-md-3">
 								<label for="addState" class="label-form">State</label>
 								<select class="form-control" id="addState" name="addState">
@@ -482,7 +487,7 @@ function showBranchInfo(state, branch){
 								<input type="text" class="form-control" id="addAccountName" name="addAccountName">
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-2 mb-4">
 							<div class="col-md-12">
 								<label for="addInfo" class="label-form">Information</label>
 								<textarea class="form-control" id="addInfo" name="addInfo" rows="5"></textarea>
@@ -490,7 +495,7 @@ function showBranchInfo(state, branch){
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addBranch()">Register</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addBranch()">Register</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearFormData('branchRegister')">Close</button>
 					</div>
 				</section>
@@ -505,12 +510,12 @@ function showBranchInfo(state, branch){
 <div class="modal fade" id="editBranchModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Branch Edit</header>
 					<form id="branchEdit">	
-						<div class="form-row mt-2">
+						<div class="form-row mt-4">
 							<div class="col-md-3">
 								<label for="editState" class="label-form">State</label>
 								<select class="form-control" id="editState" name="editState">
@@ -566,7 +571,7 @@ function showBranchInfo(state, branch){
 								<input type="text" class="form-control" id="editAccountName" name="editAccountName">
 							</div>
 						</div>
-						<div class="form-row mt-2">
+						<div class="form-row mt-2 mb-4">
 							<div class="col-md-12">
 								<label for="editInfo" class="label-form">Information</label>
 								<textarea class="form-control" id="editInfo" name="editInfo" rows="5"></textarea>
@@ -584,7 +589,6 @@ function showBranchInfo(state, branch){
 	</div>
 </div>
 
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
@@ -592,5 +596,24 @@ function showBranchInfo(state, branch){
 			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
+	</div>
+</div>
+
+<!-- Delete Dialogue -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Branch Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to delete this branch ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-check-circle"></i>&nbsp;Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>

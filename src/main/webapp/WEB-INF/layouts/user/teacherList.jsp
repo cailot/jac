@@ -109,7 +109,7 @@ function getClazzByGrade() {
 			$('#clazzId').empty(); // clear the previous options
 			$.each(data, function (index, value) {
 				const cleaned = cleanUpJson(value);
-				console.log(cleaned);
+				// console.log(cleaned);
 				$('#clazzId').append($("<option value='" + value.id + "'>").text(value.name).val(value.id)); // add new option
 			});
 		},
@@ -181,7 +181,7 @@ function retreiveTeacherInfo(std) {
 		type: 'GET',
 		success: function (teacher) {
 			// Update display info
-			console.log(teacher);
+			// console.log(teacher);
 			$("#editId").val(teacher.id);
 			$("#editFirstName").val(teacher.firstName);
 			$("#editLastName").val(teacher.lastName);
@@ -270,7 +270,7 @@ function activateTeacher(id) {
 			type: 'PUT',
 			success: function (data) {
 				// Display the success alert
-				$('#success-alert .modal-body').text('ID : ' + id + ' is now activated again.');
+				$('#success-alert .modal-body').text('Teacher is now activated again.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -301,7 +301,7 @@ function inactivateTeacher(id) {
 				// $('#success-alert').modal('show');
 				//clearStudentForm();
 				// Display the success alert
-				$('#success-alert .modal-body').text('ID : ' + id + ' is now inactivated.');
+				$('#success-alert .modal-body').text('Teacher is now inactivated.');
 				$('#success-alert').modal('show');
 				$('#success-alert').on('hidden.bs.modal', function (e) {
 					location.reload();
@@ -506,7 +506,6 @@ function clearPassword() {
 	$("#confirmPwd").val('');
 }
 
-
 </script>
 
 <!-- List Body -->
@@ -532,7 +531,7 @@ function clearPassword() {
 						<button type="submit" class="btn btn-primary btn-block" onclick="return validate()"><i class="bi bi-search"></i>&nbsp;&nbsp;Search</button>
 					</div>
 					<div class="col-md-2">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerModal">
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal">
 							<i class="bi bi-plus"></i>&nbsp;&nbsp;Registration
 						</button>
 					</div>
@@ -617,7 +616,7 @@ function clearPassword() {
 														<i	class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
 														<c:choose>
 															<c:when test="${empty teacher.endDate}">
-																<i class="bi bi-x-circle-fill text-danger"
+																<i class="bi bi-pause-circle text-danger"
 																	data-toggle="tooltip"
 																	title="Suspend"
 																	onclick="inactivateTeacher('${teacher.id}')"></i>
@@ -649,10 +648,10 @@ function clearPassword() {
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog"
 	aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Teacher Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Teacher Registration</header>
 					<form id="teacherRegister">
 						<div class="form-row mt-2">
 							<div class="col-md-4">
@@ -762,10 +761,8 @@ function clearPassword() {
 
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addTeacher()">Register</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-secondary"
-							data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-info"	onclick="addTeacher()">Register</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-secondary"	data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -780,7 +777,7 @@ function clearPassword() {
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Teacher Edit</header>
@@ -904,8 +901,8 @@ function clearPassword() {
 <!-- Clazz Form Dialogue -->
 <div class="modal fade" id="clazzList">
 	<div class="modal-dialog modal-xl modal-dialog-centered">
-		<div class="modal-content">
-			<div class="modal-header bg-primary text-white">
+		<div class="modal-content jae-border-success">
+			<div class="modal-header bg-success text-white">
 				<h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Associated Class</h5>
 				<button type="button" class="close" data-dismiss="modal">
 					<span>&times;</span>
@@ -933,7 +930,7 @@ function clearPassword() {
 
 			<div class="form-group">
 				<div
-					style="border: 2px solid #017bfe; padding: 20px; border-radius: 10px; margin-left: 50px; margin-right: 50px;">
+					style="border: 2px solid #28a745; padding: 20px; border-radius: 10px; margin-left: 50px; margin-right: 50px;">
 					<input type="hidden" id="clazzTeacher" name="clazzTeacher" />
 					<input type="hidden" id="clazzState" name="clazzState" />
 					<input type="hidden" id="clazzBranch" name="clazzBranch" />
@@ -971,9 +968,7 @@ function clearPassword() {
 						<div class="offset-md-1"></div>
 						<div class="col mx-auto">
 							<label for="addCourse" class="label-form">&nbsp;</label>
-
-							<button type="button" class="btn btn-primary btn-block"
-								onclick="addClazz()"> <i class="bi bi-plus"></i>&nbsp;Add</button>
+							<button type="button" class="btn btn-success btn-block" onclick="addClazz()"> <i class="bi bi-plus"></i>&nbsp;Add</button>
 						</div>
 						<div class="offset-md-1"></div>
 					</div>
@@ -1010,9 +1005,9 @@ function clearPassword() {
 <!-- Password Reset Dialogue -->
 <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content jae-border-warning">
             <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Teacher Password Reset</h4>
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;Teacher Password Reset</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -1038,8 +1033,8 @@ function clearPassword() {
 				<input type="hidden" id="emailId" name="emailId"/>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-wrench-adjustable"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-check-circle"></i>&nbsp;Close</button>
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
             </div>
     	</div>
 	</div>

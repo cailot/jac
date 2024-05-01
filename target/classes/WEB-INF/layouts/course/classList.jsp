@@ -344,7 +344,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 					<div class="col mx-auto">
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -514,11 +514,10 @@ function editInitialiseCourseByGrade(grade, courseId) {
 <div class="modal fade" id="registerClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Registration</header>
-
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Class Registration</header>
 					<form id="classRegister">
 						<div class="form-group">
 							<div class="form-row mt-3">
@@ -532,7 +531,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									<select class="form-control" id="addBranch" name="addBranch">
 									</select>
 								</div>
-
 							</div>
 						</div>
 						<div class="form-group">
@@ -584,15 +582,12 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
 									document.getElementById('addStartDate').value = formattedDate;
 								</script>
-
 							</div>
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary"
-							onclick="addClass()">Create</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary"
-							onclick="clearClassForm('classRegister')" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-info" onclick="addClass()">Create</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearClassForm('classRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -604,15 +599,14 @@ function editInitialiseCourseByGrade(grade, courseId) {
 <div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
 	aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content">
+		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Class Edit</header>
-
 					<form id="classEdit">
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-4">
+								<div class="col-md-3">
 									<label for="editState" class="label-form">State</label> 
 									<select class="form-control" id="editState" name="editState" disabled>
 									</select>
@@ -622,7 +616,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 									<select class="form-control" id="editBranch" name="editBranch">
 									</select>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-4">
 									<label for="editStartDate" class="label-form">Start Date</label>
 									<input type="text" class="form-control datepicker" id="editStartDate"
 										name="editStartDate" placeholder="dd/mm/yyyy">

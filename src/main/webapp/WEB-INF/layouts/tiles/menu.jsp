@@ -64,8 +64,8 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
 			</a>
 			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User List</a>
-				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher List</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
 		</li>
 		<!-- Class -->

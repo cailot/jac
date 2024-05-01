@@ -404,7 +404,7 @@ function activateStudent(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Registration</label> 
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;Registration</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;Registration</button>
 					</div>
 				</div>
 			</div>
@@ -507,10 +507,10 @@ function activateStudent(id) {
 <!-- Register Form Dialogue -->
 <div class="modal fade" id="registerStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
-		<div class="modal-content jae-border-primary">
+		<div class="modal-content jae-border-info">
 			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Student Registration</header>
+				<section class="fieldset rounded border-info">
+					<header class="text-info font-weight-bold">Student Registration</header>
 					<form id="studentRegister">
 						<div class="form-row mt-3">
 							<div class="col-md-4">
@@ -622,7 +622,7 @@ function activateStudent(id) {
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="addStudent()">Register</button>&nbsp;&nbsp;
+						<button type="submit" class="btn btn-info" onclick="addStudent()">Register</button>&nbsp;&nbsp;
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					</div>	
 				</section>
