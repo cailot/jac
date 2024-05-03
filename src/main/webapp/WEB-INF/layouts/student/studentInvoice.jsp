@@ -337,15 +337,15 @@ function clearStudentInfo() {
 								<thead class="table-primary">
 									<tr>
 										<th style="display: none;">ID</th>
-										<th class="align-middle text-center">Invoice ID</th>
-										<th class="align-middle text-center">Payment Date</th>
-										<th class="align-middle text-center">Method</th>
-										<th class="align-middle text-center">Total</th>
-										<th class="align-middle text-center">Remaining</th>
-										<th class="align-middle text-center">Paid</th>
-										<th class="align-middle text-center">Enrolled Course Information</th>
-										<th class="align-middle text-center" data-orderable="false">Note</th>
-										<th class="align-middle text-center" data-orderable="false">Receipt</th>
+										<th class="align-middle text-center" style="width: 10%">Invoice ID</th>
+										<th class="align-middle text-center" style="width: 10%">Payment Date</th>
+										<th class="align-middle text-center" style="width: 10%">Method</th>
+										<th class="align-middle text-center" style="width: 10%">Total</th>
+										<th class="align-middle text-center" style="width: 10%">Remaining</th>
+										<th class="align-middle text-center" style="width: 10%">Paid</th>
+										<th class="align-middle text-center" style="width: 30%">Enrolled Course Information</th>
+										<th class="align-middle text-center" style="width: 5%" data-orderable="false">Note</th>
+										<th class="align-middle text-center" style="width: 5%" data-orderable="false">Receipt</th>
 									</tr>
 								</thead>
 								<tbody>

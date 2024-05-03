@@ -493,13 +493,13 @@ function deleteTestSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle">Academic Year</th>
-										<th class="text-center align-middle">Set</th>
-										<th class="text-center align-middle">Start</th>
-										<th class="text-center align-middle">End</th>
-										<th class="text-center align-middle">Information</th>
-										<th class="text-center align-middle" data-orderable="false">Activated</th>
-										<th class="text-center align-middle" data-orderable="false">Action</th>
+										<th class="text-center align-middle" style="width: 15%">Academic Year</th>
+										<th class="text-center align-middle" style="width: 15%">Set</th>
+										<th class="text-center align-middle" style="width: 10%">Start</th>
+										<th class="text-center align-middle" style="width: 10%">End</th>
+										<th class="text-center align-middle" style="width: 40%">Information</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">

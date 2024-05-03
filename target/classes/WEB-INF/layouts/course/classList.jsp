@@ -385,17 +385,17 @@ function editInitialiseCourseByGrade(grade, courseId) {
 							<table id="classListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">State</th>
-										<th class="align-middle text-center">Branch</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Name</th>
-										<th class="align-middle text-center">Description</th>
-										<th class="align-middle text-center">Start Date</th>
-										<th class="align-middle text-center">Day</th>
-										<th class="align-middle text-center">Year</th>
-										<th class="align-middle text-center">Price</th>
-										<th class="align-middle text-center" data-orderable="false">Activated</th>
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" style="width: 10%">State</th>
+										<th class="align-middle text-center" style="width: 10%">Branch</th>
+										<th class="align-middle text-center" style="width: 5%">Grade</th>
+										<th class="align-middle text-center" style="width: 15%">Name</th>
+										<th class="align-middle text-center" style="width: 15%">Description</th>
+										<th class="align-middle text-center" style="width: 10%">Start Date</th>
+										<th class="align-middle text-center" style="width: 10%">Day</th>
+										<th class="align-middle text-center" style="width: 10%">Year</th>
+										<th class="align-middle text-center" style="width: 5%">Price</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Activated</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">

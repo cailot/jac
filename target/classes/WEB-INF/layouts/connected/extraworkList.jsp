@@ -242,12 +242,12 @@ function updateEditActiveValue(checkbox) {
 							<table id="extraworkListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle">Name</th>
-										<th class="text-center align-middle">Grade</th>
-										<th class="text-center align-middle">Video Path</th>
-										<th class="text-center align-middle">Document Path</th>
-										<th class="text-center align-middle" data-orderable="false">Activated</th>
-										<th class="text-center align-middle" data-orderable="false">Action</th>
+										<th class="text-center align-middle" style="width: 10%">Name</th>
+										<th class="text-center align-middle" style="width: 5%">Grade</th>
+										<th class="text-center align-middle" style="width: 37.5%">Video Path</th>
+										<th class="text-center align-middle" style="width: 37.5%">Document Path</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">

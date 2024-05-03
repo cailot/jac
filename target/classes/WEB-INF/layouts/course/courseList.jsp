@@ -206,11 +206,11 @@ function clearCourseForm(elementId) {
 						<div class="table-wrap">
 							<table id="courseListTable" class="table table-striped table-bordered"><thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">Name</th>
-										<th class="align-middle text-center">Description</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center" data-orderable="false">Type</th>
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" style="width: 20%">Name</th>
+										<th class="align-middle text-center" style="width: 50%">Description</th>
+										<th class="align-middle text-center" style="width: 10%">Grade</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Type</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">

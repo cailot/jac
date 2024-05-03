@@ -142,8 +142,6 @@ function studentList(branch, grade){
 				row.append($('<td>').text(formatDate(value.endDate)));
 				row.append($('<td>').text(value.email1));
 				row.append($('<td>').text(value.contactNo1));
-				row.append($('<td>').text(value.email2));
-				row.append($('<td>').text(value.contactNo2));
 				$('#studentListResultTable > tbody').append(row);
 			});
 			$('#studentListResult').modal('show');
@@ -337,7 +335,7 @@ function addRows(){
 		var cell = document.createElement('td');
 		// Set the row's id and the cell's text
 		row.id = rowData.id;
-		cell.textContent = rowData.text;
+		cell.textContent = rowData.text.toUpperCase();
 		cell.className = 'small align-middle text-center header font-weight-bold';
 		// Add the cell to the row
 		row.appendChild(cell);
@@ -526,9 +524,14 @@ function updateChart(){
 		 }
 
 		]
-	  },
+	  }, // end of data
 
 		options: {
+			plugins:{
+				legend: {
+					display: false
+				}
+			},
 			scales: {
 				y: {
 					ticks: {
@@ -541,13 +544,104 @@ function updateChart(){
 			animation: {
 				duration: 2000, // Animation duration in milliseconds
 				easing: 'linear' // Animation easing function
-        	},
+			},
 			interaction: {
 				mode: 'index'
 			}
 		}
-	});	
+	});	// end of Chart
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Toggle legend in chart	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function toggleLegend(dataset){
+	var index = dataset.value;
+	//console.log(index);
+	var chart = Chart.getChart('barChart');
+	const isDataShown = chart.isDatasetVisible(dataset.value);
+	if(isDataShown){
+		chart.hide(dataset.value);
+	}else{
+		chart.show(dataset.value);
+	}
+	// update All/None checkbox
+	checkboxAllChecker()
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Toggle all/none legend in chart	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function toggleLegendAll(dataset){
+	const selectAll = document.getElementById('selectAllLegend');
+	let checkboxes = document.querySelectorAll('.dataCheckbox');
+	var chart = Chart.getChart('barChart');
+	checkboxes.forEach(function(checkbox){
+		checkbox.checked = selectAll.checked;
+		if(selectAll.checked){
+			chart.show(checkbox.value);
+		}else{
+			chart.hide(checkbox.value);
+		}
+	});
+	chart.update();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Sync all/none checkbox with others	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function checkboxAllChecker(){
+	let selectAll = document.getElementById('selectAllLegend');
+	let checkboxes = document.querySelectorAll('.dataCheckbox');
+	let total = 0;
+	for(let i=0; i < checkboxes.length; i++){
+		if(checkboxes[i].checked){
+			total++;
+		}
+	}
+	if(total == checkboxes.length){
+		selectAll.checked = true;
+	}else{
+		selectAll.checked = false;
+	}
+	
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Export table data to Excel	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function export2Excel(){
+  var table = document.getElementById('regStatTable');
+  var rows = table.querySelectorAll('tr');
+  var csv = [];
+  for (var i = 0; i < rows.length; i++) {
+    var row = [], cols = rows[i].querySelectorAll('td, th');
+    for (var j = 0; j < cols.length; j++) {
+      	// Clean the cell content from new lines, extra spaces and tabs
+      	var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ');
+      	// Escape double-quote with double-double-quote (Excel)
+      	data = data.replace(/"/g, '""');
+      	// Wrap data in double quotes
+      	row.push('"' + data + '"');
+    }
+    	csv.push(row.join(','));
+	}
+	// CSV file
+	var csvFile = new Blob([csv.join('\n')], {type: "text/csv"});
+	// Download link
+	var downloadLink = document.createElement("a");
+	// File name
+	downloadLink.download = 'jac-statistics.csv';
+	// Create a link to the file
+	downloadLink.href = window.URL.createObjectURL(csvFile);
+	// Hide download link
+	downloadLink.style.display = "none";
+	// Add the link to DOM
+	document.body.appendChild(downloadLink);
+	// Click download link
+	downloadLink.click();
+}
+
 </script>
 
 <style>
@@ -658,12 +752,38 @@ function updateChart(){
 	<!-- chart -->
 	<div class="graphBox">
 		<div class="box">
+			<div id="legendArea" class="text-center mt-5 mb-2">
+				<input type="checkbox" id="selectAllLegend"onclick="toggleLegendAll(this)"checked><span class="ml-1 mr-3">All/None</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="0"><span class="mr-2 ml-1" style="color : #89cce2;">P2</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="1"><span class="mr-2 ml-1" style="color : #71c2dc;">P3</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="2"><span class="mr-2 ml-1" style="color : #5ab8d6;">P4</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="3"><span class="mr-2 ml-1" style="color : #42add1;">P5</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="4"><span class="mr-2 ml-1" style="color : #2ba3cb;">P6</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="5"><span class="mr-2 ml-1" style="color : #e57771;">S7</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="6"><span class="mr-2 ml-1" style="color : #e16059;">S8</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="7"><span class="mr-2 ml-1" style="color : #dd4941;">S9</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="8"><span class="mr-2 ml-1" style="color : #d8332a;">S10</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="9"><span class="mr-2 ml-1" style="color : #d41c12;">S10E</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="10"><span class="mr-2 ml-1" style="color : #fff700;">TT6</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="11"><span class="mr-2 ml-1" style="color : #aaff00;">TT8</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="12"><span class="mr-2 ml-1" style="color : #00ff88;">TT8E</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="13"><span class="mr-2 ml-1" style="color : #00b30a;">SRW4</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="14"><span class="mr-2 ml-1" style="color : #009908;">SRW5</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="15"><span class="mr-2 ml-1" style="color : #008007;">SRW6</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="16"><span class="mr-2 ml-1" style="color : #006606;">SRW7</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="17"><span class="mr-2 ml-1" style="color : #004c04;">SRW8</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="18"><span class="mr-2 ml-1" style="color : #ff99fb;">JMSS</span>
+				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="19"><span class="mr-2 ml-1" style="color : #ff66fa;">VCE</span>
+			</div>
 			<canvas id="barChart"></canvas>
 		</div>
 	</div>
 	<!-- table -->
 	<div class="col-md-12">
 		<table id="regStatTable" class="table table-bordered">
+			<div class="mt-3 mb-3 mr-5 text-right">
+				<button id="exportToExcel" class="btn btn-primary" onclick="export2Excel()">Export to Excel</button>
+			</div>
 			<thead class="table-primary">
 				<tr>
 					<th class="header" title="" code="0"></th>
@@ -732,8 +852,6 @@ function updateChart(){
 				<th data-field="enddate">End Date</th>
 				<th data-field="email">Main Email</th>
 				<th data-field="contact1">Main Contact</th>
-				<th data-field="email">Sub Email</th>
-				<th data-field="contact2">Sub Contact</th>
 			  </tr>
 			</thead>
 			<tbody>
