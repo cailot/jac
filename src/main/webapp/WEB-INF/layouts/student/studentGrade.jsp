@@ -207,17 +207,17 @@ function updateStudentInfo(){
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">ID</th>
-										<th class="align-middle text-center">First Name</th>
-										<th class="align-middle text-center">Last Name</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Gender</th>
-										<th class="align-middle text-center">Register Date</th>
-										<th class="align-middle text-center">Main Email</th>
-										<th class="align-middle text-center">Main Contact</th>
-										<th class="align-middle text-center">Sub Email</th>
-										<th class="align-middle text-center">Sub Contact</th>
-										<th class="align-middle text-center" data-orderable="false">
+										<th class="align-middle text-center" style="width: 5%">ID</th>
+										<th class="align-middle text-center" style="width: 15%">First Name</th>
+										<th class="align-middle text-center" style="width: 15%">Last Name</th>
+										<th class="align-middle text-center" style="width: 5%">Grade</th>
+										<th class="align-middle text-center" style="width: 5%">Gender</th>
+										<th class="align-middle text-center" style="width: 10%">Register Date</th>
+										<th class="align-middle text-center" style="width: 10%">Main Email</th>
+										<th class="align-middle text-center" style="width: 10%">Main Contact</th>
+										<th class="align-middle text-center" style="width: 10%">Sub Email</th>
+										<th class="align-middle text-center" style="width: 10%">Sub Contact</th>
+										<th class="align-middle text-center" style="width: 5%" data-orderable="false">
 											<input type="checkbox" id="select-all" checked/>
 										</th>
 									</tr>
