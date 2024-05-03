@@ -405,16 +405,16 @@ window.showWarning = function(id) {
 							<table id="userListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">Username</th>
-										<th class="align-middle text-center">Last Name</th>
-										<th class="align-middle text-center">First Name</th>
-										<th class="align-middle text-center">Role</th>
-										<th class="align-middle text-center">Phone</th>
-										<th class="align-middle text-center">Email</th>
-										<th class="align-middle text-center">State</th>
-										<th class="align-middle text-center">Branch</th>
-										<th class="align-middle text-center" data-orderable="false">Enabled</th>
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" style="width: 10%">Username</th>
+										<th class="align-middle text-center" style="width: 12.5%">Last Name</th>
+										<th class="align-middle text-center" style="width: 12.5%">First Name</th>
+										<th class="align-middle text-center" style="width: 10%">Role</th>
+										<th class="align-middle text-center" style="width: 10%">Phone</th>
+										<th class="align-middle text-center" style="width: 15%">Email</th>
+										<th class="align-middle text-center" style="width: 5%">State</th>
+										<th class="align-middle text-center" style="width: 10%">Branch</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Enabled</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-teacher-body">

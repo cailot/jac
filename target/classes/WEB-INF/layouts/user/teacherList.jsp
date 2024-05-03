@@ -571,17 +571,17 @@ function clearPassword() {
 							<table id="teacherListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle">First Name</th>
-										<th class="text-center align-middle">Last Name</th>
-										<th class="text-center align-middle">Title</th>
-										<th class="text-center align-middle">Phone</th>
-										<th class="text-center align-middle">Email</th>
-										<th class="text-center align-middle">Address</th>
-										<th class="text-center align-middle">TFN</th>
-										<th class="text-center align-middle">VIT/WWCC</th>
-										<th class="text-center align-middle">Start Date</th>
-										<th class="text-center align-middle">End Date</th>
-										<th class="text-center align-middle" data-orderable="false">Action</th>
+										<th class="text-center align-middle" style="width: 10%">First Name</th>
+										<th class="text-center align-middle" style="width: 10%">Last Name</th>
+										<th class="text-center align-middle" style="width: 5%">Title</th>
+										<th class="text-center align-middle" style="width: 10%">Phone</th>
+										<th class="text-center align-middle" style="width: 10%">Email</th>
+										<th class="text-center align-middle" style="width: 10%">Address</th>
+										<th class="text-center align-middle" style="width: 10%">TFN</th>
+										<th class="text-center align-middle" style="width: 5%">VIT/WWCC</th>
+										<th class="text-center align-middle" style="width: 10%">Start Date</th>
+										<th class="text-center align-middle" style="width: 10%">End Date</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-teacher-body">

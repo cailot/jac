@@ -466,11 +466,11 @@ function deletePracticeSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle">Academic Year</th>
-										<th class="text-center align-middle">Set</th>
-										<th class="text-center align-middle">Information</th>
-										<th class="text-center align-middle" data-orderable="false">Activated</th>
-										<th class="text-center align-middle" data-orderable="false">Action</th>
+										<th class="text-center align-middle" style="width: 20%">Academic Year</th>
+										<th class="text-center align-middle" style="width: 20%">Set</th>
+										<th class="text-center align-middle" style="width: 40%">Information</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">

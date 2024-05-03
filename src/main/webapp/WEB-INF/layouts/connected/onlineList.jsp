@@ -275,15 +275,15 @@ function updateEditActiveValue(checkbox) {
 							<table id="onlineListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle">Grade</th>
-										<th class="text-center align-middle">Academic Year</th>
-										<th class="text-center align-middle">Day</th>
-										<th class="text-center align-middle">Week</th>
-										<th class="text-center align-middle">Start Time</th>
-										<th class="text-center align-middle">End Time</th>
-										<th class="text-center align-middle">Access URL</th>
-										<th class="text-center align-middle" data-orderable="false">Activated</th>
-										<th class="text-center align-middle" data-orderable="false">Action</th>
+										<th class="text-center align-middle" style="width: 5%">Grade</th>
+										<th class="text-center align-middle" style="width: 10%">Academic Year</th>
+										<th class="text-center align-middle" style="width: 10%">Day</th>
+										<th class="text-center align-middle" style="width: 5%">Week</th>
+										<th class="text-center align-middle" style="width: 10%">Start Time</th>
+										<th class="text-center align-middle" style="width: 10%">End Time</th>
+										<th class="text-center align-middle" style="width: 40%">Access URL</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
