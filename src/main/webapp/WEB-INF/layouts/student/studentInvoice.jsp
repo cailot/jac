@@ -358,20 +358,20 @@ function clearStudentInfo() {
 													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
 												</td>
-												<td class="small text-capitalize align-middle"> <!-- payment method with first letter capitalized -->
+												<td class="small text-capitalize align-middle ml-1"> <!-- payment method with first letter capitalized -->
 													<c:out value="${payment.method}"/>	
 												</td>
-												<td class="small align-middle text-right"> <!-- payment total with 2 decimal places -->
+												<td class="small align-middle text-right mr-1"> <!-- payment total with 2 decimal places -->
 													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
 												</td>
-												<td class="small align-middle text-right"> <!-- payment outstanding with 2 decimal places -->
+												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
 													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
 												</td>
-												<td class="small align-middle text-right"> 
+												<td class="small align-middle text-right mr-1"> 
 													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
 												</td>
 												<!-- Display a property of each object -->
-												<td class="small align-middle" style="white-space: nowrap; padding: 0px;">
+												<td class="small align-middle ml-1" style="white-space: nowrap; padding: 0px;">
 													<table class="table-borderless">
 														<c:forEach var="enrol" items="${payment.enrols}">
 														<!-- if enrol is not free online, then display -->

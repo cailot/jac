@@ -784,7 +784,7 @@ function export2Excel(){
 	<!-- table -->
 	<div class="col-md-12">
 		<div class="mt-3 mb-3 mr-5 text-right">
-		<button id="exportToExcel" class="btn btn-primary" onclick="export2Excel()">Export to Excel</button>
+			<button id="exportToExcel" class="btn btn-primary" onclick="export2Excel()">Export to Excel</button>
 		</div>
 		<table id="regStatTable" class="table table-bordered">
 			<thead class="table-primary">

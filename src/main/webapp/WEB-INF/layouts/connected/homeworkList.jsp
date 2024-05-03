@@ -366,7 +366,7 @@ function updateEditActiveValue(checkbox) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
 																<c:when test="${homework.grade == '1'}">P2</c:when>
@@ -398,7 +398,7 @@ function updateEditActiveValue(checkbox) {
 															Year <c:out value="${homework.year}" />/<c:out value="${homework.year+1}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${homework.week}" />
 														</span>

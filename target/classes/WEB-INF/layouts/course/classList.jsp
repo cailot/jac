@@ -450,7 +450,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
 																<c:when test="${clazz.grade == '1'}">P2</c:when>
@@ -487,7 +487,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 															<c:out value="${clazz.description}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<fmt:parseDate var="clazzStartDate" value="${clazz.startDate}" pattern="yyyy-MM-dd" />
 															<fmt:formatDate value="${clazzStartDate}" pattern="dd/MM/yyyy" />

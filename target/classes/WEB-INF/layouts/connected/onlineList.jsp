@@ -291,7 +291,7 @@ function updateEditActiveValue(checkbox) {
 										<c:when test="${OnlineList != null}">
 											<c:forEach items="${OnlineList}" var="online">
 												<tr>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
 																<c:when test="${online.grade == '1'}">P2</c:when>
@@ -328,7 +328,7 @@ function updateEditActiveValue(checkbox) {
 															<c:out value="${online.day}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${online.week}" />
 														</span>
