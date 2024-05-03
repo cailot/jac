@@ -227,10 +227,10 @@ function updateStudentInfo(){
 									<c:when test="${UpgradeList != null}">
 										<c:forEach items="${UpgradeList}" var="student">
 											<tr>
-												<td class="small align-middle" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small align-middle">
+												<td class="small align-middle text-center" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
+												<td class="small align-middle text-center">
 													<span>
 														<c:choose>
 															<c:when test="${student.grade == '1'}">P2</c:when>
@@ -257,17 +257,17 @@ function updateStudentInfo(){
 														</c:choose>
 													</span>
 												</td>
-												<td class="small align-middle"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small align-middle">
+												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<td class="small align-middle text-center">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
 												<td class="small align-middle text-center"><input type="checkbox" checked value="${student.id}" id="${student.id}" /><span></span></td>											
 											</tr>
 										</c:forEach>

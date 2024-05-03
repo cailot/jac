@@ -589,21 +589,29 @@ function clearPassword() {
 										<c:when test="${TeacherList != null}">
 											<c:forEach items="${TeacherList}" var="teacher">
 												<tr>
-													<td class="small align-middle"><span>
+													<td class="small align-middle ml-1">
+														<span>
 															<c:out value="${teacher.firstName}" />
-														</span></td>
-													<td class="small align-middle"><span>
+														</span>
+													</td>
+													<td class="small align-middle ml-1">
+														<span>
 															<c:out value="${teacher.lastName}" />
-														</span></td>
-													<td class="small text-capitalize align-middle">
+														</span>
+													</td>
+													<td class="small text-capitalize align-middle ml-1">
 														<c:out value="${teacher.title}" />
 													</td>
-													<td class="small align-middle"><span>
+													<td class="small align-middle ml-1">
+														<span>
 															<c:out value="${teacher.phone}" />
-														</span></td>
-													<td class="small align-middle"><span>
+														</span>
+													</td>
+													<td class="small align-middle ml-1">
+														<span>
 															<c:out value="${teacher.email}" />
-														</span></td>
+														</span>
+													</td>
 													<td class="small align-middle"><span>
 															<c:out value="${teacher.address}" />
 														</span></td>
@@ -615,12 +623,12 @@ function clearPassword() {
 															<c:out value="${teacher.vitNumber}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="teacherStartDate" value="${teacher.startDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${teacherStartDate}" pattern="dd/MM/yyyy" />
 											
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="teacherEndDate" value="${teacher.endDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${teacherEndDate}" pattern="dd/MM/yyyy" />
 									

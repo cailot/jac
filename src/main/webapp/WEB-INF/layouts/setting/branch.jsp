@@ -316,7 +316,7 @@ function showBranchInfo(state, branch){
 													<c:when test="${BranchList != null}">
 														<c:forEach items="${BranchList}" var="branch">
 															<tr>
-																<td class="small align-middle">
+																<td class="small align-middle text-center">
 																	<c:out value="${branch.code}" />
 																</td>
 																<td class="small align-middle">

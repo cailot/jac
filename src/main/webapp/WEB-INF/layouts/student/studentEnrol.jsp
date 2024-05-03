@@ -457,10 +457,10 @@ function activateStudent(id) {
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
 											<tr>
-												<td class="small align-middle" id="studentId" name="studentId"><span><c:out value="${student.id}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.firstName}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.lastName}" /></span></td>
-												<td class="small align-middle">
+												<td class="small align-middle" id="studentId" name="studentId"><span class="ml-1"><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.firstName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
+												<td class="small align-middle text-center">
 													<span>
 														<c:choose>
 															<c:when test="${student.grade == '1'}">P2</c:when>
@@ -487,20 +487,20 @@ function activateStudent(id) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="small align-middle"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small align-middle">
+												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<td class="small align-middle text-center">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
-												<td class="small align-middle"><span><c:out value="${student.startWeek}" /></span></td>
-												<td class="small align-middle"><span><c:out value="${student.endWeek}" /></span></td>	
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span><c:out value="${student.contactNo2}" /></span></td>
-												<td>
+												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
+												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>	
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td>
+												<td class="text-center">
 													<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>

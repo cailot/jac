@@ -539,7 +539,7 @@ function collectAndSubmitAnswers() {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
 																<c:when test="${practice.grade == '1'}">P2</c:when>
@@ -566,7 +566,7 @@ function collectAndSubmitAnswers() {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${practice.volume}" />
 														</span>

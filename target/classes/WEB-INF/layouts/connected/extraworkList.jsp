@@ -260,7 +260,7 @@ function updateEditActiveValue(checkbox) {
 															<c:out value="${extrawork.name}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
 																<c:when test="${extrawork.grade == '1'}">P2</c:when>
