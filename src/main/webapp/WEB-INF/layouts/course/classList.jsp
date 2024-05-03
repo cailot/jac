@@ -390,7 +390,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 										<th class="align-middle text-center" style="width: 5%">Grade</th>
 										<th class="align-middle text-center" style="width: 15%">Name</th>
 										<th class="align-middle text-center" style="width: 15%">Description</th>
-										<th class="align-middle text-center" style="width: 10%">Start Date</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Start Date</th>
 										<th class="align-middle text-center" style="width: 10%">Day</th>
 										<th class="align-middle text-center" style="width: 10%">Year</th>
 										<th class="align-middle text-center" style="width: 5%">Price</th>

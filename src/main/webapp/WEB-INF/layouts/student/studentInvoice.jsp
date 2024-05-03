@@ -338,7 +338,7 @@ function clearStudentInfo() {
 									<tr>
 										<th style="display: none;">ID</th>
 										<th class="align-middle text-center" style="width: 10%">Invoice ID</th>
-										<th class="align-middle text-center" style="width: 10%">Payment Date</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Payment Date</th>
 										<th class="align-middle text-center" style="width: 10%">Method</th>
 										<th class="align-middle text-center" style="width: 10%">Total</th>
 										<th class="align-middle text-center" style="width: 10%">Remaining</th>

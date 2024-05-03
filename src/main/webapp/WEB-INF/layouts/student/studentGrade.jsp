@@ -212,7 +212,7 @@ function updateStudentInfo(){
 										<th class="align-middle text-center" style="width: 15%">Last Name</th>
 										<th class="align-middle text-center" style="width: 5%">Grade</th>
 										<th class="align-middle text-center" style="width: 5%">Gender</th>
-										<th class="align-middle text-center" style="width: 10%">Register Date</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Register Date</th>
 										<th class="align-middle text-center" style="width: 10%">Main Email</th>
 										<th class="align-middle text-center" style="width: 10%">Main Contact</th>
 										<th class="align-middle text-center" style="width: 10%">Sub Email</th>

@@ -224,10 +224,10 @@
 									<tr>
 										<th class="text-center align-middle" style="width: 5%">Year</th>
 										<th class="text-center align-middle" style="width: 50%">Description</th>
-										<th class="text-center align-middle" style="width: 10%">Start Date</th>
-										<th class="text-center align-middle" style="width: 10%">End Date</th>
-										<th class="text-center align-middle" style="width: 10%">Vacation Start</th>
-										<th class="text-center align-middle" style="width: 10%">Vacation End</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start Date</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End Date</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Vacation Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Vacation End</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
