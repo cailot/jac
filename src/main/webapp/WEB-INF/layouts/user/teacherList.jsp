@@ -579,8 +579,8 @@ function clearPassword() {
 										<th class="text-center align-middle" style="width: 10%">Address</th>
 										<th class="text-center align-middle" style="width: 10%">TFN</th>
 										<th class="text-center align-middle" style="width: 5%">VIT/WWCC</th>
-										<th class="text-center align-middle" style="width: 10%">Start Date</th>
-										<th class="text-center align-middle" style="width: 10%">End Date</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start Date</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End Date</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>

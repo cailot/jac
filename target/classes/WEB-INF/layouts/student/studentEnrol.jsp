@@ -436,13 +436,12 @@ function activateStudent(id) {
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th 
-										>ID</th>
+										<th class="align-middle text-center">ID</th>
 										<th class="align-middle text-center">First Name</th>
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
 										<th class="align-middle text-center">Gender</th>
-										<th class="align-middle text-center">Register Date</th>
+										<th class="align-middle text-center" data-orderable="false">Register Date</th>
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
 										<th class="align-middle text-center">Main Email</th>
