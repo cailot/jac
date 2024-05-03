@@ -220,7 +220,7 @@ function clearCourseForm(elementId) {
 											<tr>
 												<td class="small align-middle"><span><c:out value="${course.name}" /></span></td>
 												<td class="small align-middle"><span><c:out value="${course.description}" /></span></td>
-												<td class="small align-middle">
+												<td class="small align-middle text-center">
 													<span>
 														<c:choose>
 															<c:when test="${course.grade == '1'}">P2</c:when>

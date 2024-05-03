@@ -422,38 +422,38 @@ window.showWarning = function(id) {
 										<c:when test="${UserList != null}">
 											<c:forEach items="${UserList}" var="user">
 												<tr>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${user.username}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:out value="${user.lastName}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:out value="${user.firstName}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:set var="roleArray" value="${fn:split(user.role, '_')}" />
         													<c:out value="${roleArray[1]}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:out value="${user.phone}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:out value="${user.email}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:choose>
 																<c:when test="${user.state == '1'}">Victoria</c:when>
@@ -468,7 +468,7 @@ window.showWarning = function(id) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle ml-1">
 														<span>
 															<c:choose>
 																<c:when test="${user.branch == '12'}">Box Hill</c:when>

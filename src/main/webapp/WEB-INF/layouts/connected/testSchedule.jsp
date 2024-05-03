@@ -524,12 +524,12 @@ function deleteTestSchedule(id) {
 															</c:choose>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${scheduleItem.startDate}" />
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<c:out value="${scheduleItem.endDate}" />
 														</span>

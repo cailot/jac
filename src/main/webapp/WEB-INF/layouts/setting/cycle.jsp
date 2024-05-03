@@ -236,26 +236,26 @@
 										<c:when test="${CycleList != null}">
 											<c:forEach items="${CycleList}" var="cycle">
 												<tr>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<c:out value="${cycle.year}" />
 													</td>
 													<td class="small align-middle"><span
 															style="text-transform: capitalize;">
 															<c:out value="${cycle.description}" />
 														</span></td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="cycleStartDate" value="${cycle.startDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleStartDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="cycleEndDate" value="${cycle.endDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleEndDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="cycleVacationStartDate" value="${cycle.vacationStartDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleVacationStartDate}" pattern="dd/MM/yyyy" />
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<fmt:parseDate var="cycleVactionEndDate" value="${cycle.vacationEndDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${cycleVactionEndDate}" pattern="dd/MM/yyyy" />
 													</td>
