@@ -375,4 +375,15 @@ public class CodeServiceImpl implements CodeService {
 		return dtos;
 	}
 
+	@Override
+	public String getBranchInfo(String code) {
+		String info = "";
+		try{
+			info = branchRepository.getBranchInfo(code);
+		}catch(Exception e){
+			System.out.println("No branch found");
+		}
+		return info;
+	}
+
 }

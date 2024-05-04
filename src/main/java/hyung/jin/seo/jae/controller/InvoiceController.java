@@ -30,6 +30,7 @@ import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Outstanding;
 import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.InvoiceService;
@@ -65,6 +66,8 @@ public class InvoiceController {
 	@Autowired
 	private StudentService studentService;
 
+	@Autowired
+	private CodeService	codeService;
 	
 	// count records number in database
 	@GetMapping("/count")
@@ -153,7 +156,7 @@ public class InvoiceController {
 
 	// get payment history
 	@GetMapping("/receiptInfo")
-	public String receiptHistory(@RequestParam("studentId") String studentId, @RequestParam("invoiceId") String invoiceId, @RequestParam("paymentId") String paymentId, HttpSession session) {
+	public String receiptHistory(@RequestParam("studentId") String studentId, @RequestParam("invoiceId") String invoiceId, @RequestParam("paymentId") String paymentId, @RequestParam("branchCode") String branchCode, HttpSession session) {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
@@ -168,8 +171,6 @@ public class InvoiceController {
 		//3. bring to EnrolmentDTO
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(Long.parseLong(invoiceId));
 		for(EnrolmentDTO enrol : enrols){
-
-
 			// if free online course, skip it
 			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
 			if(isFreeOnline) continue;
@@ -195,6 +196,11 @@ public class InvoiceController {
 		}	
 		// 3-5. set EnrolmentDTO objects into session for payment receipt
 		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
+
+		// payment note based on branch code
+		String note = codeService.getBranchInfo(branchCode);
+		note = note.replace("\n", "<br/>");
+		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
 		
 		// 4. Header Info - Due Date & Grade
 		header.setRegisterDate(headerDueDate);
@@ -224,9 +230,9 @@ public class InvoiceController {
 	}
 
 	// make payment and return updated invoice
-	@PostMapping("/payment/{studentId}")
+	@PostMapping("/payment/{studentId}/{branchCode}")
 	@ResponseBody
-	public List makePayment(@PathVariable("studentId") Long studentId, @RequestBody PaymentDTO formData, HttpSession session) {
+	public List makePayment(@PathVariable("studentId") Long studentId, @PathVariable("branchCode") String branchCode, @RequestBody PaymentDTO formData, HttpSession session) {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 		List dtos = new ArrayList();
@@ -252,6 +258,12 @@ public class InvoiceController {
 		MoneyDTO header = new MoneyDTO();
 		List<String> headerGrade = new ArrayList<String>();
 		String headerDueDate = JaeUtils.getToday();
+
+		// payment note based on branch code
+		String note = codeService.getBranchInfo(branchCode);
+		note = note.replace("\n", "<br/>");
+		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+
 		// declare total paid amount from invoice for later usuages
 		// double invoicePaidAmount = 0;
 		// 7-1 if full paid, return EnrolmentDTO list
@@ -384,7 +396,6 @@ public class InvoiceController {
 			}
 			// 20-2. set BookDTO objects into session for payment receipt
 			session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
-
 			// 21-2. Header Info - Due Date & Grade
 			header.setRegisterDate(headerDueDate);
 			header.setInfo(String.join(", ", headerGrade));
@@ -402,9 +413,9 @@ public class InvoiceController {
 	}
 
 	// register new invoice
-	@PostMapping("/issue/{studentId}")
+	@PostMapping("/issue/{studentId}/{branchCode}")
 	@ResponseBody
-	public ResponseEntity<String> issueInvoice(@PathVariable("studentId") Long studentId, @RequestBody(required = false) String info, HttpSession session) {
+	public ResponseEntity<String> issueInvoice(@PathVariable("studentId") Long studentId, @PathVariable("branchCode") String branchCode, @RequestBody(required = false) String info, HttpSession session) {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 		// 2. get latest invoice by student id
@@ -412,6 +423,13 @@ public class InvoiceController {
 		invoice.setInfo(info);
 		invoiceService.updateInvoice(invoice, invoice.getId());
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
+
+		// invoice note based on branch code
+		String note = codeService.getBranchInfo(branchCode);
+		note = note.replace("\n", "<br/>");
+		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+
+
 		// set paid amount
 		session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
 		// 3. set payment elements related to invoice into session
