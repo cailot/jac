@@ -30,4 +30,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long>{
 	@Query("SELECT new hyung.jin.seo.jae.dto.BranchDTO(b.id, b.code, b.name, b.phone, b.email, b.address, b.abn, b.bank, b.bsb, b.accountNumber, b.accountName, b.info, b.state.id) FROM Branch b WHERE b.state.id = ?1 AND b.code = ?2")
 	BranchDTO findBranchByStateNCode(Long state, String code);
 
+	@Query(value = "SELECT b.info FROM Branch b WHERE b.code =?1", nativeQuery = true)   
+	String getBranchInfo(String code);
+	
 }

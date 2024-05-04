@@ -55,6 +55,9 @@ public interface CodeService {
 	// delete branch
 	void deleteBranch(Long id);
 
+	// get branch info
+	String getBranchInfo(String code);
+
 	// list all grade
 	List<GradeDTO> allGrades();
 

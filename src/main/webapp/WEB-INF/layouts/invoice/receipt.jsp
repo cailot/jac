@@ -102,7 +102,11 @@
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Name : </td>
                 <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><strong><%= firstName %> <%= lastName %></strong></td>
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Grade : </td>
-                <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><c:out value="${paymentMeta.info}" /></td>
+                <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;">
+                    <script type="text/javascript">
+                        document.write(gradeName('${paymentMeta.info}'));
+                    </script>
+                </td>
             </tr>
             <tr>
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Student ID : </td>
@@ -278,12 +282,6 @@
         </table>
 
         <table style="width: 90%; margin: 150px auto 10px; text-align: left; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
-            <!--<tr>
-                <td style="font-size: 14px; line-height: 1.6; font-weight: bold; border: 0;">
-                    <p style="margin: 0; padding: 0; line-height: 1.8;">• Payment Options : CASH / EFTPOS (50 cents Surcharge) / CREDIT CARD (1.5% Surcharge) / Bank Transfer</p>
-                    <p style="margin: 0; padding: 0; line-height: 1.8;">• Bank Details : {{ICT_BANKDETAILS}}</p>
-                </td>
-            </tr>-->
         </table>
         <table style="width: 90%; margin: 0 auto; text-align: left; border-collapse: collapse; table-layout: fixed; border: 1px solid #444; color: #444;">
             <tr>
@@ -291,75 +289,11 @@
             </tr>
             <tr>
                 <td style="font-size: 15px; line-height: 1.6; border: 0; padding: 0 10px 10px;">
-                    <!-- <p style="margin: 0; padding: 0; line-height: 1.8;">1.5% surcharge on credit card payment<br />0.5% surcharge on EFTPOS payment<br /><br />Test test test<br />Bank transfer<br />123-456<br />1234 5678</p> -->
-                    <p style="margin: 0; padding: 0; line-height: 1.8;">
-                        1.5% surcharge on credit card payment<br />0.5% surcharge on EFTPOS payment<br /><br />Test test test<br />Bank transfer<br />123-456<br />1234 5678
+                    <p id="invoiceNote">
+                        <c:out value="${sessionScope.invoiceNote}" escapeXml="false" />
                     </p>
                 </td>
             </tr>
         </table>
     </div>
 </div>
-
-<script>
-    $('#printInvoice').click(function () {
-        var html = $('.invoice')[0].outerHTML;
-        var htmljac = html.replace('TAX INVOICE', 'TAX INVOICE(JAC)');
-        var htmlstudent = html.replace('TAX INVOICE', 'TAX INVOICE Receipt(Student)');
-
-        Popup(htmljac);
-
-        //Popup(htmljac +"<div style='page-break-before:always;height:150px;'></div>" + htmlstudent);
-        function Popup(data) {
-
-            var mywindow = window.open('', 'PRINT', 'height=800,width=900');
-            mywindow.document.write(data);
-
-            mywindow.document.close();
-            mywindow.focus();
-
-            mywindow.print();
-            mywindow.close();
-
-            return true;
-        }
-    });
-
-
-    $('#btnPdf').click(function () {
-        $('#InvoiceForm').attr('action', '/ADM/InvoicePdfV2');
-        $('#InvoiceForm').submit();
-    });
-
-    $('#btnDocx').click(function () {
-        $('#InvoiceForm').attr('action', '/ADM/InvoiceWordV2');
-        $('#InvoiceForm').submit();
-    });
-
-    $('#emailInvoice').click(function () {
-        $("#lySpinner").show();
-        $.ajax({
-            type: "POST",
-            url: "/ADM/InvoiceSendEmail",
-            data: $('#InvoiceForm').serialize(),
-            //contentType: "application/json; charset=utf-8",
-            //dataType: "json",
-            success: function (response) {
-                if (response.success === true) {
-                    alert('Transfer Completed');
-                    $("#lySpinner").hide();
-                }
-                else {
-                    alert(response.msg);
-                    $("#lySpinner").hide();
-                }
-            },
-            error: function (xhr) {
-                alert('Transfer Failed.');
-                $("#lySpinner").hide();
-                //jqxAlert.alert("Something seems Wrong in Deleting your data.");
-            }
-        });
-    });
-
-</script>
