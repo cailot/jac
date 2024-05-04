@@ -161,7 +161,11 @@ function getInvoice(studentId) {
 //		Display Payment History in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId;  
+	var branch = window.branch;
+	if(branch === '0'){
+		branch = '90'; // head office
+	}
+	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
 	var win = window.open(url, '_blank');
 	win.focus();
 }

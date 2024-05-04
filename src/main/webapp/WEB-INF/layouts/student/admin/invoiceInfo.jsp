@@ -332,7 +332,11 @@ function openPaymentHistory(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function makePayment(){
 	var studentId = $('#formId').val();
-	
+	// branch code
+	var branch = window.branch;
+	if(branch === '0'){
+		branch = '90'; // head office
+	}
 	var payment = {
 		amount: $('#payAmount').val(),
 		method: $('#payItem').val(),
@@ -341,7 +345,7 @@ function makePayment(){
 	};
 	
 	$.ajax({
-		url : '${pageContext.request.contextPath}/invoice/payment/' + studentId,
+		url : '${pageContext.request.contextPath}/invoice/payment/' + studentId + '/' + branch,
 		type : 'POST',
 		dataType : 'json',
 		data : JSON.stringify(payment),
@@ -468,9 +472,14 @@ function issueInvoice(){
 	var studentId = $('#formId').val();
 	var info = $('#invoiceInfo').val();
 	let encodeInfo = encodeDecodeString(info).encoded;
+	var branch = window.branch;
+	// branch code number...
+	if(branch === '0'){
+		branch = '90'; // head office
+	}
 
 	$.ajax({
-		url : '${pageContext.request.contextPath}/invoice/issue/' + studentId,
+		url : '${pageContext.request.contextPath}/invoice/issue/' + studentId + '/' + branch,
 		type : 'POST',
 		data : encodeInfo,
 		contentType : 'application/json',
