@@ -21,5 +21,4 @@ public class SimpleBasketDTO {
 		this.name = (obj[0]!=null) ? String.valueOf(obj[0]) : "";
 		this.value = (obj[1]!=null) ? String.valueOf(obj[1]) : "";
 	}
-
 }

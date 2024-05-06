@@ -24,6 +24,7 @@ import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.OutstandingDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
 import hyung.jin.seo.jae.model.Material;
@@ -198,9 +199,12 @@ public class InvoiceController {
 		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
 
 		// payment note based on branch code
-		String note = codeService.getBranchInfo(branchCode);
-		note = note.replace("\n", "<br/>");
+		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
+		String email = branchInfo.getName(); // email
+		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
+		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
 		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+
 		
 		// 4. Header Info - Due Date & Grade
 		header.setRegisterDate(headerDueDate);
@@ -260,8 +264,10 @@ public class InvoiceController {
 		String headerDueDate = JaeUtils.getToday();
 
 		// payment note based on branch code
-		String note = codeService.getBranchInfo(branchCode);
-		note = note.replace("\n", "<br/>");
+		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
+		String email = branchInfo.getName(); // email
+		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
+		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
 		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
 
 		// declare total paid amount from invoice for later usuages
@@ -424,10 +430,13 @@ public class InvoiceController {
 		invoiceService.updateInvoice(invoice, invoice.getId());
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
 
-		// invoice note based on branch code
-		String note = codeService.getBranchInfo(branchCode);
-		note = note.replace("\n", "<br/>");
+		// payment note based on branch code
+		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
+		String email = branchInfo.getName(); // email
+		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
+		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
 		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+
 
 
 		// set paid amount

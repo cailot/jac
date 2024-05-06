@@ -376,14 +376,14 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
-	public String getBranchInfo(String code) {
-		String info = "";
+	public SimpleBasketDTO getBranchInfo(String code) {
+		SimpleBasketDTO dto = new SimpleBasketDTO();
 		try{
-			info = branchRepository.getBranchInfo(code);
+			dto = branchRepository.getBranchInfo(code);
 		}catch(Exception e){
-			System.out.println("No branch found");
+			System.out.println("No state found");
 		}
-		return info;
+		return dto;
 	}
 
 }

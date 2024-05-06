@@ -55,8 +55,8 @@ public interface CodeService {
 	// delete branch
 	void deleteBranch(Long id);
 
-	// get branch info
-	String getBranchInfo(String code);
+	// get branch info - email, info
+	SimpleBasketDTO getBranchInfo(String code);
 
 	// list all grade
 	List<GradeDTO> allGrades();
