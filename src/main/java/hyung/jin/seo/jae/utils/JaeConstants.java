@@ -173,6 +173,8 @@ public interface JaeConstants {
 
 	String INVOICE_NOTE = "invoiceNote";
 
+	String INVOICE_EMAIL = "invoiceEmail";
+
 	String STUDENT_INFO = "studentInfo";
 
 	String CRITERIA_INFO = "criteriaInfo";

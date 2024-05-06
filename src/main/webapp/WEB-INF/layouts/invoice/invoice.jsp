@@ -9,26 +9,6 @@
 <%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <%@ page import="hyung.jin.seo.jae.utils.JaeConstants" %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-<script>
-    function exportPdf() {
-      // Choose the element that our invoice is rendered in.
-      var element = document.body;
-      // or use a specific element, e.g., document.getElementById('invoice')
-    
-      // Options for html2pdf
-      var opt = {
-        margin:       1,
-        filename:     'invoice.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-    
-      // Use html2pdf's `from` method to start the conversion
-      html2pdf().from(element).set(opt).save();
-    }
-    </script>
     
 <%
    String invoiceId = request.getParameter("invoiceId");
