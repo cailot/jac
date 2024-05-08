@@ -14,6 +14,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
 	$(document).ready(function () {
+
 		$('#cycleListTable').DataTable({
 			language: {
 				search: 'Filter:'
@@ -51,6 +52,17 @@
 	//		Register Cycle
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function addCycle() {
+
+		var desc = document.getElementById('addDescription');
+		if(desc.value== ""){
+			$('#validation-alert .modal-body').text(
+					'Please enter description');
+			$('#validation-alert').modal('show');
+			$('#validation-alert').on('hidden.bs.modal', function () {
+       			 desc.focus();
+    		});
+			return false;
+		}
 		// Get from form data
 		var cycle = {
 			year: $("#addYear").val(),
@@ -434,6 +446,16 @@
 	<div class="modal-dialog">
 		<div class="alert alert-block alert-success alert-dialog-display">
 			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Validation Alert -->
+<div id="validation-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-danger alert-dialog-display">
+			<i class="bi bi-exclamation-circle h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
