@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/parsley-2.9.2.css"/>	
+
 <script>
 $(function() {
 	// initiate datepicker
@@ -676,7 +678,7 @@ function clearCourseRegisteration(){
 							<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
 						</div>
 						<div class="col-md-4">
-							<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
+							<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName" required="">
 						</div>
 						<div class="col-md-3">
 							<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade"></select>
@@ -820,7 +822,3 @@ function clearCourseRegisteration(){
     	</div>
 	</div>
 </div>
-
-
-
-
