@@ -412,7 +412,7 @@ function clearStudentInfo() {
 										<th></th>
 										<th></th>
 										<th colspan="2"></th>
-										<th colspan="3" class="text-right small"></th>
+										<th colspan="3" class="text-right small align-middle"></th>
 										<th colspan="2" class="text-right small"></th>
 									</tr>
 								</tfoot>

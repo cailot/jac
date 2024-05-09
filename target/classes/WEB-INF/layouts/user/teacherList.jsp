@@ -123,6 +123,49 @@ function getClazzByGrade() {
 //		Register Teacher
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addTeacher() {
+
+	// lastName, email, password validation
+	var last = document.getElementById('addLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('addEmail');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	var pass = document.getElementById('addPassword');
+	if(pass.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter password');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			pass.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var teacher = {
 		state: $("#addState").val(),
@@ -212,6 +255,19 @@ function retreiveTeacherInfo(std) {
 //		Update Teacher Info
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateTeacherInfo() {
+
+	// lastName validation
+	var last = document.getElementById('editLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+
 	// get from formData
 	var teacher = {
 		id: $('#editId').val(),

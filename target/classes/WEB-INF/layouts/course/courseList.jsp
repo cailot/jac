@@ -43,6 +43,30 @@ $(document).ready(function () {
 //		Register Course
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addCourse() {
+
+
+	// name, description validation
+	var name = document.getElementById('addName');
+	if(name.value== ""){
+		$('#validation-alert .modal-body').text(
+				'Please enter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			name.focus();
+		});
+		return false;
+	}
+	var desc = document.getElementById('addDescription');
+	if(desc.value== ""){
+		$('#validation-alert .modal-body').text(
+				'Please enter description');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			desc.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var course = {
 		name : $("#addName").val(),
@@ -112,6 +136,29 @@ function retrieveCourseInfo(courseId) {
 //		Update Course
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateCourseInfo(){
+
+	// name, description validation
+	var name = document.getElementById('editName');
+	if(name.value== ""){
+		$('#validation-alert .modal-body').text(
+				'Please enter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			name.focus();
+		});
+		return false;
+	}
+	var desc = document.getElementById('editDescription');
+	if(desc.value== ""){
+		$('#validation-alert .modal-body').text(
+				'Please enter description');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			desc.focus();
+		});
+		return false;
+	}
+
 	var courseId = $("#editId").val();
 	// get from formData
 	var course = {

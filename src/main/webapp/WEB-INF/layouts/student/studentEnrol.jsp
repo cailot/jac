@@ -86,6 +86,49 @@ $(document).ready(function () {
 //		Register Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function addStudent() {
+
+	// lastName, email, password validation
+	var last = document.getElementById('addLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var pass = document.getElementById('addPassword');
+	if(pass.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter password');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			pass.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('addEmail1');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var std = {
 		firstName : $("#addFirstName").val(),
@@ -134,6 +177,38 @@ function addStudent() {
 //		Update Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateStudentInfo(){
+
+	// lastName, email validation
+	var last = document.getElementById('editLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('editEmail1');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
 	
 	// get from formData
 	var std = {

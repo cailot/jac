@@ -58,6 +58,39 @@ $(document).ready(function () {
 //		Register OnlineSession
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOnline() {
+
+	//start, end, url validation
+	var start = document.getElementById('addStartTime');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter start time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+	var end = document.getElementById('addEndTime');
+	if(end.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter end time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			end.focus();
+		});
+		return false;
+	}
+	var address = document.getElementById('addAddress');
+	if(address.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter access URL');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			address.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var online = {
 		grade: $("#addGrade").val(),
@@ -68,7 +101,6 @@ function addOnline() {
 		endTime: $("#addEndTime").val(),
 		address : $("#addAddress").val()
 	}
-		console.log(online);
 
 	// Send AJAX to server
 	$.ajax({
@@ -138,6 +170,39 @@ function retrieveOnlineInfo(onlineId) {
 //		Update Online Session
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateOnlineInfo() {
+
+	//start, end, url validation
+	var start = document.getElementById('editStartTime');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter start time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+	var end = document.getElementById('editEndTime');
+	if(end.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter end time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			end.focus();
+		});
+		return false;
+	}
+	var address = document.getElementById('editAddress');
+	if(address.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter access URL');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			address.focus();
+		});
+		return false;
+	}
+
 	var onlineId = $("#editId").val();
 	// get from formData
 	var online = {
@@ -527,7 +592,7 @@ function updateEditActiveValue(checkbox) {
 								</div>
 								<div class="col-md-3">
 									<label for="editDay" class="label-form">Day</label>
-									<select class="form-control" id="editDay" name="editDay">
+									<select class="form-control" id="editDay" name="editDay" disabled>
 										<option value="Monday">Monday</option>
 										<option value="Tuesday">Tuesday</option>
 										<option value="Wednesday">Wednesday</option>

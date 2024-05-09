@@ -100,6 +100,36 @@ $(document).ready(function () {
 //		Register Class
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addClass() {
+
+	// name, price validation
+	var name = document.getElementById('addName');
+	if(name.value== ""){
+		$('#validation-alert .modal-body').text('Please enter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			name.focus();
+		});
+		return false;
+	}
+	var price = document.getElementById('addPrice');
+	if(price.value== ""){
+		$('#validation-alert .modal-body').text('Please enter price');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			price.focus();
+		});
+		return false;
+	}
+	var start = document.getElementById('addStartDate');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text('Please enter start date');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var clazz = {
 		state: $("#addState").val(),
@@ -182,6 +212,36 @@ function retrieveClassInfo(clazzId) {
 //		Update Class
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateClassInfo() {
+
+	// name, price, start validation
+	var name = document.getElementById('editName');
+	if(name.value== ""){
+		$('#validation-alert .modal-body').text('Please enter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			name.focus();
+		});
+		return false;
+	}
+	var price = document.getElementById('editPrice');
+	if(price.value== ""){
+		$('#validation-alert .modal-body').text('Please enter price');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			price.focus();
+		});
+		return false;
+	}
+	var start = document.getElementById('editStartDate');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text('Please enter start date');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+
 	var clazzId = $("#editId").val();
 	// get from formData
 	var clazz = {
@@ -309,7 +369,7 @@ function editInitialiseCourseByGrade(grade, courseId) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#classListTable tr { 
 		vertical-align: middle;
 		height: 50px 	
 	} 

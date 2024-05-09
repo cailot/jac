@@ -43,6 +43,19 @@ $(document).ready(function () {
 //		Register Extrawork
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addExtrawork() {
+
+	// name validation
+	var cd = document.getElementById('addName');
+	if(cd.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please endter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var extrawork = {
 		// subject : $("#addSubject").val(),
@@ -130,6 +143,19 @@ function updateEditActiveValue(checkbox) {
 //		Update Extrawork
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateExtraworkInfo() {
+
+	// name validation
+	var cd = document.getElementById('editName');
+	if(cd.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please endter name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+
 	var workId = $("#editId").val();
 	// get from formData
 	var extrawork = {

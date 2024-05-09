@@ -39,42 +39,6 @@
     </div>
  </div>
 
-<!-- Success Alert -->
-<div id="success-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="fa fa-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Warning Alert -->
-<div id="warning-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Delete Alert -->
-<div id="confirm-alert" class="modal fade" >
-    <div class="modal-dialog">
-    	<div class="alert alert-block alert-danger">
-    		<div class="alert-dialog-display">
-    			<i class="fa fa-minus-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-    		</div>
-			<div style="text-align: right;">
-				<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-sm btn-danger" id="deactivateAction">Delete</button>
-			</div>
-		</div>
-    </div>
-</div>
-
-
-
+ 
 
 

@@ -35,13 +35,13 @@ public class Student {
     @GenericGenerator(name = "studentIdGenerator", strategy = "hyung.jin.seo.jae.utils.StudentIdGenerator")
     private Long id;
     
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = true)
     private String firstName;
     
     @Column(length = 100, nullable = false)
     private String lastName;
 
-    @Column(length = 70, nullable = true) // exsting data has no password
+    @Column(length = 70, nullable = false)
     private String password;
     
     @Column(length = 1, nullable = false)
@@ -56,7 +56,7 @@ public class Student {
     @Column(length = 50, nullable = true)
     private String contactNo2;
     
-    @Column(length = 100, nullable = true)
+    @Column(length = 100, nullable = false)
     private String email1;
     
     @Column(length = 100, nullable = true)

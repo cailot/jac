@@ -38,34 +38,13 @@ $(document).ready(function () {
 	listSubject('#addSubject');
 	listSubject('#editSubject');
 
-	// duration field is disabled & make duration empty for Pdf
-	// document.getElementById('addPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('addDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('addVideo').addEventListener('change', function() {
-    //     document.getElementById('addDuration').disabled = !this.checked;
-    // });
-	// document.getElementById('editPdf').addEventListener('change', function() {
-    //     var durationField = document.getElementById('editDuration');
-    //     durationField.disabled = this.checked;
-    //     if (this.checked) {
-    //         durationField.value = '';
-    //     }
-    // });
-	// document.getElementById('editVideo').addEventListener('change', function() {
-    //     document.getElementById('editDuration').disabled = !this.checked;
-    // });
-
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Register Homework
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addHomework() {
+
 	// Get from form data
 	var homework = {
 		subject : $("#addSubject").val(),
