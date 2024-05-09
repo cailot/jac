@@ -43,6 +43,49 @@ $(function() {
 // 		Add Student
 ///////////////////////////////////////////////////////////////////////////
 function addStudent() {
+
+	// lastName, email, password validation
+	var last = document.getElementById('addLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var pass = document.getElementById('addPassword');
+	if(pass.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter password');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			pass.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('addEmail1');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var std = {
 		firstName : $("#addFirstName").val(),
@@ -282,6 +325,39 @@ function searchStudent() {
 //		Update existing student
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function updateStudentInfo() {
+
+	// lastName, email, password validation
+	var last = document.getElementById('formLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('formEmail1');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid main email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+
 	// if activate process, then call activateStudent()
 	if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
 		reactivateStudent();

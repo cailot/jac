@@ -47,7 +47,7 @@ public class User implements UserDetails {
     @Column
     private int enabled;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = true)
     private String firstName;
     
     @Column(length = 100, nullable = false)

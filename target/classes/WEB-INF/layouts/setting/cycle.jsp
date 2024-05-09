@@ -106,7 +106,7 @@
 			url: '${pageContext.request.contextPath}/class/get/cycle/' + cycleId,
 			type: 'GET',
 			success: function (cycle) {
-				// console.log(cycle);
+				//console.log(cycle);
 				$("#editId").val(cycle.id);
 				$("#editYear").val(cycle.year);
 				$("#editDescription").val(cycle.description);
@@ -133,6 +133,18 @@
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function updateCycleInfo() {
 		var cycleId = $("#editId").val();
+
+		var desc = document.getElementById('editDescription');
+		if(desc.value== ""){
+			$('#validation-alert .modal-body').text(
+					'Please enter description');
+			$('#validation-alert').modal('show');
+			$('#validation-alert').on('hidden.bs.modal', function () {
+       			 desc.focus();
+    		});
+			return false;
+		}
+
 		// get from formData
 		var cycle = {
 			id: cycleId,
@@ -183,7 +195,7 @@
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#cycleListTable tr { 
 		vertical-align: middle;
 		height: 50px 	
 	} 
@@ -440,23 +452,3 @@
 	</div>
 </div>
 
-
-<!-- Success Alert -->
-<div id="success-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
-
-<!-- Validation Alert -->
-<div id="validation-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger alert-dialog-display">
-			<i class="bi bi-exclamation-circle h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
-</div>
