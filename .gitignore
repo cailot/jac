@@ -1,3 +1,2 @@
-*.class
-/target/
+git rm --cached src/main/resources/application.properties/target/
 /src/main/resources/application.properties
