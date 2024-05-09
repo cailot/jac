@@ -37,13 +37,13 @@ public class Teacher implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = true)
     private String firstName;
     
     @Column(length = 100, nullable = false)
     private String lastName;
 
-    @Column(length = 70, nullable = true)
+    @Column(length = 70, nullable = false)
     private String password;
     
     @Column(length = 1, nullable = false)

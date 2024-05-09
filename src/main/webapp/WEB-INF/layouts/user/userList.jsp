@@ -101,6 +101,29 @@ $(document).ready(function () {
 //		Register User
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addUser() {
+	
+	// lastName, password
+	var last = document.getElementById('addLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+	var pass = document.getElementById('addPassword');
+	if(pass.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter password');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			pass.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var user = {
 		state: $("#addState").val(),
@@ -189,6 +212,19 @@ function updateEditActiveValue(checkbox) {
 //		Update User Info
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateUserInfo() {
+
+	// lastName validation
+	var last = document.getElementById('editLastName');
+	if(last.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter last name');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			last.focus();
+		});
+		return false;
+	}
+
 	// get from formData
 	var user = {
 		username: $('#editUsername').val(),

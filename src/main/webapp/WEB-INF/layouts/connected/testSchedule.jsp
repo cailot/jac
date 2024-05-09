@@ -150,6 +150,29 @@ function addTest(action) {
 //		Register Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerSchedule() {
+
+	// start, end validation
+	var start = document.getElementById('addStart');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter start date & time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+	var end = document.getElementById('addEnd');
+	if(end.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter end date & time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			end.focus();
+		});
+		return false;
+	}
+
 	// Get testIds form addScheduleTable
 	var testDtos = [];
 	$('#addScheduleTable tr').each(function () {
@@ -279,6 +302,29 @@ function updateEditActiveValue(checkbox) {
 //		Update Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
+
+	// start, end validation
+	var start = document.getElementById('editStart');
+	if(start.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter start date & time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			start.focus();
+		});
+		return false;
+	}
+	var end = document.getElementById('editEnd');
+	if(end.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter end date & time');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			end.focus();
+		});
+		return false;
+	}
+
 	// get from formData
 	var testDtos = [];
 	$('#editScheduleTable tr').each(function () {
@@ -405,7 +451,7 @@ function deleteTestSchedule(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#scheduleListTable tr { 
 		vertical-align: middle;
 		height: 50px 	
 	} 

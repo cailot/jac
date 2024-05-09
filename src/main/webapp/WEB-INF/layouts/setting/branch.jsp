@@ -37,6 +37,57 @@ $(document).ready(function () {
 //		Register Branch
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBranch() {
+	//cd, email, name, phone validation
+	var cd = document.getElementById('addCode');
+	if(cd.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please choose code');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+	if(cd.value.length !== 2){
+		$('#validation-alert .modal-body').text(
+		'Code shouble be 2 digits');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+	var phone = document.getElementById('addPhone');
+	if(phone.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter phone');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			phone.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('addEmail');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+
 	// Get from form data
 	var branch = {
 		stateId: $("#addState").val(),
@@ -81,6 +132,7 @@ function addBranch() {
 //		Retrieve Branch
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function retrieveBranch(branchId) {
+
 	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/code/getBranch/' + branchId,
@@ -91,6 +143,7 @@ function retrieveBranch(branchId) {
 			$("#editState").val(branch.stateId);
 			$("#editState").prop('disabled', true);
 			$("#editCode").val(branch.code);
+			$("#editCode").prop('disabled', true);
 			$("#editName").val(branch.name);
 			$("#editPhone").val(branch.phone);
 			$("#editEmail").val(branch.email);
@@ -125,6 +178,7 @@ function retrieveBranchCode(code) {
 			$("#editState").val(branch.stateId);
 			$("#editState").prop('disabled', true);
 			$("#editCode").val(branch.code);
+			$("#editCode").prop('disabled', true);
 			$("#editName").val(branch.name);
 			$("#editPhone").val(branch.phone);
 			$("#editEmail").val(branch.email);
@@ -149,6 +203,59 @@ function retrieveBranchCode(code) {
 //		Update Branch
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateBranchInfo() {
+
+	//cd, email, name, phone validation
+	var cd = document.getElementById('editCode');
+	if(cd.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please choose code');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+	if(cd.value.length !== 2){
+		$('#validation-alert .modal-body').text(
+		'Code shouble be 2 digits');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			cd.focus();
+		});
+		return false;
+	}
+	var phone = document.getElementById('editPhone');
+	if(phone.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter phone');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			phone.focus();
+		});
+		return false;
+	}
+	var email = document.getElementById('editEmail');
+	if(email.value== ""){
+		$('#validation-alert .modal-body').text(
+		'Please enter email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+	//let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+	if(!regex.test(email.value)){
+		$('#validation-alert .modal-body').text(
+		'Please enter valid email');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			email.focus();
+		});
+		return false;
+	}
+
 	var branchId = $("#editId").val();
 	var branchName = $("#editName").val();
 	// get from formData
@@ -595,16 +702,6 @@ function showBranchInfo(state, branch){
 					</div>
 				</section>
 			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Success Alert -->
-<div id="success-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
 </div>
