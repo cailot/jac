@@ -264,6 +264,41 @@ function updateEditActiveValue(checkbox) {
 	}
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before deleting Online
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmDelete(testId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deleteOnline(testId);
+        $('#deleteConfirmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Online
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function deleteOnline(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/onlineSession/delete/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Online Session deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
 </script>
 
 <style>
@@ -346,9 +381,9 @@ function updateEditActiveValue(checkbox) {
 										<th class="text-center align-middle" style="width: 5%">Week</th>
 										<th class="text-center align-middle" style="width: 10%">Start Time</th>
 										<th class="text-center align-middle" style="width: 10%">End Time</th>
-										<th class="text-center align-middle" style="width: 40%">Access URL</th>
+										<th class="text-center align-middle" style="width: 35%">Access URL</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -428,6 +463,8 @@ function updateEditActiveValue(checkbox) {
 													</c:choose>
 													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveOnlineInfo('${online.id}')">
+														</i>&nbsp;
+														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${online.id}')">
 														</i>
 													</td>
 												</tr>
@@ -702,30 +739,21 @@ function updateEditActiveValue(checkbox) {
 	</div>
 </div>
 
-<!-- Confirmation Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Delete Confirmation Alert -->
-<div id="delete-confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmDeleteAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Online Session Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to delete Online Session ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>

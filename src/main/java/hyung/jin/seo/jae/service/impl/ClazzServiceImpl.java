@@ -285,4 +285,16 @@ public class ClazzServiceImpl implements ClazzService {
 		return clazz;
 	}
 
+	@Override
+	public void deleteClass(Long id) {
+		// 1. get class
+		Clazz existing = clazzRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Clazz Not Found"));
+		// 2. delete associated enrolment & attendance
+		existing.setEnrolments(null);
+		existing.setAttendances(null);
+		clazzRepository.save(existing);
+		// 3. delete class
+		clazzRepository.deleteById(id);
+	}
+
 }

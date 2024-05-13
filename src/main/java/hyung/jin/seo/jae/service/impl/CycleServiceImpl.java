@@ -15,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.model.Cycle;
@@ -481,5 +482,15 @@ public class CycleServiceImpl implements CycleService {
 		// update the existing record
 		Cycle updated = cycleRepository.save(existing);
 		return updated;		
+	}
+
+	@Override
+	@Transactional
+	public void deleteCycle(Long id) {
+		try {
+			cycleRepository.deleteById(id);
+		} catch (org.springframework.dao.EmptyResultDataAccessException e) {
+			System.out.println("Nothing to delete");
+		}
 	}
 }

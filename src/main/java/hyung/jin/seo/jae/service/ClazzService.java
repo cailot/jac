@@ -71,4 +71,7 @@ public interface ClazzService {
 
 	// get online class by grade and year
 	Clazz getOnlineByGradeNYear(String grade, int year);
+
+	// delete class
+	void deleteClass(Long id);
 }

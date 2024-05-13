@@ -182,6 +182,39 @@
 		clearFormData("cycleEdit");
 	}
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Cycle
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteCycle(id) {
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/class/deleteCycle/' + id,
+		type : 'PUT',
+		success : function(data) {
+			// clear existing form
+			$('#success-alert .modal-body').text('Cycle is now deleted');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	}); 
+}
+
+window.showWarning = function(id) {
+    // Show the warning modal
+    $('#deleteModal').modal('show');
+    // Attach the click event handler to the "Delete" button
+    $('#agreeDelete').one('click', function() {
+        deleteCycle(id);
+        $('#deleteModal').modal('hide');
+    });
+}
+
+
 </script>
 
 <style>
@@ -284,9 +317,8 @@
 														<fmt:formatDate value="${cycleVactionEndDate}" pattern="dd/MM/yyyy" />
 													</td>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg"
-															data-toggle="tooltip" title="Edit"
-															onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;
+														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;
+														<i class="bi bi-trash text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${cycle.id}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -452,3 +484,21 @@
 	</div>
 </div>
 
+<!-- Delete Dialogue -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Cycle Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to delete this cycle ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-check-circle"></i>&nbsp;Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>

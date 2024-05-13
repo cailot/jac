@@ -521,10 +521,18 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Transactional
 	public void deletePractice(Long id) {
 		try{
-		    practiceRepository.deleteById(id);
-        }catch(org.springframework.dao.EmptyResultDataAccessException e){
-            System.out.println("Nothing to delete");
-        }
+			// 1. get associated PracticeAnswer
+			PracticeAnswer pa = practiceAnswerRepository.findPracticeAnswerByPractice(id);
+			// 2. empty PracticeAnswerCollection
+			pa.setAnswers(new ArrayList<>());
+			practiceAnswerRepository.save(pa);
+			// 3. delete associated practiceAnswer
+			practiceAnswerRepository.deletePracticeAnswerByPractice(id);
+			// 4. delete practice
+			practiceRepository.deleteById(id);
+		}catch(Exception e){
+			System.out.println("Nothing to delete");
+		}
 	}
 
 	@Override
@@ -551,6 +559,14 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Transactional
 	public void deleteTest(Long id) {
 		try{
+			// 1. get associated TestAnswer
+			TestAnswer ta = testAnswerRepository.findTestAnswerByTest(id);
+			// 2. empty TestAnswerCollection
+			ta.setAnswers(new ArrayList<>());
+			testAnswerRepository.save(ta);
+			// 3. delete associated testAnswer
+			testAnswerRepository.deleteTestAnswerByTest(id);
+			// 4. delete test
 			testRepository.deleteById(id);
 		}catch(Exception e){
 			System.out.println("Nothing to delete");

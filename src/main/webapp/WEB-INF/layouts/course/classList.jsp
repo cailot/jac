@@ -350,6 +350,41 @@ function editInitialiseCourseByGrade(grade, courseId) {
 	});
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before deleting Class
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmDelete(testId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deleteClass(testId);
+        $('#deleteConfirmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Class
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function deleteClass(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/class/deleteClass/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Class deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
 </script>
 
 <style>
@@ -584,6 +619,10 @@ function editInitialiseCourseByGrade(grade, courseId) {
 													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
 														</i>
+														<%-- too dangerous as related to many tables
+														&nbsp;
+														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${clazz.id}')"></i>
+														--%>
 													</td>
 												</tr>
 											</c:forEach>
@@ -772,10 +811,6 @@ function editInitialiseCourseByGrade(grade, courseId) {
 	</div>
 </div>
 
-
-
-
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
@@ -783,5 +818,24 @@ function editInitialiseCourseByGrade(grade, courseId) {
 			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
+	</div>
+</div>
+
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Class Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to delete Class ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>

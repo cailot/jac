@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -356,6 +357,37 @@ public class ClazzController {
 		// System.out.println(grade + " : " +  week);
 		// 3. return info
 		return info;
+	}
+
+	// remove cycle by Id
+	@PutMapping("/deleteCycle/{id}")
+	@ResponseBody
+	public ResponseEntity<String> deleteCycle(@PathVariable("id") Long id) {
+		try{
+			cycleService.deleteCycle(id);
+			return ResponseEntity.ok("\"Cycle delete success\"");		
+		}catch(Exception e){
+			String message = "Error deleting cycle: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
+	// delete course by Id
+	@DeleteMapping(value = "/deleteCourse/{courseId}")
+	@ResponseBody
+    public ResponseEntity<String> removeCourse(@PathVariable String courseId) {
+        Long id = Long.parseLong(StringUtils.defaultString(courseId, "0"));
+		courseService.deleteCourse(id);
+		return ResponseEntity.ok("\"Course deleted successfully\"");
+    }
+
+	// delete class by Id
+	@DeleteMapping(value = "/deleteClass/{classId}")
+	@ResponseBody
+	public ResponseEntity<String> removeClass(@PathVariable String classId) {
+		Long id = Long.parseLong(StringUtils.defaultString(classId, "0"));
+		clazzService.deleteClass(id);
+		return ResponseEntity.ok("\"classId deleted successfully\"");
 	}
 
 }

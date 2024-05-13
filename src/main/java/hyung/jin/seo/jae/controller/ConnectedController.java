@@ -604,6 +604,22 @@ public class ConnectedController {
 		return dtos;
 	}
 	
+	@DeleteMapping(value = "/deleteHomework/{homeId}")
+	@ResponseBody
+    public ResponseEntity<String> removeHomework(@PathVariable String homeId) {
+        Long id = Long.parseLong(StringUtils.defaultString(homeId, "0"));
+		connectedService.deleteHomework(id);
+		return ResponseEntity.ok("\"Homework deleted successfully\"");
+    }
+
+	@DeleteMapping(value = "/deleteExtrawork/{extraId}")
+	@ResponseBody
+    public ResponseEntity<String> removeExtrawork(@PathVariable String extraId) {
+        Long id = Long.parseLong(StringUtils.defaultString(extraId, "0"));
+		connectedService.deleteExtrawork(id);
+		return ResponseEntity.ok("\"Extra Work deleted successfully\"");
+    }
+
 	@DeleteMapping(value = "/deletePracticeSchedule/{practiceScheduleId}")
 	@ResponseBody
     public ResponseEntity<String> removePracticeSchedule(@PathVariable String practiceScheduleId) {
@@ -618,6 +634,22 @@ public class ConnectedController {
         Long id = Long.parseLong(StringUtils.defaultString(testScheduleId, "0"));
 		connectedService.deleteTestSchedule(id);
 		return ResponseEntity.ok("\"Test Schedule deleted successfully\"");
+    }
+
+	@DeleteMapping(value = "/deletePractice/{practiceId}")
+	@ResponseBody
+    public ResponseEntity<String> removePractice(@PathVariable String practiceId) {
+        Long id = Long.parseLong(StringUtils.defaultString(practiceId, "0"));
+		connectedService.deletePractice(id);
+		return ResponseEntity.ok("\"Practice deleted successfully\"");
+    }
+
+	@DeleteMapping(value = "/deleteTest/{testId}")
+	@ResponseBody
+    public ResponseEntity<String> removeTest(@PathVariable String testId) {
+        Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+		connectedService.deleteTest(id);
+		return ResponseEntity.ok("\"Test deleted successfully\"");
     }
 
 	// helper method converting answers Map to List
