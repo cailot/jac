@@ -8,6 +8,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.model.Course;
@@ -77,12 +78,14 @@ public class CourseServiceImpl implements CourseService {
 	}
 	
 	@Override
+	@Transactional
 	public Course addCourse(Course course) {
 		Course add = courseRepository.save(course);
 		return add;
 	}
 
 	@Override
+	@Transactional
 	public CourseDTO updateCourse(Course course) {
 		// search by Id
 		Course existing = courseRepository.findById(course.getId()).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
@@ -133,5 +136,17 @@ public class CourseServiceImpl implements CourseService {
 			}
 		}
 		return dtos;
+	}
+
+	@Override
+	@Transactional
+	public void deleteCourse(Long id) {
+		// 1. get Course
+		Course existing = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
+		// 2. remote associated Subject
+		existing.setSubjects(null);
+		courseRepository.save(existing);
+		// 3. delete Course
+		courseRepository.deleteById(id);
 	}
 }

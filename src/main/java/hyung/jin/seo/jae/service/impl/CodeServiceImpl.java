@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.GradeDTO;
@@ -115,12 +116,14 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	@Transactional
 	public Branch addBranch(Branch branch) {
 		Branch bran = branchRepository.save(branch);
 		return bran;
 	}
 
 	@Override
+	@Transactional
 	public Branch updateBranch(Branch newBranch, Long id) {
 		Branch bran = branchRepository.findById(id).map(branch -> {
 			branch.setCode(newBranch.getCode());
@@ -143,6 +146,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteBranch(Long id) {
 		try {
 			branchRepository.deleteById(id);
@@ -163,6 +167,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	@Transactional
 	public State updateState(State newState, Long id) {
 		State state = stateRepository.findById(id).map(st -> {
 			st.setCode(newState.getCode());
@@ -252,12 +257,14 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	@Transactional
 	public Grade addGrade(Grade grade) {
 		Grade gr = gradeRepository.save(grade);
 		return gr;
 	}
 
 	@Override
+	@Transactional
 	public Grade updateGrade(Grade newGrade, Long id) {
 		Grade grade = gradeRepository.findById(id).map(gr -> {
 			gr.setCode(newGrade.getCode());
@@ -271,6 +278,7 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteGrade(Long id) {
 		try {
 			gradeRepository.deleteById(id);

@@ -20,4 +20,7 @@ public interface TestAnswerRepository extends JpaRepository<TestAnswer, Long>{
 
 	@Query(value = "SELECT * FROM TestAnswer ta where ta.testId = :testId", nativeQuery = true)
 	TestAnswer findTestAnswerByTest(Long testId);
+
+	@Query(value = "DELETE FROM TestAnswer where testId = :testId", nativeQuery = true)
+	void deleteTestAnswerByTest(Long testId);
 }

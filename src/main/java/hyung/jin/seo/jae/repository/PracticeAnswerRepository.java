@@ -20,4 +20,7 @@ public interface PracticeAnswerRepository extends JpaRepository<PracticeAnswer, 
 
 	@Query(value = "SELECT * FROM PracticeAnswer pa where pa.practiceId = :practiceId", nativeQuery = true)
 	PracticeAnswer findPracticeAnswerByPractice(Long practiceId);
+
+	@Query(value = "DELETE FROM PracticeAnswer where practiceId = :practiceId", nativeQuery = true)
+	void deletePracticeAnswerByPractice(Long practiceId);
 }

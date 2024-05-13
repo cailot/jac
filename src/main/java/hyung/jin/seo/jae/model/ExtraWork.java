@@ -37,12 +37,6 @@ public class Extrawork {
     @Column(length = 300, nullable = true)
     private String pdfPath;
     
-    // @Column(length = 2, nullable = true)
-    // private Integer week;
-
-    // @Column(length = 4, nullable = true)
-    // private Integer year;
-
     @Column(length = 30, nullable = false)
     private String name;
 
@@ -53,10 +47,6 @@ public class Extrawork {
     @JoinColumn(name = "gradeId")
     private Grade grade;
 	
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "subjectId")
-    // private Subject subject;
-    
     @CreationTimestamp
     private LocalDate registerDate;
     
