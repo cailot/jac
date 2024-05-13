@@ -1,5 +1,7 @@
 package hyung.jin.seo.jae.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -524,13 +526,17 @@ public class InvoiceController {
 		}
 	}
 
-	// @GetMapping("/clearSession")
-	// public void clearSession(HttpSession session){
-	// 	Enumeration<String> names = session.getAttributeNames();
-	// 	while(names.hasMoreElements()){
-	// 		String name = names.nextElement();
-	// 		session.removeAttribute(name);
-	// 	}
-	// }
+	@PostMapping("/exportPdf")
+    public ResponseEntity<byte[]> exportPdf(@RequestBody String html) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            HtmlConverter.convertToPdf(html, outputStream);
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/pdf; charset=UTF-8")
+                    .header("Content-Disposition", "inline; filename=\"invoice.pdf\"")
+                    .body(outputStream.toByteArray());
+        } catch (IOException e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 
 }

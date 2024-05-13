@@ -42,7 +42,7 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("enrolment")
-public class JaeEnrolmentController {
+public class EnrolmentController {
 
 	@Autowired
 	private EnrolmentService enrolmentService;

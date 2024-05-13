@@ -21,8 +21,6 @@
 
 %>
 
-
-
 <!-- Add the watermark styles -->
 <style>
     .watermark-container {
@@ -46,11 +44,17 @@
         color: rgba(250, 2, 2, 0.2);
         transform: rotate(330deg);
     }
+
+    @media print {
+        .watermark-container {
+            visibility: visible; /* Show the watermark by default */
+            opacity: 1; /* Make the watermark fully opaque by default */
+        }
+    }
 </style>
 
 <div class="toolbar no-print">
     <div class="text-right pt-3">
-        <form action="/ADM/InvoicePdfV2" id="InvoiceForm" method="post" name="InvoiceForm">
             <input id="InvoiceType" name="InvoiceType" type="hidden" value="D" />
             <input id="StudentNo" name="StudentNo" type="hidden" value="990088" />
             <input id="FromDate" name="FromDate" type="hidden" value="" />
@@ -62,9 +66,12 @@
             <input id="InvoiceNumber" name="InvoiceNumber" type="hidden" value="98994" />
             <input id="Desc" name="Desc" type="hidden" value="" />           
             <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
-            <button id="printInvoice" class="btn btn-success" type="button"><i class="bi bi-printer"></i> Print</button>
-            <button class="btn btn-warning" type="button" id="btnPdf"><i class="bi bi-file-pdf"></i> Export as PDF</button> 
-        </form>
+            <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
+        <form method="post" action="GeneratePdfServlet">
+            <input type="hidden" name="html" value="<%=request.getParameter("html")%>">
+            <button type="submit">Export as PDF</button>
+        </form>   
+            <!-- <button class="btn btn-warning" type="button" onclick="exportAsPDF()"><i class="bi bi-file-pdf"></i> Export as PDF</button>  -->
     </div>
 </div>
 
