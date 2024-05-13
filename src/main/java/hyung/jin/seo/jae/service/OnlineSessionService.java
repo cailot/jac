@@ -42,4 +42,6 @@ public interface OnlineSessionService {
 	// find session by id
 	OnlineSessionDTO getOnlineSession(Long id);
 
+	// delete session
+	void deleteOnlineSession(Long id);
 }

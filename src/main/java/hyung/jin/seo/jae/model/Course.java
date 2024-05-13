@@ -61,6 +61,4 @@ public class Course{
 
 	@OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
 	private Set<Clazz> classes = new LinkedHashSet<>();
-
-
 }

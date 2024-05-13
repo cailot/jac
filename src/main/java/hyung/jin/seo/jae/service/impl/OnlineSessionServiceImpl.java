@@ -174,4 +174,14 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		return dto;
     }
 
+	@Override
+	@Transactional
+	public void deleteOnlineSession(Long id) {
+		try{
+			onlineSessionRepository.deleteById(id);
+		}catch(Exception e){
+			System.out.println("No OnlineSession found");
+		}
+	}
+
 }

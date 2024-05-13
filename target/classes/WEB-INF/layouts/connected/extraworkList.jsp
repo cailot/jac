@@ -212,6 +212,41 @@ function updateEditActiveValue(checkbox) {
 	}
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before deleting Work
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmDelete(testId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deleteWork(testId);
+        $('#deleteConfirmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Work
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function deleteWork(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/deleteExtrawork/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Extra Work deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
 </script>
 
 <style>
@@ -270,10 +305,10 @@ function updateEditActiveValue(checkbox) {
 									<tr>
 										<th class="text-center align-middle" style="width: 10%">Name</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
-										<th class="text-center align-middle" style="width: 37.5%">Video Path</th>
-										<th class="text-center align-middle" style="width: 37.5%">Document Path</th>
+										<th class="text-center align-middle" style="width: 36%">Video Path</th>
+										<th class="text-center align-middle" style="width: 36%">Document Path</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 8%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -338,6 +373,8 @@ function updateEditActiveValue(checkbox) {
 													</c:choose>
 													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveExtraworkInfo('${extrawork.id}')">
+														</i>&nbsp;
+														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${extrawork.id}')">
 														</i>
 													</td>
 												</tr>
@@ -459,10 +496,6 @@ function updateEditActiveValue(checkbox) {
 	</div>
 </div>
 
-
-
-
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
@@ -493,30 +526,21 @@ function updateEditActiveValue(checkbox) {
 	</div>
 </div>
 
-<!-- Confirmation Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Delete Confirmation Alert -->
-<div id="delete-confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<div class="d-flex justify-content-end">
-				<button type="submit" class="btn btn-primary" onclick="confirmDeleteAction()">Yes</button>&nbsp;&nbsp;
-				<button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">No</button>
-			</div>
-		</div>
+<!--Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Extra Work Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to delete Extra Work ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
 	</div>
 </div>

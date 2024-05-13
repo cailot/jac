@@ -29,4 +29,7 @@ public interface CourseService {
 
 	// update Course
 	CourseDTO updateCourse(Course course);
+
+	// delete Course
+	void deleteCourse(Long id);
 }
