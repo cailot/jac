@@ -526,17 +526,4 @@ public class InvoiceController {
 		}
 	}
 
-	@PostMapping("/exportPdf")
-    public ResponseEntity<byte[]> exportPdf(@RequestBody String html) {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            HtmlConverter.convertToPdf(html, outputStream);
-            return ResponseEntity.ok()
-                    .header("Content-Type", "application/pdf; charset=UTF-8")
-                    .header("Content-Disposition", "inline; filename=\"invoice.pdf\"")
-                    .body(outputStream.toByteArray());
-        } catch (IOException e) {
-            return ResponseEntity.status(500).build();
-        }
-    }
-
 }

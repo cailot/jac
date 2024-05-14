@@ -29,7 +29,7 @@
         }
     ],
     "liveServer.settings.port": 5501,
-    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.updateBuildConfiguration": "automatic",
     "java.debug.settings.exceptionBreakpoint.skipClasses": [],
     "eslint.validate": [
         "javascript"

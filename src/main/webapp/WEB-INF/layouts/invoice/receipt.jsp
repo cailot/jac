@@ -21,6 +21,27 @@
 
 %>
 
+
+<script>
+    function exportToPdf() {
+        fetch('/invoice/exportPdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/html'
+            },
+            body: document.documentElement.innerHTML
+        }).then(response => {
+            return response.blob();
+        }).then(blob => {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'invoice.pdf';
+            a.click();
+        });
+    }
+</script>
+
 <!-- Add the watermark styles -->
 <style>
     .watermark-container {
@@ -67,11 +88,7 @@
             <input id="Desc" name="Desc" type="hidden" value="" />           
             <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
             <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
-        <form method="post" action="GeneratePdfServlet">
-            <input type="hidden" name="html" value="<%=request.getParameter("html")%>">
-            <button type="submit">Export as PDF</button>
-        </form>   
-            <!-- <button class="btn btn-warning" type="button" onclick="exportAsPDF()"><i class="bi bi-file-pdf"></i> Export as PDF</button>  -->
+            <button class="btn btn-warning" type="button" onclick="exportToPdf()"><i class="bi bi-file-pdf"></i> Export as PDF</button> 
     </div>
 </div>
 
