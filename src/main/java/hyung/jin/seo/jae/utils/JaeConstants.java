@@ -171,9 +171,11 @@ public interface JaeConstants {
 
 	String INVOICE_PAID_AMOUNT = "invoicePaidAmount";
 
-	String INVOICE_NOTE = "invoiceNote";
+	// String INVOICE_NOTE = "invoiceNote";
 
-	String INVOICE_EMAIL = "invoiceEmail";
+	// String INVOICE_EMAIL = "invoiceEmail";
+
+	String INVOICE_BRANCH = "invoiceBranch";
 
 	String STUDENT_INFO = "studentInfo";
 
