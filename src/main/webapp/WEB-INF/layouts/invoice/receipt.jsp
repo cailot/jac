@@ -103,11 +103,11 @@
             <tr>
                 <td style="vertical-align: middle; padding: 35px 0; text-align: left; font-family: 'arial', sans-serif; font-size: 35px; color:#3f4254; font-weight: 700 !important;background: none; border: 0;">RECEIPT</td>
                 <td style="width: 450px; padding: 35px 0; vertical-align: middle; border: 0;">
-                    <img style="width:450px; vertical-align: top;" src="https://jacelearning.com/Content/invoicelogo.jpg" alt="JAC" />
+                    <img style="width:450px; vertical-align: top;" src="${pageContext.request.contextPath}/image/invoicelogo.jpg" alt="JAC" />
                     <p style="margin-top: 8px; font-size: 13px;font-weight:600;line-height:1.5">
-                        0393610051
-                        <br />16c 77-79 Ashley St
-                        <br /><span style="font-weight:900;font-size:14px;">ABN 123123123</span>
+                        <c:out value="${sessionScope.invoiceBranch.phone}" escapeXml="false" />
+                        <br /><c:out value="${sessionScope.invoiceBranch.address}" escapeXml="false" />
+                        <br /><span style="font-weight:900;font-size:14px;">ABN <c:out value="${sessionScope.invoiceBranch.abn}" escapeXml="false" /></span>
                     </p>
                 </td>
             </tr>
@@ -171,7 +171,13 @@
                     <c:set var="enrolments" value="${sessionScope.enrolments}" />
                     <c:forEach items="${enrolments}" var="enrolment">
                         <tr>
-                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>Class [<c:out value="${fn:toUpperCase(enrolment.grade)}" />] <c:out value="${enrolment.name}" /></td>
+                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>Class 
+                                 
+                                [<script type="text/javascript">
+                                    document.write(gradeName('${enrolment.grade}'));
+                                </script>]
+                                
+                                <c:out value="${enrolment.name}" /></td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'><c:out value="${enrolment.extra}" /></td>
                             <c:set var="weeks" value="${enrolment.endWeek - enrolment.startWeek + 1}" />
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
@@ -314,7 +320,7 @@
             <tr>
                 <td style="font-size: 15px; line-height: 1.6; border: 0; padding: 0 10px 10px;">
                     <p id="invoiceNote">
-                        <c:out value="${sessionScope.invoiceNote}" escapeXml="false" />
+                        <c:out value="${sessionScope.invoiceBranch.info}" escapeXml="false" />
                     </p>
                 </td>
             </tr>

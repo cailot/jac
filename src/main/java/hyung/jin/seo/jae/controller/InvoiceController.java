@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
@@ -201,11 +202,10 @@ public class InvoiceController {
 		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
 
 		// payment note based on branch code
-		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
-		String email = branchInfo.getName(); // email
-		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
-		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
-		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
 
 		
 		// 4. Header Info - Due Date & Grade
@@ -266,11 +266,10 @@ public class InvoiceController {
 		String headerDueDate = JaeUtils.getToday();
 
 		// payment note based on branch code
-		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
-		String email = branchInfo.getName(); // email
-		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
-		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
-		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
 
 		// declare total paid amount from invoice for later usuages
 		// double invoicePaidAmount = 0;
@@ -433,13 +432,10 @@ public class InvoiceController {
 		session.setAttribute(JaeConstants.INVOICE_INFO, info);
 
 		// payment note based on branch code
-		SimpleBasketDTO branchInfo = codeService.getBranchInfo(branchCode);
-		String email = branchInfo.getName(); // email
-		String note = branchInfo.getValue().replace("\n", "<br/>"); // note
-		session.setAttribute(JaeConstants.INVOICE_EMAIL, email);
-		session.setAttribute(JaeConstants.INVOICE_NOTE, note);
-
-
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
 
 		// set paid amount
 		session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
