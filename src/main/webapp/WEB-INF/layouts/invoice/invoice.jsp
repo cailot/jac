@@ -36,7 +36,7 @@
             <input id="InvoiceNumber" name="InvoiceNumber" type="hidden" value="98994" />
             <input id="Desc" name="Desc" type="hidden" value="" />                
             <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
-            <button id="printInvoice" class="btn btn-success" type="button"><i class="bi bi-printer"></i> Print</button>
+            <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
             <button class="btn btn-warning" type="button" onclick="exportPdf()"><i class="bi bi-file-pdf"></i> Export as PDF</button>
         </form>
     </div>

@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -36,7 +37,18 @@ public class PdfServiceImpl implements PdfService {
 
 	@Override
 	public void generatePdf(String fileName){
-		try (PdfWriter pdfWriter = new PdfWriter(fileName)) {
+		
+		try {
+			// pdf directory - resources/pdf
+			String projectRootPath = new File("").getAbsolutePath();
+			String pdfDirectoryPath = projectRootPath + "/src/main/resources/pdf/";
+			File pdfDirectory = new File(pdfDirectoryPath);
+			if (!pdfDirectory.exists()) {
+				pdfDirectory.mkdirs();
+			}
+			String fullPath = pdfDirectoryPath + fileName;
+
+			PdfWriter pdfWriter = new PdfWriter(fullPath);
 			PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 			pdfDocument.setDefaultPageSize(PageSize.A4);
 			Document document = new Document(pdfDocument);
@@ -96,93 +108,32 @@ public class PdfServiceImpl implements PdfService {
 		}
 		return note;
 	}
-
-	private Table getDetailTable(float wholeWidth) {
-		Table detail = new Table(new float[]{wholeWidth}).setBorder(Border.NO_BORDER);
-		Table info = new Table(new float[]{wholeWidth/4, wholeWidth/4, wholeWidth/4, wholeWidth/4}).setBorder(Border.NO_BORDER);
-		info.addCell(tableHeaderCell("Title").setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER));
-		info.addCell(tableHeaderCell("Period / Date").setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER));
-
-		Table fee = new Table(new float[]{wholeWidth/4}).setBorder(Border.NO_BORDER);
-		fee.addCell(tableHeaderCell("Fee (Incl.GST)").setBorder(Border.NO_BORDER));//.setBorderBottom(new SolidBorder(0.5f)));
-		Table feeDetaiTable = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3}).setBorder(Border.NO_BORDER);
-		feeDetaiTable.addCell(tableHeaderCell("Weeks\n(Qty)").setBorder(Border.NO_BORDER));//.setBorderRight(new SolidBorder(1)));
-		feeDetaiTable.addCell(tableHeaderCell("Weekly fee\n(Unit price)").setBorder(Border.NO_BORDER));
-		fee.addCell(feeDetaiTable).setBorder(Border.NO_BORDER);
-		info.addCell(fee).setBorder(Border.NO_BORDER);
-
-		Table discountNTotal = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3}).setBorder(Border.NO_BORDER);
-		discountNTotal.addCell(tableHeaderCell("Discount").setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER));
-		discountNTotal.addCell(tableHeaderCell("Subtototal\n(Incl.GST)").setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER));
-		info.addCell(discountNTotal).setBorder(Border.NO_BORDER);
-		
-		
-		// dynamic value
-		info.addCell(boldCell("Class [11] TT6 Online").setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER)); // title
-		info.addCell(boldCell("").setBorder(Border.NO_BORDER)); // period
-		Table feeValueTable = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3}).setBorder(Border.NO_BORDER);
-		// fee sub table
-		feeValueTable.addCell(boldCell("10").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setBorderRight(new SolidBorder(1)));
-		feeValueTable.addCell(boldCell("50.00").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER)); // weekly fee
-		info.addCell(feeValueTable);
-		// discount & subtotal sub table
-		Table dNT = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3}).setBorder(Border.NO_BORDER);
-		dNT.addCell(boldCell("0").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
-		dNT.addCell(boldCell("500").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
-		info.addCell(dNT);
-
-		
-		detail.addCell(info).setBorder(Border.NO_BORDER);
-		Table note = new Table(new float[]{wholeWidth}).setBorder(Border.NO_BORDER);
-		note.addCell(boldCell("* Other Information : new").setBorder(Border.NO_BORDER));
-		detail.addCell(note).setBorder(Border.NO_BORDER);
 	
+	private Table getDetailTable(float wholeWidth) {
+		Table detail = new Table(new float[]{(wholeWidth)*3/12, (wholeWidth)*3/12, (wholeWidth)/12, (wholeWidth)*2/12, (wholeWidth)/12, (wholeWidth)*2/12});
+		detail.setBorder(new SolidBorder(1)); // Set the border to a solid line with a width of 2
+		detail.setMarginTop(5);
+
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Title")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Period/Date")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 2).add(tableHeaderCell("Fee (Incl.GST)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Discount")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Subtotal\n(Incl.GST)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 0).add(tableHeaderCell("Weeks\n(Qty)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 0).add(tableHeaderCell("Weekly Fee\n(Unit price)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+
+		// data
+		detail.addCell(new Cell().add(boldCell("Class [11] TT6 Online")).setTextAlignment(TextAlignment.CENTER));
+		detail.addCell(new Cell().add(boldCell("")).setTextAlignment(TextAlignment.CENTER));
+		detail.addCell(new Cell().add(boldCell("10")).setTextAlignment(TextAlignment.RIGHT));
+		detail.addCell(new Cell().add(boldCell("50.00")).setTextAlignment(TextAlignment.RIGHT));
+		detail.addCell(new Cell().add(boldCell("0")).setTextAlignment(TextAlignment.RIGHT));
+		detail.addCell(new Cell().add(boldCell("500.00")).setTextAlignment(TextAlignment.RIGHT));
+		// note
+		detail.addCell(new Cell(0, 6).add(boldCell("* Other Information : new")).setTextAlignment(TextAlignment.LEFT).setPaddingLeft(10));
+
 		return detail;
 	}
-
-	// private Table getDetailTable(float wholeWidth) {
-	// 	Table detail = new Table(new float[]{wholeWidth});
-	// 	Table info = new Table(new float[]{wholeWidth/4, wholeWidth/4, wholeWidth/4, wholeWidth/4});
-	// 	info.addCell(tableHeaderCell("Title").setVerticalAlignment(VerticalAlignment.MIDDLE));
-	// 	info.addCell(tableHeaderCell("Period / Date").setVerticalAlignment(VerticalAlignment.MIDDLE));
-
-	// 	Table fee = new Table(new float[]{wholeWidth/4});
-	// 	fee.addCell(tableHeaderCell("Fee (Incl.GST)"));
-	// 	Table feeDetaiTable = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3});
-	// 	feeDetaiTable.addCell(tableHeaderCell("Weeks\n(Qty)"));
-	// 	feeDetaiTable.addCell(tableHeaderCell("Weekly fee\n(Unit price)"));
-	// 	fee.addCell(feeDetaiTable);
-	// 	info.addCell(fee);
-
-	// 	Table discountNTotal = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3});
-	// 	discountNTotal.addCell(tableHeaderCell("Discount").setVerticalAlignment(VerticalAlignment.MIDDLE));
-	// 	discountNTotal.addCell(tableHeaderCell("Subtototal\n(Incl.GST)").setVerticalAlignment(VerticalAlignment.MIDDLE));
-	// 	info.addCell(discountNTotal).setVerticalAlignment(VerticalAlignment.MIDDLE);
-		
-	// 	// dynamic value
-	// 	info.addCell(boldCell("Class [11] TT6 Online").setTextAlignment(TextAlignment.CENTER)); // title
-	// 	info.addCell(boldCell("")); // period
-	// 	Table feeValueTable = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3});
-	// 	// fee sub table
-	// 	feeValueTable.addCell(boldCell("10").setTextAlignment(TextAlignment.RIGHT)); // week
-	// 	feeValueTable.addCell(boldCell("50.00")).setTextAlignment(TextAlignment.RIGHT); // weekly fee
-	// 	info.addCell(feeValueTable);
-	// 	// discount & subtotal sub table
-	// 	Table dNT = new Table(new float[]{(wholeWidth/4)/3, (wholeWidth/4)*2/3});
-	// 	dNT.addCell(boldCell("0").setTextAlignment(TextAlignment.RIGHT));
-	// 	dNT.addCell(boldCell("500").setTextAlignment(TextAlignment.RIGHT));
-	// 	info.addCell(dNT);
-
-	// 	detail.addCell(info);
-	// 	Table note = new Table(new float[]{wholeWidth});
-	// 	note.addCell(boldCell("* Other Information : new").setBorder(Border.NO_BORDER));
-	// 	detail.addCell(note);
-
-	// 	return detail;
-	// }
-
-
-
 
 	private Table getTitleTable(float wholeWidth) throws MalformedURLException, URISyntaxException, IOException {
 		float one = wholeWidth*2/3;
@@ -243,11 +194,11 @@ public class PdfServiceImpl implements PdfService {
 	}
 
 	private Cell boldCell(String contents) {
-		return new Cell().add(contents).setBold().setFontSize(8f);
+		return new Cell().add(contents).setBold().setFontSize(7.5f);
 	}
 
 	private Cell tableHeaderCell(String contents) {
-		return new Cell().add(contents).setFontSize(8f).setTextAlignment(TextAlignment.CENTER);
+		return new Cell().add(contents).setFontSize(7.5f).setTextAlignment(TextAlignment.CENTER);
 	}
 
 	private Cell dollarCell() {
