@@ -1,14 +1,19 @@
 package hyung.jin.seo.jae.controller;
 
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.pdfa.PdfADocument;
+
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
@@ -27,7 +38,7 @@ import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.OutstandingDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
-import hyung.jin.seo.jae.dto.SimpleBasketDTO;
+import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
 import hyung.jin.seo.jae.model.Material;
@@ -41,6 +52,7 @@ import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
 import hyung.jin.seo.jae.service.PaymentService;
+import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
@@ -72,6 +84,9 @@ public class InvoiceController {
 
 	@Autowired
 	private CodeService	codeService;
+
+	@Autowired
+	private PdfService pdfService;
 	
 	// count records number in database
 	@GetMapping("/count")
@@ -104,7 +119,7 @@ public class InvoiceController {
 		// 1. get latest invoice by student id
 		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		// 2. get invoice info
-		String info = invoice.getInfo();
+		String info = StringUtils.defaultString(invoice.getInfo());    
 		// 3. return info
 		return info;
 	}
@@ -429,16 +444,17 @@ public class InvoiceController {
 		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);	
 		invoice.setInfo(info);
 		invoiceService.updateInvoice(invoice, invoice.getId());
-		session.setAttribute(JaeConstants.INVOICE_INFO, info);
-
+		String lfStr = StringUtils.defaultString(invoice.getInfo()).replace("\n", "<br/>"); 
+		InvoiceDTO newInvo = new InvoiceDTO(invoice);
+		newInvo.setInfo(lfStr);
+		session.setAttribute(JaeConstants.INVOICE_INFO, newInvo);
 		// payment note based on branch code
 		BranchDTO branchInfo = codeService.getBranch(branchCode);
 		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
 		branchInfo.setInfo(note);
 		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
-
 		// set paid amount
-		session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
+		// session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
 		// 3. set payment elements related to invoice into session
 		List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
 		List<EnrolmentDTO> filteredEnrols = new ArrayList<EnrolmentDTO>();
@@ -454,6 +470,9 @@ public class InvoiceController {
 			if(isFreeOnline) continue;
 			
 			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
+			String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
+			enrol.setExtra(start + " ~ " + end);
+
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
 			}
@@ -466,18 +485,93 @@ public class InvoiceController {
 			}
 			filteredEnrols.add(enrol);
 		}
-
 		header.setRegisterDate(headerDueDate);
 		header.setInfo(String.join(", ", headerGrade));
 		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
-
 		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, filteredEnrols);
 		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
 		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
-		
 		// 4. return ok
 		return ResponseEntity.ok("Invoice page launched");
 	}
+
+	private Map<String, Object> pdfIngredients(Long studentId, String branchCode) {
+		// 1. create basket
+		Map<String, Object> data = new HashMap<String, Object>();
+		// 2. get latest invoice by student id
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);	
+		data.put(JaeConstants.INVOICE_INFO, new InvoiceDTO(invoice));
+		// 3. set student info
+		Student student = studentService.getStudent(studentId);
+		data.put(JaeConstants.STUDENT_INFO, new StudentDTO(student));
+		// 4. set branch info
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		data.put(JaeConstants.INVOICE_BRANCH, branchInfo);
+		// 5. set payment elements related to invoice
+		List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
+		List<EnrolmentDTO> filteredEnrols = new ArrayList<EnrolmentDTO>();
+		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
+		List<OutstandingDTO> outstandings = outstandingService.getOutstandingtByInvoice(invoice.getId());
+		// 6. set header
+		MoneyDTO header = new MoneyDTO();
+		List<String> headerGrade = new ArrayList<String>();
+		String headerDueDate = JaeUtils.getToday();
+		for(EnrolmentDTO enrol : enrolments){
+			// 4-1. if free online course, no need to add to invoice
+			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			if(isFreeOnline) continue;
+			
+			String start = cycleService.academicStartSunday(Integer.parseInt(enrol.getYear()), enrol.getStartWeek());
+			String end = cycleService.academicEndSaturday(Integer.parseInt(enrol.getYear()), enrol.getEndWeek());
+			enrol.setExtra(start + " ~ " + end);
+
+			if(!headerGrade.contains(enrol.getGrade())){
+				headerGrade.add(enrol.getGrade().toUpperCase());
+			}
+			try {
+				if(JaeUtils.isEarlier(start, headerDueDate)){
+					headerDueDate = start;
+				}
+			} catch (ParseException e) {
+				System.out.println(e);
+				return null;
+			}
+			filteredEnrols.add(enrol);
+		}
+		header.setRegisterDate(headerDueDate);
+		header.setInfo(String.join(", ", headerGrade));
+		data.put(JaeConstants.PAYMENT_HEADER, header);
+		data.put(JaeConstants.PAYMENT_ENROLMENTS, filteredEnrols);
+		data.put(JaeConstants.PAYMENT_MATERIALS, materials);
+		data.put(JaeConstants.PAYMENT_OUTSTANDINGS, outstandings);
+		// 7. return collections
+		return data;
+	}
+
+	@GetMapping("/export")
+    public void exportPdf(@RequestParam String studentId, @RequestParam String branchCode, HttpServletResponse response) throws IOException {
+		// Set the content type and attachment header.
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "inline; filename=invoice.pdf");
+		Map<String, Object> data = pdfIngredients(Long.parseLong(studentId), branchCode);
+       	byte[] pdfData = pdfService.generatePdf(data);
+		if(pdfData != null){
+			response.getOutputStream().write(pdfData);
+			response.getOutputStream().flush();
+		}
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 	// update additional memo for Enrolment or Outstanding
