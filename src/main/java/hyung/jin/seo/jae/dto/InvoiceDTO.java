@@ -16,24 +16,15 @@ import lombok.ToString;
 @ToString
 public class InvoiceDTO extends MoneyDTO{
     
-	// private String id;
-
-	// private String registerDate;
-
 	private String paymentDate;
 
 	private int credit;
 
 	private double discount;
 
-	// private double amount;
-
 	private double paidAmount;
 
 	private String enrolmentId;
-
-	// private String info;
-
 
 	public InvoiceDTO(Invoice invoice){
 		this.id = String.valueOf(invoice.getId());

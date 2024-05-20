@@ -25,11 +25,11 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	@Autowired
 	private CycleService cycleService;
 
-	@Autowired
-	private EmailService emailService;
+	// @Autowired
+	// private EmailService emailService;
 
-	@Autowired
-	private PdfService pdfService;
+	// @Autowired
+	// private PdfService pdfService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JaeApplication.class, args);
@@ -47,7 +47,7 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
 
 		//emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge");
-		pdfService.generatePdf("jin.pdf");
+		// pdfService.generatePdf("jin.pdf");
 		// cycleService.getDateByWeekAndDay(2023, 27, "Tuesday");
 		// String date = cycleService.academicEndSaturday(2023, 27);
 		// System.out.println("********************** " + date);

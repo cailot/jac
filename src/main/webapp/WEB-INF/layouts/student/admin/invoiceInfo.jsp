@@ -312,7 +312,11 @@ function displayInfoInNewTab(paymentType){
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
   var lastName = $('#formLastName').val();
-  var url = '/' + paymentType + '?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName;  
+  var branch = window.branch;
+  if(branch === '0'){
+	branch = '90'; // head office
+  }	
+  var url = '/' + paymentType + '?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
   var win = window.open(url, '_blank');
   win.focus();
 }
@@ -453,7 +457,7 @@ function displayInvoiceInformation(){
 		type : 'GET',
 		success : function(response) {
 			// assign info into invoiceInfo
-			// console.log(response);
+			response = response.replace(/\\n/g, "\n");
 			document.getElementById('invoiceInfo').value = response;
 			// show invoice dialogue
 			$('#invoiceModal').modal('toggle');
