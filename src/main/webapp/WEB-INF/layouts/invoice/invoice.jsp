@@ -15,16 +15,29 @@
    String studentId = request.getParameter("studentId");
    String firstName = request.getParameter("firstName");
    String lastName = request.getParameter("lastName");
-
+   String branchCode = request.getParameter("branchCode"); 
    Date date = new Date();
    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
    String today = dateFormat.format(date);
 
 %>
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#pdfExportButton').click(function () {
+            fetch("${pageContext.request.contextPath}/invoice/export?studentId=${param.studentId}&branchCode=${param.branchCode}")
+                .then(response => response.blob())
+                .then(blob => {
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "invoice.pdf";
+                    link.click();
+                });
+        });
+    });
+</script>
 <div class="toolbar no-print">
     <div class="text-right pt-3">
-        <form action="/ADM/InvoicePdfV2" id="InvoiceForm" method="post" name="InvoiceForm">
+        <form>
             <input id="InvoiceType" name="InvoiceType" type="hidden" value="D" />
             <input id="StudentNo" name="StudentNo" type="hidden" value="990088" />
             <input id="FromDate" name="FromDate" type="hidden" value="" />
@@ -37,7 +50,7 @@
             <input id="Desc" name="Desc" type="hidden" value="" />                
             <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
             <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
-            <button class="btn btn-warning" type="button" onclick="exportPdf()"><i class="bi bi-file-pdf"></i> Export as PDF</button>
+            <button class="btn btn-warning" type="button" id="pdfExportButton"><i class="bi bi-file-pdf"></i> Export as PDF</button>
         </form>
     </div>
 </div>
@@ -57,16 +70,6 @@
                 </td>
             </tr>
         </table>
-
-
-
-
-        
-
-
-
-
-
 
         <table style="width: 90%; margin: 0 auto 10px; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
             <c:set var="paymentMeta" value="${sessionScope.receiptHeader}" />
@@ -90,7 +93,7 @@
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Student ID : </td>
                 <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><%= studentId %></td>
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Invoice No : </td>
-                <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><%= invoiceId %></td>
+                <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><c:out value="${sessionScope.invoiceInfo.id}" /></td>
             </tr>
         </table>
 
@@ -147,8 +150,7 @@
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${totalPrice}" pattern="#0.00" /></td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
-                           </tr>
-                        <%--<c:out value="${enrolment}" />--%>
+                        </tr>
                     </c:forEach>
                 </c:if>
 
@@ -212,7 +214,11 @@
                 <c:if test="${not empty sessionScope.invoiceInfo}">
                     <c:set var="invoiceInfo" value="${sessionScope.invoiceInfo}" />
                     <tr>
-                        <td colspan='6' style='height: 40px; padding: 10px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'> &#8251; Other Information : <c:out value="${invoiceInfo}" /></td>
+                        <td colspan='6' style='height: 40px; padding: 10px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'> &#8251; Other Information : 
+                            <p>
+                                <c:out value="${invoiceInfo.info}" escapeXml="false"/>
+                            </p>
+                        </td>
                     </tr>
                 </c:if>
             </tbody>
@@ -229,8 +235,8 @@
                 <td style="height: 32px; width: 100px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: center; color: #bdbdbd; font-style: normal; font-family: 'arial', sans-serif; border: 0;">$</td>
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <c:choose>
-                        <c:when test="${sessionScope.invoicePaidAmount > 0}">
-                          - <fmt:formatNumber value="${sessionScope.invoicePaidAmount}" pattern="#0.00" />
+                        <c:when test="${sessionScope.invoiceInfo.paidAmount > 0}">
+                          - <fmt:formatNumber value="${sessionScope.invoiceInfo.paidAmount}" pattern="#0.00" />
                         </c:when>
                         <c:otherwise>
                             0.00
@@ -244,11 +250,11 @@
                 <td style="height: 32px; width: 130px; font-size: 15px; line-height: 1.5; vertical-align: top; text-align: right; font-family: 'arial', sans-serif; border: 0;">
                     <!-- Check if the balance is full paid -->
                     <c:choose>
-                        <c:when test="${finalTotal - sessionScope.invoicePaidAmount <= 0}">
+                        <c:when test="${finalTotal - sessionScope.invoiceInfo.paidAmount <= 0}">
                             PAID IN FULL
                         </c:when>
                         <c:otherwise>
-                            <fmt:formatNumber value="${finalTotal - sessionScope.invoicePaidAmount}" pattern="#0.00" />
+                            <fmt:formatNumber value="${finalTotal - sessionScope.invoiceInfo.paidAmount}" pattern="#0.00" />
                         </c:otherwise>
                     </c:choose>
                 </td>
