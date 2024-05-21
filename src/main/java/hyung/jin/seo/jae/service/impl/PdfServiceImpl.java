@@ -71,7 +71,7 @@ public class PdfServiceImpl implements PdfService {
 			document.add(onespace);
 
 			// 2. title section
-			Table title = getTitleTable(wholeWidth, data);
+			Table title = getInvoiceTitleTable(wholeWidth, data);
 			document.add(title);
 			document.add(onespace);
 
@@ -80,20 +80,20 @@ public class PdfServiceImpl implements PdfService {
 			document.add(header);
 
 			// 4. detail section
-			Object[] details = getDetailTable(wholeWidth, data);
+			Object[] details = getInvoiceDetailTable(wholeWidth, data);
 			Table detail = (Table) details[0];
 			double finalTotal = (double) details[1];
 			document.add(detail);
 			document.add(onespace);
 
 			// 5. paid section
-			Table paid = getPaidTable(wholeWidth, data, finalTotal);
+			Table paid = getInvoicePaidTable(wholeWidth, data, finalTotal);
 			document.add(paid);
 			document.add(onespace);
 			document.add(onespace);
 
 			// 6. note section
-			Table note = getNoteTable(wholeWidth, data);
+			Table note = getBranchNoteTable(wholeWidth, data);
 			document.add(note);
 			document.close();
 
@@ -105,6 +105,66 @@ public class PdfServiceImpl implements PdfService {
 			return null;
 		}
 	}
+
+	@Override
+	public byte[] generateReceiptPdf(Map<String, Object> data) {
+		try {
+			// // Set the content type and attachment header.
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PdfWriter pdfWriter = new PdfWriter(baos);
+			PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+			pdfDocument.setDefaultPageSize(PageSize.A4);
+			Document document = new Document(pdfDocument);
+			Paragraph onespace = new Paragraph("\n");
+			float wholeWidth = pdfDocument.getDefaultPageSize().getWidth(); // whole width
+			float wholeHeight = pdfDocument.getDefaultPageSize().getHeight(); // whole height
+
+			// 1. button section
+			Image buttons = imageButtons();
+			float x = wholeWidth/2 - 90;
+			float y = wholeHeight/2 + 380;
+			buttons.setFixedPosition(x, y);
+			document.add(buttons);
+			document.add(onespace);
+			document.add(onespace);
+
+			// 2. title section
+			Table title = getReceiptTitleTable(wholeWidth, data);
+			document.add(title);
+			document.add(onespace);
+
+			// 3. header section
+			Table header = getHeaderTable(wholeWidth, data);
+			document.add(header);
+
+			// 4. detail section
+			Object[] details = getReceiptDetailTable(wholeWidth, data);
+			Table detail = (Table) details[0];
+			double finalTotal = (double) details[1];
+			double paidTotal = (double) details[2];
+			document.add(detail);
+			document.add(onespace);
+
+			// 5. paid section
+			Table paid = getReceiptPaidTable(wholeWidth, finalTotal, paidTotal);
+			document.add(paid);
+			document.add(onespace);
+			document.add(onespace);
+
+			// 6. note section
+			Table note = getBranchNoteTable(wholeWidth, data);
+			document.add(note);
+			document.close();
+
+			byte[] pdfData = baos.toByteArray();
+			return pdfData;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 
 	@Override
 	public void generateInvoicePdf(String fileName, Map<String, Object> data){
@@ -137,7 +197,7 @@ public class PdfServiceImpl implements PdfService {
 			document.add(onespace);
 
 			// 2. title section
-			Table title = getTitleTable(wholeWidth, data);
+			Table title = getInvoiceTitleTable(wholeWidth, data);
 			document.add(title);
 			document.add(onespace);
 
@@ -146,20 +206,20 @@ public class PdfServiceImpl implements PdfService {
 			document.add(header);
 
 			// 4. detail section
-			Object[] details = getDetailTable(wholeWidth, data);
+			Object[] details = getInvoiceDetailTable(wholeWidth, data);
 			Table detail = (Table) details[0];
 			double finalTotal = (double) details[1];
 			document.add(detail);
 			document.add(onespace);
 
 			// 5. paid section
-			Table paid = getPaidTable(wholeWidth, data, finalTotal);
+			Table paid = getInvoicePaidTable(wholeWidth, data, finalTotal);
 			document.add(paid);
 			document.add(onespace);
 			document.add(onespace);
 
 			// 6. note section
-			Table note = getNoteTable(wholeWidth, data);
+			Table note = getBranchNoteTable(wholeWidth, data);
 			document.add(note);
 			document.close();
 		} catch (IOException | URISyntaxException e) {
@@ -168,13 +228,36 @@ public class PdfServiceImpl implements PdfService {
 		}
 	}
 
-	private Table getTitleTable(float wholeWidth, Map<String, Object> data) throws MalformedURLException, URISyntaxException, IOException {
+	@Override
+	public void generateReceiptPdf(String name, Map<String, Object> data) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'generateReceiptPdf'");
+	}
+
+
+	private Table getInvoiceTitleTable(float wholeWidth, Map<String, Object> data) throws MalformedURLException, URISyntaxException, IOException {
 		float one = wholeWidth*2/3;
 		float two = wholeWidth/3;
 		float twocolumWith[] = {one, two};
 		BranchDTO branch = data.get(JaeConstants.INVOICE_BRANCH) != null ? (BranchDTO) data.get(JaeConstants.INVOICE_BRANCH) : new BranchDTO();
 		Table table = new Table(twocolumWith);
 		table.addCell(new Cell().add("TAX INVOICE").setBorder(Border.NO_BORDER).setBold().setFontSize(20f).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		Table nested = new Table(new float[]{two});
+		nested.addCell(new Cell().add(imageInvoiceLogo()).setBorder(Border.NO_BORDER));
+		nested.addCell(boldTitleCell(branch.getPhone()).setBorder(Border.NO_BORDER));
+		nested.addCell(boldTitleCell(branch.getAddress()).setBorder(Border.NO_BORDER));
+		nested.addCell(boldTitleCell("ABN " + branch.getAbn()).setBorder(Border.NO_BORDER));
+		table.addCell(new Cell().add(nested).setBorder(Border.NO_BORDER));
+		return table;
+	}
+
+	private Table getReceiptTitleTable(float wholeWidth, Map<String, Object> data) throws MalformedURLException, URISyntaxException, IOException {
+		float one = wholeWidth*2/3;
+		float two = wholeWidth/3;
+		float twocolumWith[] = {one, two};
+		BranchDTO branch = data.get(JaeConstants.INVOICE_BRANCH) != null ? (BranchDTO) data.get(JaeConstants.INVOICE_BRANCH) : new BranchDTO();
+		Table table = new Table(twocolumWith);
+		table.addCell(new Cell().add("RECEIPT").setBorder(Border.NO_BORDER).setBold().setFontSize(20f).setVerticalAlignment(VerticalAlignment.MIDDLE));
 		Table nested = new Table(new float[]{two});
 		nested.addCell(new Cell().add(imageInvoiceLogo()).setBorder(Border.NO_BORDER));
 		nested.addCell(boldTitleCell(branch.getPhone()).setBorder(Border.NO_BORDER));
@@ -208,7 +291,7 @@ public class PdfServiceImpl implements PdfService {
 		return header;
 	}
 	
-	private Object[] getDetailTable(float wholeWidth, Map<String, Object> data) {
+	private Object[] getInvoiceDetailTable(float wholeWidth, Map<String, Object> data) {
 		List<EnrolmentDTO> enrolments = data.get(JaeConstants.PAYMENT_ENROLMENTS) != null ? (List<EnrolmentDTO>) data.get(JaeConstants.PAYMENT_ENROLMENTS) : new ArrayList<>();
 		List<MaterialDTO> materials = data.get(JaeConstants.PAYMENT_MATERIALS) != null ? (List<MaterialDTO>) data.get(JaeConstants.PAYMENT_MATERIALS) : new ArrayList<>();
 		List<OutstandingDTO> outstandings = data.get(JaeConstants.PAYMENT_OUTSTANDINGS) != null ? (List<OutstandingDTO>) data.get(JaeConstants.PAYMENT_OUTSTANDINGS) : new ArrayList<>();
@@ -267,13 +350,79 @@ public class PdfServiceImpl implements PdfService {
 			String paidAmount = (paid > 0.00) ? " - " + String.format("%.2f", paid) : "0.00";
 			detail.addCell(new Cell().add(boldCell(paidAmount)).setTextAlignment(TextAlignment.RIGHT));
 		}
-		// note
+		// note if invoice
 		detail.addCell(new Cell(0, 6).add(boldCell("* Other Information : " + StringUtils.defaultString(invoice.getInfo()))).setTextAlignment(TextAlignment.LEFT).setPaddingLeft(10));
 		// return table & finalTotal
 		return new Object[]{detail, finalTotal};
 	}
 
-	private Table getPaidTable(float wholeWidth, Map<String, Object> data, double finalTotal) {
+	private Object[] getReceiptDetailTable(float wholeWidth, Map<String, Object> data) {
+		List<EnrolmentDTO> enrolments = data.get(JaeConstants.PAYMENT_ENROLMENTS) != null ? (List<EnrolmentDTO>) data.get(JaeConstants.PAYMENT_ENROLMENTS) : new ArrayList<>();
+		List<MaterialDTO> materials = data.get(JaeConstants.PAYMENT_MATERIALS) != null ? (List<MaterialDTO>) data.get(JaeConstants.PAYMENT_MATERIALS) : new ArrayList<>();
+		List<OutstandingDTO> outstandings = data.get(JaeConstants.PAYMENT_OUTSTANDINGS) != null ? (List<OutstandingDTO>) data.get(JaeConstants.PAYMENT_OUTSTANDINGS) : new ArrayList<>();
+		InvoiceDTO invoice = data.get(JaeConstants.INVOICE_INFO) != null ? (InvoiceDTO) data.get(JaeConstants.INVOICE_INFO) : new InvoiceDTO();
+		Table detail = new Table(new float[]{(wholeWidth)*3/12, (wholeWidth)*3/12, (wholeWidth)/12, (wholeWidth)*2/12, (wholeWidth)/12, (wholeWidth)*2/12});
+		detail.setBorder(new SolidBorder(1)); // Set the border to a solid line with a width of 2
+		detail.setMarginTop(5);
+
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Title")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Period/Date")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 2).add(tableHeaderCell("Fee (Incl.GST)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Discount")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(2, 0).add(tableHeaderCell("Subtotal\n(Incl.GST)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 0).add(tableHeaderCell("Weeks\n(Qty)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+		detail.addCell(new Cell(0, 0).add(tableHeaderCell("Weekly Fee\n(Unit price)")).setVerticalAlignment(VerticalAlignment.MIDDLE));
+
+		// data finalTotal display
+		double finalTotal = 0;
+		// data paidTotal display
+		double paidTotal = 0;
+		// enrolements
+		for(EnrolmentDTO enrolment : enrolments){
+			detail.addCell(new Cell().add(boldCell("Class [" + JaeUtils.getGradeName(enrolment.getGrade()) + "] " + enrolment.getName())).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add(boldCell(StringUtils.defaultString(enrolment.getExtra()))).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add(boldCell(enrolment.getEndWeek()-enrolment.getStartWeek()+1+"")).setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add(boldCell(String.format("%.2f", enrolment.getPrice()))).setTextAlignment(TextAlignment.RIGHT));
+			String disStr = StringUtils.defaultString(enrolment.getDiscount(), "0");
+			double discount = 0;
+			if(StringUtils.contains(disStr, '%')){
+				discount = Double.parseDouble(StringUtils.substringBefore(disStr, "%"));
+				discount = ((enrolment.getEndWeek()-enrolment.getStartWeek()+1)-enrolment.getCredit())*enrolment.getPrice()*discount/100;
+			}else{
+				discount = Double.parseDouble(disStr);
+			}
+			detail.addCell(new Cell().add(boldCell(enrolment.getDiscount())).setTextAlignment(TextAlignment.RIGHT));
+			double total = (enrolment.getEndWeek()-enrolment.getStartWeek()+1-enrolment.getCredit())*enrolment.getPrice() - discount;
+			detail.addCell(new Cell().add(boldCell(String.format("%.2f", total))).setTextAlignment(TextAlignment.RIGHT));
+			finalTotal += total;
+		}
+		// materials
+		for(MaterialDTO material : materials){
+			detail.addCell(new Cell().add(boldCell("Book " + material.getName())).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add(boldCell(String.format("%.2f", material.getPrice()))).setTextAlignment(TextAlignment.RIGHT));	
+			finalTotal += material.getPrice();
+		}
+		// outstandings
+		for(OutstandingDTO outstanding : outstandings){
+			detail.addCell(new Cell().add(boldCell("Payment")).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add(boldCell(outstanding.getRegisterDate()+"")).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
+			double paid = outstanding.getPaid();
+			paidTotal += paid;
+			String paidAmount = (paid > 0.00) ? " - " + String.format("%.2f", paid) : "0.00";
+			detail.addCell(new Cell().add(boldCell(paidAmount)).setTextAlignment(TextAlignment.RIGHT));
+		}
+		// return table & finalTotal
+		return new Object[]{detail, finalTotal, paidTotal};
+	}
+
+	private Table getInvoicePaidTable(float wholeWidth, Map<String, Object> data, double finalTotal) {
 		InvoiceDTO invoice = data.get(JaeConstants.INVOICE_INFO) != null ? (InvoiceDTO) data.get(JaeConstants.INVOICE_INFO) : new InvoiceDTO();
 		Table paid = new Table(new float[]{wholeWidth/4, wholeWidth/4, wholeWidth/4, wholeWidth/4}).setBorder(Border.NO_BORDER);
 		paid.addCell(new Cell().setBorder(Border.NO_BORDER));
@@ -301,7 +450,33 @@ public class PdfServiceImpl implements PdfService {
 		return paid;
 	}
 
-	private Table getNoteTable(float wholeWidth, Map<String, Object> data) {
+	private Table getReceiptPaidTable(float wholeWidth, double finalTotal, double paidTotal) {
+		Table paid = new Table(new float[]{wholeWidth/4, wholeWidth/4, wholeWidth/4, wholeWidth/4}).setBorder(Border.NO_BORDER);
+		paid.addCell(new Cell().setBorder(Border.NO_BORDER));
+		paid.addCell(new Cell().setBorder(Border.NO_BORDER));
+		paid.addCell(new Cell().setBorder(Border.NO_BORDER));
+		Table paidDetail = new Table(new float[]{(wholeWidth/4)*3/7, (wholeWidth/4)/7, (wholeWidth/4)*3/7}).setBorder(Border.NO_BORDER);
+		paidDetail.addCell(paidCell("FINAL TOTAL").setBorder(Border.NO_BORDER));
+		paidDetail.addCell(dollarCell().setBorder(Border.NO_BORDER));
+		paidDetail.addCell(paidCell(String.format("%.2f", finalTotal)).setBorder(Border.NO_BORDER));
+		paidDetail.addCell(paidCell("FEE PAID").setBorder(Border.NO_BORDER));
+		paidDetail.addCell(dollarCell().setBorder(Border.NO_BORDER));
+		String paidAmtStr = (paidTotal > 0.00) ? String.format(" - %.2f", paidTotal) : "0.00";
+		paidDetail.addCell(paidNoBoldCell(paidAmtStr).setBorder(Border.NO_BORDER));
+		paidDetail.addCell(paidCell("BALANCE").setBorder(Border.NO_BORDER));
+		paidDetail.addCell(dollarCell().setBorder(Border.NO_BORDER));
+		String remaining = "";
+		if(finalTotal - paidTotal <= 0){
+			remaining = "PAID IN FULL";
+		}else{
+			remaining = String.format("%.2f", (finalTotal - paidTotal));
+		}
+		paidDetail.addCell(paidNoBoldCell(remaining).setBorder(Border.NO_BORDER));
+		paid.addCell(new Cell().add(paidDetail).setBorder(Border.NO_BORDER));
+		return paid;
+	}
+
+	private Table getBranchNoteTable(float wholeWidth, Map<String, Object> data) {
 		BranchDTO branch = data.get(JaeConstants.INVOICE_BRANCH) != null ? (BranchDTO) data.get(JaeConstants.INVOICE_BRANCH) : new BranchDTO();
 		Table note = new Table(new float[]{wholeWidth}).setBorder(new SolidBorder(0.5f));
 		note.addCell(boldCell("Note :").setItalic().setFontSize(8f).setBold().setBorder(Border.NO_BORDER).setPaddingLeft(5));

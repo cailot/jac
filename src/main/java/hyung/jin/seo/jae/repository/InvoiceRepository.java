@@ -19,7 +19,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 	@Query("SELECT i FROM Invoice i WHERE i.id = (SELECT MAX(en.invoice.id) FROM Enrolment en WHERE en.student.id = ?1 AND en.old = false)")
 	Invoice findInvoiceByStudentId(long studentId);
 
-
 	// bring latest Invoice by student id
 	@Query("SELECT i FROM Invoice i WHERE i.id = (SELECT MAX(en.invoice.id) FROM Enrolment en WHERE en.student.id = ?1)")
 	Invoice findLastInvoiceByStudentId(long studentId);

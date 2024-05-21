@@ -91,7 +91,7 @@ function addEnrolmentToInvoiceList(data) {
 //		Add Outstanding to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOutstandingToInvoiceList(data) {
-	// debugger;
+	//debugger;
 	var newOS = $('<tr>');
 	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
 	newOS.append($('<td class="smaller-table-font">').text('Outstanding'));
@@ -304,10 +304,11 @@ function displayPayment(){
     $('#paymentModal').modal('toggle');
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Receipt in another tab
+//		Display Invoice in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayInfoInNewTab(paymentType){
+function displayInvoiceInNewTab(){
   var invoiceId = $('#hiddenInvoiceId').val();
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
@@ -316,7 +317,24 @@ function displayInfoInNewTab(paymentType){
   if(branch === '0'){
 	branch = '90'; // head office
   }	
-  var url = '/' + paymentType + '?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
+  var url = '/invoice?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
+  var win = window.open(url, '_blank');
+  win.focus();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Receipt in another tab
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayReceiptInNewTab(paymentId){
+  var invoiceId = $('#hiddenInvoiceId').val();
+  var studentId = $('#formId').val();
+  var firstName = $('#formFirstName').val();
+  var lastName = $('#formLastName').val();
+  var branch = window.branch;
+  if(branch === '0'){
+	branch = '90'; // head office
+  }	
+  var url = '/receipt?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch + '&paymentId=' + paymentId;  
   var win = window.open(url, '_blank');
   win.focus();
 }
@@ -355,6 +373,7 @@ function makePayment(){
 		data : JSON.stringify(payment),
 		contentType : 'application/json',
 		success : function(response) {
+			var lastPaymentId = 0;
 			$.each(response, function(index, value){
 				// debugger;
 				if (value.hasOwnProperty('extra')) {
@@ -364,7 +383,11 @@ function makePayment(){
 						addEnrolmentToInvoiceList(value);
 					}
 				}else if (value.hasOwnProperty('remaining')) {
-					// It is an OutstandingDTO object
+					// It is an OutstandingDTO object, extract paymentId
+					var temp = value.paymentId;
+					if(temp > lastPaymentId){
+						lastPaymentId = temp;
+					}
 					addOutstandingToInvoiceList(value);
 				}else{
 					// It is a BookDTO object
@@ -375,7 +398,7 @@ function makePayment(){
 			document.getElementById('makePayment').reset();
 			$('#paymentModal').modal('toggle');	
 			// display receipt
-			displayInfoInNewTab('receipt');
+			displayReceiptInNewTab(lastPaymentId);
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -493,7 +516,7 @@ function issueInvoice(){
 			// disappear invoice dialogue
 			$('#invoiceModal').modal('toggle');
 			// show invoice in another tab
-			displayInfoInNewTab('invoice');
+			displayInvoiceInNewTab();
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
