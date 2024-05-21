@@ -119,7 +119,6 @@ public class PdfServiceImpl implements PdfService {
 			float wholeWidth = pdfDocument.getDefaultPageSize().getWidth(); // whole width
 			float wholeHeight = pdfDocument.getDefaultPageSize().getHeight(); // whole height
 
-
 			// 1. watermark
 			Image watermark = imageWatermark();
 			float x_watermark = wholeWidth/2 - 200;
@@ -136,16 +135,16 @@ public class PdfServiceImpl implements PdfService {
 			document.add(onespace);
 			document.add(onespace);
 
-			// 2. title section
+			// 3. title section
 			Table title = getReceiptTitleTable(wholeWidth, data);
 			document.add(title);
 			document.add(onespace);
 
-			// 3. header section
+			// 4. header section
 			Table header = getHeaderTable(wholeWidth, data);
 			document.add(header);
 
-			// 4. detail section
+			// 5. detail section
 			Object[] details = getReceiptDetailTable(wholeWidth, data);
 			Table detail = (Table) details[0];
 			double finalTotal = (double) details[1];
@@ -153,13 +152,13 @@ public class PdfServiceImpl implements PdfService {
 			document.add(detail);
 			document.add(onespace);
 
-			// 5. paid section
+			// 6. paid section
 			Table paid = getReceiptPaidTable(wholeWidth, finalTotal, paidTotal);
 			document.add(paid);
 			document.add(onespace);
 			document.add(onespace);
 
-			// 6. note section
+			// 7. note section
 			Table note = getBranchNoteTable(wholeWidth, data);
 			document.add(note);
 			document.close();
@@ -175,8 +174,7 @@ public class PdfServiceImpl implements PdfService {
 
 
 	@Override
-	public void generateInvoicePdf(String fileName, Map<String, Object> data){
-		
+	public void generateInvoicePdf(String fileName, Map<String, Object> data){		
 		try {
 			// pdf directory - resources/pdf
 			String projectRootPath = new File("").getAbsolutePath();
@@ -237,9 +235,72 @@ public class PdfServiceImpl implements PdfService {
 	}
 
 	@Override
-	public void generateReceiptPdf(String name, Map<String, Object> data) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'generateReceiptPdf'");
+	public void generateReceiptPdf(String fileName, Map<String, Object> data) {
+		try {
+			// pdf directory - resources/pdf
+			String projectRootPath = new File("").getAbsolutePath();
+			String pdfDirectoryPath = projectRootPath + "/src/main/resources/pdf/";
+			File pdfDirectory = new File(pdfDirectoryPath);
+			if (!pdfDirectory.exists()) {
+				pdfDirectory.mkdirs();
+			}
+			String fullPath = pdfDirectoryPath + fileName;
+
+			PdfWriter pdfWriter = new PdfWriter(fullPath);
+			PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+			pdfDocument.setDefaultPageSize(PageSize.A4);
+			Document document = new Document(pdfDocument);
+			Paragraph onespace = new Paragraph("\n");
+			float wholeWidth = pdfDocument.getDefaultPageSize().getWidth(); // whole width
+			float wholeHeight = pdfDocument.getDefaultPageSize().getHeight(); // whole height
+			
+			// 1. watermark
+			Image watermark = imageWatermark();
+			float x_watermark = wholeWidth/2 - 200;
+			float y_watermark = wholeHeight/2 - 200;
+			watermark.setFixedPosition(x_watermark, y_watermark);
+			document.add(watermark);
+
+			// 2. button section
+			Image buttons = imageButtons();
+			float x = wholeWidth/2 - 90;
+			float y = wholeHeight/2 + 380;
+			buttons.setFixedPosition(x, y);
+			document.add(buttons);
+			document.add(onespace);
+			document.add(onespace);
+
+			// 3. title section
+			Table title = getReceiptTitleTable(wholeWidth, data);
+			document.add(title);
+			document.add(onespace);
+
+			// 4. header section
+			Table header = getHeaderTable(wholeWidth, data);
+			document.add(header);
+
+			// 5. detail section
+			Object[] details = getReceiptDetailTable(wholeWidth, data);
+			Table detail = (Table) details[0];
+			double finalTotal = (double) details[1];
+			double paidTotal = (double) details[2];
+			document.add(detail);
+			document.add(onespace);
+
+			// 6. paid section
+			Table paid = getReceiptPaidTable(wholeWidth, finalTotal, paidTotal);
+			document.add(paid);
+			document.add(onespace);
+			document.add(onespace);
+
+			// 7. note section
+			Table note = getBranchNoteTable(wholeWidth, data);
+			document.add(note);
+			document.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
