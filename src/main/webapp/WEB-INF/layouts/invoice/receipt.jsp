@@ -57,7 +57,7 @@
         font-size: 150px;
         font-weight: bold;
         color: rgba(250, 2, 2, 0.2);
-        transform: rotate(330deg);
+        transform: rotate(310deg);
     }
 
     @media print {
