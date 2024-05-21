@@ -24,7 +24,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#pdfExportButton').click(function () {
-            fetch("${pageContext.request.contextPath}/invoice/export?studentId=${param.studentId}&branchCode=${param.branchCode}")
+            fetch("${pageContext.request.contextPath}/invoice/exportInvoice?studentId=${param.studentId}&branchCode=${param.branchCode}")
                 .then(response => response.blob())
                 .then(blob => {
                     var link = document.createElement('a');
