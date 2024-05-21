@@ -457,7 +457,7 @@ function displayInvoiceInformation(){
 		type : 'GET',
 		success : function(response) {
 			// assign info into invoiceInfo
-			response = response.replace(/\\n/g, "\n");
+			// response = response.replace(/\\n/g, "\n");
 			document.getElementById('invoiceInfo').value = response;
 			// show invoice dialogue
 			$('#invoiceModal').modal('toggle');
@@ -485,7 +485,7 @@ function issueInvoice(){
 	$.ajax({
 		url : '${pageContext.request.contextPath}/invoice/issue/' + studentId + '/' + branch,
 		type : 'POST',
-		data : encodeInfo,
+		data : info, //encodeInfo,
 		contentType : 'application/json',
 		success : function(response) {
 			// flush old data in the dialogue
