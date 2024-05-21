@@ -9,4 +9,8 @@ public interface PdfService {
 
 	byte[] generateInvoicePdf(Map<String, Object> data);
 
+	// generate reciept pdf file
+	void generateReceiptPdf(String name, Map<String, Object> data);
+
+	byte[] generateReceiptPdf(Map<String, Object> data);
 }

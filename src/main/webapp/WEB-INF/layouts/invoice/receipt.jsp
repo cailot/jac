@@ -21,25 +21,19 @@
 
 %>
 
-
-<script>
-    function exportToPdf() {
-        fetch('/invoice/exportPdf', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/html'
-            },
-            body: document.documentElement.innerHTML
-        }).then(response => {
-            return response.blob();
-        }).then(blob => {
-            var url = window.URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url;
-            a.download = 'invoice.pdf';
-            a.click();
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#pdfExportButton').click(function () {
+            fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
+                .then(response => response.blob())
+                .then(blob => {
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = "receipt.pdf";
+                    link.click();
+                });
         });
-    }
+    });
 </script>
 
 <!-- Add the watermark styles -->
@@ -88,7 +82,7 @@
             <input id="Desc" name="Desc" type="hidden" value="" />           
             <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
             <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
-            <button class="btn btn-warning" type="button" onclick="exportToPdf()"><i class="bi bi-file-pdf"></i> Export as PDF</button> 
+            <button class="btn btn-warning" type="button" id="pdfExportButton"><i class="bi bi-file-pdf"></i> Export as PDF</button> 
     </div>
 </div>
 
