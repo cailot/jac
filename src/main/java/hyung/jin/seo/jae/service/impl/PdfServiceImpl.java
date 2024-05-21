@@ -119,7 +119,15 @@ public class PdfServiceImpl implements PdfService {
 			float wholeWidth = pdfDocument.getDefaultPageSize().getWidth(); // whole width
 			float wholeHeight = pdfDocument.getDefaultPageSize().getHeight(); // whole height
 
-			// 1. button section
+
+			// 1. watermark
+			Image watermark = imageWatermark();
+			float x_watermark = wholeWidth/2 - 200;
+			float y_watermark = wholeHeight/2 - 200;
+			watermark.setFixedPosition(x_watermark, y_watermark);
+			document.add(watermark);
+
+			// 2. button section
 			Image buttons = imageButtons();
 			float x = wholeWidth/2 - 90;
 			float y = wholeHeight/2 + 380;
@@ -513,6 +521,16 @@ public class PdfServiceImpl implements PdfService {
 
 	private Cell paidNoBoldCell(String contents) {
 		return new Cell().add(contents).setFontSize(7f).setTextAlignment(TextAlignment.RIGHT).setVerticalAlignment(VerticalAlignment.MIDDLE).setBorder(Border.NO_BORDER);
+	}
+
+	private Image imageWatermark() throws URISyntaxException, MalformedURLException, IOException {
+		Resource resource = resourceLoader.getResource("classpath:static/assets/image/received.png");
+		ImageData imageData = ImageDataFactory.create(resource.getFile().getAbsolutePath());
+		Image img = new Image(imageData);
+		img.setOpacity(0.2f);
+		img.scale(0.8f, 0.8f);
+		img.setRotationAngle(340);
+		return img;
 	}
 
 	private Image imageButtons() throws URISyntaxException, MalformedURLException, IOException {
