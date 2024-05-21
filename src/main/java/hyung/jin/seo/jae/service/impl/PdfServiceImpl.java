@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -50,7 +49,7 @@ public class PdfServiceImpl implements PdfService {
 	private ResourceLoader resourceLoader;
 
 	@Override
-	public byte[] generatePdf(Map<String, Object> data) {
+	public byte[] generateInvoicePdf(Map<String, Object> data) {
 		try {
 			// // Set the content type and attachment header.
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -108,7 +107,7 @@ public class PdfServiceImpl implements PdfService {
 	}
 
 	@Override
-	public void generatePdf(String fileName, Map<String, Object> data){
+	public void generateInvoicePdf(String fileName, Map<String, Object> data){
 		
 		try {
 			// pdf directory - resources/pdf

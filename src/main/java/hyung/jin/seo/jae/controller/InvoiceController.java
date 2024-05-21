@@ -453,8 +453,6 @@ public class InvoiceController {
 		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
 		branchInfo.setInfo(note);
 		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
-		// set paid amount
-		// session.setAttribute(JaeConstants.INVOICE_PAID_AMOUNT, invoice.getPaidAmount());
 		// 3. set payment elements related to invoice into session
 		List<EnrolmentDTO> enrolments = enrolmentService.findEnrolmentByInvoice(invoice.getId());
 		List<EnrolmentDTO> filteredEnrols = new ArrayList<EnrolmentDTO>();
@@ -556,23 +554,12 @@ public class InvoiceController {
 		response.setContentType("application/pdf");
 		response.setHeader("Content-Disposition", "inline; filename=invoice.pdf");
 		Map<String, Object> data = pdfIngredients(Long.parseLong(studentId), branchCode);
-       	byte[] pdfData = pdfService.generatePdf(data);
+       	byte[] pdfData = pdfService.generateInvoicePdf(data);
 		if(pdfData != null){
 			response.getOutputStream().write(pdfData);
 			response.getOutputStream().flush();
 		}
     }
-
-
-
-
-
-
-
-
-
-
-
 
 	// update additional memo for Enrolment or Outstanding
 	@PostMapping("/updateInfo/{dataType}/{dataId}")

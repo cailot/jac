@@ -210,14 +210,11 @@
                     </c:forEach>
                 </c:if>
 
-
                 <c:if test="${not empty sessionScope.invoiceInfo}">
                     <c:set var="invoiceInfo" value="${sessionScope.invoiceInfo}" />
                     <tr>
                         <td colspan='6' style='height: 40px; padding: 10px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: left;'> &#8251; Other Information : 
-                            <p>
-                                <c:out value="${invoiceInfo.info}" escapeXml="false"/>
-                            </p>
+                            <c:out value="${invoiceInfo.info}" escapeXml="false"/>
                         </td>
                     </tr>
                 </c:if>

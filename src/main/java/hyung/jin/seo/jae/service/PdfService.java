@@ -4,9 +4,9 @@ import java.util.Map;
 
 public interface PdfService {
 
-	// generate pdf file
-	void generatePdf(String name, Map<String, Object> data);
+	// generate invoice pdf file
+	void generateInvoicePdf(String name, Map<String, Object> data);
 
-	byte[] generatePdf(Map<String, Object> data);
+	byte[] generateInvoicePdf(Map<String, Object> data);
 
 }
