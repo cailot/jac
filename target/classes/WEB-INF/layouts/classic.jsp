@@ -36,13 +36,6 @@
 		</footer>
 	</div>
 
-
-
-
-
-
-
-
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">

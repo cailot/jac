@@ -6,5 +6,5 @@ public interface EmailService {
 	void sendEmail(String from, String to, String subject, String body);
 
 	// send simple email with attachment
-	void sendEmailWithAttachment(String from, String to, String subject, String body);
+	void sendEmailWithAttachment(String from, String to, String subject, String body, String fileName, byte[] pdfBytes);
 }
