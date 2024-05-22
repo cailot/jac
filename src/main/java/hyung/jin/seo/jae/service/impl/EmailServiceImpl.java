@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -46,7 +47,7 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public void sendEmailWithAttachment(String from, String to, String subject, String body) {
+	public void sendEmailWithAttachment(String from, String to, String subject, String body, String fileName, byte[] pdfBytes) {
 		MimeMessage message = mailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -56,14 +57,14 @@ public class EmailServiceImpl implements EmailService {
 			"<marquee><p>It can contain <strong>HTML</strong> content.</p></marquee>";
 			helper.setText(contents);
 
-			Resource resource = resourceLoader.getResource("classpath:pdf/a.pdf");
-			FileSystemResource file = new FileSystemResource(resource.getFile());
-			helper.addAttachment("invoice.pdf", file);
+			// Resource resource = resourceLoader.getResource("classpath:pdf/a.pdf");
+			// FileSystemResource file = new FileSystemResource(resource.getFile());
+			helper.addAttachment(fileName, new ByteArrayDataSource(pdfBytes, "application/pdf"));
 			mailSender.send(message);
 			System.out.println("HTML WITH ATTACHMENT MAIL SENT SUCCESSFULLY");
 	
 
-		} catch (MessagingException | IOException e) {
+		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

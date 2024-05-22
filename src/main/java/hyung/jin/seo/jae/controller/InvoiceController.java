@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.EmailService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
@@ -88,6 +90,9 @@ public class InvoiceController {
 	@Autowired
 	private PdfService pdfService;
 	
+	@Autowired
+	private EmailService emailService;
+
 	// count records number in database
 	@GetMapping("/count")
 	@ResponseBody
@@ -616,6 +621,34 @@ public class InvoiceController {
 		if(pdfData != null){
 			response.getOutputStream().write(pdfData);
 			response.getOutputStream().flush();
+		}
+    }
+
+	@GetMapping("/emailInvoice")
+	@ResponseBody
+    public ResponseEntity<String> emailInvoice(@RequestParam String studentId, @RequestParam String branchCode){
+		try{
+			Map<String, Object> data = invoicePdfIngredients(Long.parseLong(studentId), branchCode);
+			byte[] pdfData = pdfService.generateInvoicePdf(data);
+			emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "invoice.pdf", pdfData);
+			return ResponseEntity.ok("ok");
+		}catch(Exception e){
+			String message = "\"Error sending email : " + e.getMessage() + "\"";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+    }
+
+	@GetMapping("/emailReceipt")
+	@ResponseBody
+    public ResponseEntity<String> emailReceipt(@RequestParam String studentId, @RequestParam String invoiceId, @RequestParam String paymentId, @RequestParam String branchCode){
+		try{
+			Map<String, Object> data = receiptPdfIngredients(Long.parseLong(studentId), Long.parseLong(invoiceId), Long.parseLong(paymentId), branchCode);
+			byte[] pdfData = pdfService.generateReceiptPdf(data);
+			emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "receipt.pdf", pdfData);
+			return ResponseEntity.ok("ok");
+		}catch(Exception e){
+			String message = "\"Error sending email : " + e.getMessage() + "\"";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
     }
 
