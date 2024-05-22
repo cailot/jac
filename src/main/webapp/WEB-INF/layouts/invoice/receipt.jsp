@@ -22,18 +22,37 @@
 %>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#pdfExportButton').click(function () {
-            fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
-                .then(response => response.blob())
-                .then(blob => {
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = "receipt.pdf";
-                    link.click();
-                });
-        });
+$(document).ready(function () {
+    $('#pdfExportButton').click(function () {
+        fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
+            .then(response => response.blob())
+            .then(blob => {
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "receipt.pdf";
+                link.click();
+            });
     });
+});
+
+///////////////////////////////////////////////////////////////////////////
+// 		Send Email
+///////////////////////////////////////////////////////////////////////////
+function sendEmail() {
+    $.ajax({
+		url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
+		type : 'GET',
+		success : function(data) {
+            // assume sent
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}        
+	});
+    $('#success-alert .modal-body').html('Email sent successfully.');
+    $('#success-alert').modal('toggle');            
+}
+
 </script>
 
 <!-- Add the watermark styles -->
@@ -80,7 +99,7 @@
             <input data-val="true" data-val-number="The field JobIdx must be a number." data-val-required="The JobIdx field is required." id="JobIdx" name="JobIdx" type="hidden" value="0" />
             <input id="InvoiceNumber" name="InvoiceNumber" type="hidden" value="98994" />
             <input id="Desc" name="Desc" type="hidden" value="" />           
-            <button id="emailInvoice" class="btn btn-primary" type="button"><i class="bi bi-envelope"></i> Email</button>
+            <button class="btn btn-primary" type="button" onclick="sendEmail()"><i class="bi bi-envelope"></i> Email</button>
             <button id="printInvoice" class="btn btn-success" type="button" onclick="window.print();"><i class="bi bi-printer"></i> Print</button>
             <button class="btn btn-warning" type="button" id="pdfExportButton"><i class="bi bi-file-pdf"></i> Export as PDF</button> 
     </div>
@@ -320,4 +339,14 @@
             </tr>
         </table>
     </div>
+</div>
+
+<!-- Success Alert -->
+<div id="success-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-success alert-dialog-display">
+			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
 </div>
