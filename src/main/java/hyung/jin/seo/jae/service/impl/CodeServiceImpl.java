@@ -2,6 +2,8 @@ package hyung.jin.seo.jae.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -392,6 +394,17 @@ public class CodeServiceImpl implements CodeService {
 			System.out.println("No state found");
 		}
 		return dto;
+	}
+
+	@Override
+	public String getBranchEmail(String code) {
+		String email = "";
+		Optional<String> emailOptional = branchRepository.getEmail(code);
+		if (emailOptional.isPresent()) {
+			email = emailOptional.get();
+			// Use the email
+		} 
+		return email;
 	}
 
 }

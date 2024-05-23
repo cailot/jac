@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,9 @@ public interface BranchRepository extends JpaRepository<Branch, Long>{
 	@Query(value = "SELECT b.name, b.code FROM Branch b", nativeQuery = true)   
 	List<Object[]> loadBranch();
 	
+	@Query(value = "SELECT b.email FROM Branch b WHERE b.code = ?1", nativeQuery = true)
+	Optional<String> getEmail(String code);
+
 	@Query("SELECT new hyung.jin.seo.jae.dto.BranchDTO(b.id, b.code, b.name, b.phone, b.email, b.address, b.abn, b.bank, b.bsb, b.accountNumber, b.accountName, b.info, b.state.id) FROM Branch b WHERE b.state.id = ?1 ORDER BY b.code ASC")
 	List<BranchDTO> searchBranchByState(long state);
 

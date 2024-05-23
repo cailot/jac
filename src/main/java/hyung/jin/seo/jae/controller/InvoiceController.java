@@ -629,8 +629,9 @@ public class InvoiceController {
     public ResponseEntity<String> emailInvoice(@RequestParam String studentId, @RequestParam String branchCode){
 		try{
 			Map<String, Object> data = invoicePdfIngredients(Long.parseLong(studentId), branchCode);
+			String fromEmail = codeService.getBranchEmail(branchCode);
 			byte[] pdfData = pdfService.generateInvoicePdf(data);
-			emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "invoice.pdf", pdfData);
+			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "invoice.pdf", pdfData);
 			return ResponseEntity.ok("ok");
 		}catch(Exception e){
 			String message = "\"Error sending email : " + e.getMessage() + "\"";

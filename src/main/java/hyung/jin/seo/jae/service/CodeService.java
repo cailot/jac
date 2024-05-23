@@ -58,6 +58,9 @@ public interface CodeService {
 	// get branch info - email, info
 	SimpleBasketDTO getBranchInfo(String code);
 
+	// get branch email
+	String getBranchEmail(String code);
+
 	// list all grade
 	List<GradeDTO> allGrades();
 
