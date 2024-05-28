@@ -2,6 +2,7 @@ package hyung.jin.seo.jae;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -16,7 +17,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
-@SpringBootApplication
+// @SpringBootApplication
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class JaeApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Autowired
