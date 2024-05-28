@@ -1,7 +1,5 @@
 package hyung.jin.seo.jae.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -25,12 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.pdfa.PdfADocument;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
