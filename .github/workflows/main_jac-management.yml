@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [12,14,16]
+        version: [10,12,14]
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v4
