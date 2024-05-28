@@ -17,8 +17,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 
-// @SpringBootApplication
-@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+@SpringBootApplication
+// @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class JaeApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Autowired
