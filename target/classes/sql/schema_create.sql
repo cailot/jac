@@ -1,5 +1,5 @@
 
 -- Create schema 'jae'
-CREATE SCHEMA 'jae';
+CREATE SCHEMA 'jac';
 
 
