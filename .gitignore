@@ -1,2 +1,2 @@
 git rm --cached src/main/resources/application.properties/target/
-/src/main/resources/application.properties
+# /src/main/resources/application.properties
