@@ -122,57 +122,6 @@ public class StudentServiceImpl implements StudentService {
 		return count;
 	}
 
-	// @Override
-	// @Transactional
-	// public Student updateStudent(Student newStudent, Long id) {
-	// 	// search by getId
-	// 	Student existing = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Student not found"));
-	// 	// Update info
-	// 	String newFirstName = StringUtils.defaultString(newStudent.getFirstName());
-	// 	existing.setFirstName(newFirstName);
-	// 	String newLastName = StringUtils.defaultString(newStudent.getLastName());
-	// 	existing.setLastName(newLastName);
-	// 	String newGrade = StringUtils.defaultString(newStudent.getGrade());
-	// 	existing.setGrade(newGrade);
-	// 	String newGender = StringUtils.defaultString(newStudent.getGender());
-	// 	existing.setGender(newGender);
-	// 	String newContactNo1 = StringUtils.defaultString(newStudent.getContactNo1());
-	// 	existing.setContactNo1(newContactNo1);
-	// 	String newContactNo2 = StringUtils.defaultString(newStudent.getContactNo2());
-	// 	existing.setContactNo2(newContactNo2);
-	// 	String newEmail1 = StringUtils.defaultString(newStudent.getEmail1());
-	// 	existing.setEmail1(newEmail1);
-	// 	String newEmail2 = StringUtils.defaultString(newStudent.getEmail2());
-	// 	existing.setEmail2(newEmail2);
-	// 	String newRelation1 = StringUtils.defaultString(newStudent.getRelation1());
-	// 	existing.setRelation1(newRelation1);
-	// 	String newRelation2 = StringUtils.defaultString(newStudent.getRelation2());
-	// 	existing.setRelation2(newRelation2);
-	// 	String newAddress = StringUtils.defaultString(newStudent.getAddress());
-	// 	existing.setAddress(newAddress);
-	// 	String newState = StringUtils.defaultString(newStudent.getState());
-	// 	existing.setState(newState);
-	// 	String newBranch = StringUtils.defaultString(newStudent.getBranch());
-	// 	existing.setBranch(newBranch);
-	// 	// existing.setActive(newStudent.getActive());
-	// 	LocalDate newRegisterDate = newStudent.getRegisterDate();
-	// 	existing.setRegisterDate(newRegisterDate);
-	// 	String newMemo = StringUtils.defaultString(newStudent.getMemo());
-	// 	String existMemo = StringUtils.defaultString(existing.getMemo());
-		
-	// 	// in case that user wants to clear memo
-	// 	if(StringUtils.isBlank(newMemo)) {
-	// 		// simply clear memo
-	// 		existing.setMemo("");
-	// 	}else if(!newMemo.equals(existMemo)) {
-	// 		// update memo with timestamp
-	// 		existing.setMemo(newMemo + JaeUtils.getTodayForMemo());
-	// 	}
-	// 	// update the existing record
-	// 	Student updated = studentRepository.save(existing);
-	// 	return updated;
-	// }
-
 	@Override
 	@Transactional
 	public Student updateStudent(StudentDTO newStudent, String user) {
@@ -283,13 +232,8 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDTO> showGradeStudents(String state, String branch, String grade) {
-		// String stateParam = StringUtils.equalsIgnoreCase(state, JaeConstants.ALL) ? "%" : state;
-		// String branchParam = StringUtils.equalsIgnoreCase(branch, JaeConstants.ALL) ? "%" : branch;
-		// String gradeParam = StringUtils.equalsAnyIgnoreCase(grade, JaeConstants.ALL) ? "%" : grade;
-		
 		List<StudentDTO> dtos = null;
-		dtos = studentRepository.listActiveStudent(state, branch, grade);
-		
+		dtos = studentRepository.listActiveStudent(state, branch, grade);		
 		return dtos;
 	}
 

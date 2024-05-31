@@ -123,6 +123,8 @@ public interface JaeConstants {
 
 	String NEW_ENROLMENT = "NEW";	
 
+	String ERROR = "error";
+	
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	PAYMENT METHOD LIST
