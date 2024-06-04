@@ -35,6 +35,7 @@ public class Student {
     @GenericGenerator(name = "studentIdGenerator", strategy = "hyung.jin.seo.jae.utils.StudentIdGenerator")
     private Long id;
     
+    /* for testing purpose commented out
     @Column(length = 100, nullable = true)
     private String firstName;
     
@@ -82,10 +83,67 @@ public class Student {
     
     @Column(length = 7, nullable = true)
     private String gender;
-        
+
     @CreationTimestamp
     private LocalDate registerDate;
+    */
+    @Column(length = 100)
+    private String firstName;
     
+    @Column(length = 100)
+    private String lastName;
+
+    @Column(length = 70)
+    private String password;
+    
+    @Column(length = 1)
+    private int active;
+    
+    @Column(length = 10)
+    private String grade;
+    
+    @Column(length = 50)
+    private String contactNo1;
+    
+    @Column(length = 50)
+    private String contactNo2;
+    
+    @Column(length = 100)
+    private String email1;
+    
+    @Column(length = 100)
+    private String email2;
+
+    @Column(length = 10)
+    private String relation1;
+
+    @Column(length = 10)
+    private String relation2;
+    
+    @Column(length = 200)
+    private String address;
+    
+    @Column(length = 30)
+    private String state;
+    
+    @Column(length = 50)
+    private String branch;
+    
+    @Column(length = 1000)
+    private String memo;
+    
+    @Column(length = 7)
+    private String gender;
+        
+    @CreatedDate
+    private LocalDate registerDate;
+
+    
+
+
+
+
+
     @CreatedDate
     private LocalDate endDate;
 

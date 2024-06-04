@@ -64,6 +64,7 @@ hyung/jin/seo/jae/model/Homework.class
 hyung/jin/seo/jae/service/impl/PdfServiceImpl.class
 hyung/jin/seo/jae/repository/OutstandingRepository.class
 hyung/jin/seo/jae/controller/AttendanceController.class
+hyung/jin/seo/jae/controller/MigrationController.class
 hyung/jin/seo/jae/dto/HomeworkDTO.class
 hyung/jin/seo/jae/repository/BookRepository.class
 hyung/jin/seo/jae/repository/StudentTestRepository.class
