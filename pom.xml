@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hyung.jin.seo</groupId>
 	<artifactId>jac-management</artifactId>
-	<version>1.0.0</version>
+	<version>1</version>
 	<name>sample-springboot</name>
 	<description>Jamean College Victoria Re-desigin Project</description>
 	<parent>
@@ -148,6 +148,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>jac</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -155,13 +156,16 @@
 				<!-- <version>2.7.10</version> -->
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.6.0</version>
-			</plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 </project>

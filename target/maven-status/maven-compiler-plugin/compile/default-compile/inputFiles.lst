@@ -15,6 +15,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/EnrolmentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeTypeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/JaeUtils.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/MigrationController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/StudentPracticeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OnlineSessionDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/StudentController.java

@@ -6,22 +6,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.StudentService;
@@ -105,9 +94,10 @@ public class MigrationController {
 	                    String state = columns[11];
 	                    String branch = columns[12];
 						String memo = columns[13];
-	                    String gender = columns[12];
+	                    String gender = columns[14];
 	                    String registerDate = columns[15];
 	                    String endDate = columns[16];
+						String active = columns[17];
 	                    // create Student
 	                    Student std =  new Student();
 						if(StringUtils.isNotBlank(firstName)) std.setFirstName(firstName);
@@ -129,6 +119,7 @@ public class MigrationController {
 						if(StringUtils.isNotBlank(gender)) std.setGender(gender);
 						if(StringUtils.isNotBlank(registerDate)) std.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     					if(StringUtils.isNotBlank(endDate)) std.setEndDate(LocalDate.parse(endDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+						if(StringUtils.isNotBlank(active)) std.setActive(Integer.parseInt(active));
 						
 						// register Student	
 	                    std = studentService.addStudent(std);
@@ -138,9 +129,9 @@ public class MigrationController {
 	                e.printStackTrace();
 	            }
 	        }
-			model.addAttribute(JaeConstants.SUCCESS, hpiiCount);
-			model.addAttribute(JaeConstants.TOTAL, (lineCount-1));// except 1st line header
-			model.addAttribute(JaeConstants.HPII_LIST, dtos);
+			// model.addAttribute(JaeConstants.BATCH_SUCCESS, hpiiCount);
+			// model.addAttribute(JaeConstants.BATCH_TOTAL, (lineCount-1));// except 1st line header
+			model.addAttribute(JaeConstants.BATCH_LIST, dtos);
 		
 		return "migrationPage";
 	}
