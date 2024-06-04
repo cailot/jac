@@ -261,4 +261,15 @@ public interface JaeConstants {
 
 	String ROLE_STAFF = "Role_Staff";
 
+	////////////////////////////////////
+	//
+	//	STUDENT MIGRATION
+	//
+	////////////////////////////////////
+
+	String BATCH_TOTAL = "batchTotal";
+
+	String BATCH_SUCCESS = "batchSuccess";
+
+	String BATCH_LIST = "batchList";
 }
