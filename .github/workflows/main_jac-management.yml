@@ -60,11 +60,6 @@ jobs:
           echo "Listing current directory structure after artifact download:"
           ls -la
 
-      - name: List downloaded files
-        run: |
-          echo "Listing target directory after download:"
-          ls -la target
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
