@@ -59,3 +59,4 @@ jobs:
           app-name: 'jac-spring'
           slot-name: 'Production'
           package: '*.war'
+          
