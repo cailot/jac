@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/ROOT.war'
+          path: 'target/ROOT.war'
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,7 +44,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-      
+          path: 'target/ROOT.war'
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -58,4 +59,4 @@ jobs:
         with:
           app-name: 'jac-spring'
           slot-name: 'Production'
-          package: '${{ github.workspace }}/target/ROOT.war'
+          package: 'target/ROOT.war'
