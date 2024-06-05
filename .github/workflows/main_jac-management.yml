@@ -1,4 +1,7 @@
-name: Build and deploy JAR app to Azure Web App - jac-management
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy WAR app to Azure Web App - jac-spring
 
 on:
   push:
@@ -11,18 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Java version
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
-          distribution: 'temurin'
           java-version: '11'
 
       - name: Build with Maven
@@ -41,14 +37,9 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # This is required for requesting the JWT
+      id-token: write #This is required for requesting the JWT
 
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
@@ -57,14 +48,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5240428697254A41813EB62FD0480A87 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_52481113224E401E915E5EF798BADF57 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_FCF34FAD41AA424883C124F9AA826AD1 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2421B6DD5B694A659FF538A0A1C26401 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_14A4B9DFD67E479898D0A91A9C89638B }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C02A6F48269E417CA7FD6215CEF43C06 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'jac-management'
+          app-name: 'jac-spring'
           slot-name: 'Production'
-          package: '*.jar'
+          package: '*.war'
+          
