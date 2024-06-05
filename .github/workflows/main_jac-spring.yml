@@ -22,13 +22,13 @@ jobs:
         run: mvn clean install
 
       - name: Rename WAR file to ROOT.war
-        run: mv target/jac.war target/ROOT.war
+        run: mv target/*.war target/ROOT.war
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: 'target/ROOT.war'
+          path: target/ROOT.war
 
   deploy:
     runs-on: ubuntu-latest
@@ -37,14 +37,13 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: java-app
-          path: 'target/ROOT.war'
 
       - name: Login to Azure
         uses: azure/login@v1
