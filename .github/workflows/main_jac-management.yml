@@ -1,4 +1,4 @@
-name: Build and deploy WAR app to Azure Web App - jac-management
+name: Build and deploy WAR app to Azure Web App - jac-spring
 
 on:
   push:
@@ -18,8 +18,17 @@ jobs:
         with:
           java-version: '11'
 
+      - name: Check current directory structure
+        run: ls -la
+
       - name: Build with Maven
         run: mvn clean install
+
+      - name: Check target directory structure after build
+        run: ls -la target
+
+      - name: Check target directory structure after renaming
+        run: ls -la target
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
