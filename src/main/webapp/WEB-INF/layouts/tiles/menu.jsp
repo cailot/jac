@@ -49,7 +49,7 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Student</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="/studentAdmin">Administration</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
