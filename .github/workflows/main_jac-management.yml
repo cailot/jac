@@ -24,6 +24,25 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
+      - name: Check target directory structure after build
+        run: |
+          echo "Listing target directory after build:"
+          ls -la target
+
+      - name: Rename WAR file to ROOT.war
+        run: |
+          if [ -d target ]; then
+            mv target/*.war target/ROOT.war
+          else
+            echo "Target directory does not exist"
+            exit 1
+          fi
+
+      - name: Check target directory structure after renaming
+        run: |
+          echo "Listing target directory after renaming:"
+          ls -la target
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
@@ -45,8 +64,10 @@ jobs:
         with:
           name: java-app
 
-      #- name: List downloaded files
-      #  run: ls -la target
+      - name: List downloaded files
+        run: |
+          echo "Listing target directory after download:"
+          ls -la target
 
       - name: Login to Azure
         uses: azure/login@v1
