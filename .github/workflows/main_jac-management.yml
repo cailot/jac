@@ -1,4 +1,4 @@
-name: Build and deploy WAR app to Azure Web App - jac-spring
+name: Build and deploy WAR app to Azure Web App - jac-management
 
 on:
   push:
@@ -35,6 +35,11 @@ jobs:
           name: java-app
           path: target/ROOT.war
 
+      - name: Verify artifact upload
+        run: |
+          echo "Verifying artifact upload:"
+          ls -la target
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -49,6 +54,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
+
+      - name: List current directory structure
+        run: |
+          echo "Listing current directory structure after artifact download:"
+          ls -la
 
       - name: List downloaded files
         run: |
@@ -69,3 +79,4 @@ jobs:
           app-name: 'jac-management'
           slot-name: 'Production'
           package: target/ROOT.war
+        
