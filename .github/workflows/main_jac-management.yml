@@ -78,5 +78,5 @@ jobs:
         with:
           app-name: 'jac-management'
           slot-name: 'Production'
-          package: target/ROOT.war
+          package: ROOT.war
         
