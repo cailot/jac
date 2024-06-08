@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy WAR app to Azure Web App - jac-manager
+name: Build and deploy WAR app to Azure Web App - jac-management
 
 on:
   push:
@@ -21,14 +18,27 @@ jobs:
         with:
           java-version: '11'
 
+      - name: Check current directory structure
+        run: ls -la
+
       - name: Build with Maven
         run: mvn clean install
+
+      - name: Check target directory structure after build
+        run: |
+          echo "Listing target directory after build:"
+          ls -la target
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.war'
+          path: target/ROOT.war
+
+      - name: Verify artifact upload
+        run: |
+          echo "Verifying artifact upload:"
+          ls -la target
 
   deploy:
     runs-on: ubuntu-latest
@@ -37,14 +47,19 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: java-app
-      
+
+      - name: List current directory structure
+        run: |
+          echo "Listing current directory structure after artifact download:"
+          ls -la
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -56,7 +71,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'jac-manager'
+          app-name: 'jac-management'
           slot-name: 'Production'
-          package: '*.war'
-          
+          package: ROOT.war
+        

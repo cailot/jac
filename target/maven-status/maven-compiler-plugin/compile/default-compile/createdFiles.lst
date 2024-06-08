@@ -105,6 +105,7 @@ hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.class
 hyung/jin/seo/jae/controller/ConnectedController$1.class
 hyung/jin/seo/jae/config/JaeWebConfig.class
 hyung/jin/seo/jae/service/StatsService.class
+hyung/jin/seo/jae/config/TomcatConfig.class
 hyung/jin/seo/jae/model/Book.class
 hyung/jin/seo/jae/service/MaterialService.class
 hyung/jin/seo/jae/repository/StateRepository.class
