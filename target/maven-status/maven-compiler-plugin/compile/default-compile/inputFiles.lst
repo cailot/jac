@@ -26,6 +26,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/TestAnswer.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Score.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/MaterialService.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/config/TomcatConfig.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/PaymentService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/TestTypeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/CycleService.java
