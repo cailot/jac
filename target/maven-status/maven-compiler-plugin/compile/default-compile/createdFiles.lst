@@ -43,7 +43,6 @@ hyung/jin/seo/jae/dto/PracticeDTO.class
 hyung/jin/seo/jae/service/impl/AttendanceServiceImpl.class
 hyung/jin/seo/jae/repository/PracticeScheduleRepository.class
 hyung/jin/seo/jae/controller/CodeController.class
-hyung/jin/seo/jae/config/JaeDBConfig.class
 hyung/jin/seo/jae/model/Subject.class
 hyung/jin/seo/jae/service/impl/CodeServiceImpl.class
 hyung/jin/seo/jae/service/ConnectedService.class
@@ -105,7 +104,6 @@ hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.class
 hyung/jin/seo/jae/controller/ConnectedController$1.class
 hyung/jin/seo/jae/config/JaeWebConfig.class
 hyung/jin/seo/jae/service/StatsService.class
-hyung/jin/seo/jae/config/TomcatConfig.class
 hyung/jin/seo/jae/model/Book.class
 hyung/jin/seo/jae/service/MaterialService.class
 hyung/jin/seo/jae/repository/StateRepository.class
