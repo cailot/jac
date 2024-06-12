@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -37,6 +38,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	@Query(value = "SELECT clazzId FROM Teacher_Class WHERE teacherId = ?1", nativeQuery = true)
 	List<Long> findClazzIdByTeacherId(Long id);
 
+	@Modifying
 	@Query(value = "UPDATE Teacher t SET t.password = ?2 WHERE t.email = ?1 AND ACTIVE = 0", nativeQuery = true)
 	void updatePassword(String email, String password);
 

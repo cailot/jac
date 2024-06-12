@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,14 +99,18 @@ public class CodeController {
 		try {
 			// 1. create Cycle
 			Branch branch = formData.convertToBranch(formData);
-			// 2. get State
+			// 2. set default password
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String encodedPassword = passwordEncoder.encode(JaeConstants.DEFAULT_PASSWORD);
+			branch.setPassword(encodedPassword);
+			// 3. get State
 			State state = codeService.getState(Long.parseLong(formData.getStateId()));
 			if(state!=null){
 				state.addBranch(branch);
-				// 3. update state
+				// 4. update state
 				codeService.updateState(state, state.getId());
 			}
-			// 3. return success;
+			// 5. return success;
 			return ResponseEntity.ok("\"Branch register success\"");
 		} catch (Exception e) {
 			String message = "Error registering Branch: " + e.getMessage();
@@ -167,6 +172,13 @@ public class CodeController {
 		}
 	}
 
+	// update branch eamil password
+	@PutMapping("/updateEmailPassword/{id}/{pwd}")
+	@ResponseBody
+	public void updatePassword(@PathVariable String id, @PathVariable String pwd) {
+		codeService.updateBranchEmailPassword(Long.parseLong(id), pwd);
+	}
+	
 	// remove branch by Id
 	@PutMapping("/deleteBranch/{id}")
 	@ResponseBody
