@@ -231,7 +231,7 @@ public interface JaeConstants {
 	//
 	////////////////////////////////////
 
-	String DEFAULT_PASSWORD = "123";
+	String DEFAULT_PASSWORD = "Today123";
 
 	////////////////////////////////////
 	//
@@ -260,7 +260,7 @@ public interface JaeConstants {
 	String ROLE_ADMIN = "Role_Administrator";
 
 	String ROLE_STAFF = "Role_Staff";
-
+	
 	////////////////////////////////////
 	//
 	//	STUDENT MIGRATION

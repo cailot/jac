@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -405,6 +406,18 @@ public class CodeServiceImpl implements CodeService {
 			// Use the email
 		} 
 		return email;
+	}
+
+	@Transactional
+	@Override
+	public void updateBranchEmailPassword(Long id, String password) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(password);
+		try{
+			branchRepository.updateEmailPassword(id, encodedPassword);
+		}catch(Exception e){
+			System.out.println("No Branch found");
+		}
 	}
 
 }

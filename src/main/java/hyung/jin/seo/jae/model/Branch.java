@@ -44,6 +44,9 @@ public class Branch {
     @Column(length = 50, nullable = false)
     private String email;
 
+    @Column(length = 70)
+    private String password;
+
     @Column(length = 100, nullable = true)
     private String address;
 

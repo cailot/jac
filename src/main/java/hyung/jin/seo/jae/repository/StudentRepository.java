@@ -31,7 +31,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query(value = "SELECT DISTINCT c.year FROM Cycle c WHERE c.id IN (SELECT l.cycleId FROM Class l WHERE l.id IN (SELECT e.clazzId FROM Enrolment e WHERE e.studentId = ?1))", nativeQuery = true)
         List<Integer> findYearsByStudentId(Long id);	
 
-        
+        @Modifying
         @Query(value = "UPDATE Student s SET s.password = ?2 WHERE s.id = ?1 AND ACTIVE = 0", nativeQuery = true)
         void updatePassword(Long id, String password);    
 
