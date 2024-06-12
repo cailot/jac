@@ -362,6 +362,69 @@ function showBranchInfo(state, branch){
 	});
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Update password
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updatePassword() {
+	var id = $("#passwordId").val();
+	var newPwd = $("#newPwd").val();
+	var confirmPwd = $("#confirmPwd").val();
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search branch before password reset');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// warn if newPwd or confirmPwd is empty
+	if (newPwd == '' || confirmPwd == '') {
+		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	//warn if newPwd is not same as confirmPwd
+	if(newPwd != confirmPwd){
+		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/code/updateEmailPassword/' + id + '/' + confirmPwd,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
+			$('#success-alert').modal('toggle');
+			// clear fields
+			clearPassword();
+			// close modal
+			$('#passwordModal').modal('toggle');
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Show password dialogue
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function showPasswordModal(id) {
+	clearPassword();
+	$("#passwordId").val(id);
+	$('#passwordModal').modal('show');
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Clear password fields
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearPassword() {
+	$("passwordId").val('');
+	$("#newPwd").val('');
+	$("#confirmPwd").val('');
+}
+
 </script>
 
 <style>
@@ -460,6 +523,7 @@ function showBranchInfo(state, branch){
 																</td>
 																<td class="text-center align-middle">
 																	<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
+																	<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Email Password" onclick="showPasswordModal('${branch.id}')"></i>&nbsp;
 																	<i class="bi bi-trash text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
 																</td>
 															</tr>
@@ -705,6 +769,45 @@ function showBranchInfo(state, branch){
 		</div>
 	</div>
 </div>
+
+<!-- Password Reset Dialogue -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header btn-warning">
+               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;Branch Email Password Reset</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h5> Do you want to reset email password for branch ?</h5>
+				<p>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							New Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-md-5">
+							Confirm Password
+						</div>
+						<div class="col-md-7">
+							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+						</div>
+					</div>
+				</p>
+				<input type="hidden" id="passwordId" name="passwordId"/>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
 
 <!-- Delete Dialogue -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
