@@ -142,6 +142,11 @@ public class JaeController {
 		return "inactiveStatPage";
 	}
 
+	@GetMapping("/invoiceStats")
+	public String invoiceStudentStats(HttpSession session) {
+		return "invoiceStatPage";
+	}
+
 	@GetMapping("/migration")
 	public String studentMigration(HttpSession session) {
 		return "migrationPage";

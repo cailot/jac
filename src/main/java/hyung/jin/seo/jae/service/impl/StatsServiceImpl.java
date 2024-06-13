@@ -44,6 +44,18 @@ public class StatsServiceImpl implements StatsService {
 	}
 
 	@Override
+	public List<StatsDTO> getInvoiceStats(String from, String to) {
+		List<Object[]> objects = studentRepository.getInvoiceStudentStats(from, to);
+		// convert result to StatsDTO
+		List<StatsDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			StatsDTO dto = new StatsDTO(object);
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+
+	@Override
 	public List<StudentDTO> listActiveStudent4Stats(String branch, String grade, String from, String to) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
@@ -65,6 +77,21 @@ public class StatsServiceImpl implements StatsService {
 			LocalDate fromDate = LocalDate.parse(from, formatter);
 			LocalDate toDate = LocalDate.parse(to, formatter);
 			dtos = studentRepository.listInactiveStudent4Stats(branch, grade, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No Student found");
+		}
+		return dtos;
+	}
+
+
+	@Override
+	public List<StudentDTO> listInvoiceStudent4Stats(String branch, String grade, String from, String to) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate fromDate = LocalDate.parse(from, formatter);
+			LocalDate toDate = LocalDate.parse(to, formatter);
+			dtos = studentRepository.listInvoiceStudent4Stats(branch, grade, fromDate, toDate);
 		}catch(Exception e){
 			System.out.println("No Student found");
 		}

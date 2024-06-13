@@ -779,7 +779,7 @@ function clearPassword() {
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <h5> Do you want to reset email password for this branch ?</h5>
+                <h5> Do you want to reset email password for branch ?</h5>
 				<p>
 					<div class="row mt-4">
 						<div class="col-md-5">
