@@ -68,6 +68,29 @@ public class StatisticController {
 		return dtos;
 	}
 
+	// search invoice
+	@PostMapping("/invoiceSearch")
+	@ResponseBody
+	public List<StatsDTO> searchInvoiceeStats(@RequestParam String fromDate, @RequestParam String toDate) {
+		// 1. get convert date format
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		// 2. get Stats
+		List<StatsDTO> dtos = statsService.getInactiveStats(start, end);
+		// 3. return dtos
+		return dtos;
+	}
+
 	// search active student with branch, grade, start/endDate
 	@GetMapping("/activeStudent")
 	@ResponseBody
@@ -95,6 +118,29 @@ public class StatisticController {
 	@GetMapping("/inactiveStudent")
 	@ResponseBody
 	List<StudentDTO> listInactiveStudents(@RequestParam("branch") String branch, 
+									@RequestParam("grade") String grade,
+									@RequestParam("start") String fromDate,
+									@RequestParam("end") String toDate) {
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		List<StudentDTO> dtos = statsService.listInactiveStudent4Stats(branch, grade, start, end);
+		return dtos;
+	}
+
+	// search invoice student with branch, grade, start/endDate
+	@GetMapping("/invoiceStudent")
+	@ResponseBody
+	List<StudentDTO> listInvoiceStudents(@RequestParam("branch") String branch, 
 									@RequestParam("grade") String grade,
 									@RequestParam("start") String fromDate,
 									@RequestParam("end") String toDate) {
