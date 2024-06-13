@@ -133,6 +133,7 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Student Invoice</a>
 			</div>
 		</li>
 		</c:if>

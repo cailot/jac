@@ -786,7 +786,7 @@ function clearPassword() {
 							New Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+							<input type="password" class="form-control" id="newPwd" name="newPwd"/>
 						</div>
 					</div>
 					<div class="row mt-4">
@@ -794,7 +794,7 @@ function clearPassword() {
 							Confirm Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+							<input type="password" class="form-control" id="confirmPwd" name="confirmPwd"/>
 						</div>
 					</div>
 				</p>
