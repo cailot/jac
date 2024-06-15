@@ -86,7 +86,7 @@ public class StatisticController {
 			end = "2099-12-31";
 		}
 		// 2. get Stats
-		List<StatsDTO> dtos = statsService.getInactiveStats(start, end);
+		List<StatsDTO> dtos = statsService.getInvoiceStats(start, end);
 		// 3. return dtos
 		return dtos;
 	}
@@ -156,7 +156,7 @@ public class StatisticController {
 		} catch (ParseException e){
 			end = "2099-12-31";
 		}
-		List<StudentDTO> dtos = statsService.listInactiveStudent4Stats(branch, grade, start, end);
+		List<StudentDTO> dtos = statsService.listInvoiceStudent4Stats(branch, grade, start, end);
 		return dtos;
 	}
 

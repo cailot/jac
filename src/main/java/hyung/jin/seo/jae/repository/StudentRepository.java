@@ -44,9 +44,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student  WHERE endDate >= :fromDate AND registerDate <= :toDate AND active = 1 GROUP BY state, branch, grade", nativeQuery = true)
         List<Object[]> getInactiveStudentStats(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
-        @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student  WHERE endDate >= :fromDate AND registerDate <= :toDate AND active = 1 GROUP BY state, branch, grade", nativeQuery = true)
+        // @Query(value = "SELECT state, branch, grade, COUNT(DISTINCT e.studentId) AS figures FROM Enrolment e JOIN Invoice i ON e.invoiceId = i.id WHERE i.paymentDate BETWEEN :fromDate AND :toDate GROUP BY state, branch, grade", nativeQuery = true)
+        @Query(value = "SELECT s.state, s.branch, s.grade, COUNT(DISTINCT s.id) AS figures FROM Student s JOIN Enrolment e ON s.id = e.studentId JOIN Invoice i ON e.invoiceId = i.id WHERE i.paymentDate BETWEEN :fromDate AND :toDate GROUP BY s.state, s.branch, s.grade", nativeQuery = true)
         List<Object[]> getInvoiceStudentStats(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
-
+        
         // retrieve active student by state, branch & grade called from studentList.jsp
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.branch = ?1) AND (s.grade = ?2) AND ((registerDate <= ?4 AND active = 0) OR (endDate >= ?3 AND registerDate <= ?4 AND active = 1))")
 	List<StudentDTO> listActiveStudent4Stats(String branch, String grade, LocalDate from, LocalDate to);
@@ -55,12 +56,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.branch = ?1) AND (s.grade = ?2) AND (endDate >= ?3) AND (registerDate <= ?4) AND (active = 1)")
 	List<StudentDTO> listInactiveStudent4Stats(String branch, String grade, LocalDate from, LocalDate to);
         
-        // retrieve inactive student by state, branch & grade called from studentList.jsp
-        @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (s.branch = ?1) AND (s.grade = ?2) AND (endDate >= ?3) AND (registerDate <= ?4) AND (active = 1)")
+        // retrieve invoice student by state, branch & grade called from studentList.jsp
+        @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s JOIN Enrolment e ON s.id = e.student.id JOIN Invoice i ON e.invoice.id = i.id WHERE s.branch = ?1 AND s.grade = ?2 AND i.paymentDate BETWEEN ?3 AND ?4")
         List<StudentDTO> listInvoiceStudent4Stats(String branch, String grade, LocalDate from, LocalDate to);
-
-
-
 
 
         // search student by keyword for Id
