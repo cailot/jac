@@ -590,8 +590,9 @@ function clearPassword() {
 					<td id="branchId" class="left-cell" colspan="5"></td>
 				</tr>
 				<tr height="80px">
-					<td colspan="6" style="text-align: right;">
-						<button type="button" class="btn btn-primary" style="width: 120px;" onclick="retrieveBranchCode('${branch}')"><i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Edit</button>
+					<td colspan="8" style="text-align: right;">
+						<button type="button" class="btn btn-primary" style="width: 120px;" onclick="retrieveBranchCode('${branch}')"><i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Edit</button>&nbsp;
+						<button type="button" class="btn btn-warning" style="width: 180px;" onclick="showPasswordModal(document.getElementById('branchId').textContent.trim())"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Email Password</button>
 					</td>
 				</tr>
 				</table> 

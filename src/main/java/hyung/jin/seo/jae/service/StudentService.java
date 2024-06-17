@@ -48,4 +48,6 @@ public interface StudentService {
 
 	// get maxId based on state & branch
 	Long getMaxId(String state, String branch);
+
+	int updateInactiveStudent(int days);
 }
