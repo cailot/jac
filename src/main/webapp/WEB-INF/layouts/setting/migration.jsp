@@ -180,7 +180,7 @@ function updateFileName(input) {
 	<div class="row m-3 pt-5 justify-content-center">
 		<div class="upload-section col-md-8">
 	    <h2 class="text-center">Upload CSV File</h2>
-	    <form method="post" action="${pageContext.request.contextPath}/migration/upload" enctype="multipart/form-data">
+	    <form method="post" action="${pageContext.request.contextPath}/batch/upload" enctype="multipart/form-data">
 	        <div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->
@@ -216,12 +216,6 @@ function updateFileName(input) {
 		    <div id="studentResult" class="col-md-10">
 		  	<c:choose>
 				<c:when test="${not empty batchList}">
-				<!-- Display data if hpiiList; is not empty -->
-				<%--
-				<p class="text-center text-primary">
-					Success Rate of inserting Student Information: <fmt:formatNumber type="percent" maxIntegerDigits="3" value="${(batchSuccess / batchTotal)}" />
-				</p>
-				--%>
 				<div class="stats">
 					<!-- Display table if hpiiList is not empty -->
 					<table id="hpiiTable" class="display">
