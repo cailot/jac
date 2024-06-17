@@ -152,4 +152,10 @@ public class JaeController {
 		return "migrationPage";
 	}
 
+	@GetMapping("/batch")
+	public String batchProcess(HttpSession session) {
+		return "batchPage";
+	}
+
+
 }

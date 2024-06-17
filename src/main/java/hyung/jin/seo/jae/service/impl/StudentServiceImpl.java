@@ -258,6 +258,18 @@ public class StudentServiceImpl implements StudentService {
 		return maxId;
 	}
 
+	@Override
+	@Transactional
+	public int updateInactiveStudent(int days) {
+		int affectedRow = 0;
+		try{
+			affectedRow = studentRepository.updateInactiveStudent(days);
+		}catch(Exception e){
+			System.out.println("Unable to get maxId from Student");
+		}
+		return affectedRow;
+	}
+
 
 
 }

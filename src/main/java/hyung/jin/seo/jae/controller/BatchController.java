@@ -6,15 +6,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,13 +26,15 @@ import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
-@RequestMapping("migration")
-public class MigrationController {
+@RequestMapping("batch")
+public class BatchController {
 
 	@Autowired
 	private StudentService studentService;
 
-	
+	@Value("${inactive.student.enrolment.days}")
+	private int days;
+
 	// migrate student
 	@RequestMapping(value = "/upload", method = {RequestMethod.POST})
 	public String migrateStudents(@RequestParam(value = "file", required = false) MultipartFile file, Model model) {
@@ -135,40 +136,12 @@ public class MigrationController {
 		
 		return "migrationPage";
 	}
-	// register new student
-	@PostMapping("/register")
-	@ResponseBody
-	public StudentDTO registerStudent(@RequestBody StudentDTO formData) {
-		// 1. create Student without elearning
-		Student std = formData.convertToOnlyStudent();
-		String password = formData.getPassword();
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encodedPassword = passwordEncoder.encode(password);
-		std.setPassword(encodedPassword);
-		std = studentService.addStudent(std);
-		StudentDTO dto = new StudentDTO(std);
-		return dto;
-	}
 
-	// search student with keyword - ID, firstName & lastName
-	@GetMapping("/search")
+	// count records number in database
+	@GetMapping("/updateInactiveStudent")
 	@ResponseBody
-	List<StudentDTO> searchStudents(@RequestParam("keyword") String keyword,
-									@RequestParam("state") String state,
-									@RequestParam("branch") String branch) {
-		List<StudentDTO> dtos = studentService.searchByKeyword(keyword, state, branch);
-		return dtos;
+	int coutUpdateInactiveStudent() {
+		int count = 10;//studentService.updateInactiveStudent(days);
+		return count;
 	}
-	
-	// search student by ID
-	@GetMapping("/get/{id}")
-	@ResponseBody
-	StudentDTO getStudents(@PathVariable Long id) {
-		Student std = studentService.getStudent(id);
-		if(std==null) return new StudentDTO(); // return empty if not found
-		StudentDTO dto = new StudentDTO(std);
-		return dto;
-	}
-	
-
 }

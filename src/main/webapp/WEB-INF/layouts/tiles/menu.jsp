@@ -121,6 +121,7 @@
 				<a class="dropdown-item" href="/branch">Branch Management</a>
 				<c:if test="${isAdmin}">
 				<a class="dropdown-item" href="/cycle">Academic Cycle</a>
+				<a class="dropdown-item" href="/batch">Batch Process</a>
 				<a class="dropdown-item" href="/migration">Student Migration</a>
 				</c:if>
 			</div>
