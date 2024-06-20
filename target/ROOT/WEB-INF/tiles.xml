@@ -112,6 +112,12 @@
 		<put-attribute name="title" value="Branch List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/branch.jsp" />
 	</definition>
+	<!--Batch -->
+	<definition name="batchPage" extends="base.definition">
+		<put-attribute name="title" value="Batch Process" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/batch.jsp" />
+	</definition>
+	<!-- Migration -->
 	<definition name="migrationPage" extends="base.definition">
 		<put-attribute name="title" value="Student Data Migration" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/migration.jsp" />
@@ -129,6 +135,11 @@
 	<definition name="inactiveStatPage" extends="base.definition">
 		<put-attribute name="title" value="Inactive Student Statistics" />
 		<put-attribute name="body" value="/WEB-INF/layouts/stats/inactiveStats.jsp" />
+	</definition>
+	<!--Invoice Student Stats -->
+	<definition name="invoiceStatPage" extends="base.definition">
+		<put-attribute name="title" value="Invoiced Student Statistics" />
+		<put-attribute name="body" value="/WEB-INF/layouts/stats/invoiceStats.jsp" />
 	</definition>
 
 

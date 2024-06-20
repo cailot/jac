@@ -605,7 +605,7 @@ window.showWarning = function(id) {
 						<div class="form-row mt-3">
 							<div class="col-md-7">
 								<label for="addPassword" class="label-form">Password</label>
-								<input type="text" class="form-control" id="addPassword" name="addPassword">
+								<input type="password" class="form-control" id="addPassword" name="addPassword">
 							</div>
 							<div class="col-md-5">
 								<label for="addRole" class="label-form">Role</label>
@@ -751,7 +751,7 @@ window.showWarning = function(id) {
 							New Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+							<input type="password" class="form-control" id="newPwd" name="newPwd"/>
 						</div>
 					</div>
 					<div class="row mt-4">
@@ -759,7 +759,7 @@ window.showWarning = function(id) {
 							Confirm Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+							<input type="password" class="form-control" id="confirmPwd" name="confirmPwd"/>
 						</div>
 					</div>
 				</p>

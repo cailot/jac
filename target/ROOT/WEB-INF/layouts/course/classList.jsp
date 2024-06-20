@@ -443,12 +443,12 @@ function deleteClass(id) {
 								int nextYear = currentYear + 1;
 							%>
 							<option value="0">All</option>
-							<option value="<%= currentYear %>"><%= currentYear %></option>
+							<option value="<%= currentYear %>"><%= currentYear %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
 								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
 							%>
-								<option value="<%= i %>"><%= i %></option>
+								<option value="<%= i %>"><%= i %>/<%= (i%100)+1 %></option>
 							<%
 							}
 							%>
