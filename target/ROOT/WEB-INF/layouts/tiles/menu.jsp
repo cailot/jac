@@ -121,6 +121,7 @@
 				<a class="dropdown-item" href="/branch">Branch Management</a>
 				<c:if test="${isAdmin}">
 				<a class="dropdown-item" href="/cycle">Academic Cycle</a>
+				<a class="dropdown-item" href="/batch">Batch Process</a>
 				<a class="dropdown-item" href="/migration">Student Migration</a>
 				</c:if>
 			</div>
@@ -133,6 +134,7 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Student Invoice</a>
 			</div>
 		</li>
 		</c:if>

@@ -63,7 +63,6 @@ hyung/jin/seo/jae/model/Homework.class
 hyung/jin/seo/jae/service/impl/PdfServiceImpl.class
 hyung/jin/seo/jae/repository/OutstandingRepository.class
 hyung/jin/seo/jae/controller/AttendanceController.class
-hyung/jin/seo/jae/controller/MigrationController.class
 hyung/jin/seo/jae/dto/HomeworkDTO.class
 hyung/jin/seo/jae/repository/BookRepository.class
 hyung/jin/seo/jae/repository/StudentTestRepository.class
@@ -88,6 +87,7 @@ hyung/jin/seo/jae/service/impl/OnlineSessionServiceImpl.class
 hyung/jin/seo/jae/repository/PaymentRepository.class
 hyung/jin/seo/jae/dto/PracticeScheduleDTO.class
 hyung/jin/seo/jae/service/CourseService.class
+hyung/jin/seo/jae/repository/JaeMySQLDialect.class
 hyung/jin/seo/jae/model/PracticeType.class
 hyung/jin/seo/jae/model/Course.class
 hyung/jin/seo/jae/repository/HomeworkRepository.class
@@ -100,6 +100,7 @@ hyung/jin/seo/jae/dto/OutstandingDTO.class
 hyung/jin/seo/jae/model/Cycle.class
 hyung/jin/seo/jae/controller/JaeController.class
 hyung/jin/seo/jae/model/OnlineSession.class
+hyung/jin/seo/jae/controller/BatchController.class
 hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.class
 hyung/jin/seo/jae/controller/ConnectedController$1.class
 hyung/jin/seo/jae/config/JaeWebConfig.class

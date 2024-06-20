@@ -474,12 +474,12 @@ function activateStudent(id) {
 								int currentYear = now.get(Calendar.YEAR);
 							%>
 							<!-- <option value="All">All</option> -->
-							<option value="<%= currentYear %>"><%= currentYear %></option>
+							<option value="<%= currentYear %>"><%= currentYear %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
 								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
 							%>
-								<option value="<%= i %>"><%= i %></option>
+								<option value="<%= i %>"><%= i %>/<%= (i%100)+1 %></option>
 							<%
 							}
 							%>
@@ -861,7 +861,7 @@ function activateStudent(id) {
 							New Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+							<input type="password" class="form-control" id="newPwd" name="newPwd"/>
 						</div>
 					</div>
 					<div class="row mt-4">
@@ -869,7 +869,7 @@ function activateStudent(id) {
 							Confirm Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+							<input type="password" class="form-control" id="confirmPwd" name="confirmPwd"/>
 						</div>
 					</div>
 				</p>
