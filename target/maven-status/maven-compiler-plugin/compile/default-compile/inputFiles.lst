@@ -15,7 +15,6 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/EnrolmentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeTypeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/JaeUtils.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/MigrationController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/StudentPracticeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OnlineSessionDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/StudentController.java
@@ -85,6 +84,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Extrawork.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/StudentPracticeDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TestAnswerDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/BatchController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/PracticeSchedule.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/AttendanceService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/OnlineSessionRepository.java
@@ -107,6 +107,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/EnrolmentDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/BookService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/CodeService.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/JaeMySQLDialect.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Clazz.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/UserServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/PdfServiceImpl.java

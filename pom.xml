@@ -5,7 +5,7 @@
     <artifactId>jac-management</artifactId>
     <version>1</version>
     <name>JAC Management</name>
-    <description>James An College Victoria Re-design Project</description>
+    <description>James An College Victoria Re-design JAC Manager Project</description>
     <packaging>war</packaging>
 
     <parent>

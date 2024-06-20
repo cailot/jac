@@ -787,7 +787,7 @@ function clearPassword() {
 						<div class="form-row mt-2">
 							<div class="col-md-8">
 								<label for="addPassword" class="label-form">Password</label>
-								<input type="text" class="form-control" id="addPassword"
+								<input type="password" class="form-control" id="addPassword"
 									name="addPassword">
 							</div>
 							<div class="col-md-4">
@@ -1103,7 +1103,7 @@ function clearPassword() {
 							New Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="newPwd" name="newPwd"/>
+							<input type="password" class="form-control" id="newPwd" name="newPwd"/>
 						</div>
 					</div>
 					<div class="row mt-4">
@@ -1111,7 +1111,7 @@ function clearPassword() {
 							Confirm Password
 						</div>
 						<div class="col-md-7">
-							<input type="text" class="form-control" id="confirmPwd" name="confirmPwd"/>
+							<input type="password" class="form-control" id="confirmPwd" name="confirmPwd"/>
 						</div>
 					</div>
 				</p>
