@@ -40,7 +40,7 @@ public class StudentController {
 	public StudentDTO registerStudent(@RequestBody StudentDTO formData) {
 		// 1. create Student without elearning
 		Student std = formData.convertToOnlyStudent();
-		String password = formData.getPassword();
+		String password = JaeConstants.DEFAULT_PASSWORD;//formData.getPassword();
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encodedPassword = passwordEncoder.encode(password);
 		std.setPassword(encodedPassword);

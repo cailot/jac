@@ -98,16 +98,6 @@ function addStudent() {
 		});
 		return false;
 	}
-	var pass = document.getElementById('addPassword');
-	if(pass.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter password');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			pass.focus();
-		});
-		return false;
-	}
 	var email = document.getElementById('addEmail1');
 	if(email.value== ""){
 		$('#validation-alert .modal-body').text(
@@ -137,7 +127,6 @@ function addStudent() {
 		email2 : $("#addEmail2").val(),
 		relation1 : $("#addRelation1").val(),
 		relation2 : $("#addRelation2").val(),
-		address : $("#addAddress").val(),
 		contactNo1 : $("#addContact1").val(),
 		contactNo2 : $("#addContact2").val(),
 		memo : $("#addMemo").val(),
@@ -652,11 +641,6 @@ function activateStudent(id) {
 								</select>
 							</div>
 							<div class="col-md-9">
-								<label for="addPassword" class="label-form">Password</label> <input type="text" class="form-control" id="addPassword" name="addPassword">
-							</div>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-12">
 								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 							</div>
 						</div>
