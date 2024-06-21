@@ -55,16 +55,6 @@ function addStudent() {
 		});
 		return false;
 	}
-	var pass = document.getElementById('addPassword');
-	if(pass.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter password');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			pass.focus();
-		});
-		return false;
-	}
 	var email = document.getElementById('addEmail1');
 	if(email.value== ""){
 		$('#validation-alert .modal-body').text(
@@ -90,7 +80,6 @@ function addStudent() {
 	var std = {
 		firstName : $("#addFirstName").val(),
 		lastName : $("#addLastName").val(),
-		address : $("#addAddress").val(),
 		gender : $("#addGender").val(),
 		password : $("#addPassword").val(),
 		email1 : $("#addEmail1").val(),
@@ -768,11 +757,6 @@ function clearCourseRegisteration(){
 							</select>
 						</div>
 						<div class="col-md-9">
-							<label for="addPassword" class="label-form">Password</label> <input type="password" class="form-control" id="addPassword" name="addPassword">
-						</div>
-					</div>
-					<div class="form-row mt-3">
-						<div class="col-md-12">
 							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 						</div>
 					</div>
