@@ -78,7 +78,7 @@ function addExtrawork() {
 		success: function (data) {
 			// Display the success alert
 			$('#success-alert .modal-body').text(
-				'New Homework is registered successfully.');
+				'New Extra Work is registered successfully.');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();

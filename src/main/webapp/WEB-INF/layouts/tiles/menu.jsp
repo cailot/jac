@@ -55,16 +55,6 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 			</div>
 		</li>
-		<!-- User -->
-		<li class="nav-item dropdown">
-			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
-			</a>
-			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
-				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
-			</div>
-		</li>
 		<!-- Class -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
@@ -75,6 +65,16 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
+			</div>
+		</li>
+		<!-- User -->
+		<li class="nav-item dropdown">
+			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
+			</a>
+			<div class="dropdown-menu">
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
 		</li>
 		<!-- Jac Study -->
