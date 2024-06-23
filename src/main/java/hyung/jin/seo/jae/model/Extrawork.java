@@ -37,7 +37,7 @@ public class Extrawork {
     @Column(length = 300, nullable = true)
     private String pdfPath;
     
-    @Column(length = 30, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column
