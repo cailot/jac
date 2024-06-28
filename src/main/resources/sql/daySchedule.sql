@@ -1,0 +1,11 @@
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('0', 'All', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('1', 'Monday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('2', 'Tudesday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('3', 'Wednesday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('4', 'Thursday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('5', 'Friday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('6', 'SATAM', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('7', 'SATPM', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('8', 'SUNAM', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('9', 'SUNAM', CURDATE());
+COMMIT;

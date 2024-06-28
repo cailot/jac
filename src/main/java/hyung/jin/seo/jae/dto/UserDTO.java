@@ -2,16 +2,12 @@ package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
-import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
 
 @Getter
 @Setter

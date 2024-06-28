@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.dto.CycleDTO;
+import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Course;
 import hyung.jin.seo.jae.model.Cycle;
+import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.ClazzService;
+import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.CourseService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -42,6 +46,9 @@ public class ClazzController {
 
 	@Autowired
 	private CourseService courseService;
+
+	@Autowired
+	private CodeService codeService;
 
 	// search classes by grade & year
 	@GetMapping("/search")
@@ -194,6 +201,11 @@ public class ClazzController {
 	public CourseDTO getCourse(@PathVariable("id") Long id) {
 		Course course = courseService.getCourse(id);
 		CourseDTO dto = new CourseDTO(course);
+		Set<Subject> subjects = course.getSubjects();
+		for(Subject subject : subjects){
+			SubjectDTO subDTO = new SubjectDTO(subject);
+			dto.addSubject(subDTO);
+		}
 		return dto;
 	}
 
@@ -214,9 +226,20 @@ public class ClazzController {
 		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
-			// 2. save Class
+			// 2. associate Subjects
+			List<SubjectDTO> subjects = formData.getSubjects();
+			for(SubjectDTO subject : subjects){
+				Subject sub =  codeService.getSubject(Long.parseLong(subject.getId()));
+				course.addSubject(sub);
+			}
+			// 3. associate Cycle
+			Cycle cycle = cycleService.findCycleByYear(formData.getYear());
+			course.setCycle(cycle);
+			// 4. set active to true as default
+			course.setActive(true);
+			// 5. save Course
 			courseService.addCourse(course);
-			// 3. return success;
+			// 6. return success;
 			return ResponseEntity.ok("\"Course register success\"");
 		} catch (Exception e) {
 			String message = "Error registering Course: " + e.getMessage();
@@ -298,9 +321,15 @@ public class ClazzController {
 		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
-			// 2. save Class
-			courseService.updateCourse(course);
-			// 3. return flag
+			// 2. associate Subjects
+			List<SubjectDTO> subjects = formData.getSubjects();
+			for(SubjectDTO subject : subjects){
+				Subject sub =  codeService.getSubject(Long.parseLong(subject.getId()));
+				course.addSubject(sub);
+			}
+			// 3. save Class
+			courseService.updateCourse(course, Long.parseLong(formData.getId()));
+			// 4. return flag
 			return ResponseEntity.ok("\"Course update success\"");
 		} catch (Exception e) {
 			String message = "Error updating course: " + e.getMessage();

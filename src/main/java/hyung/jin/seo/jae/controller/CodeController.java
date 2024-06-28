@@ -57,6 +57,14 @@ public class CodeController {
 		return dtos;
 	}
 
+	// list day
+	@GetMapping("/day")
+	@ResponseBody
+	List<SimpleBasketDTO> listDay() {
+		List<SimpleBasketDTO> dtos = codeService.loadDay();
+		return dtos;
+	}
+
 	@GetMapping("/subject")
 	@ResponseBody
 	List<SimpleBasketDTO> listSubject() {
