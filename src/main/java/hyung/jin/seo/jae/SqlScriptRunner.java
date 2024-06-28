@@ -29,12 +29,11 @@ public class SqlScriptRunner {
 		// run scripts only for 'create-drop' or 'create'
 		if (StringUtils.startsWithIgnoreCase(ddl, "create")) {
 			Connection connection = dataSource.getConnection();
-			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_drop.sql")); // Schema re-create
-			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_create.sql")); // Schema re-create
-			
+			// ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_drop.sql")); // Schema re-create
+			// ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_create.sql")); // Schema re-create
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/cycle.sql")); // Cycle
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/course.sql")); // Course
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/subject.sql")); // Subject
-			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/cycle.sql")); // Cycle
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/course_subject.sql")); // Course_Subject
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/book.sql")); // Book																								
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/class.sql")); // Class

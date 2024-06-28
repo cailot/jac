@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
+import hyung.jin.seo.jae.dto.DayScheduleDTO;
 import hyung.jin.seo.jae.dto.GradeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StateDTO;
 import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Branch;
+import hyung.jin.seo.jae.model.DaySchedule;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.State;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.repository.BranchRepository;
+import hyung.jin.seo.jae.repository.DayScheduleRepository;
 import hyung.jin.seo.jae.repository.GradeRepository;
 import hyung.jin.seo.jae.repository.PracticeTypeRepository;
 import hyung.jin.seo.jae.repository.StateRepository;
@@ -48,6 +51,9 @@ public class CodeServiceImpl implements CodeService {
 
 	@Autowired
 	private TestTypeRepository testTypeRepository;
+
+	@Autowired
+	private DayScheduleRepository dayScheduleRepository;
 
 	@Override
 	public List<StateDTO> allStates() {
@@ -233,6 +239,21 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public List<DayScheduleDTO> allDays() {
+		List<DayScheduleDTO> dtos = new ArrayList<>();
+		try{
+			List<DaySchedule> days = dayScheduleRepository.findAll();
+			for(DaySchedule day : days){
+				DayScheduleDTO dto = new DayScheduleDTO(day);
+				dtos.add(dto);
+			}
+		}catch(Exception e){
+			System.out.println("No day found");
+		}
+		return dtos;
+	}
+
+	@Override
 	public List<SimpleBasketDTO> loadGrade() {
 		List<Object[]> objects = new ArrayList<>();
 		try{
@@ -249,6 +270,23 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public List<SimpleBasketDTO> loadDay() {
+		List<Object[]> objects = new ArrayList<>();
+		try{
+			objects = dayScheduleRepository.loadDay();
+		}catch(Exception e){
+			System.out.println("No day found");
+		}
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			SimpleBasketDTO dto = new SimpleBasketDTO(object);
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+
+
+	@Override
 	public Grade getGrade(Long id) {
 		Grade grade = null;
 		try {
@@ -257,6 +295,17 @@ public class CodeServiceImpl implements CodeService {
 			System.out.println("No grade found");
 		}
 		return grade;	
+	}
+
+	@Override
+	public DaySchedule getDay(Long id) {
+		DaySchedule day = null;
+		try {
+			day = dayScheduleRepository.findById(id).get();
+		} catch (Exception e) {
+			System.out.println("No grade found");
+		}
+		return day;	
 	}
 
 	@Override

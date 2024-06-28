@@ -1,6 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.Calendar" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
@@ -36,6 +37,9 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
+	// initialise subject list
+	listSubject('#addSubject');
+	listSubject('#editSubject');
     
 });
 
@@ -56,6 +60,16 @@ function addCourse() {
 		});
 		return false;
 	}
+	var price = document.getElementById('addPrice');
+	if(price.value== ""){
+		$('#validation-alert .modal-body').text(
+				'Please enter price');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			price.focus();
+		});
+		return false;
+	}
 	var desc = document.getElementById('addDescription');
 	if(desc.value== ""){
 		$('#validation-alert .modal-body').text(
@@ -67,14 +81,25 @@ function addCourse() {
 		return false;
 	}
 
+	// Get practiceIds form addScheduleTable
+	var subjectIds = [];
+	$('#addSubjectTable tr').each(function () {
+		var subjectId = $(this).find('.subjectId').text();
+		if (subjectId != '') {
+			subjectIds.push({id : subjectId});
+		}
+	});
 	// Get from form data
 	var course = {
 		name : $("#addName").val(),
 		grade : $("#addGrade").val(),
+		price: $("#addPrice").val(),
+		year : $("#addYear").val(),
 		description : $("#addDescription").val(),
-		online : $("#addOnline").is(':checked') ? true : false
+		online : $("#addOnline").is(':checked') ? true : false,
+		subjects : subjectIds
 	}
-	// console.log(course);
+	console.log(course);
 	
 	// Send AJAX to server
 	$.ajax({
@@ -86,7 +111,7 @@ function addCourse() {
 		success : function(response) {
 			// console.log(response);
 			// Display the success alert
-            $('#success-alert .modal-body').text('New Class is registered successfully.');
+            $('#success-alert .modal-body').text('New Course is registered successfully.');
             $('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function(e) {
 				location.reload();
@@ -112,7 +137,7 @@ function retrieveCourseInfo(courseId) {
 		url : '${pageContext.request.contextPath}/class/get/course/' + courseId,
 		type : 'GET',
 		success : function(course) {
-			console.log(course);
+			//console.log(course);
 			$("#editId").val(course.id);
 			$("#editGrade").val(course.grade);
 			$("#editName").val(course.name);
@@ -124,6 +149,36 @@ function retrieveCourseInfo(courseId) {
 			} else {
 				$("#editOnsite").prop('checked', true);
 			}
+			// clear all rows on editScheduleTable
+			$("#editSubjectTable").find("tr:gt(0)").remove();	
+			
+			var subjects = course.subjects;
+			$.each(subjects, function (index, value) {
+				//console.log(value);
+				// Create a new row
+				var row = $("<tr>");
+				// Create the cells for the row
+				var cell = $("<td>").text(value.name);
+				// cell4
+				var binIcon = $('<i class="bi bi-trash h5"></i>');
+				var binIconLink = $("<a>")
+					.attr("href", "javascript:void(0)")
+					.attr("title", "Delete Practice")
+					.click(function () {
+						row.remove();
+					});
+				binIconLink.append(binIcon);
+				var deleteCell = $("<td>").addClass('text-center').append(binIconLink);
+
+				// hidden td for practiceId
+				var td = $("<td>").css("display", "none").addClass("subjectId").text(value.id);
+
+				// Append cells to the row
+				row.append(cell, deleteCell, td);
+
+				// Append the row to the table
+				$("#editSubjectTable").append(row);
+			});
 			$('#editClassModal').modal('show');
 		},
 		error : function(xhr, status, error) {
@@ -160,13 +215,22 @@ function updateCourseInfo(){
 	}
 
 	var courseId = $("#editId").val();
+	var scheduleDtos = [];
+	$('#editSubjectTable tr').each(function () {
+		var subjectId = $(this).find('.subjectId').text();
+		if (subjectId != '') {
+			scheduleDtos.push({id : subjectId});
+		}
+	});
 	// get from formData
 	var course = {
 		id : courseId,
 		name : $("#editName").val(),
 		grade : $("#editGrade").val(),
 		online : $("#editOnline").is(':checked') ? true : false,
-		description : $("#editDescription").val()
+		description : $("#editDescription").val(),
+		price : $("#editPrice").val(),
+		subjects : scheduleDtos
 	}
 	
 	console.log(course);
@@ -237,6 +301,38 @@ function deleteCourse(id) {
     });
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Add Subject into Table
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateSubjects(action) {
+	// Get the values from the select elements
+	var subjectSelect = document.getElementById(action + "Subject");
+	var subjectName = subjectSelect.options[subjectSelect.selectedIndex].text;
+	var subjectId = subjectSelect.value;
+	// Get a reference to the table
+	var table = document.getElementById(action + "SubjectTable");
+	/// Create a new row
+	var row = $("<tr>");
+	// Create the cells for the row
+	var cell = $("<td>").text(subjectName);
+	// cell4
+	var binIcon = $('<i class="bi bi-trash h5"></i>');
+	var binIconLink = $("<a>")
+		.attr("href", "javascript:void(0)")
+		.attr("title", "Delete Practice")
+		.click(function () {
+			row.remove();
+		});
+	binIconLink.append(binIcon);
+	var deleteCell = $("<td>").addClass('text-center').append(binIconLink);
+	// hidden td for practiceId
+	var td = $("<td>").css("display", "none").addClass("subjectId").text(subjectId);
+	// Append cells to the row
+	row.append(cell,deleteCell, td);
+	// Append the row to the table
+	$("#"+ action +"SubjectTable").append(row);
+}
+
 </script>
 
 <style>
@@ -289,8 +385,10 @@ function deleteCourse(id) {
 							<table id="courseListTable" class="table table-striped table-bordered"><thead class="table-primary">
 									<tr>
 										<th class="align-middle text-center" style="width: 20%">Name</th>
-										<th class="align-middle text-center" style="width: 50%">Description</th>
+										<th class="align-middle text-center" style="width: 30%">Description</th>
+										<th class="align-middle text-center" style="width: 10%">Academic Year</th>
 										<th class="align-middle text-center" style="width: 10%">Grade</th>
+										<th class="align-middle text-center" style="width: 10%">Price</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Type</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -302,6 +400,21 @@ function deleteCourse(id) {
 											<tr>
 												<td class="small align-middle"><span><c:out value="${course.name}" /></span></td>
 												<td class="small align-middle"><span><c:out value="${course.description}" /></span></td>
+												<td class="small align-middle text-right">
+													<span>
+														<c:set var="lastTwoDigits" value="${course.year % 100}" />
+														<c:set var="nextYearLastTwoDigits" value="${lastTwoDigits + 1}" />
+														<c:choose>
+															<c:when test="${lastTwoDigits < 10}">
+																<!-- Ensures single digit years are properly formatted (e.g., '09') -->
+																Year 0<c:out value="${lastTwoDigits}" />/0<c:out value="${nextYearLastTwoDigits}" />
+															</c:when>
+															<c:otherwise>
+																Year <c:out value="${lastTwoDigits}" />/<c:out value="${nextYearLastTwoDigits}" />
+															</c:otherwise>
+														</c:choose>
+													</span>
+												</td>
 												<td class="small align-middle text-center">
 													<span>
 														<c:choose>
@@ -329,6 +442,7 @@ function deleteCourse(id) {
 														</c:choose>
 													</span>
 												</td>
+												<td class="small align-middle text-right"><span><c:out value="${course.price}" /></span></td>
 												<td class="text-center align-middle">
 													<c:choose>
 														<c:when test="${course.online}">
@@ -374,29 +488,79 @@ function deleteCourse(id) {
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-9">
+								<div class="col-md-6">
 									<label for="addName" class="label-form">Name</label> 
 									<input type="text" class="form-control" id="addName" name="addName" placeholder="Name" title="Please enter Course name">
+								</div>
+								<div class="col-md-3">
+									<label for="addPrice" class="label-form">Price</label> 
+									<input type="text" class="form-control" id="addPrice" name="addPrice" title="Please enter Course price">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-9">
+								<div class="col-md-4">
+									<label for="addYear" class="label-form">Academic Year</label> 
+									<select class="form-control" id="addYear" name="addYear">
+										<%
+											Calendar now = Calendar.getInstance();
+											int currentYear = now.get(Calendar.YEAR);
+											int nextYear = currentYear + 1;
+										%>
+										<option value="<%= currentYear %>">Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+										<%
+											// Adding the last five years
+											for (int i = currentYear - 1; i >= currentYear - 2; i--) {
+										%>
+											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+										<%
+										}
+										%>
+									</select>
+								</div>
+								<div class="col-md-8">
 									<label for="addDescription" class="label-form">Course Description</label> 
 									<input type="text" class="form-control" id="addDescription" name="addDescription" placeholder="Description" title="Please enter Course description">
 								</div>
-								<div class="input-group col-md-3">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="addCourseType" id="addOnsite" checked>
-										<label class="form-check-label" for="addOnsite">Onsite</label>
+							</div>
+							<div class="form-group mt-4">
+								<div class="form-row">
+									<div class="input-group col-md-3">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="addCourseType" id="addOnsite" checked>
+											<label class="form-check-label" for="addOnsite">Onsite</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="addCourseType" id="addOnline">
+											<label class="form-check-label" for="addOnline">Online</label>
+										</div>
 									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="addCourseType" id="addOnline">
-										<label class="form-check-label" for="addOnline">Online</label>
+									<div class="col-md-7">
+										<label for="addSubject" class="label-form">Subject</label>
+										<select class="form-control" id="addSubject" name="addSubject">
+										</select>
+									</div>
+									<div class="col-md-2 d-flex flex-column justify-content-center">
+										<label class="label-form text-white">Add</label>
+										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="updateSubjects('add')"><i class="bi bi-plus"></i></button>
 									</div>
 								</div>
 							</div>
+							<div class="form-group">
+								<div class="form-row mt-4">
+									<table class="table table-striped table-bordered" id="addSubjectTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+										<thead class="thead-light">
+											<tr>
+												<th data-field="type" style="width: 80%;">Subject</th>
+												<th data-field="action" style="width: 10%;">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+							</div>							
 						</div>
 					</form>
 					<div class="d-flex justify-content-end">
@@ -424,18 +588,40 @@ function deleteCourse(id) {
 								<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
 								</select>
 							</div>
-							<div class="col-md-9">
+							<div class="col-md-6">
 								<label for="editName" class="label-form">Name</label> 
 								<input type="text" class="form-control" id="editName" name="editName">
+							</div>
+							<div class="col-md-3">
+								<label for="editPrice" class="label-form">Price</label> 
+								<input type="number" class="form-control" id="editPrice" name="editPrice">
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="form-row">									
-							<div class="col-md-9">
+						<div class="form-row">
+							<div class="col-md-4">
+								<label for="editYear" class="label-form">Academic Year</label> 
+								<select class="form-control" id="editYear" name="editYear" disabled>
+									<option value="<%= currentYear %>">Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+									<%
+										// Adding the last five years
+										for (int i = currentYear - 1; i >= currentYear - 2; i--) {
+									%>
+										<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+									<%
+									}
+									%>
+								</select>
+							</div>									
+							<div class="col-md-8">
 								<label for="editDescription" class="label-form">Description</label> 
 								<input type="text" class="form-control" id="editDescription" name="editDescription">
-							</div>
+							</div>							
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="form-row">
 							<div class="input-group col-md-3">
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="editCourseType" id="editOnsite">
@@ -446,7 +632,29 @@ function deleteCourse(id) {
 									<label class="form-check-label" for="editOnline">Online</label>
 								</div>
 							</div>
-							
+							<div class="col-md-7">
+								<label for="editSubject" class="label-form">Subject</label>
+								<select class="form-control" id="editSubject" name="editSubject">
+								</select>
+							</div>
+							<div class="col-md-2 d-flex flex-column justify-content-center">
+								<label class="label-form text-white">Add</label>
+								<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="updateSubjects('edit')"><i class="bi bi-plus"></i></button>
+							</div>				
+						</div>
+					</div>	
+					<div class="form-group">
+						<div class="form-row mt-4">
+							<table class="table table-striped table-bordered" id="editSubjectTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+								<thead class="thead-light">
+									<tr>
+										<th data-field="type" style="width: 80%;">Subject</th>
+										<th data-field="action" style="width: 10%;">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
 						</div>
 					</div>
 					<input type="hidden" id="editId" name="editId">

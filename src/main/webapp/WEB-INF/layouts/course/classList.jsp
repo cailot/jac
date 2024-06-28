@@ -67,6 +67,8 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
+	listDay('#addDay');
+	listDay('#editDay');
 
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
@@ -590,7 +592,19 @@ function deleteClass(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:out value="${clazz.day}" />
+															<c:choose>
+																<c:when test="${clazz.day == '1'}">Monday</c:when>
+																<c:when test="${clazz.day == '2'}">Tuesday</c:when>
+																<c:when test="${clazz.day == '3'}">Wednessday</c:when>
+																<c:when test="${clazz.day == '4'}">Thursday</c:when>
+																<c:when test="${clazz.day == '5'}">Friday</c:when>
+																<c:when test="${clazz.day == '6'}">Saturday Morning</c:when>
+																<c:when test="${clazz.day == '7'}">Saturday Afternoon</c:when>
+																<c:when test="${clazz.day == '8'}">Sunday Morning</c:when>
+																<c:when test="${clazz.day == '9'}">Sunday Afternoon</c:when>
+																<c:when test="${clazz.day == '0'}">All</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
 														</span>
 													</td>
 													<td class="small align-middle">
@@ -677,14 +691,6 @@ function deleteClass(id) {
 								<div class="col-md-3">
 									<label for="addDay" class="label-form">Day</label>
 									<select class="form-control" id="addDay" name="addDay">
-										<option value="All">All</option>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
 							</div>
@@ -766,14 +772,6 @@ function deleteClass(id) {
 								<div class="col-md-4">
 									<label for="editDay" class="label-form">Day</label>
 									<select class="form-control" id="editDay" name="editDay">
-										<option value="All">All</option>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
 							</div>

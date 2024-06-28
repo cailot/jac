@@ -277,7 +277,11 @@ public class CycleServiceImpl implements CycleService {
 		return cycle;
 	}
 
-
+	@Override
+	public Cycle findCycleByYear(int year) {
+		Cycle cycle = cycleRepository.findCycleByYear(year);
+		return cycle;
+	}
 
 
 

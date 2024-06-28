@@ -32,12 +32,6 @@ public class PracticeScheduleDTO implements Serializable {
 
 	private String registerDate;
 
-	// private List<String> practices = new ArrayList<>();
-
-	// public void addPractice(String practice){
-	// 	practices.add(practice);
-	// }
-
 	private List<PracticeDTO> practices = new ArrayList();
 
 	public void addPractice(PracticeDTO practice){

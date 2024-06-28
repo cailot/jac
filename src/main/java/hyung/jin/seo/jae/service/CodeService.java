@@ -3,11 +3,13 @@ package hyung.jin.seo.jae.service;
 import java.util.List;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
+import hyung.jin.seo.jae.dto.DayScheduleDTO;
 import hyung.jin.seo.jae.dto.GradeDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StateDTO;
 import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Branch;
+import hyung.jin.seo.jae.model.DaySchedule;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.State;
@@ -81,6 +83,15 @@ public interface CodeService {
 
 	// delete grade
 	void deleteGrade(Long id);
+
+	// list all day
+	List<DayScheduleDTO> allDays();
+
+	// list for initial day value
+	List<SimpleBasketDTO> loadDay();
+
+	// get day
+	DaySchedule getDay(Long id);
 
 	// list all subjcet
 	List<SubjectDTO> allSubjects();

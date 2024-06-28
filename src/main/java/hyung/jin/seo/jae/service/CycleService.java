@@ -61,4 +61,7 @@ public interface CycleService {
 
 	// delete cycle
 	void deleteCycle(Long id);
+
+	// get cycle by year
+	Cycle findCycleByYear(int year);
 }
