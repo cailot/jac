@@ -143,6 +143,23 @@ function listGrade(selectElementId) {
 	});
 }
 
+//	List day
+function listDay(selectElementId) {
+	$.ajax({
+		url:  '/code/day',
+		type: 'GET',
+		success: function (data) {
+			$.each(data, function (index, state) {
+				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
+				$(selectElementId).append(option);	
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 //	List subject
 function listSubject(selectElementId) {
 	$.ajax({

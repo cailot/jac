@@ -1,8 +1,10 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -10,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.model.Course;
+import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.repository.CourseRepository;
 import hyung.jin.seo.jae.repository.SubjectRepository;
 import hyung.jin.seo.jae.service.CourseService;
@@ -33,17 +37,23 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	public List<CourseDTO> allCourses() {
-		List<Course> crs = new ArrayList<>();
+		// List<Course> crs = new ArrayList<>();
+		// try{
+		// 	crs = courseRepository.findAll();
+		// }catch(Exception e){
+		// 	System.out.println("No course found");
+		// }
+		// // courseRepository.findAll();
+		// List<CourseDTO> dtos = new ArrayList<>();
+		// for(Course course: crs){
+		// 	CourseDTO dto = new CourseDTO(course);
+		// 	dtos.add(dto);
+		// }
+		List<CourseDTO> dtos = new ArrayList<>();
 		try{
-			crs = courseRepository.findAll();
+			dtos = courseRepository.getAll();
 		}catch(Exception e){
 			System.out.println("No course found");
-		}
-		// courseRepository.findAll();
-		List<CourseDTO> dtos = new ArrayList<>();
-		for(Course course: crs){
-			CourseDTO dto = new CourseDTO(course);
-			dtos.add(dto);
 		}
 		return dtos;
 	}
@@ -51,19 +61,22 @@ public class CourseServiceImpl implements CourseService {
 	@Override
 	public List<CourseDTO> findByGrade(String grade) {
 		// 1. get courses
-		List<Course> crs = courseRepository.findByGrade(grade);
-		// 2. get subjects
-		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
-		// 3. create DTOs
 		List<CourseDTO> dtos = new ArrayList<>();
-		for(Course course: crs){
-			CourseDTO dto = new CourseDTO(course);
-			// 4. assign subjects to classes
-			for(String subject : subjects){
-				dto.addSubject(subject);
-			}
-			dtos.add(dto);
+		try{
+			dtos = courseRepository.getByGrade(grade);
+		}catch(Exception e){
+			System.out.println("No branch found");
 		}
+		// 2. get subjects
+		// List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
+		// for(CourseDTO dto: dtos){
+		// 	// 4. assign subjects to classes
+		// 	dto.setSubjects(subjects);
+		// 	// for(String subject : subjects){
+		// 	// 	dto.addSubject(subject);
+		// 	// }
+		// 	dtos.add(dto);
+		// }
 		return dtos;
 	}
 
@@ -86,9 +99,9 @@ public class CourseServiceImpl implements CourseService {
 
 	@Override
 	@Transactional
-	public CourseDTO updateCourse(Course course) {
+	public CourseDTO updateCourse(Course course, Long id) {
 		// search by Id
-		Course existing = courseRepository.findById(course.getId()).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
+		Course existing = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
 		// update grade
 		String newGrade = course.getGrade();
 		existing.setGrade(newGrade);
@@ -101,6 +114,12 @@ public class CourseServiceImpl implements CourseService {
 		// update description
 		String newDescription = course.getDescription();
 		existing.setDescription(newDescription);
+		// update price
+		double newPrice = course.getPrice();
+		existing.setPrice(newPrice);
+		// update associated subjects
+		Set<Subject> newSubjects = course.getSubjects();
+		existing.setSubjects(newSubjects);
 		// update the existing record
 		Course updated = courseRepository.save(existing);
 		CourseDTO dto = new CourseDTO(updated);
@@ -115,11 +134,11 @@ public class CourseServiceImpl implements CourseService {
 		// 2. get subjects
 		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
 		// 3. associate subjects to course
-		for(CourseDTO dto: dtos){
-			for(String subject : subjects){
-				dto.addSubject(subject);
-			}
-		}
+		// for(CourseDTO dto: dtos){
+		// 	for(String subject : subjects){
+		// 		dto.addSubject(subject);
+		// 	}
+		// }
 		return dtos;
 	}
 
@@ -130,11 +149,11 @@ public class CourseServiceImpl implements CourseService {
 		// 2. get subjects
 		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
 		// 3. associate subjects to course
-		for(CourseDTO dto: dtos){
-			for(String subject : subjects){
-				dto.addSubject(subject);
-			}
-		}
+		// for(CourseDTO dto: dtos){
+		// 	for(String subject : subjects){
+		// 		dto.addSubject(subject);
+		// 	}
+		// }
 		return dtos;
 	}
 
@@ -142,11 +161,15 @@ public class CourseServiceImpl implements CourseService {
 	@Transactional
 	public void deleteCourse(Long id) {
 		// 1. get Course
-		Course existing = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
-		// 2. remote associated Subject
-		existing.setSubjects(null);
-		courseRepository.save(existing);
-		// 3. delete Course
-		courseRepository.deleteById(id);
+		Course course = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course Not Found"));
+		// 2. get associated Subject
+		Set<Subject> subjects = course.getSubjects();
+		// 3. remove the associations between subjects and Course
+		course.setSubjects(new LinkedHashSet<>());
+		courseRepository.save(course);
+		// 4. set flag to false
+		courseRepository.updateCourseSetActiveFalseById(id);
 	}
+
+	
 }
