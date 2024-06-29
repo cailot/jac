@@ -314,6 +314,12 @@ function searchStudent() {
 //		Update existing student
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function updateStudentInfo() {
+	// check if student search is done
+	if($("#formId").val() == ''){
+		$('#warning-alert .modal-body').text('Please search student record before update');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
 
 	// lastName, email, password validation
 	var last = document.getElementById('formLastName');

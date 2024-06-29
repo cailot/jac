@@ -137,6 +137,10 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.day = day;
 	}
 
+public EnrolmentDTO(long id, java.time.LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paidAmount, java.time.LocalDate paymentDate, long studentId, long clazzId, String courseName, double coursePrice, boolean online, double price, String grade, String day) {
+	// Constructor body
+}
+
 
 
 	public EnrolmentDTO(Object[] obj){

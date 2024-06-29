@@ -109,15 +109,11 @@ public class ClazzServiceImpl implements ClazzService {
 		// day
 		String newDay = clazz.getDay();
 		existing.setDay(newDay);
-		// price
-		double newPrice = clazz.getPrice();
-		existing.setPrice(newPrice);
 		// active
 		boolean newActive = clazz.isActive();
 		existing.setActive(newActive);
 		// update Course & Cycle
 		existing.setCourse(clazz.getCourse());
-		existing.setCycle(clazz.getCycle());
 		// update the existing record
 		Clazz updated = clazzRepository.save(existing);
 		ClazzDTO dto = new ClazzDTO(updated);

@@ -56,7 +56,7 @@ public class Cycle {
     @CreationTimestamp
     private LocalDate registerDate;
     
-    @OneToMany(mappedBy = "cycle", cascade = CascadeType.ALL)
-	private Set<Clazz> classes = new LinkedHashSet<>();
+    // @OneToMany(mappedBy = "cycle", cascade = CascadeType.ALL)
+	// private Set<Clazz> classes = new LinkedHashSet<>();
 
 }
