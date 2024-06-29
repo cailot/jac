@@ -32,7 +32,7 @@ public class CourseDTO implements Serializable, Cloneable{
     
     private String grade;
 
-	private int year;
+	private int year; // Cycle.year
 
 	private double price;
 

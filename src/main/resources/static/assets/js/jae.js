@@ -168,7 +168,9 @@ function listSubject(selectElementId) {
 		success: function (data) {
 			$.each(data, function (index, state) {
 				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
-				$(selectElementId).append(option);	
+				if(index < 9){ // subject only
+					$(selectElementId).append(option);	
+				}
 			});
 		},
 		error: function (xhr, status, error) {

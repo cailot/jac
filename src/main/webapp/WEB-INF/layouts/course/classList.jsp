@@ -113,15 +113,6 @@ function addClass() {
 		});
 		return false;
 	}
-	var price = document.getElementById('addPrice');
-	if(price.value== ""){
-		$('#validation-alert .modal-body').text('Please enter price');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			price.focus();
-		});
-		return false;
-	}
 	var start = document.getElementById('addStartDate');
 	if(start.value== ""){
 		$('#validation-alert .modal-body').text('Please enter start date');
@@ -131,7 +122,6 @@ function addClass() {
 		});
 		return false;
 	}
-
 	// Get from form data
 	var clazz = {
 		state: $("#addState").val(),
@@ -140,14 +130,8 @@ function addClass() {
 		name: $("#addName").val(),
 		grade: $("#addGrade").val(),
 		courseId: $("#addCourse").val(),
-		day: $("#addDay").val(),
-		price: $("#addPrice").val()
-		//active : $("#addActive").val(),
-		//fee : $("#addFee").val()
+		day: $("#addDay").val()
 	}
-	//	console.log(clazz);
-
-	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/registerClass',
 		type: 'POST',
@@ -225,15 +209,6 @@ function updateClassInfo() {
 		});
 		return false;
 	}
-	var price = document.getElementById('editPrice');
-	if(price.value== ""){
-		$('#validation-alert .modal-body').text('Please enter price');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			price.focus();
-		});
-		return false;
-	}
 	var start = document.getElementById('editStartDate');
 	if(start.value== ""){
 		$('#validation-alert .modal-body').text('Please enter start date');
@@ -255,12 +230,9 @@ function updateClassInfo() {
 		grade: $("#editGrade").val(),
 		courseId: $("#editCourse").val(),
 		day: $("#editDay").val(),
-		active: $("#editActive").val(),
-		price : $("#editPrice").val()
+		active: $("#editActive").val()
 	}
 
-	// console.log(clazz);
-	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/update/class',
 		type: 'PUT',
@@ -697,13 +669,9 @@ function deleteClass(id) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
+								<div class="col-md-8">
 									<label for="addName" class="label-form">Class Name</label>
 									<input type="text" class="form-control" id="addName" name="addName" placeholder="Name" title="Please enter Class name" />
-								</div>
-								<div class="col-md-3">
-									<label for="addPrice" class="label-form">Price</label>
-									<input type="text" class="form-control" id="addPrice" name="addPrice" />
 								</div>
 								<div class="col-md-4">
 									<label for="addStartDate" class="label-form">Start Date</label>
@@ -761,12 +729,12 @@ function deleteClass(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-3">
-									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
+									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
 								<div class="col-md-5">
 									<label for="editCourse" class="label-form">Course</label>
-									<select class="form-control" id="editCourse" name="editCourse">
+									<select class="form-control" id="editCourse" name="editCourse" disabled>
 									</select>
 								</div>
 								<div class="col-md-4">
@@ -778,11 +746,8 @@ function deleteClass(id) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
+								<div class="col-md-8">
 									<input type="text" class="form-control" id="editName" name="editName" title="Please enter Class name">
-								</div>
-								<div class="col-md-3">
-									<input type="text" class="form-control" id="editPrice" name="editPrice" title="Please enter Class name">
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
