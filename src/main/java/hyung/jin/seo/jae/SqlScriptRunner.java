@@ -29,8 +29,9 @@ public class SqlScriptRunner {
 		// run scripts only for 'create-drop' or 'create'
 		if (StringUtils.startsWithIgnoreCase(ddl, "create")) {
 			Connection connection = dataSource.getConnection();
-			// ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_drop.sql")); // Schema re-create
-			// ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema_create.sql")); // Schema re-create
+			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/schema.sql")); // Schema re-create
+			
+			
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/cycle.sql")); // Cycle
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/course.sql")); // Course
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/subject.sql")); // Subject
@@ -44,6 +45,7 @@ public class SqlScriptRunner {
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceType.sql")); // PracticeType
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/user.sql")); // User
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/extrawork.sql")); // Extrawork
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/daySchedule.sql")); // Day
 			
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/braybrook_student.sql")); // Student
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/attendance_test.sql")); // attendane_test

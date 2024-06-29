@@ -258,14 +258,11 @@ public class ClazzController {
 			clazz.setActive(true);
 			// 3. get Course
 			Course course = courseService.getCourse(Long.parseLong(formData.getCourseId()));
-			// 4. get Cycle
-			Cycle cycle = cycleService.findCycleByDate(formData.getStartDate());
-			// 5. assign Course & Cycle
+			// 4. assign Course & Cycle
 			clazz.setCourse(course);
-			clazz.setCycle(cycle);
-			// 6. add Class
+			// 5. add Class
 			clazzService.addClazz(clazz);
-			// 3. return success;
+			// 6. return success;
 			return ResponseEntity.ok("\"Class register success\"");
 		} catch (Exception e) {
 			String message = "Error registering Class: " + e.getMessage();
@@ -299,14 +296,11 @@ public class ClazzController {
 			Clazz clazz = formData.convertToOnlyClass();
 			// 2. get Course
 			Course course = courseService.getCourse(Long.parseLong(formData.getCourseId()));
-			// 3. get Cycle
-			Cycle cycle = cycleService.findCycleByDate(formData.getStartDate());
-			// 4. assign Course & Cycle
+			// 3. assign Course & Cycle
 			clazz.setCourse(course);
-			clazz.setCycle(cycle);
-			// 5. save Class
+			// 4. save Class
 			clazzService.updateClazz(clazz);
-			// 6. return flag
+			// 5. return flag
 			return ResponseEntity.ok("\"Class update success\"");
 		} catch (Exception e) {
 			String message = "Error updating class: " + e.getMessage();
