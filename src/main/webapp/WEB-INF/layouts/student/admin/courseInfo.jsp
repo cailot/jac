@@ -212,9 +212,8 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		// console.log(data);
+		//console.log(data);
 		// console.log(value);
-	
 		var start_week, end_week;        
 		if (value.year == academicYear) {
 			start_week = parseInt(academicWeek);
@@ -230,7 +229,7 @@ $.ajax({
 		// dynamic clazz id assign
 		var dropdown = $('<select class="clazzChoice">');
 		$.each(data, function(index, clazz) {
-			var option = $('<option>').text(clazz.day).val(clazz.id).data('price', clazz.price);
+			var option = $('<option>').text(dayName(clazz.day)).val(clazz.id).data('price', clazz.price);
 			dropdown.append(option);
 		});
 		// Get the value of the first option
@@ -459,18 +458,6 @@ $.ajax({
 	}
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Add book to basket
@@ -1066,11 +1053,7 @@ function showAlertMessage(elementId, message) {
 						</nav>                  
 						<div class="tab-content" id="nav-tabContent">
 						
-						
-						
-						
-						
-						<!-- Lecture List -->
+						<!-- Purchased Items List -->
 						<div class="tab-pane fade show active" id="nav-basket" role="tabpanel" aria-labelledby="nav-basket-tab">
 							<table class="table" id="basketTable" name="basketTable">
 								<thead>

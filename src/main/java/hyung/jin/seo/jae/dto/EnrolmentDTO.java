@@ -17,10 +17,6 @@ import lombok.ToString;
 @ToString
 public class EnrolmentDTO extends MoneyDTO{
     
-	// private String id;
-
-	// private String registerDate;
-
 	private boolean cancelled;
 
 	private String cancellationReason;
@@ -32,8 +28,6 @@ public class EnrolmentDTO extends MoneyDTO{
 	private int credit;
 
 	private String discount;
-
-	// private double amount;
 
 	private double paid;
 
@@ -51,7 +45,7 @@ public class EnrolmentDTO extends MoneyDTO{
 
 	private String grade;
 
-	private String year;
+	private int year;
 
 	private String day;
 
@@ -110,7 +104,7 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.name = name;
 		this.price = price;
 		this.online = online;
-		this.year = String.valueOf(year);
+		this.year = year;
 		this.grade = grade;
 		this.day = day;
 	}
@@ -132,14 +126,36 @@ public class EnrolmentDTO extends MoneyDTO{
 		this.name = name;
 		this.price = price;
 		this.online = online;
-		this.year = String.valueOf(year);
+		this.year = year;
 		this.grade = grade;
 		this.day = day;
 	}
 
-public EnrolmentDTO(long id, java.time.LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, long invoiceId, double amount, double paidAmount, java.time.LocalDate paymentDate, long studentId, long clazzId, String courseName, double coursePrice, boolean online, double price, String grade, String day) {
-	// Constructor body
-}
+		public EnrolmentDTO(long id, LocalDate registerDate, boolean cancelled, String cancellationReason, int startWeek, int endWeek, String info, int credit, String discount, 
+		long invoiceId, double amount, double paidAmount, LocalDate paymentDate, long studentId, long clazzId, 
+		String courseName, double coursePrice, boolean online, String grade, String day, int year) {
+			this.id = String.valueOf(id);
+			this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			this.cancelled = cancelled;
+			this.cancellationReason = cancellationReason;
+			this.startWeek = startWeek;
+			this.endWeek = endWeek;
+			this.info = info;
+			this.credit = credit;
+			this.discount = discount;			
+			this.invoiceId = String.valueOf(invoiceId);
+			this.amount	= amount;
+			this.paid = paidAmount;
+			this.paymentDate = (paymentDate != null) ? paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+			this.studentId = String.valueOf(studentId);
+			this.clazzId = String.valueOf(clazzId);
+			this.name = courseName;
+			this.price = coursePrice;
+			this.online = online;
+			this.grade = grade;
+			this.day = day;
+			this.year = year;
+		}
 
 
 
@@ -162,7 +178,7 @@ public EnrolmentDTO(long id, java.time.LocalDate registerDate, boolean cancelled
 		this.name = (obj[15]!=null) ? (String)obj[15] : null;
 		this.price = (obj[16]!=null) ? Double.parseDouble(String.valueOf(obj[16])) : 0;
 		this.online = (obj[17]!=null) ? (boolean)obj[17] : false;
-		this.year = (obj[18]!=null) ? String.valueOf(obj[18]) : null;
+		this.year = (obj[18]!=null) ? (int)obj[18] : 0;
 		this.grade = (obj[19]!=null) ? (String)obj[19] : null;
 		this.day = (obj[20]!=null) ? (String)obj[20] : null;
 	}

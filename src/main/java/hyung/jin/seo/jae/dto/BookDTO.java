@@ -1,7 +1,11 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import hyung.jin.seo.jae.model.Book;
+import hyung.jin.seo.jae.model.Course;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +13,8 @@ import lombok.Setter;
 import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -28,22 +34,38 @@ public class BookDTO implements Serializable{
     
     private String name;
          
-    private String price;
+    private double price;
     
     private String registerDate;
 
-    // private String paymentDate;
-    
-	private List<String> subjects = new ArrayList<>();
+	private List<SubjectDTO> subjects = new ArrayList<>();
+
+    public void addSubject(SubjectDTO subject){
+        subjects.add(subject);
+    }
 
 	public BookDTO(Book cb) {
     	this.id = (cb.getId()!=null) ? cb.getId().toString() : "";
     	this.grade = (cb.getGrade()!=null) ? cb.getGrade() : "";
     	this.name = (cb.getName()!=null) ? cb.getName() : "";
-    	this.price = (cb.getPrice()!=0.0) ? Double.toString(cb.getPrice()): "0.0";
+    	this.price = cb.getPrice();
     }
 
-    public void addSubject(String subject){
-        subjects.add(subject);
+    public BookDTO(long id,  String grade, String name, double price) {
+        this.id = Long.toString(id);
+		this.grade = grade;
+        this.name = name;
+		this.price = price;		
+	}
+
+    public Book convertToBook() {
+    	Book book = new Book();
+    	if(StringUtils.isNotBlank(id)) book.setId(Long.parseLong(this.id));
+    	if(StringUtils.isNotBlank(name)) book.setName(this.name);
+    	if(StringUtils.isNotBlank(registerDate)) book.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    	if(StringUtils.isNotBlank(grade)) book.setGrade(this.grade);
+		book.setPrice(price);
+    	return book;
     }
+
   }

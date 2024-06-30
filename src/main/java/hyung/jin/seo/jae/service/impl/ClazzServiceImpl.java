@@ -10,6 +10,7 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.model.Clazz;
@@ -282,6 +283,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteClass(Long id) {
 		// 1. get class
 		Clazz existing = clazzRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Clazz Not Found"));

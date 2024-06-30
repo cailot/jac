@@ -32,6 +32,11 @@
 		<put-attribute name="title" value="Course List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/courseList.jsp" />
 	</definition>
+	<!--Book -->
+	<definition name="bookListPage" extends="base.definition">
+		<put-attribute name="title" value="Book List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/bookList.jsp" />
+	</definition>
 	<!--Class -->
 	<definition name="classListPage" extends="base.definition">
 		<put-attribute name="title" value="Class List" />
