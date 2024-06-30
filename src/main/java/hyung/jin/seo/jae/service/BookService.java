@@ -26,4 +26,13 @@ public interface BookService {
 
 	// get price by book id
 	double getPrice(Long bookId);
+
+	// register Book
+	Book addBook(Book book);
+
+	// update Book
+	BookDTO updateBook(Book book, Long id);
+
+	// delete Book
+	void deleteBook(Long id);
 }
