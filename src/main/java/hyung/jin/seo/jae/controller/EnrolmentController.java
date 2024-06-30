@@ -93,35 +93,11 @@ public class EnrolmentController {
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
 			for(EnrolmentDTO enrol : enrols){
 				// 2. check if enrolment is active or not
-				boolean isActive = currentYear >= Integer.parseInt(enrol.getYear()) && currentWeek <= enrol.getEndWeek();
-
-
-
-
-
-
-
-
+				boolean isActive = currentYear >= enrol.getYear() && currentWeek <= enrol.getEndWeek();
 				// if full paid, set extra as paid
 				if(isInvoicePaid){
 					enrol.setExtra(JaeConstants.FULL_PAID);
 				}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 				if(isActive){
 					isStillActive = true;
 					dtos.add(enrol);

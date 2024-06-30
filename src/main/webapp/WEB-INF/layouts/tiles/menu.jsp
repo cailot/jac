@@ -63,6 +63,7 @@
 			<div class="dropdown-menu">
 				<c:if test="${isAdmin}">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 			</div>

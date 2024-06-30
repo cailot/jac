@@ -11,13 +11,18 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -44,6 +49,18 @@ public class Book {
     
     @CreationTimestamp
     private LocalDate registerDate;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		name = "BookSubjectLink",
+		joinColumns = { @JoinColumn(name = "bookId")},
+		inverseJoinColumns = { @JoinColumn(name = "subjectId")}
+	)
+	private List<Subject> subjects = new ArrayList<>();
+
+    public void addSubject(Subject sub){
+		subjects.add(sub);
+	}
 
     @OneToMany(mappedBy = "book", cascade = {
 	    CascadeType.PERSIST,

@@ -21,7 +21,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -64,7 +66,7 @@ public class Course{
 		joinColumns = { @JoinColumn(name = "courseId")},
 		inverseJoinColumns = { @JoinColumn(name = "subjectId")}
 	)
-	private Set<Subject> subjects = new LinkedHashSet<>();
+	private List<Subject> subjects = new ArrayList<>();
 
 	public void addSubject(Subject sub){
 		subjects.add(sub);

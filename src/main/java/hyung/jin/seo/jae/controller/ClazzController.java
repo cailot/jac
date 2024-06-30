@@ -201,7 +201,7 @@ public class ClazzController {
 	public CourseDTO getCourse(@PathVariable("id") Long id) {
 		Course course = courseService.getCourse(id);
 		CourseDTO dto = new CourseDTO(course);
-		Set<Subject> subjects = course.getSubjects();
+		List<Subject> subjects = course.getSubjects();
 		for(Subject subject : subjects){
 			SubjectDTO subDTO = new SubjectDTO(subject);
 			dto.addSubject(subDTO);

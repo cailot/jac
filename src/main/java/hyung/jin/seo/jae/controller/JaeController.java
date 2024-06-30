@@ -47,6 +47,11 @@ public class JaeController {
 	public String courseList(HttpSession session) {
 		return "courseListPage";
 	}
+
+	@GetMapping("/bookList")
+	public String bookList(HttpSession session) {
+		return "bookListPage";
+	}
 	
 	@GetMapping("/classList")
 	public String classList(HttpSession session) {

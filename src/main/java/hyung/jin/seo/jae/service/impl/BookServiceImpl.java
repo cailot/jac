@@ -1,15 +1,20 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.BookDTO;
+import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Book;
+import hyung.jin.seo.jae.model.Clazz;
+import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.repository.BookRepository;
-import hyung.jin.seo.jae.repository.SubjectRepository;
 import hyung.jin.seo.jae.service.BookService;
 
 @Service
@@ -18,9 +23,6 @@ public class BookServiceImpl implements BookService {
 	@Autowired
 	private BookRepository bookRepository;
 	
-	@Autowired
-	private SubjectRepository subjectRepository;
-
 	@Override
 	public List<BookDTO> allBooks() {
 		List<Book> books = new ArrayList<>();
@@ -29,10 +31,14 @@ public class BookServiceImpl implements BookService {
 		}catch(Exception e){
 			System.out.println("No book found");
 		}
-		// bookRepository.findAll();
 		List<BookDTO> dtos = new ArrayList<>();
 		for(Book book: books){
 			BookDTO dto = new BookDTO(book);
+			List<Subject> subjects = book.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO sub = new SubjectDTO(subject);
+				dto.addSubject(sub);
+			}
 			dtos.add(dto);
 		}
 		return dtos;
@@ -46,36 +52,36 @@ public class BookServiceImpl implements BookService {
 		}catch(Exception e){
 			System.out.println("No book found");
 		}
-		// bookRepository.findById(id).get();
 		return book;
 	}
 
 	@Override
 	public List<BookDTO> booksByGrade(String grade) {
+		List<BookDTO> dtos = new ArrayList<BookDTO>();
 		// 1. get books
 		List<Book> books = bookRepository.findByGrade(grade);
-		// 2. get subjects
-		//List<String> subjects = subjectRepository.findSubjectNamesForGrade(grade);
-		List<String> subjects = subjectRepository.findSubjectAbbrForGrade(grade);
-		// 3. assign subjects to books
-		List<BookDTO> dtos = new ArrayList<BookDTO>();
+		// 2. get & asscoatiate subjects
 		for(Book book : books){
 			BookDTO dto = new BookDTO(book);
-			for(String subject : subjects){
-				dto.addSubject(subject);
+			List<Subject> subjects = book.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO sub = new SubjectDTO(subject);
+				dto.addSubject(sub);
 			}
 			dtos.add(dto);
 		}
-		// 4. add postage for all years
-		List<Book> postageBooks = bookRepository.findByGrade("all");
+		// 3. add postage for all years
+		List<Book> postageBooks = bookRepository.findByGrade("0");
 		for(Book postageBook : postageBooks){
 			BookDTO dto = new BookDTO(postageBook);
-			// put empty string to avoid JSON error
-			List<String> temp = Collections.singletonList("");
-			dto.setSubjects(temp);
+			List<Subject> subjects = postageBook.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO sub = new SubjectDTO(subject);
+				dto.addSubject(sub);
+			}
 			dtos.add(dto);
 		}
-		// 5. return DTOs
+		// 4. return DTOs
 		return dtos;	
 	}
 
@@ -124,6 +130,49 @@ public class BookServiceImpl implements BookService {
 		}
 		return price;
 		// return bookRepository.getPrice(bookId);
+	}
+
+	@Override
+	@Transactional
+	public Book addBook(Book book) {
+		Book add = bookRepository.save(book);
+		return add;
+	}
+
+
+	@Override
+	@Transactional
+	public BookDTO updateBook(Book book, Long id) {
+		// search by Id
+		Book existing = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book Not Found"));
+		// update grade
+		String newGrade = book.getGrade();
+		existing.setGrade(newGrade);
+		// update name
+		String newName = book.getName();
+		existing.setName(newName);
+		// update price
+		double newPrice = book.getPrice();
+		existing.setPrice(newPrice);
+		// update associated subjects
+		List<Subject> newSubjects = book.getSubjects();
+		existing.setSubjects(newSubjects);
+		// update the existing record
+		Book updated = bookRepository.save(existing);
+		BookDTO dto = new BookDTO(updated);
+		return dto;
+	}
+
+	@Override
+	@Transactional
+	public void deleteBook(Long id) {
+		// 1. get book
+		Book existing = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book Not Found"));
+		// 2. delete associated subject
+		existing.setSubjects(null);
+		bookRepository.save(existing);
+		// 3. delete class
+		bookRepository.deleteById(id);
 	}
 	
 }
