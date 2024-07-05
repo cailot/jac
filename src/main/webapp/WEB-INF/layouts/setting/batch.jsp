@@ -176,7 +176,7 @@ function confirmCreateCourse() {
 			</div>
 			<div class="modal-body" style="background-color: #f8f9fa; border-radius: 5px; padding: 20px;">
 				<div style="text-align: center; margin-bottom: 20px;">
-					<img src="${pageContext.request.contextPath}/image/inactive.png" style="width: 150px; height: 150px; border-radius: 5%;">
+					<img src="${pageContext.request.contextPath}/image/course_template.png" style="width: 80px; height: 80px; border-radius: 5%;">
 				</div>
 				<!-- Year Selection Dropdown -->
 				<div class="form-group">
@@ -199,7 +199,7 @@ function confirmCreateCourse() {
 					</select>
 				</div>
 				<span class="text-primary"><strong>Create Course Template</strong></span>
-				The system will scan and update all students. If a student's most recent enrollment is more than 180 days old, their status will be updated to inactive.
+				The system will generate a basic template for courses associated with a specific academic cycle. Please review the generated courses and make any necessary modifications, such as adjusting the price
 				<br><br>
 				<p class="text-center"><strong>Are you still want to proceed this ?</strong></p>
 			</div>
