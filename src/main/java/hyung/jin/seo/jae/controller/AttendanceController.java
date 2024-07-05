@@ -1,5 +1,7 @@
 package hyung.jin.seo.jae.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.SearchCriteriaDTO;
 import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Clazz;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.AttendanceService;
 import hyung.jin.seo.jae.service.ClazzService;
@@ -29,6 +32,7 @@ import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("attendance")
@@ -88,17 +92,38 @@ public class AttendanceController {
 		criteria.setToDate(toDate);
 		model.addAttribute(JaeConstants.CRITERIA_INFO, criteria);	
 
-
 		// 3. check academic weeks
+		long startCycleId = cycleService.findIdByDate(fromDate);
+		long endCycleId = cycleService.findIdByDate(toDate);
 		int startWeek = cycleService.academicWeeks(fromDate);
 		int endWeek = cycleService.academicWeeks(toDate);
 
 		// 3. header info
-		// AttendanceListDTO header = new AttendanceListDTO();
 		List<Integer> headerWks = new ArrayList<>();
-		for(int i=startWeek; i<=endWeek; i++){
-			headerWks.add(i);
-		}
+
+		// 3-1. if start cycle id is different from end cycle id
+		if(startCycleId != endCycleId){
+			// 3-1-1. get start & end cycle info
+			Cycle startCycle = cycleService.getCycle(startCycleId);
+			// 3-1-2. get last date of start year
+			LocalDate endDateOfStartCycle = startCycle.getEndDate();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			String formattedDate = endDateOfStartCycle.format(formatter);
+			int lastWeek = cycleService.academicWeeks(formattedDate);
+			// 3-1-3. set header weeks - first part : start week to last week
+			for(int i=startWeek; i<=lastWeek; i++){
+				headerWks.add(i);
+			}
+			// 3-1-4. set header weeks - second part : 1 to end week
+			for(int i=1; i<=endWeek; i++){
+				headerWks.add(i);
+			}
+		}else{
+			// 3-2. if start cycle id is same as end cycle id
+			for(int i=startWeek; i<=endWeek; i++){
+				headerWks.add(i);
+			}
+		}		
 		model.addAttribute(JaeConstants.WEEK_HEADER, headerWks);	
 
 		// 4. search AttendanceListDTO

@@ -18,6 +18,9 @@ public interface CourseRepository extends JpaRepository<Course, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year) FROM Course c WHERE c.grade = :grade AND c.active = true")
 	List<CourseDTO> getByGrade(@Param("grade") String grade);
 
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year) FROM Course c WHERE c.grade = :grade AND c.cycle.year =:year AND c.active = true")
+	List<CourseDTO> getByGradeNYear(@Param("grade") String grade, @Param("year") int year);
+
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year) FROM Course c WHERE c.grade = :grade AND c.online = 0 AND c.active = true")
 	List<CourseDTO> findOnsiteByGrade(@Param("grade") String grade);
 

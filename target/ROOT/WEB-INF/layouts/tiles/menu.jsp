@@ -53,19 +53,6 @@
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
-				<c:if test="${isAdmin}">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
-				</c:if>
-			</div>
-		</li>
-		<!-- User -->
-		<li class="nav-item dropdown">
-			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
-			</a>
-			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
-				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
 		</li>
 		<!-- Class -->
@@ -76,8 +63,19 @@
 			<div class="dropdown-menu">
 				<c:if test="${isAdmin}">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/courseList">Course Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
+			</div>
+		</li>
+		<!-- User -->
+		<li class="nav-item dropdown">
+			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
+			</a>
+			<div class="dropdown-menu">
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
+				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
 		</li>
 		<!-- Jac Study -->
@@ -118,11 +116,12 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Setting</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="/branch">Branch Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branch">Branch Management</a>
 				<c:if test="${isAdmin}">
-				<a class="dropdown-item" href="/cycle">Academic Cycle</a>
-				<a class="dropdown-item" href="/batch">Batch Process</a>
-				<a class="dropdown-item" href="/migration">Student Migration</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
 				</c:if>
 			</div>
 		</li>

@@ -84,7 +84,8 @@ public class StudentServiceImpl implements StudentService {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
 			if(StringUtils.isNumericSpace(keyword)) {
-				dtos = studentRepository.searchStudentByKeywordId(Long.parseLong(keyword), state, branch);
+				//dtos = studentRepository.searchStudentByKeywordId(Long.parseLong(keyword), state, branch);
+				dtos.add(studentRepository.searchStudentById(Long.parseLong(keyword)));
 			}else{
 				dtos = studentRepository.searchStudentByKeywordName(keyword, state, branch);
 			}

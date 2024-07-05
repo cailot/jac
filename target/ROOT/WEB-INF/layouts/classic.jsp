@@ -31,7 +31,7 @@
 	<footer class="mt-auto">
 			<div class="row" style="padding: 15px 20px;">
 				2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-				<div class="copyright-font-color">James An College <span class="small text-secondary">v0.5.2</span></div>
+				<div class="copyright-font-color">James An College <span class="small text-secondary">v0.1.1</span></div>
 			</div>
 		</footer>	
 	</div>

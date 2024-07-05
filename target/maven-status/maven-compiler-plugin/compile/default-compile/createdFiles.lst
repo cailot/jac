@@ -79,7 +79,9 @@ hyung/jin/seo/jae/model/Payment.class
 hyung/jin/seo/jae/service/impl/TeacherServiceImpl.class
 hyung/jin/seo/jae/dto/CourseDTO.class
 hyung/jin/seo/jae/controller/BookController.class
+hyung/jin/seo/jae/dto/DayScheduleDTO.class
 hyung/jin/seo/jae/config/JaeTilesConfig.class
+hyung/jin/seo/jae/model/DaySchedule.class
 hyung/jin/seo/jae/dto/StudentPracticeDTO.class
 hyung/jin/seo/jae/dto/ClazzDTO.class
 hyung/jin/seo/jae/dto/StatsDTO.class
@@ -140,6 +142,7 @@ hyung/jin/seo/jae/model/TestAnswer.class
 hyung/jin/seo/jae/service/impl/CourseServiceImpl.class
 hyung/jin/seo/jae/dto/TeacherDTO.class
 hyung/jin/seo/jae/service/impl/PaymentServiceImpl.class
+hyung/jin/seo/jae/repository/DayScheduleRepository.class
 hyung/jin/seo/jae/model/Score.class
 hyung/jin/seo/jae/dto/UserDTO.class
 hyung/jin/seo/jae/model/User.class

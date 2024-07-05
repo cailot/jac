@@ -143,12 +143,29 @@ function listCourses(grade) {
 		success : function(data) {
 			$.each(data, function(index, value) {
 				const cleaned = cleanUpJson(value);
-				// console.log(cleaned);
+				//console.log(cleaned);
 				var row = $('<tr class="d-flex">');
 				row.append($('<td>').addClass('hidden-column').text(value.id));
 				row.append($('<td class="col-1"><i class="bi bi-mortarboard" title="class"></i></td>'));
-				row.append($('<td class="smaller-table-font course-title col-6" style="padding-left: 20px;">').html(value.name + ' - ' + value.description));
-				row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
+				var subjectsString = '';
+				if(value.subjects != null && value.subjects.length > 0){	
+					subjectsString = value.subjects.map(function(subject) {
+						return subject.name;
+					}).join(', ');
+				}
+				row.append($('<td class="smaller-table-font course-title col-10" style="padding-left: 20px;">').html(value.name + ' - ' + value.description + '  [' + subjectsString + ']'));
+				// row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
+				
+				// var subjectsString = '';
+				// if(value.subjects != null && value.subjects.length > 0){	
+				// 	subjectsString = value.subjects.map(function(subject) {
+				// 		return subject.name;
+				// 	}).join(', ');
+				// }	
+				// row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));
+
+
+
 				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 				$('#courseTable > tbody').append(row);
 			});
@@ -173,13 +190,24 @@ function listBooks(grade) {
 		},
 		success : function(data) {
 			$.each(data, function(index, value) {
+				if (value.price === undefined) {
+					value.price = 0; // Set price to 0 if it's undefined
+				}
 				const cleaned = cleanUpJson(value);
-				// console.log(cleaned);
+				//console.log(cleaned);
 				var row = $('<tr class="d-flex">');
 				row.append($('<td>').addClass('hidden-column').text(value.id));
 				row.append($('<td class="col-1"><i class="bi bi-book" title="book"></i></td>'));
 				row.append($('<td class="smaller-table-font col-5">').text(value.name));
-				row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
+				// Assuming value.subjects is an array of objects with a 'name' property
+				var subjectsString = '';
+				if(value.subjects != null && value.subjects.length > 0){	
+					subjectsString = value.subjects.map(function(subject) {
+						return subject.name;
+					}).join(', ');
+				}
+				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));
+				
 				row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
 				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 				$('#bookTable > tbody').append(row);
@@ -953,18 +981,6 @@ function isSameRowExisting(dataType, id) {
 function clearEnrolmentBasket(){
 	$('#basketTable > tbody').empty();
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//      Display Subject List
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function addSpace(str) {
-	if(!str.match(/[\[\]"]/gi)) { // check if str contains '[', ']', or "
-	return str; // if not, return original str
-	} else {
-	str = str.replace(/[\[\]"]/gi, ''); // remove '[', ']', "" from JSON.stringify
-	return str.replace(/,/g, ', '); // Use regex expression to replace commas with commas and space
-	}
-}
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Pop-up simple toast message
@@ -1059,17 +1075,17 @@ function showAlertMessage(elementId, message) {
 								<thead>
 									<tr class="d-flex">
 										<th class="hidden-column"></th>
-										<th class="smaller-table-font text-center" style="padding-left: 0.25rem;">Item</th>
-										<th class="smaller-table-font text-center">Name</th>
-										<th class="smaller-table-font text-center">Day</th>
-										<th class="smaller-table-font text-center">Year</th>
-										<th class="smaller-table-font text-center">Start</th>
-										<th class="smaller-table-font text-center">End</th>
-										<th class="smaller-table-font text-center">Wks</th>
-										<th class="smaller-table-font text-center">CR</th>
-										<th class="smaller-table-font text-center">DC</th>
-										<th class="smaller-table-font text-center">Price</th>
-										<th class="smaller-table-font text-center">Amount</th>
+										<th class="smaller-table-font text-center" style="padding-left: 0.25rem;" title="Type of Purchased Item">Item</th>
+										<th class="smaller-table-font text-center" title="Name of Purchased Item">Name</th>
+										<th class="smaller-table-font text-center" title="Class Schedule Day">Day</th>
+										<th class="smaller-table-font text-center" title="Class Year">Year</th>
+										<th class="smaller-table-font text-center" title="Class Start Week">Start</th>
+										<th class="smaller-table-font text-center" title="Class End Week">End</th>
+										<th class="smaller-table-font text-center" title="Class Total Weeks">Wks</th>
+										<th class="smaller-table-font text-center" title="Credit">CR</th>
+										<th class="smaller-table-font text-center" title="Discount">DC</th>
+										<th class="smaller-table-font text-center" title="Purchased Item Unit Price">Price</th>
+										<th class="smaller-table-font text-center" title="PUrchased Item Total Price">Amount</th>
 										<th class="smaller-table-font text-center hidden-column"></th>
 									</tr>
 								</thead>
@@ -1084,8 +1100,8 @@ function showAlertMessage(elementId, message) {
 									<tr class="d-flex">
 										<th class="hidden-column"></th>
 										<th class="smaller-table-font col-1">Item</th>
-										<th class="smaller-table-font col-6" style="padding-left: 20px;">Name</th>
-										<th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th>
+										<th class="smaller-table-font col-10" style="padding-left: 20px;">Name</th>
+										<!-- <th class="smaller-table-font col-4" style="padding-left: 20px;">Subjects</th> -->
 										<th class="smaller-table-font col-1"></th>
 									</tr>
 								</thead>

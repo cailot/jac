@@ -171,7 +171,7 @@ public class StudentDTO implements Serializable{
 		this.endWeek = endWeek;
     }
 
-	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, String password, int active, String memo) {
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, String address, int active, String memo) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -185,8 +185,29 @@ public class StudentDTO implements Serializable{
         this.branch = (branch!=null) ? branch : "";
         this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
 		this.endDate = (endDate!=null) ? endDate.toString() : "";
-		this.password = (password!=null) ? password : "";
+		this.address = (address!=null) ? address : "";
 		this.active = active;
 		this.memo = memo;
+    }
+
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, String address, int active, String memo, String relation1, String relation2) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
+        this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
+        this.contactNo2 = (contactNo2 !=null) ? contactNo2 : "";
+        this.email1 = (email1!=null) ? email1 : "";
+		this.email2 = (email2!=null) ? email2 : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+        this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.endDate = (endDate!=null) ? endDate.toString() : "";
+		this.address = (address!=null) ? address : "";
+		this.active = active;
+		this.memo = memo;
+		this.relation1 = (relation1!=null) ? relation1 : "";
+		this.relation2 = (relation2!=null) ? relation2 : "";
     }
 }

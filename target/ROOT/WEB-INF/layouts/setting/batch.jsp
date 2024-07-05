@@ -13,18 +13,16 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
-	$(document).ready(function () {
+$(document).ready(function () {
 
-	
 
-	});
+
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Inactive Students
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateInactiveStudent() {
-
-	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/batch/updateInactiveStudent',
 		type: 'GET',
@@ -41,6 +39,30 @@ function updateInactiveStudent() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Create Course Template
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function createCourseTemplate() {
+
+	// get value of 'academicYear' dropdown
+	var academicYear = $('#academicYear').val();
+	console.log(academicYear);
+
+	$.ajax({
+		url: '${pageContext.request.contextPath}/batch/createCourseTemplate',
+		type: 'GET',
+		success: function (count) {
+			// Display the success alert
+			$('#success-alert .modal-body').text(
+				count + ' courses created successfully.');
+			$('#success-alert').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Confirm Update Inactive Student
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function confirmInactiveStudent() {
@@ -48,98 +70,25 @@ function confirmInactiveStudent() {
     $('#inactiveStudentModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeUpdate').one('click', function() {
+    $('#agreeInactiveStudent').one('click', function() {
         updateInactiveStudent();
         $('#inactiveStudentModal').modal('hide');
     });
 }
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//		Update Cycle
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	function updateCycleInfo() {
-		var cycleId = $("#editId").val();
-
-		var desc = document.getElementById('editDescription');
-		if(desc.value== ""){
-			$('#validation-alert .modal-body').text(
-					'Please enter description');
-			$('#validation-alert').modal('show');
-			$('#validation-alert').on('hidden.bs.modal', function () {
-       			 desc.focus();
-    		});
-			return false;
-		}
-
-		// get from formData
-		var cycle = {
-			id: cycleId,
-			year: $("#editYear").val(),
-			description: $("#editDescription").val(),
-			startDate: $("#editStartDate").val(),
-			endDate: $("#editEndDate").val(),
-			vacationStartDate: $("#editVacationStartDate").val(),
-			vacationEndDate: $("#editVacationEndDate").val()
-		}
-
-		//console.log(cycle);
-		// send query to controller
-		$.ajax({
-			url: '${pageContext.request.contextPath}/class/update/cycle',
-			type: 'PUT',
-			dataType: 'json',
-			data: JSON.stringify(cycle),
-			contentType: 'application/json',
-			success: function (value) {
-				// Display success alert
-				$('#success-alert .modal-body').text('Academic cycle is updated successfully.');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function (e) {
-					location.reload();
-				});
-			},
-			error: function (xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		});
-
-		$('#editCycleModal').modal('hide');
-		// flush all registered data
-		clearFormData("cycleEdit");
-	}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete Cycle
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function deleteCycle(id) {
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/class/deleteCycle/' + id,
-		type : 'PUT',
-		success : function(data) {
-			// clear existing form
-			$('#success-alert .modal-body').text('Cycle is now deleted');
-			$('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	}); 
-}
-
-window.showWarning = function(id) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm Create Course Template
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function confirmCreateCourse() {
     // Show the warning modal
-    $('#deleteModal').modal('show');
-    // Attach the click event handler to the "Delete" button
-    $('#agreeDelete').one('click', function() {
-        deleteCycle(id);
-        $('#deleteModal').modal('hide');
+    $('#createCourseModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeCreateCourse').one('click', function() {
+        createCourseTemplate();
+        $('#createCourseModal').modal('hide');
     });
 }
-
 
 </script>
 
@@ -175,6 +124,12 @@ window.showWarning = function(id) {
 				<button type="button" class="btn btn-success" style="width: 120px;" onclick="confirmInactiveStudent()"><i class="bi bi-arrow-up-circle"></i>&nbsp;&nbsp;Update</button>
 			</td>
 		</tr>
+		<tr height="80px">
+			<td class="left-cell" style="vertical-align: middle;"><b>Create Course Template</b></td>
+			<td class="text-right" style="vertical-align: middle;">
+				<button type="button" class="btn btn-primary" style="width: 120px;" onclick="confirmCreateCourse()"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Create</button>
+			</td>
+		</tr>
 		</table> 
 	</div>
 </div>
@@ -205,9 +160,53 @@ window.showWarning = function(id) {
                 <br><br><p class="text-center"><strong>Are you still want to proceed this ?</strong></p>      
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="agreeUpdate">Yes, I am sure</button>
+                <button type="button" class="btn btn-primary" id="agreeInactiveStudent">Yes, I am sure</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No, I don't want</button>
             </div>
         </div>
     </div>
+</div>
+
+<!--Create Course Modal -->
+<div class="modal fade" id="createCourseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content" style="border: 2px solid #ffc107; border-radius: 10px;">
+			<div class="modal-header bg-warning" style="display: block;">
+				<p style="text-align: center; margin-bottom: 0;"><span style="font-size:18px"><strong>Create Course Batch</strong></span></p>
+			</div>
+			<div class="modal-body" style="background-color: #f8f9fa; border-radius: 5px; padding: 20px;">
+				<div style="text-align: center; margin-bottom: 20px;">
+					<img src="${pageContext.request.contextPath}/image/inactive.png" style="width: 150px; height: 150px; border-radius: 5%;">
+				</div>
+				<!-- Year Selection Dropdown -->
+				<div class="form-group">
+					<label for="academicYear">Select Year:</label>
+					<select class="form-control" id="academicYear" name="academicYear">
+						<%
+							Calendar now = Calendar.getInstance();
+							int currentYear = now.get(Calendar.YEAR);
+							int nextYear = currentYear + 1;
+						%>
+						<option value="<%= currentYear %>">Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+						<%
+							// Adding the last five years
+							for (int i = currentYear - 1; i >= currentYear - 2; i--) {
+						%>
+							<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+						<%
+						}
+						%>
+					</select>
+				</div>
+				<span class="text-primary"><strong>Create Course Template</strong></span>
+				The system will scan and update all students. If a student's most recent enrollment is more than 180 days old, their status will be updated to inactive.
+				<br><br>
+				<p class="text-center"><strong>Are you still want to proceed this ?</strong></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="agreeCreateCourse">Yes, I am sure</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">No, I don't want</button>
+			</div>
+		</div>
+	</div>
 </div>
