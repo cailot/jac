@@ -59,7 +59,7 @@ public class BookServiceImpl implements BookService {
 	public List<BookDTO> booksByGrade(String grade) {
 		List<BookDTO> dtos = new ArrayList<BookDTO>();
 		// 1. get books
-		List<Book> books = bookRepository.findByGrade(grade);
+		List<Book> books = bookRepository.findByGradeAndActiveIsTrue(grade);
 		// 2. get & asscoatiate subjects
 		for(Book book : books){
 			BookDTO dto = new BookDTO(book);
@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
 			dtos.add(dto);
 		}
 		// 3. add postage for all years
-		List<Book> postageBooks = bookRepository.findByGrade("0");
+		List<Book> postageBooks = bookRepository.findByGradeAndActiveIsTrue("0");
 		for(Book postageBook : postageBooks){
 			BookDTO dto = new BookDTO(postageBook);
 			List<Subject> subjects = postageBook.getSubjects();
@@ -154,6 +154,9 @@ public class BookServiceImpl implements BookService {
 		// update price
 		double newPrice = book.getPrice();
 		existing.setPrice(newPrice);
+		// update acive
+		boolean newActive = book.isActive();
+		existing.setActive(newActive);
 		// update associated subjects
 		List<Subject> newSubjects = book.getSubjects();
 		existing.setSubjects(newSubjects);
