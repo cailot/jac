@@ -38,6 +38,8 @@ public class BookDTO implements Serializable{
     
     private String registerDate;
 
+	private boolean active;
+
 	private List<SubjectDTO> subjects = new ArrayList<>();
 
     public void addSubject(SubjectDTO subject){
@@ -49,13 +51,15 @@ public class BookDTO implements Serializable{
     	this.grade = (cb.getGrade()!=null) ? cb.getGrade() : "";
     	this.name = (cb.getName()!=null) ? cb.getName() : "";
     	this.price = cb.getPrice();
+		this.active = cb.isActive();
     }
 
-    public BookDTO(long id,  String grade, String name, double price) {
+    public BookDTO(long id,  String grade, String name, double price, boolean active) {
         this.id = Long.toString(id);
 		this.grade = grade;
         this.name = name;
 		this.price = price;		
+		this.active = active;
 	}
 
     public Book convertToBook() {
@@ -65,6 +69,7 @@ public class BookDTO implements Serializable{
     	if(StringUtils.isNotBlank(registerDate)) book.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     	if(StringUtils.isNotBlank(grade)) book.setGrade(this.grade);
 		book.setPrice(price);
+		book.setActive(true);
     	return book;
     }
 
