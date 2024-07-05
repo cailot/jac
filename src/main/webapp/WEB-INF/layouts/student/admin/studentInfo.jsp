@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/parsley-2.9.2.css"/>	
-
 <script>
 $(function() {
 	// initiate datepicker
@@ -407,6 +405,7 @@ function updateStudentInfo() {
 //		Display selected student in student search
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
+	console.log(value);
 	clearStudentForm();
 	$("#formId").val(value['id']);
 	//debugger;

@@ -29,5 +29,4 @@ public interface CycleRepository extends JpaRepository<Cycle, Long>{
 	@Query("SELECT new hyung.jin.seo.jae.dto.CycleDTO(c.id, c.year, c.startDate, c.endDate, c.vacationStartDate, c.vacationEndDate, c.description) FROM Cycle c WHERE c.year = ?1")
 	List<CycleDTO> findCycleForYear(int year);
 
-
 }

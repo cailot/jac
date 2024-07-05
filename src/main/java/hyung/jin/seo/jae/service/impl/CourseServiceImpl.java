@@ -45,10 +45,23 @@ public class CourseServiceImpl implements CourseService {
 		try{
 			dtos = courseRepository.getByGrade(grade);
 		}catch(Exception e){
-			System.out.println("No branch found");
+			System.out.println("No course found");
 		}
 		return dtos;
 	}
+
+	@Override
+	public List<CourseDTO> findByGradeNYear(String grade, int year) {
+		// 1. get courses
+		List<CourseDTO> dtos = new ArrayList<>();
+		try{
+			dtos = courseRepository.getByGradeNYear(grade, year);
+		}catch(Exception e){
+			System.out.println("No course found");
+		}
+		return dtos;
+	}
+
 
 	@Override
 	public Course getCourse(Long id) {
@@ -126,6 +139,5 @@ public class CourseServiceImpl implements CourseService {
 		// 3. set flag to false
 		courseRepository.updateCourseSetActiveFalseById(id);
 	}
-
 	
 }

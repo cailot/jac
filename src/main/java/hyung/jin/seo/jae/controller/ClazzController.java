@@ -140,23 +140,30 @@ public class ClazzController {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
 		List<CourseDTO> dtos = courseService.findByGrade(grade);
-		// set year
-		for (CourseDTO dto : dtos) {
-			dto.setYear(year);
+		// associate subjects
+		for(CourseDTO dto : dtos){
+			Course course = courseService.getCourse(Long.parseLong(dto.getId()));
+			List<Subject> subjects = course.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO subDTO = new SubjectDTO(subject);
+				dto.addSubject(subDTO);
+			}
 		}
 		// if new academic year is going to start, display next year classes
 		if (week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
-			List<CourseDTO> nexts = new ArrayList<>();
-			// display next year courses by increasing price
-			for (CourseDTO dto : dtos) {
-				CourseDTO next = dto.clone();
-				next.setYear(year + 1);
-				// next.setPrice(next.getPrice() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_PRICE_INCREASE);
-				next.setDescription(next.getDescription() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX);
-				nexts.add(next);
-			}
-			// add next year courses to the end of the list
-			if (nexts.size() > 0) {
+			List<CourseDTO> nexts = courseService.findByGradeNYear(grade, year+1);
+			if(nexts.size() > 0){
+				for(CourseDTO next : nexts){
+					// update description
+					next.setDescription(next.getDescription() + JaeConstants.ACADEMIC_NEXT_YEAR_COURSE_SUFFIX);
+					// associate subjects
+					Course nextCourse = courseService.getCourse(Long.parseLong(next.getId()));
+					List<Subject> nextSubs = nextCourse.getSubjects();
+					for(Subject nextSub : nextSubs){
+						SubjectDTO nextSubDTO = new SubjectDTO(nextSub);
+						next.addSubject(nextSubDTO);
+					}
+				}
 				dtos.addAll(nexts);
 			}
 		}

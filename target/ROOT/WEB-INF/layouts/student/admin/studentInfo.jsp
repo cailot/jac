@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/parsley-2.9.2.css"/>	
-
 <script>
 $(function() {
 	// initiate datepicker
@@ -55,16 +53,6 @@ function addStudent() {
 		});
 		return false;
 	}
-	var pass = document.getElementById('addPassword');
-	if(pass.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter password');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			pass.focus();
-		});
-		return false;
-	}
 	var email = document.getElementById('addEmail1');
 	if(email.value== ""){
 		$('#validation-alert .modal-body').text(
@@ -90,7 +78,6 @@ function addStudent() {
 	var std = {
 		firstName : $("#addFirstName").val(),
 		lastName : $("#addLastName").val(),
-		address : $("#addAddress").val(),
 		gender : $("#addGender").val(),
 		password : $("#addPassword").val(),
 		email1 : $("#addEmail1").val(),
@@ -325,6 +312,12 @@ function searchStudent() {
 //		Update existing student
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function updateStudentInfo() {
+	// check if student search is done
+	if($("#formId").val() == ''){
+		$('#warning-alert .modal-body').text('Please search student record before update');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
 
 	// lastName, email, password validation
 	var last = document.getElementById('formLastName');
@@ -412,7 +405,7 @@ function updateStudentInfo() {
 //		Display selected student in student search
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
-	
+	console.log(value);
 	clearStudentForm();
 	$("#formId").val(value['id']);
 	//debugger;
@@ -768,11 +761,6 @@ function clearCourseRegisteration(){
 							</select>
 						</div>
 						<div class="col-md-9">
-							<label for="addPassword" class="label-form">Password</label> <input type="password" class="form-control" id="addPassword" name="addPassword">
-						</div>
-					</div>
-					<div class="form-row mt-3">
-						<div class="col-md-12">
 							<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
 						</div>
 					</div>

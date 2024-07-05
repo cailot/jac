@@ -165,6 +165,15 @@ public class JaeUtils {
 		return gradeText;
 	}
 
+	// get year from date format
+	public static int getYear(String date){
+		int year = 0;
+		String[] parts = date.split("/");
+		if(parts.length > 0){
+			year = Integer.parseInt(parts[2]);
+		}
+		return year;
+	}
 	// // convert linefeed to <br/>
 	// public static String fromLinefeed2Br(String msg){
 	// 	String contents = StringUtils.defaultString(msg);

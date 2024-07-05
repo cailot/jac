@@ -67,6 +67,8 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
+	listDay('#addDay');
+	listDay('#editDay');
 
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
@@ -111,15 +113,6 @@ function addClass() {
 		});
 		return false;
 	}
-	var price = document.getElementById('addPrice');
-	if(price.value== ""){
-		$('#validation-alert .modal-body').text('Please enter price');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			price.focus();
-		});
-		return false;
-	}
 	var start = document.getElementById('addStartDate');
 	if(start.value== ""){
 		$('#validation-alert .modal-body').text('Please enter start date');
@@ -129,7 +122,6 @@ function addClass() {
 		});
 		return false;
 	}
-
 	// Get from form data
 	var clazz = {
 		state: $("#addState").val(),
@@ -138,14 +130,8 @@ function addClass() {
 		name: $("#addName").val(),
 		grade: $("#addGrade").val(),
 		courseId: $("#addCourse").val(),
-		day: $("#addDay").val(),
-		price: $("#addPrice").val()
-		//active : $("#addActive").val(),
-		//fee : $("#addFee").val()
+		day: $("#addDay").val()
 	}
-	//	console.log(clazz);
-
-	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/registerClass',
 		type: 'POST',
@@ -223,15 +209,6 @@ function updateClassInfo() {
 		});
 		return false;
 	}
-	var price = document.getElementById('editPrice');
-	if(price.value== ""){
-		$('#validation-alert .modal-body').text('Please enter price');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			price.focus();
-		});
-		return false;
-	}
 	var start = document.getElementById('editStartDate');
 	if(start.value== ""){
 		$('#validation-alert .modal-body').text('Please enter start date');
@@ -253,12 +230,9 @@ function updateClassInfo() {
 		grade: $("#editGrade").val(),
 		courseId: $("#editCourse").val(),
 		day: $("#editDay").val(),
-		active: $("#editActive").val(),
-		price : $("#editPrice").val()
+		active: $("#editActive").val()
 	}
 
-	// console.log(clazz);
-	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/class/update/class',
 		type: 'PUT',
@@ -590,7 +564,19 @@ function deleteClass(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:out value="${clazz.day}" />
+															<c:choose>
+																<c:when test="${clazz.day == '1'}">Monday</c:when>
+																<c:when test="${clazz.day == '2'}">Tuesday</c:when>
+																<c:when test="${clazz.day == '3'}">Wednessday</c:when>
+																<c:when test="${clazz.day == '4'}">Thursday</c:when>
+																<c:when test="${clazz.day == '5'}">Friday</c:when>
+																<c:when test="${clazz.day == '6'}">Saturday Morning</c:when>
+																<c:when test="${clazz.day == '7'}">Saturday Afternoon</c:when>
+																<c:when test="${clazz.day == '8'}">Sunday Morning</c:when>
+																<c:when test="${clazz.day == '9'}">Sunday Afternoon</c:when>
+																<c:when test="${clazz.day == '0'}">All</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
 														</span>
 													</td>
 													<td class="small align-middle">
@@ -677,27 +663,15 @@ function deleteClass(id) {
 								<div class="col-md-3">
 									<label for="addDay" class="label-form">Day</label>
 									<select class="form-control" id="addDay" name="addDay">
-										<option value="All">All</option>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
+								<div class="col-md-8">
 									<label for="addName" class="label-form">Class Name</label>
 									<input type="text" class="form-control" id="addName" name="addName" placeholder="Name" title="Please enter Class name" />
-								</div>
-								<div class="col-md-3">
-									<label for="addPrice" class="label-form">Price</label>
-									<input type="text" class="form-control" id="addPrice" name="addPrice" />
 								</div>
 								<div class="col-md-4">
 									<label for="addStartDate" class="label-form">Start Date</label>
@@ -755,36 +729,25 @@ function deleteClass(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-3">
-									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade">
+									<label for="editGrade" class="label-form">Grade</label> <select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
 								<div class="col-md-5">
 									<label for="editCourse" class="label-form">Course</label>
-									<select class="form-control" id="editCourse" name="editCourse">
+									<select class="form-control" id="editCourse" name="editCourse" disabled>
 									</select>
 								</div>
 								<div class="col-md-4">
 									<label for="editDay" class="label-form">Day</label>
 									<select class="form-control" id="editDay" name="editDay">
-										<option value="All">All</option>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
 									</select>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-5">
+								<div class="col-md-8">
 									<input type="text" class="form-control" id="editName" name="editName" title="Please enter Class name">
-								</div>
-								<div class="col-md-3">
-									<input type="text" class="form-control" id="editPrice" name="editPrice" title="Please enter Class name">
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
