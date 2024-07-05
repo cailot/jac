@@ -19,11 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import hyung.jin.seo.jae.dto.BookDTO;
-import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Book;
-import hyung.jin.seo.jae.model.Course;
-import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.BookService;
 import hyung.jin.seo.jae.service.CodeService;
@@ -98,6 +95,7 @@ public class BookController {
 		try {
 			// 1. create Book
 			Book book = formData.convertToBook();
+			book.setActive(formData.isActive());
 			// 2. associate Subjects
 			List<SubjectDTO> subjects = formData.getSubjects();
 			for(SubjectDTO subject : subjects){

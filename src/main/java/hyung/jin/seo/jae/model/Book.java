@@ -46,6 +46,9 @@ public class Book {
     
     @Column(columnDefinition = "DECIMAL(10,2)")
     private double price;
+
+    @Column
+	private boolean active;
     
     @CreationTimestamp
     private LocalDate registerDate;

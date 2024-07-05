@@ -13,9 +13,11 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 	
 	List<Book> findAll();
 
-	List<Book> findByGrade(String grade);
+	// List<Book> findByGrade(String grade);
 
-	@Query(value = "SELECT new hyung.jin.seo.jae.dto.BookDTO(b.id, b.grade, b.name, b.price) FROM Book b WHERE b.grade = :grade")
+	List<Book> findByGradeAndActiveIsTrue(String grade);
+
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.BookDTO(b.id, b.grade, b.name, b.price, b.active) FROM Book b WHERE b.grade = :grade")
 	List<BookDTO> getByGrade(@Param("grade") String grade);
 
 	@Query(value = "SELECT * FROM Book WHERE id IN (SELECT bookId FROM Invoice_Book WHERE invoiceId = ?1)", nativeQuery = true)   	
