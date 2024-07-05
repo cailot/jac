@@ -64,9 +64,18 @@ $(document).ready(function () {
 	$("#fromDate").datepicker({
 		dateFormat: 'dd/mm/yy',
 		onClose: function (selectedDate) {
+			// Parse the selected date
+			var dateParts = selectedDate.split('/');
+			var date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+			// Calculate the date 1 year ahead
+			var oneYearLater = new Date(date.getFullYear() + 1, date.getMonth(), date.getDate());
+			// Set the minDate for #toDate datepicker to the selected date
+			// and maxDate to the date 1 year ahead
 			$("#toDate").datepicker("option", "minDate", selectedDate);
+			$("#toDate").datepicker("option", "maxDate", oneYearLater);
 		}
 	});
+
 	$("#toDate").datepicker({
 		dateFormat: 'dd/mm/yy',
 		onClose: function (selectedDate) {

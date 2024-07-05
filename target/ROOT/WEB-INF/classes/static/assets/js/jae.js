@@ -143,6 +143,23 @@ function listGrade(selectElementId) {
 	});
 }
 
+//	List day
+function listDay(selectElementId) {
+	$.ajax({
+		url:  '/code/day',
+		type: 'GET',
+		success: function (data) {
+			$.each(data, function (index, state) {
+				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
+				$(selectElementId).append(option);	
+			});
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 //	List subject
 function listSubject(selectElementId) {
 	$.ajax({
@@ -151,7 +168,9 @@ function listSubject(selectElementId) {
 		success: function (data) {
 			$.each(data, function (index, state) {
 				var option = "<option value='" + state.value + "'>" + state.name + "</option>";
-				$(selectElementId).append(option);	
+				if(index < 9){ // subject only
+					$(selectElementId).append(option);	
+				}
 			});
 		},
 		error: function (xhr, status, error) {
@@ -241,7 +260,23 @@ function  gradeName(value){
 	}
 	return gradeText;
 }
-
+// get day name
+function  dayName(value){
+	var dayText = '';
+	switch(value) {
+		case '0': dayText = 'All'; break;
+		case '1': dayText = 'Monday'; break;
+		case '2': dayText = 'Tuesday'; break;
+		case '3': dayText = 'Wednesday'; break;
+		case '4': dayText = 'Thursday'; break;
+		case '5': dayText = 'Friday'; break;
+		case '6': dayText = 'SATAM'; break;
+		case '7': dayText = 'SATPM'; break;
+		case '8': dayText = 'SUNAM'; break;
+		case '9': dayText = 'SUNPM'; break;
+	}
+	return dayText;
+}
 
 // get the context path dynamically
 function getContextPath(){

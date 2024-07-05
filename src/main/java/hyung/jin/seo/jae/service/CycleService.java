@@ -64,4 +64,5 @@ public interface CycleService {
 
 	// get cycle by year
 	Cycle findCycleByYear(int year);
+
 }

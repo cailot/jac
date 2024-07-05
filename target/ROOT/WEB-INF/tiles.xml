@@ -26,15 +26,16 @@
 		<put-attribute name="title" value="Student Attendance" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentAttendance.jsp" />
 	</definition>
-	<definition name="studentGradePage" extends="base.definition">
-		<put-attribute name="title" value="Student Grade" />
-		<put-attribute name="body" value="/WEB-INF/layouts/student/studentGrade.jsp" />
-	</definition>
 
 	<!--Course -->
 	<definition name="courseListPage" extends="base.definition">
 		<put-attribute name="title" value="Course List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/courseList.jsp" />
+	</definition>
+	<!--Book -->
+	<definition name="bookListPage" extends="base.definition">
+		<put-attribute name="title" value="Book List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/bookList.jsp" />
 	</definition>
 	<!--Class -->
 	<definition name="classListPage" extends="base.definition">
@@ -116,6 +117,11 @@
 	<definition name="batchPage" extends="base.definition">
 		<put-attribute name="title" value="Batch Process" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/batch.jsp" />
+	</definition>
+	<!-- Student Upgrade -->
+	<definition name="studentGradePage" extends="base.definition">
+		<put-attribute name="title" value="Student Grade" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/studentGrade.jsp" />
 	</definition>
 	<!-- Migration -->
 	<definition name="migrationPage" extends="base.definition">

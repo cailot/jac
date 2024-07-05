@@ -5,6 +5,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+
 import static java.time.temporal.TemporalAdjusters.next;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +151,56 @@ public class CycleServiceImpl implements CycleService {
 		return (weeks+1); // calculation must start from 1 not 0
 	}
 
-
-	// return weeks number based on academic year
+/*
+	@Override
+	public int academicWeeks(String date) {
+		// if not formatted date passed, return 0
+		if (!JaeUtils.isValidDateFormat(date)) return 0;
+		LocalDate specificDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		int currentYear = specificDate.getYear();
+		int academicYear = academicYear(date);
+		int weeks = 0;
+		String academicDate = "";
+		String vacationStartDate = "";
+		String vacationEndDate = "";
+	
+		// bring academic start date & end date
+		for (CycleDTO dto : cycles) {
+			if (dto.getYear().equals(Integer.toString(academicYear))) {
+				academicDate = dto.getStartDate();
+				vacationStartDate = dto.getVacationStartDate();
+				vacationEndDate = dto.getVacationEndDate();
+				break;
+			}
+		}
+		// convert to LocalDate
+		LocalDate academicStart = LocalDate.parse(academicDate);
+		LocalDate vacationStart = LocalDate.parse(vacationStartDate);
+		LocalDate vacationEnd = LocalDate.parse(vacationEndDate);
+	
+		// Adjust the academic start date to the previous or same Monday
+		academicStart = academicStart.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+	
+		if (currentYear == academicYear) { // from June to December
+			// compare today's date with vacation start date
+			if (specificDate.isBefore(vacationStart)) { // simply calculate weeks
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, specificDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)));
+			} else { // set weeks as xmas week
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))) - 1;
+			}
+		} else { // from January to June
+			// simply calculate since last year starting date - 3 weeks (xmas holidays)
+			// compare today's date with vacation end date
+			if (specificDate.isBefore(vacationEnd)) { // until vacation start date
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, vacationStart.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))) - 1;
+			} else {
+				weeks = (int) ChronoUnit.WEEKS.between(academicStart, specificDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))) - 3; // 3 weeks for xmas holidays
+			}
+		}
+		return (weeks + 1); // calculation must start from 1 not 0
+	}
+	*/// return weeks number based on academic year
+	
 	@Override
 	public int academicWeeks(String date){
 		// if not formatted date passed, return 0
@@ -195,6 +245,7 @@ public class CycleServiceImpl implements CycleService {
 		}
 		return (weeks+1); // calculation must start from 1 not 0
 	}
+	
 
 	@Override
 	public boolean isBelongToHoliday(){
@@ -282,12 +333,6 @@ public class CycleServiceImpl implements CycleService {
 		Cycle cycle = cycleRepository.findCycleByYear(year);
 		return cycle;
 	}
-
-
-
-
-
-
 
 	@Override
 	public String academicStartSunday(int year, int week) {
