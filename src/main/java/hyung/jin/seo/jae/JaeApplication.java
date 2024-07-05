@@ -47,7 +47,7 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		// register cycles to applicationContext
 		List<CycleDTO> cycles = cycleService.allCycles();
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
-		//System.out.println(cycleService.academicWeeks("14/07/2024"));
+		// System.out.println(cycleService.academicEndSunday(2024, 50));
 
 		//emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge");
 		// pdfService.generatePdf("jin.pdf");
