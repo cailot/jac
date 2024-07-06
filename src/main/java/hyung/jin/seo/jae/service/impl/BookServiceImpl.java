@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import hyung.jin.seo.jae.dto.BookDTO;
 import hyung.jin.seo.jae.dto.SubjectDTO;
 import hyung.jin.seo.jae.model.Book;
-import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.repository.BookRepository;
 import hyung.jin.seo.jae.service.BookService;
