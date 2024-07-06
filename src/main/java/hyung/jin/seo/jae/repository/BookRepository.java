@@ -13,7 +13,7 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 	
 	List<Book> findAll();
 
-	// List<Book> findByGrade(String grade);
+	List<Book> findByGrade(String grade);
 
 	List<Book> findByGradeAndActiveIsTrue(String grade);
 
