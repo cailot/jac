@@ -503,13 +503,13 @@ function updateSubjects(action) {
 													</c:otherwise>
 												</c:choose>
 												<td class="text-center align-middle">
-													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;&nbsp;
+													<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;&nbsp;
 													<c:choose>
 														<c:when test="${active == true}">
-															<i class="bi bi-pause-circle text-danger" data-toggle="tooltip" title="Inactivate" onclick="confirmDeactivate('${course.id}')"></i>
+															<i class="bi bi-pause-circle text-danger hand-cursor" data-toggle="tooltip" title="Inactivate" onclick="confirmDeactivate('${course.id}')"></i>
 														</c:when>
 														<c:otherwise>
-															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="confirmReactivate('${course.id}')"></i>
+															<i class="bi bi-arrow-clockwise text-success hand-cursor" data-toggle="tooltip" title="Activate" onclick="confirmReactivate('${course.id}')"></i>
 														</c:otherwise>
 													</c:choose>
 												</td>

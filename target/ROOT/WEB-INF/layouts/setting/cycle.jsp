@@ -317,8 +317,8 @@ window.showWarning = function(id) {
 														<fmt:formatDate value="${cycleVactionEndDate}" pattern="dd/MM/yyyy" />
 													</td>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;
-														<i class="bi bi-trash text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${cycle.id}')"></i>
+														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveCycleInfo('${cycle.id}')"></i>&nbsp;
+														<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete" onclick="showWarning('${cycle.id}')"></i>
 													</td>
 												</tr>
 											</c:forEach>

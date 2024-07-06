@@ -522,9 +522,9 @@ function clearPassword() {
 																	<c:out value="${branch.abn}" />
 																</td>
 																<td class="text-center align-middle">
-																	<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
-																	<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Email Password" onclick="showPasswordModal('${branch.id}')"></i>&nbsp;
-																	<i class="bi bi-trash text-danger" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
+																	<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
+																	<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Email Password" onclick="showPasswordModal('${branch.id}')"></i>&nbsp;
+																	<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
 																</td>
 															</tr>
 														</c:forEach>

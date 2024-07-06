@@ -44,6 +44,13 @@ $(document).ready(
 			listBooks(grade);
 		});
 		
+
+		
+
+
+
+
+
 		// remove records from basket when click on delete icon
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
@@ -86,6 +93,7 @@ $(document).ready(
 			}	
 			// remove row from basket
 			tr.remove();
+			updateTotalBasket();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
 
@@ -304,6 +312,15 @@ $.ajax({
 			var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
+			// update total
+			updateTotalBasket();
+			// Add keypress event to handle Enter key
+			startWeekCell.on('keypress', function(event) {
+				if (event.which === 13) { // Enter key
+					event.preventDefault();
+					$(this).blur(); // Remove focus and stop editing
+				}
+			});
 		});
 		row.append(startWeekCell);
 		
@@ -321,6 +338,15 @@ $.ajax({
 			var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
+			// update total
+			updateTotalBasket();
+			// Add keypress event to handle Enter key
+			endWeekCell.on('keypress', function(event) {
+				if (event.which === 13) { // Enter key
+					event.preventDefault();
+					$(this).blur(); // Remove focus and stop editing
+				}
+			});
 		});
 		row.append(endWeekCell);
 
@@ -337,6 +363,15 @@ $.ajax({
 			var originalPrice = ((updatedValue - creditValue) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
+			// update total
+			updateTotalBasket();
+			// Add keypress event to handle Enter key
+			weeksCell.on('keypress', function(event) {
+				if (event.which === 13) { // Enter key
+					event.preventDefault();
+					$(this).blur(); // Remove focus and stop editing
+				}
+			});
 		});
 		row.append(weeksCell);
 
@@ -367,6 +402,13 @@ $.ajax({
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 			previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
+			// Add keypress event to handle Enter key
+			creditCell.on('keypress', function(event) {
+				if (event.which === 13) { // Enter key
+					event.preventDefault();
+					$(this).blur(); // Remove focus and stop editing
+				}
+			});
 		});
 		row.append(creditCell);
 
@@ -401,6 +443,15 @@ $.ajax({
 				// update amount
 				row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
 			}
+			// update total
+			updateTotalBasket();
+			// Add keypress event to handle Enter key
+			discountCell.on('keypress', function(event) {
+				if (event.which === 13) { // Enter key
+					event.preventDefault();
+					$(this).blur(); // Remove focus and stop editing
+				}
+			});
 		});
 		row.append(discountCell);
 		
@@ -413,11 +464,8 @@ $.ajax({
 		row.append($('<td class="hidden-column online">').text(false)); // online			
 		row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
 		row.append($('<td class="hidden-column description">').text(value.description)); // description
-		// row.append($('<td class="hidden-column paid">').text(value.paid)); // paid
-		// row.append($('<td class="hidden-column extra">').text(value.extra)); // extra
 		$('#basketTable > tbody').prepend(row);
 		
-
 		// check if it is 'Online'
 		if(!value.online){
 			//console.log('Online needs : ' + value);
@@ -482,6 +530,8 @@ $.ajax({
 			});	
 		}	
 
+		// update total
+		updateTotalBasket();
 		showAlertMessage('addAlert', '<center><i class="bi bi-mortarboard"></i> &nbsp;&nbsp' + value.description + ' added to My Lecture</center>');
 	}
   });
@@ -509,13 +559,16 @@ function addBookToBasket(value){
 	row.append($('<td style="width: 7%;">'));
 	row.append($('<td style="width: 8%;">')); // price
 	// row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
-	row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(Number(value.price).toFixed(2)));
+	row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(Number(value.price).toFixed(2)));
 	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
 	row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
 	row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
 		
 	$('#basketTable > tbody').append(row);
+
+	// update total	
+	updateTotalBasket();
 	
 	// Automatically dismiss the alert after 2 seconds
 	showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
@@ -980,6 +1033,7 @@ function isSameRowExisting(dataType, id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearEnrolmentBasket(){
 	$('#basketTable > tbody').empty();
+	updateTotalBasket();
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -992,6 +1046,21 @@ function showAlertMessage(elementId, message) {
 			$("#" + elementId).slideUp(500); 
 		}
 	);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Update Total Amount in Basket
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateTotalBasket() {
+	var total = 0;
+	$('#basketTable tbody tr').each(function() {
+		var amount = parseFloat($(this).find('td.amount').text());
+		if (!isNaN(amount)) {
+			total += amount;
+		}
+	});
+	// Update the 'basketTotal' cell
+	$('#basketTotal').text(total.toFixed(2)); // Adjust toFixed(2) for desired decimal places
 }
 
 </script>
@@ -1091,6 +1160,11 @@ function showAlertMessage(elementId, message) {
 								</thead>
 								<tbody>	
 								</tbody>
+								<tfoot>
+									<tr>
+										<th class="text-right pr-5">Total &nbsp;&nbsp;<span id="basketTotal" class="text-primary">0.00</span></td>
+									</tr>
+								</tfoot>
 							</table> 
 						</div>
 						<!-- Course List -->

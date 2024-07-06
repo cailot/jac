@@ -550,9 +550,9 @@ window.showWarning = function(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit" onclick="retreiveUserInfo('${user.username}')"></i>&nbsp;
-														<i class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
-														<i class="bi bi-trash text-danger" data-toggle="tooltip" title="Suspend" onclick="showWarning('${user.username}')"></i>
+														<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retreiveUserInfo('${user.username}')"></i>&nbsp;
+														<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
+														<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Suspend" onclick="showWarning('${user.username}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
