@@ -48,12 +48,11 @@ function createCourseTemplate() {
 	console.log(academicYear);
 
 	$.ajax({
-		url: '${pageContext.request.contextPath}/batch/createCourseTemplate',
+		url: '${pageContext.request.contextPath}/batch/createCourse/' + academicYear,
 		type: 'GET',
 		success: function (count) {
 			// Display the success alert
-			$('#success-alert .modal-body').text(
-				count + ' courses created successfully.');
+			$('#success-alert .modal-body').text(count);
 			$('#success-alert').modal('show');
 		},
 		error: function (xhr, status, error) {

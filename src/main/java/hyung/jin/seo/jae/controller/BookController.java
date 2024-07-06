@@ -126,7 +126,7 @@ public class BookController {
 	@ResponseBody
 	List<BookDTO> listGradeBook(@RequestParam("grade") String grade) {
 		// int year = JaeUtils.academicYear();
-		List<BookDTO> dtos = bookService.booksByGrade(grade);	
+		List<BookDTO> dtos = bookService.booksActiveByGrade(grade);	
 		return dtos;
 	}
 

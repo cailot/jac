@@ -58,6 +58,36 @@ public class BookServiceImpl implements BookService {
 	public List<BookDTO> booksByGrade(String grade) {
 		List<BookDTO> dtos = new ArrayList<BookDTO>();
 		// 1. get books
+		List<Book> books = bookRepository.findByGrade(grade);
+		// 2. get & asscoatiate subjects
+		for(Book book : books){
+			BookDTO dto = new BookDTO(book);
+			List<Subject> subjects = book.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO sub = new SubjectDTO(subject);
+				dto.addSubject(sub);
+			}
+			dtos.add(dto);
+		}
+		// 3. add postage for all years
+		List<Book> postageBooks = bookRepository.findByGradeAndActiveIsTrue("0");
+		for(Book postageBook : postageBooks){
+			BookDTO dto = new BookDTO(postageBook);
+			List<Subject> subjects = postageBook.getSubjects();
+			for(Subject subject : subjects){
+				SubjectDTO sub = new SubjectDTO(subject);
+				dto.addSubject(sub);
+			}
+			dtos.add(dto);
+		}
+		// 4. return DTOs
+		return dtos;	
+	}
+
+	@Override
+	public List<BookDTO> booksActiveByGrade(String grade) {
+		List<BookDTO> dtos = new ArrayList<BookDTO>();
+		// 1. get books
 		List<Book> books = bookRepository.findByGradeAndActiveIsTrue(grade);
 		// 2. get & asscoatiate subjects
 		for(Book book : books){
