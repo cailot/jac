@@ -10,6 +10,9 @@ public interface BookService {
 	List<BookDTO> allBooks();
 	
 	// list available books based on grade
+	List<BookDTO> booksActiveByGrade(String grade);
+
+	// list available books based on grade
 	List<BookDTO> booksByGrade(String grade);
 
 	// list books based on invoice Id
