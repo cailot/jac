@@ -690,15 +690,15 @@ function clearPassword() {
 									
 													</td>
 													<td class="align-middle text-center">
-														<i class="bi bi-pencil-square text-primary"
+														<i class="bi bi-pencil-square text-primary hand-cursor"
 															data-toggle="tooltip" title="Edit"
 															onclick="retreiveTeacherInfo('${teacher.id}')"></i>&nbsp;
-														<i class="bi bi-link-45deg text-success"
+														<i class="bi bi-link-45deg text-success hand-cursor"
 															data-toggle="tooltip"
 															title="Class Association"
 															onclick="retreiveClazzInfo('${teacher.id}','${teacher.state}','${teacher.branch}')"></i>&nbsp;
 
-														<i	class="bi bi-key text-warning" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
+														<i	class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${teacher.email}')"></i>&nbsp;
 														<c:choose>
 															<c:when test="${empty teacher.endDate}">
 																<i class="bi bi-pause-circle text-danger"
@@ -707,7 +707,7 @@ function clearPassword() {
 																	onclick="inactivateTeacher('${teacher.id}')"></i>
 															</c:when>
 															<c:otherwise>
-																<i class="bi bi-arrow-clockwise text-success"
+																<i class="bi bi-arrow-clockwise text-success hand-cursor"
 																	data-toggle="tooltip"
 																	title="Activate"
 																	onclick="activateTeacher('${teacher.id}')"></i>

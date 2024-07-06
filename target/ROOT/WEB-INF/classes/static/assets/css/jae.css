@@ -270,6 +270,10 @@ td a i.fa-trash {
 	font-weight: bold;
 }
 
+.hand-cursor {
+	cursor: pointer;
+}
+
 @media screen and (max-width: 768px){
 	.navbar{
 		flex-direction: column;

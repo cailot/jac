@@ -426,8 +426,8 @@ function updateSubjects(action) {
 														</c:otherwise>
 													</c:choose>
 												<td class="text-center align-middle">
-													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBookInfo('${book.id}')"></i>&nbsp;&nbsp;
-													<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${book.id}')"></i>
+													<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveBookInfo('${book.id}')"></i>&nbsp;&nbsp;
+													<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${book.id}')"></i>
 												</td>
 											</tr>
 										</c:forEach>

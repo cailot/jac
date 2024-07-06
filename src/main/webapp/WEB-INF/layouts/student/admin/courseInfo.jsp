@@ -44,13 +44,6 @@ $(document).ready(
 			listBooks(grade);
 		});
 		
-
-		
-
-
-
-
-
 		// remove records from basket when click on delete icon
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
@@ -99,28 +92,17 @@ $(document).ready(
 
 		// synchronise value between onsite and online class
 		$('#basketTable').on('input', '#onsiteStart', function() {
-        	// var updatedValue = $(this).text();
-       	 	// $('#onlineStart').text(updatedValue);
-			// sync weeks
 			syncValues();
     	});
 		$('#basketTable').on('input', '#onsiteEnd', function() {
-        	// var updatedValue = $(this).text();
-       	 	// $('#onlineEnd').text(updatedValue);
-			// sync weeks	
 			syncValues();
     	});
 		$('#basketTable').on('input', '#onsiteCredit', function() {
-        	// var updatedValue = $(this).text();
-       	 	// $('#onlineCredit').text(updatedValue);
 			syncValues();
     	});
 		$('#basketTable').on('input', '#onsiteWeeks', function() {
-        	// var updatedValue = $(this).text();
-       	 	// $('#onlineWeeks').text(updatedValue);
 			syncValues();
     	});
-
 
 		function syncValues() {
 			// Parse integer values from onsite start and end dates
@@ -162,18 +144,6 @@ function listCourses(grade) {
 					}).join(', ');
 				}
 				row.append($('<td class="smaller-table-font course-title col-10" style="padding-left: 20px;">').html(value.name + ' - ' + value.description + '  [' + subjectsString + ']'));
-				// row.append($('<td class="smaller-table-font col-4">').text(addSpace(JSON.stringify(value.subjects))));
-				
-				// var subjectsString = '';
-				// if(value.subjects != null && value.subjects.length > 0){	
-				// 	subjectsString = value.subjects.map(function(subject) {
-				// 		return subject.name;
-				// 	}).join(', ');
-				// }	
-				// row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));
-
-
-
 				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 				$('#courseTable > tbody').append(row);
 			});
@@ -214,8 +184,7 @@ function listBooks(grade) {
 						return subject.name;
 					}).join(', ');
 				}
-				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));
-				
+				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));				
 				row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
 				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 				$('#bookTable > tbody').append(row);
@@ -293,7 +262,6 @@ $.ajax({
 
 		row.append(hiddenColumn);
 		row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
-		// row.append($('<td class="smaller-table-font name">').text('[' + value.grade.toUpperCase() + '] ' + value.name)); // name
 		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
@@ -312,15 +280,8 @@ $.ajax({
 			var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
-			// update total
-			updateTotalBasket();
-			// Add keypress event to handle Enter key
-			startWeekCell.on('keypress', function(event) {
-				if (event.which === 13) { // Enter key
-					event.preventDefault();
-					$(this).blur(); // Remove focus and stop editing
-				}
-			});
+			// update total & keypress event to handle Enter key
+			cellEnterKeyUpdateTotalBasket(startWeekCell);
 		});
 		row.append(startWeekCell);
 		
@@ -338,15 +299,8 @@ $.ajax({
 			var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
-			// update total
-			updateTotalBasket();
-			// Add keypress event to handle Enter key
-			endWeekCell.on('keypress', function(event) {
-				if (event.which === 13) { // Enter key
-					event.preventDefault();
-					$(this).blur(); // Remove focus and stop editing
-				}
-			});
+			// update total & keypress event to handle Enter key
+			cellEnterKeyUpdateTotalBasket(endWeekCell);
 		});
 		row.append(endWeekCell);
 
@@ -363,15 +317,8 @@ $.ajax({
 			var originalPrice = ((updatedValue - creditValue) * priceValue);
 			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
-			// update total
-			updateTotalBasket();
-			// Add keypress event to handle Enter key
-			weeksCell.on('keypress', function(event) {
-				if (event.which === 13) { // Enter key
-					event.preventDefault();
-					$(this).blur(); // Remove focus and stop editing
-				}
-			});
+			// update total & keypress event to handle Enter key
+			cellEnterKeyUpdateTotalBasket(weeksCell);		
 		});
 		row.append(weeksCell);
 
@@ -443,15 +390,8 @@ $.ajax({
 				// update amount
 				row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
 			}
-			// update total
-			updateTotalBasket();
-			// Add keypress event to handle Enter key
-			discountCell.on('keypress', function(event) {
-				if (event.which === 13) { // Enter key
-					event.preventDefault();
-					$(this).blur(); // Remove focus and stop editing
-				}
-			});
+			// update total & keypress event to handle Enter key
+			cellEnterKeyUpdateTotalBasket(discountCell);
 		});
 		row.append(discountCell);
 		
@@ -484,7 +424,7 @@ $.ajax({
 						clazzId = data;
 						$('#courseTable > tbody > tr').each(function() {
 							var title = $(this).find('.course-title').text();
-							// debugger;
+							//debugger;
 							if(title.toUpperCase().indexOf(ONLINE) !== -1){ // 2 times check !!!!!
 								var isNewOnlineClazz = (title.indexOf(ACADEMIC_NEXT_YEAR_COURSE_SUFFIX) !== -1);
 								// check if onsite class matches proper online class - not next year online class
@@ -529,7 +469,6 @@ $.ajax({
 				}
 			});	
 		}	
-
 		// update total
 		updateTotalBasket();
 		showAlertMessage('addAlert', '<center><i class="bi bi-mortarboard"></i> &nbsp;&nbsp' + value.description + ' added to My Lecture</center>');
@@ -809,9 +748,6 @@ function retrieveEnrolment(studentId){
 				// It is an EnrolmentDTO object     
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table
-					
-					//console.log(value);
-					// debugger;
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 					if(value.extra === OVERDUE){
@@ -821,11 +757,10 @@ function retrieveEnrolment(studentId){
 					}
 					//row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 					row.append($('<td class="smaller-table-font name">').text(value.name)); // name
-					row.append($('<td class="smaller-table-font day">').text(value.day)); // day
+					row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
 					row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-					// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(value.startWeek)); // start week
-					var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').text(value.startWeek); // start week
+					var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onsiteStart').text(value.startWeek); // start week;
 					startWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -839,11 +774,12 @@ function retrieveEnrolment(studentId){
 						var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
 						var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 						row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
+						// update total & keypress event to handle Enter key
+						cellEnterKeyUpdateTotalBasket(startWeekCell);
 					});
 					row.append(startWeekCell);
 
-					// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(value.endWeek)); // end week
-					var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').text(value.endWeek); // end week
+					var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onsiteEnd').text(value.endWeek); // end week;
 					endWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -857,11 +793,12 @@ function retrieveEnrolment(studentId){
 						var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
 						var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 						row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
+						// update total & keypress event to handle Enter key
+						cellEnterKeyUpdateTotalBasket(endWeekCell);
 					});
 					row.append(endWeekCell);
 
-					// row.append($('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text(value.endWeek - value.startWeek + 1)); // weeks
-					var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').text((value.endWeek - value.startWeek) + 1);// weeks  
+					var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
 					weeksCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -874,11 +811,12 @@ function retrieveEnrolment(studentId){
 						var originalPrice = ((updatedValue - creditValue) * priceValue);
 						var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 						row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
+						// update total & keypress event to handle Enter key
+						cellEnterKeyUpdateTotalBasket(weeksCell);
 					});
 					row.append(weeksCell);
 
-					// row.append($('<td class="smaller-table-font text-center credit" contenteditable="true">').text(value.credit)); // credit
-					var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').text(value.credit); // credit
+					var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').attr('id', 'onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').attr('id', 'onsiteCredit').text(value.credit); // credit;				
 					var previousCredit = parseInt(creditCell.text());
 					creditCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
@@ -905,6 +843,12 @@ function retrieveEnrolment(studentId){
 						var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
 						row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
 						previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
+						creditCell.on('keypress', function(event) {
+							if (event.which === 13) { // Enter key
+								event.preventDefault();
+								$(this).blur(); // Remove focus and stop editing
+							}
+						});
 					});
 					row.append(creditCell);
 
@@ -940,6 +884,8 @@ function retrieveEnrolment(studentId){
 							// update amount
 							row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
 						}
+						// update total & keypress event to handle Enter key
+						cellEnterKeyUpdateTotalBasket(discountCell);
 					});
 					row.append(discountCell);
 
@@ -970,7 +916,6 @@ function retrieveEnrolment(studentId){
 					row.append($('<td class="hidden-column extra">').text(value.extra)); // extra	
 		
 					$('#basketTable > tbody').append(row);
-
 					// update invoice table with Enrolment unless free online class
 					if(!freeOnline){
 						addEnrolmentToInvoiceList(value);
@@ -991,7 +936,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td style="width: 4%;">'));
 					row.append($('<td style="width: 7%;">'));
 					row.append($('<td style="width: 8%;">')); // price
-					row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
+					row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(value.price.toFixed(2)));
 					row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 					row.append($('<td class="hidden-column grade">').text(value.grade));
 					row.append($('<td class="hidden-column materialId">').text(value.id)); 
@@ -1002,6 +947,8 @@ function retrieveEnrolment(studentId){
 					addBookToInvoiceList(value);
 				}
 			});
+			// update basket total
+			updateTotalBasket();					
 		},
 		error: function(xhr, status, error) {
 			// Handle the error
@@ -1021,7 +968,7 @@ function isSameRowExisting(dataType, id) {
 			var hiddenValues = exist.split('|');
 			//console.log(hiddenValues[1]);
 			if(hiddenValues[0] === dataType && hiddenValues[1] === id){
-				isExist = true;
+				isExist = true;retrieveEnrolment
 			}
 		}
 	});
@@ -1033,6 +980,7 @@ function isSameRowExisting(dataType, id) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearEnrolmentBasket(){
 	$('#basketTable > tbody').empty();
+	updateTotalBasket();
 }
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1061,6 +1009,22 @@ function updateTotalBasket() {
 	// Update the 'basketTotal' cell
 	$('#basketTotal').text(total.toFixed(2)); // Adjust toFixed(2) for desired decimal places
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Update Total Amount in Basket & Enter key event in the cell
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function cellEnterKeyUpdateTotalBasket(cell){
+	// update total
+	updateTotalBasket();
+	// Add keypress event to handle Enter key
+	cell.on('keypress', function(event) {
+		if (event.which === 13) { // Enter key
+			event.preventDefault();
+			$(this).blur(); // Remove focus and stop editing
+		}
+	});
+}
+
 
 </script>
 

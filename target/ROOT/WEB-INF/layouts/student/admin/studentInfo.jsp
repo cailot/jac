@@ -405,7 +405,7 @@ function updateStudentInfo() {
 //		Display selected student in student search
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
-	console.log(value);
+	//console.log(value);
 	clearStudentForm();
 	$("#formId").val(value['id']);
 	//debugger;
