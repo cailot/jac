@@ -630,11 +630,11 @@ function deletePractice(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrievePracticeInfo('${practice.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrievePracticeInfo('${practice.id}')">
 														</i>&nbsp;
-														<i class="bi bi-paperclip text-success fa-lg" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${practice.id}')">
+														<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${practice.id}')">
 														</i>&nbsp;
-														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${practice.id}')">
+														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${practice.id}')">
 														</i>
 													</td>
 												</tr>

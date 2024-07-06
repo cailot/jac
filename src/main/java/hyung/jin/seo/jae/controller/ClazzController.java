@@ -139,7 +139,7 @@ public class ClazzController {
 	public List<CourseDTO> getCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
-		List<CourseDTO> dtos = courseService.findByGrade(grade);
+		List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
 		// associate subjects
 		for(CourseDTO dto : dtos){
 			Course course = courseService.getCourse(Long.parseLong(dto.getId()));
@@ -176,7 +176,7 @@ public class ClazzController {
 	public List<CourseDTO> listCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
 		int year = cycleService.academicYear();
 		// int week = cycleService.academicWeeks();
-		List<CourseDTO> dtos = courseService.findByGrade(grade);
+		List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
 		// set year
 		for (CourseDTO dto : dtos) {
 			dto.setYear(year);
@@ -243,7 +243,7 @@ public class ClazzController {
 			Cycle cycle = cycleService.findCycleByYear(formData.getYear());
 			course.setCycle(cycle);
 			// 4. set active to true as default
-			course.setActive(true);
+			// course.setActive(true);
 			// 5. save Course
 			courseService.addCourse(course);
 			// 6. return success;
@@ -322,6 +322,7 @@ public class ClazzController {
 		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
+			course.setActive(formData.isActive());
 			// 2. associate Subjects
 			List<SubjectDTO> subjects = formData.getSubjects();
 			for(SubjectDTO subject : subjects){
@@ -402,13 +403,22 @@ public class ClazzController {
 		}
 	}
 
-	// delete course by Id
-	@DeleteMapping(value = "/deleteCourse/{courseId}")
+	// de-activate course by Id
+	@DeleteMapping(value = "/deactivateCourse/{courseId}")
 	@ResponseBody
-    public ResponseEntity<String> removeCourse(@PathVariable String courseId) {
+    public ResponseEntity<String> deactivateCourse(@PathVariable String courseId) {
         Long id = Long.parseLong(StringUtils.defaultString(courseId, "0"));
-		courseService.deleteCourse(id);
-		return ResponseEntity.ok("\"Course deleted successfully\"");
+		courseService.deactivateCourse(id);
+		return ResponseEntity.ok("\"Course de-activated successfully\"");
+    }
+
+	// re-activate course by Id
+	@DeleteMapping(value = "/reactivateCourse/{courseId}")
+	@ResponseBody
+    public ResponseEntity<String> reactivateCourse(@PathVariable String courseId) {
+        Long id = Long.parseLong(StringUtils.defaultString(courseId, "0"));
+		courseService.reactivateCourse(id);
+		return ResponseEntity.ok("\"Course re-activated successfully\"");
     }
 
 	// delete class by Id

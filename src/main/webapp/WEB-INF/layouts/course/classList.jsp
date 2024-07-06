@@ -603,7 +603,7 @@ function deleteClass(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
 														</i>
 														<%-- too dangerous as related to many tables
 														&nbsp;
