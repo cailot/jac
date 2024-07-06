@@ -124,6 +124,12 @@ function retrieveBookInfo(bookId) {
 			$("#editGrade").val(book.grade);
 			$("#editName").val(book.name);
 			$("#editPrice").val(book.price);
+			$("#editActive").val(book.active);
+			if (book.active == true) {
+				$("#editActiveCheckbox").prop('checked', true);
+			} else {
+				$("#editActiveCheckbox").prop('checked', false);
+			}
 			// clear all rows on editScheduleTable
 			$("#editSubjectTable").find("tr:gt(0)").remove();	
 			
@@ -192,6 +198,7 @@ function updateBookInfo(){
 		name : $("#editName").val(),
 		grade : $("#editGrade").val(),
 		price : $("#editPrice").val(),
+		active: $("#editActive").val(),
 		subjects : subjectDtos
 	}
 	
@@ -260,6 +267,18 @@ function deleteBook(id) {
             console.error(error);
         }
     });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update hidden value according to edit activive checkbox
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateEditActiveValue(checkbox) {
+	var editActiveInput = document.getElementById("editActive");
+	if (checkbox.checked) {
+		editActiveInput.value = "true";
+	} else {
+		editActiveInput.value = "false";
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,10 +364,11 @@ function updateSubjects(action) {
 						<div class="table-wrap">
 							<table id="bookListTable" class="table table-striped table-bordered"><thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center" style="width: 35%">Name</th>
+										<th class="align-middle text-center" style="width: 30%">Name</th>
 										<th class="align-middle text-center" style="width: 10%">Grade</th>
-										<th class="align-middle text-center" style="width: 45%">Subject(s)</th>
+										<th class="align-middle text-center" style="width: 35%">Subject(s)</th>
 										<th class="align-middle text-center" style="width: 10%">Price</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
@@ -392,6 +412,19 @@ function updateSubjects(action) {
 													</c:forEach>
 												</td>
 												<td class="small align-middle text-right"><span><c:out value="${book.price}" /></span></td>
+												<c:set var="active" value="${book.active}" />
+													<c:choose>
+														<c:when test="${active == true}">
+															<td class="text-center align-middle">
+																<i class="bi bi-check-circle-fill text-success"></i>
+															</td>
+														</c:when>
+														<c:otherwise>
+															<td class="text-center align-middle">
+																<i class="bi bi-check-circle-fill text-secondary"></i>
+															</td>
+														</c:otherwise>
+													</c:choose>
 												<td class="text-center align-middle">
 													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveBookInfo('${book.id}')"></i>&nbsp;&nbsp;
 													<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${book.id}')"></i>
@@ -503,16 +536,21 @@ function updateSubjects(action) {
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="form-row">
-							<div class="offset-md-1"></div>
-							<div class="col-md-7">
-								<label for="editSubject" class="label-form">Subject</label>
+						<div class="form-row">							
+							<div class="input-group col-md-4">
+								<div class="input-group-prepend">
+									<div class="input-group-text">
+										<input type="checkbox" id="editActiveCheckbox" name="editActiveCheckbox" onchange="updateEditActiveValue(this)">
+									</div>
+								</div>
+								<input type="hidden" id="editActive" name="editActive" value="false">
+								<input type="text" id="editActiveLabel" class="form-control" placeholder="Activate">
+							</div>
+							<div class="col-md-6">
 								<select class="form-control" id="editSubject" name="editSubject">
 								</select>
 							</div>
-							<div class="offset-md-1"></div>
 							<div class="col-md-2 d-flex flex-column justify-content-center">
-								<label class="label-form text-white">Add</label>
 								<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="updateSubjects('edit')"><i class="bi bi-plus"></i></button>
 							</div>
 							<div class="offset-md-1"></div>

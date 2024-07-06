@@ -267,28 +267,63 @@ function clearCourseForm(elementId) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before deleting Course
+//		Confirm before deactivate Course
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmDelete(testId) {
+function confirmDeactivate(testId) {
     // Show the warning modal
-    $('#deleteConfirmModal').modal('show');
+    $('#deactivateConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
-        deleteCourse(testId);
-        $('#deleteConfirmModal').modal('hide');
+    $('#agreeDeactivate').one('click', function() {
+        deactivateCourse(testId);
+        $('#deactivateConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete Course
+//		Confirm before reactivate Course
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function deleteCourse(id) {
+function confirmReactivate(testId) {
+    // Show the warning modal
+    $('#reactivateConfirmModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeReactivate').one('click', function() {
+        reactivateCourse(testId);
+        $('#reactivateConfirmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		De-activate Course
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function deactivateCourse(id) {
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/deleteCourse/' + id,
+		url: '${pageContext.request.contextPath}/class/deactivateCourse/' + id,
 		type: 'DELETE',
 		success: function (result) {
-			$('#success-alert .modal-body').text('Course deleted successfully');
+			$('#success-alert .modal-body').text('Course de-activated successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Re-activate Course
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function reactivateCourse(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/class/reactivateCourse/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Course re-activated successfully');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -389,7 +424,8 @@ function updateSubjects(action) {
 										<th class="align-middle text-center" style="width: 10%">Academic Year</th>
 										<th class="align-middle text-center" style="width: 10%">Grade</th>
 										<th class="align-middle text-center" style="width: 10%">Price</th>
-										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Type</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Type</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
@@ -452,11 +488,30 @@ function updateSubjects(action) {
 															<i class="bi bi-person-fill" title="Onsite"></i>
 														</c:otherwise>
 													</c:choose>
-													
 												</td>
+												<c:set var="active" value="${course.active}" />
+												<c:choose>
+													<c:when test="${active == true}">
+														<td class="text-center align-middle">
+															<i class="bi bi-check-circle-fill text-success"></i>
+														</td>
+													</c:when>
+													<c:otherwise>
+														<td class="text-center align-middle">
+															<i class="bi bi-check-circle-fill text-secondary"></i>
+														</td>
+													</c:otherwise>
+												</c:choose>
 												<td class="text-center align-middle">
 													<i class="bi bi-pencil-square text-primary fa-lg" data-toggle="tooltip" title="Edit" onclick="retrieveCourseInfo('${course.id}')"></i>&nbsp;&nbsp;
-													<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${course.id}')"></i>
+													<c:choose>
+														<c:when test="${active == true}">
+															<i class="bi bi-pause-circle text-danger" data-toggle="tooltip" title="Inactivate" onclick="confirmDeactivate('${course.id}')"></i>
+														</c:when>
+														<c:otherwise>
+															<i class="bi bi-arrow-clockwise text-success" data-toggle="tooltip" title="Activate" onclick="confirmReactivate('${course.id}')"></i>
+														</c:otherwise>
+													</c:choose>
 												</td>
 											</tr>
 										</c:forEach>
@@ -679,19 +734,38 @@ function updateSubjects(action) {
 	</div>
 </div>
 
-<!--Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!--Deactivate Confirmation Modal -->
+<div class="modal fade" id="deactivateConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Course Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Course Inactivate</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to delete Course ?</p>	
+                <p> Are you sure to inactivate Course ?</p>	
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="submit" class="btn btn-danger" id="agreeDeactivate"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+<!--Reactivate Confirmation Modal -->
+<div class="modal fade" id="reactivateConfirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-success">
+            <div class="modal-header btn-success">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Course Activate</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to activate Course ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" id="agreeReactivate"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>

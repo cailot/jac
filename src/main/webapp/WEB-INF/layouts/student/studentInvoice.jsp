@@ -393,15 +393,15 @@ function clearStudentInfo() {
 													<!--check ${payment.info} is empty or not -->
 													<c:choose>
 														<c:when test="${not empty info}">
-															<i class="bi bi-chat-square-text-fill text-primary" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+															<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
 														</c:when>
 														<c:otherwise>
-															<i class="bi bi-chat-square-text text-primary" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+															<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
 														</c:otherwise>
 													</c:choose>
 												</td>																						
 												<td class="text-center align-middle">
-													<i class="bi bi-calculator text-success" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
+													<i class="bi bi-calculator text-success hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
 												</td> 
 											</tr>
 										</c:forEach>

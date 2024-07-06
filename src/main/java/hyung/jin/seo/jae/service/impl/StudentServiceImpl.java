@@ -110,7 +110,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public Student addStudent(Student std) {
-		String pwd = std.getPassword();
+		//String pwd = std.getPassword();
 		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		// std.setPassword(passwordEncoder.encode(pwd));
 		Student add = studentRepository.save(std);
