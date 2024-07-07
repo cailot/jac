@@ -200,51 +200,6 @@ public class EnrolmentController {
 		return ResponseEntity.ok("eLearning Success");
 	}
 
-
-	// @PostMapping("/associateBook/{studentId}")
-	// @ResponseBody
-	// public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody Long[] bookIds) {
-	// 	List<MaterialDTO> dtos = new ArrayList<>();
-	// 	// 1. get Invoice
-	// 	Invoice invo = invoiceService.getInvoiceByStudentId(studentId);
-	// 	// if no invoice or no book, return empty list
-	// 	if((invo==null) || (bookIds==null)) return dtos;
-	// 	// 2. bring all registered Book - bookId & invoiceId
-	// 	List<Long> registeredIds = materialService.findBookIdByInvoiceId(invo.getId());
-	// 	for(Long bookId : bookIds){
-	// 		// 2-1. check whether registeredIds contains bookId or not
-	// 		if(registeredIds.contains(bookId)){ // if book is already registered, then do nothging but remove from registeredIds
-	// 			registeredIds.remove(bookId);
-	// 			continue;
-	// 		}else{ // there is no registered book, which requires adding new book
-	// 			// 2-2. get Book
-	// 			Book book = bookService.getBook(bookId);
-	// 			// 2-3. update invoice amount
-	// 			invo.setAmount(invo.getAmount() + book.getPrice());
-	// 			// 2-4. create Material
-	// 			Material material = new Material();
-	// 			material.setBook(book);
-	// 			material.setInvoice(invo);
-	// 			// 2-4. save Material - Invoice will be automatically updated
-	// 			material = materialService.addMaterial(material);	
-	// 		}
-	// 	}	
-	// 	// 3. if bookId is in the list but no passed then delete - delete book
-	// 	for(Long deleteId : registeredIds){
-	// 		// 3-2. update Invoice
-	// 		double price = bookService.getPrice(deleteId);
-	// 		invo.setAmount(invo.getAmount() - price);
-	// 		// 3-3. remove Material by bookId & invoiceId - Invoice will be automatically upated
-	// 		materialService.deleteMaterial(invo.getId(), deleteId);
-	// 	}
-	// 	// 4. add MaterialDTO to return list
-	// 	Set<Material> materials = invo.getMaterials();
-	// 	for (Material material : materials) {
-	// 		dtos.add(new MaterialDTO(material));
-	// 	}
-	// 	return dtos;
-	// }
-
 	@PostMapping("/associateBook/{studentId}")
 	@ResponseBody
 	public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody MaterialDTO[] formData) {

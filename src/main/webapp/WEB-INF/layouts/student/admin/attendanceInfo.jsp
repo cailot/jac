@@ -5,7 +5,7 @@
 
 <script>
 const ATTENDANCE = 'attendance';
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					
 
 $(document).ready(function() {
@@ -43,21 +43,20 @@ function retrieveAttendance(studentId) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					// console.log(index + ' - ' + value);
+					console.log(value.attendDate + '--' +value.clazzDay);
 					var id = value.id;  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(gradeName(value.clazzGrade) + '-' + value.week));
 					var dayDropdown = $('<select class="small text-center dayChoice" style="width: 100%; border: none;" title="' + value.attendDate + '">');
-					// var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 					// Loop through the daysOfWeek array
 					for (var i = 0; i < daysOfWeek.length; i++) {
-  						var option = $('<option>').text(daysOfWeek[i]);
-						// Set the selected attribute for the corresponding day
-						if (value.clazzDay === daysOfWeek[i]) {
+						var option = $("<option value='" + i + "'>").text(daysOfWeek[i]);
+						dayDropdown.append(option);
+						// Adjusted to match clazzDay with array index
+						if (value.clazzDay == i) {
 							option.attr('selected', 'selected');
 						}
-  						dayDropdown.append(option);
 					}
 					// Attach an event listener to the element
 					dayDropdown.on('change', function() {

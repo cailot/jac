@@ -540,11 +540,6 @@ function associateRegistration(){
 		var hiddens = $(this).find('.data-type').text();
 		if(hiddens.indexOf('|') !== -1){
 			var hiddenValues = hiddens.split('|');
-			// if hiddenValues[0] is ELEARNING, push hiddenValues[1] to elearnings array
-			// if(hiddenValues[0] === ELEARNING){
-			// 	elearnings.push(hiddenValues[1]);
-			// 	return true;
-			// }else 
 			if(hiddenValues[0] === BOOK){
 				bookId = hiddenValues[1];
 				var materialId = $(this).find('.materialId').text();
