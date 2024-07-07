@@ -24,6 +24,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
     @Query("DELETE FROM Material m WHERE m.id = :id")
     void deleteMaterial(@Param("id") Long id);
 
+	@Modifying
     @Query("DELETE FROM Material m WHERE m.invoice.id = :invoiceId AND m.book.id = :bookId")
     void deleteMaterialByInvoiceIdAndBookId(@Param("invoiceId") Long invoiceId, @Param("bookId") Long bookId);
 

@@ -570,22 +570,25 @@ public String academicEndSunday(int year, int week) {
 	public LocalDate getDateByWeekAndDay(int year, int week, String day) {
 		String start = academicStartMonday(year, week);
 		switch(day){
-			// case "Sunday":
 			// 	return start;
-			case "Monday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(1);
-			case "Tuesday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(2);
-			case "Wednesday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(3);
-			case "Thursday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(4);
-			case "Friday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5);
-			case "Saturday":
-				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6);
-			default: // Sunday or All
+			case "1":
 				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			case "2":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(1);
+			case "3":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(2);
+			case "4":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(3);
+			case "5":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(4);
+			case "6":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5);
+			case "7":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(5);
+			case "8":
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6);
+			default:
+				return LocalDate.parse(start, DateTimeFormatter.ofPattern("dd/MM/yyyy")).plusDays(6);
 		}
 	}
 
