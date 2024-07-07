@@ -32,7 +32,6 @@ import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
-import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("attendance")
@@ -322,9 +321,6 @@ public class AttendanceController {
 	@ResponseBody
 	public List<AttendanceDTO> listAttendancesByStudent(@PathVariable Long id) {
 		List<AttendanceDTO> dtos = attendanceService.findAttendanceByStudent(id);
-		// how to sort dtos by attendDate?
-		// dtos.sort(Comparator.comparing(AttendanceDTO::getAttendDate));
-		
 		return dtos;
 	}
 

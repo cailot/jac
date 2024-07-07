@@ -39,7 +39,7 @@ function addEnrolmentToInvoiceList(data) {
     // row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
 	row.append($('<td class="smaller-table-font">').text(data.name));
     row.append($('<td class="smaller-table-font text-center">').text(data.year));
-	row.append($('<td class="smaller-table-font text-center">').text(data.day));
+	row.append($('<td class="smaller-table-font text-center">').text(dayName(data.day)));
     
 	// set editable attribute to true if the amount is not fully paid	
 	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek));
@@ -624,7 +624,7 @@ function addInformation(){
 				<div class="col-md-6">
 					<div class="row">
 						<input type="hidden" id="hiddenInvoiceId" name="hiddenInvoiceId" />
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<p>Balance :</p>
 						</div>
 						<div class="col-md-2">
