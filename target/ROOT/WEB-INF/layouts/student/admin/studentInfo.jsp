@@ -570,7 +570,7 @@ function clearCourseRegisteration(){
 			<div class="col-md-8">
 				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
 			</div>
-			<div class="col-md-4" title="Search Student by Id/Name">
+			<div class="col-md-4 d-flex justify-content-center align-items-center" title="Search Student by Id/Name">
 				<button type="button" class="btn btn-block btn-primary" onclick="searchStudent()"><i class="bi bi-search"></i></button>
 			</div>
 		</div>

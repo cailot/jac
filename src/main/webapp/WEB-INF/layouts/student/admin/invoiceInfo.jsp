@@ -91,6 +91,7 @@ function addEnrolmentToInvoiceList(data) {
 //		Add Outstanding to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addOutstandingToInvoiceList(data) {
+	console.log(data);
 	//debugger;
 	var newOS = $('<tr>');
 	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
