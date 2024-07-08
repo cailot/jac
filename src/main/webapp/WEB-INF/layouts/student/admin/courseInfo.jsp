@@ -644,7 +644,6 @@ function associateRegistration(){
 				updateLatestInvoiceId(enrolData.invoiceId);
 			}
 			
-			//debugger;
 			// nested ajax for book after creating or updating invoice
 			// 2. Make the AJAX for book
 			$.ajax({
@@ -687,9 +686,30 @@ function associateRegistration(){
 
 			// 3. make sure updating attendance table after updating enrolment
 			retrieveAttendance(studentId);
-
 			// check how many rows in basketTable table
 			var rowCount = $('#basketTable tbody tr').length;
+
+			// 4. check any outstanding, if exists, show it to invoice table
+			$.ajax({
+				url: '${pageContext.request.contextPath}/enrolment/associateOutstanding/' + studentId,
+				method: 'POST',
+				contentType: 'application/json',
+				success: function(response) {
+					// remove outstandings from invoice table
+					removeOutstandingFromInvoiceList();
+					// Handle the response
+					if(response.length >0){
+						$.each(response, function(index, value){
+							// console.log(value);
+							addOutstandingToInvoiceList(value);
+						});
+					}
+				},
+				error: function(xhr, status, error) {
+					// Handle the error
+					console.error(error);
+				}
+			});
 
 			// console.log(response);
 			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
@@ -697,28 +717,6 @@ function associateRegistration(){
 
 			// update balance
 			
-		},
-		error: function(xhr, status, error) {
-			// Handle the error
-			console.error(error);
-		}
-	});
-
-	// need to check whether any exisiting Outstanding
-	$.ajax({
-		url: '${pageContext.request.contextPath}/enrolment/associateOutstanding/' + studentId,
-		method: 'POST',
-		contentType: 'application/json',
-		success: function(response) {
-			// remove outstandings from invoice table
-			removeOutstandingFromInvoiceList();
-			// Handle the response
-			if(response.length >0){
-				$.each(response, function(index, value){
-					// console.log(value);
-					addOutstandingToInvoiceList(value);
-				});
-			}
 		},
 		error: function(xhr, status, error) {
 			// Handle the error
@@ -1077,22 +1075,17 @@ function cellEnterKeyUpdateTotalBasket(cell){
 					<div class="col-md-2">
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
 					</div>
-					<!-- <div class="col-md-2">
-						<button id="clearEnrolmentBtn" type="button" class="btn btn-block btn-success btn-sm" data-toggle="modal" onclick="clearEnrolmentBasket()">Clear</button>
-					</div> -->
 				</div>
 			</div>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
 						<nav>
-							  <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-									<a class="nav-item nav-link active" id="nav-basket-tab" data-toggle="tab" href="#nav-basket" role="tab" aria-controls="nav-basket" aria-selected="true">Purchased Items</a>
-									<!-- <a class="nav-item nav-link" id="nav-elearn-tab" data-toggle="tab" href="#nav-elearn" role="tab" aria-controls="nav-elearn" aria-selected="true">e-Learning</a> -->
-									<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Course To Choose</a>
-									<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books To Purchase</a>
-									<!-- <a class="nav-item nav-link" id="nav-etc-tab" data-toggle="tab" href="#nav-etc" role="tab" aria-controls="nav-etc" aria-selected="false">Etc</a> -->
-							  </div>
+							<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+								<a class="nav-item nav-link active" id="nav-basket-tab" data-toggle="tab" href="#nav-basket" role="tab" aria-controls="nav-basket" aria-selected="true">Purchased Items</a>
+								<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Course To Choose</a>
+								<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books To Purchase</a>
+							</div>
 						</nav>                  
 						<div class="tab-content" id="nav-tabContent">
 						

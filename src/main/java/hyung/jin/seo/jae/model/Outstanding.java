@@ -35,11 +35,11 @@ public class Outstanding {
     @Column(columnDefinition = "DECIMAL(10,2)")
     private double paid;
     
-    @Column(columnDefinition = "DECIMAL(10,2)")
-    private double remaining;
+    // @Column(columnDefinition = "DECIMAL(10,2)")
+    // private double remaining;
     
-    @Column(columnDefinition = "DECIMAL(10,2)")
-    private double amount;
+    // @Column(columnDefinition = "DECIMAL(10,2)")
+    // private double amount;
     
     @CreationTimestamp
     private LocalDate registerDate;

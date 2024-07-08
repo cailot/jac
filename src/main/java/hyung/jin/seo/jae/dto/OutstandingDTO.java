@@ -28,16 +28,16 @@ public class OutstandingDTO extends MoneyDTO{
 		this.id = String.valueOf(stand.getId());
 		this.registerDate = stand.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.paid = stand.getPaid();
-		this.remaining = stand.getRemaining();
-		this.amount = stand.getAmount();
+		// this.remaining = stand.getRemaining();
+		// this.amount = stand.getAmount();
 		this.info = stand.getInfo();
 	}
 
-	public OutstandingDTO(long id, double paid, double remaining, double amount, LocalDate registerDate, long paymentId, long invoiceId, String info){
+	public OutstandingDTO(long id, double paid, double amount, LocalDate registerDate, long paymentId, long invoiceId, String info){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.paid = paid;
-		this.remaining = remaining;
+		this.remaining = (amount-paid);
 		this.amount = amount;
 		this.paymentId = String.valueOf(paymentId);
 		this.invoiceId = String.valueOf(invoiceId);
@@ -49,8 +49,8 @@ public class OutstandingDTO extends MoneyDTO{
 		if(StringUtils.isNotBlank(id)) stand.setId(Long.parseLong(id));
     	if(StringUtils.isNotBlank(registerDate)) stand.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		stand.setPaid(paid);
-		stand.setRemaining(remaining);
-		stand.setAmount(amount);
+		// stand.setRemaining(remaining);
+		// stand.setAmount(amount);
 		stand.setInfo(info);
 		return stand;
     }
