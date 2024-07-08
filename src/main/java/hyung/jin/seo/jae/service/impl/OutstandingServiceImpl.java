@@ -41,7 +41,6 @@ public class OutstandingServiceImpl implements OutstandingService {
 		}catch(Exception e){
 			System.out.println("No outstanding found");
 		}
-
 		// set Remaining based on previous paid
 		for(OutstandingDTO dto : dtos){
 			Long dtoId = Long.parseLong(dto.getId());
@@ -53,8 +52,6 @@ public class OutstandingServiceImpl implements OutstandingService {
 				}
 			}
 		}		
-
-
 		return dtos;
 	}
 
