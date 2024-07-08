@@ -41,8 +41,23 @@ public class OutstandingServiceImpl implements OutstandingService {
 		}catch(Exception e){
 			System.out.println("No outstanding found");
 		}
+
+		// set Remaining based on previous paid
+		for(OutstandingDTO dto : dtos){
+			Long dtoId = Long.parseLong(dto.getId());
+			for(OutstandingDTO dto2 : dtos){
+				Long dto2Id = Long.parseLong(dto2.getId());
+				if(dtoId>dto2Id){
+					//System.out.println("====> " + dtoId + " : " + dto.getPaid() + " is greater than " + dto2Id + " : "  + dto2.getPaid());
+					dto.setRemaining(dto.getRemaining()-dto2.getPaid());
+				}
+			}
+		}		
+
+
 		return dtos;
 	}
+
 
 	@Override
 	@Transactional
@@ -76,14 +91,6 @@ public class OutstandingServiceImpl implements OutstandingService {
 		// paid
 		if(stand.getPaid()!=existing.getPaid()){
 			existing.setPaid(stand.getPaid());
-		}
-		// remaining
-		if(stand.getRemaining()!=existing.getRemaining()){
-			existing.setRemaining(stand.getRemaining());
-		}
-		// amount
-		if(stand.getAmount()!=existing.getAmount()){
-			existing.setAmount(stand.getAmount());
 		}
 		// info
 		if(!StringUtils.equalsIgnoreCase(StringUtils.defaultString(stand.getInfo()), StringUtils.defaultString(existing.getInfo()))){

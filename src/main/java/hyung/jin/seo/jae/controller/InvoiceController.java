@@ -343,8 +343,8 @@ public class InvoiceController {
 			// 8-2. create Outstanding
 			Outstanding outstanding = new Outstanding();
 			outstanding.setPaid(paidAmount);
-			outstanding.setRemaining(invoice.getAmount()-invoice.getPaidAmount());
-			outstanding.setAmount(invoice.getAmount());
+			// outstanding.setRemaining(invoice.getAmount()-invoice.getPaidAmount());
+			// outstanding.setAmount(invoice.getAmount());
 			// set paymentId to outstanding
 			outstanding.setPaymentId(paid.getId());
 			// 9-2. add Outstanding to Invoice
