@@ -108,9 +108,9 @@ public class CodeController {
 			// 1. create Cycle
 			Branch branch = formData.convertToBranch(formData);
 			// 2. set default password
-			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			String encodedPassword = passwordEncoder.encode(JaeConstants.DEFAULT_PASSWORD);
-			branch.setPassword(encodedPassword);
+			// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			// String encodedPassword = passwordEncoder.encode(JaeConstants.DEFAULT_PASSWORD);
+			// branch.setPassword(encodedPassword);
 			// 3. get State
 			State state = codeService.getState(Long.parseLong(formData.getStateId()));
 			if(state!=null){
@@ -178,13 +178,6 @@ public class CodeController {
 			String message = "Error updating branch: " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
-	}
-
-	// update branch eamil password
-	@PutMapping("/updateEmailPassword/{id}/{pwd}")
-	@ResponseBody
-	public void updatePassword(@PathVariable String id, @PathVariable String pwd) {
-		codeService.updateBranchEmailPassword(Long.parseLong(id), pwd);
 	}
 	
 	// remove branch by Id

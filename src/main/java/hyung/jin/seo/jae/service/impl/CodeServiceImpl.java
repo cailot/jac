@@ -457,16 +457,4 @@ public class CodeServiceImpl implements CodeService {
 		return email;
 	}
 
-	@Transactional
-	@Override
-	public void updateBranchEmailPassword(Long id, String password) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encodedPassword = passwordEncoder.encode(password);
-		try{
-			branchRepository.updateEmailPassword(id, encodedPassword);
-		}catch(Exception e){
-			System.out.println("No Branch found");
-		}
-	}
-
 }

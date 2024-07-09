@@ -25,7 +25,7 @@ public class BranchDTO implements Serializable{
 
 	private String email;
 
-	private String password;
+	// private String password;
 
 	private String address;
 
@@ -49,7 +49,7 @@ public class BranchDTO implements Serializable{
 		this.name = (branch.getName()!=null) ? branch.getName() : "";
 		this.phone = (branch.getPhone()!=null) ? branch.getPhone() : "";
 		this.email = (branch.getEmail()!=null) ? branch.getEmail() : "";
-		this.password = (branch.getPassword()!=null) ? branch.getPassword() : "";
+		// this.password = (branch.getPassword()!=null) ? branch.getPassword() : "";
 		this.address = (branch.getAddress()!=null) ? branch.getAddress() : "";
 		this.abn = (branch.getAbn()!=null) ? branch.getAbn() : "";
 		this.bank = (branch.getBank()!=null) ? branch.getBank() : "";
@@ -59,7 +59,7 @@ public class BranchDTO implements Serializable{
 		this.info = (branch.getInfo()!=null) ? branch.getInfo() : "";
 	}
 
-	public BranchDTO(long id, String code, String name, String phone, String email, String address, String abn, String bank, String bsb, String accountNumber, String accountName, String info, String password, long stateId){
+	public BranchDTO(long id, String code, String name, String phone, String email, String address, String abn, String bank, String bsb, String accountNumber, String accountName, String info, long stateId){
 		this.id = String.valueOf(id);
 		this.code = code;
 		this.name = name;
@@ -72,7 +72,7 @@ public class BranchDTO implements Serializable{
 		this.accountNumber = accountNumber;
 		this.accountName = accountName;
 		this.info = info;
-		this.password = password;
+		// this.password = password;
 		this.stateId = String.valueOf(stateId);
 	}
 
@@ -100,7 +100,7 @@ public class BranchDTO implements Serializable{
 		branch.setName(dto.getName());
 		branch.setPhone(dto.getPhone());
 		branch.setEmail(dto.getEmail());
-		branch.setPassword(dto.getPassword());
+		// branch.setPassword(dto.getPassword());
 		branch.setAddress(dto.getAddress());
 		branch.setAbn(dto.getAbn());
 		branch.setBank(dto.getBank());

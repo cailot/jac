@@ -85,7 +85,7 @@
 </script>
 </head>
 <body>
-    <div class="session-timeout-bar alert alert-warning alert-dismissible fade show" role="alert">
+    <div class="session-timeout-bar alert alert-danger alert-dismissible fade show" role="alert">
 		<div style="display: flex; justify-content: space-between; align-items: center;">
 			<div>
 				<strong>Session Timeout</strong>
