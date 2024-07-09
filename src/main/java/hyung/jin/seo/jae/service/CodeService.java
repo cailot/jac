@@ -57,9 +57,6 @@ public interface CodeService {
 	// delete branch
 	void deleteBranch(Long id);
 
-	// update branch email password
-	void updateBranchEmailPassword(Long id, String password);
-
 	// get branch info - email, info
 	SimpleBasketDTO getBranchInfo(String code);
 
