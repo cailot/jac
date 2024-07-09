@@ -92,6 +92,10 @@ public class EnrolmentController {
 			// 1. get enrolments by invoice id
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
 			for(EnrolmentDTO enrol : enrols){
+				// set price = 0 if discount = 100%
+				if(StringUtils.defaultString(enrol.getDiscount()).equalsIgnoreCase(JaeConstants.DISCOUNT_FREE)){
+					enrol.setPrice(0);
+				}
 				// 2. check if enrolment is active or not
 				boolean isActive = currentYear >= enrol.getYear() && currentWeek <= enrol.getEndWeek();
 				// if full paid, set extra as paid
