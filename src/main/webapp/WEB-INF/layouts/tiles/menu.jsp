@@ -39,12 +39,14 @@
 
 <nav class="navbar mt-2 mb-2">
 	<div class="navbar_logo">
-	<!--	
 		<img src="${pageContext.request.contextPath}/image/logo-manager.png" style="filter: brightness(0) invert(1);width:55px;" />
+	
+		<!--
 		<span class="ml-3 h3">James An College</span>
-	-->
-		<img src="${pageContext.request.contextPath}/image/logo-manager.png" style="filter: sepia(100%) hue-rotate(180deg) saturate(1.5); width:55px;" />
+		-->
+	
 		<span class="ml-3 h3" style="color: cyan;">James An College</span>
+	
 	</div>
 	<ul class="navbar_menu">
 		<!-- Student -->
