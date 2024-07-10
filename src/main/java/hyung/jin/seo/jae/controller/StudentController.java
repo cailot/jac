@@ -128,7 +128,7 @@ public class StudentController {
 		if(dtos==null || dtos.isEmpty()){
 			model.addAttribute(JaeConstants.UPGRADE_LIST, null);
 		}else{
-			model.addAttribute(JaeConstants.UPGRADE_LIST, dtos);			
+			model.addAttribute(JaeConstants.UPGRADE_LIST, dtos);
 		}
 		return "studentGradePage";
 	}
