@@ -7,7 +7,6 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css"> -->
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dataTables.buttons.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/jszip.min.js"></script>
@@ -19,42 +18,86 @@
   
 <script>
 $(document).ready(function () {
-	$('#studentListTable').DataTable({
-    	language: {
-    		search: 'Filter:'
-    	},
-    	dom: 'Blfrtip',	
-    	buttons: [
-    		 'excelHtml5', 
+    // Initialize DataTable
+    $('#studentListTable').DataTable({
+        language: {
+            search: 'Filter:'
+        },
+        dom: 'Blfrtip',    
+        buttons: [
+             'excelHtml5', 
              {
- 	            extend: 'pdfHtml5',
- 	            download: 'open',
- 	            pageSize: 'A0'
- 	        },
- 	        'print'
+                extend: 'pdfHtml5',
+                download: 'open',
+                pageSize: 'A0'
+            },
+            'print'
         ],
-		paging : false,
-		searching : false
+        paging : false,
+        searching : false
     });
-    
-	// initialise state list when loading
-	listState('#listState');
-	listBranch('#listBranch');
-	listGrade('#listCurrentGrade');
-	listGrade('#listToGrade');
 
-	 // When the "Select All" checkbox is checked or unchecked
-	 $('#select-all').change(function() {
+
+    // Initialise state list when loading
+    listGrade('#listToGrade');
+
+    // When the "Select All" checkbox is checked or unchecked
+    $('#select-all').change(function() {
         // Check or uncheck all checkboxes in the table body
         $('#list-student-body input[type="checkbox"]').prop('checked', $(this).prop('checked'));
     });
 
-	// send diabled select value via <form>
-	document.getElementById("studentList").addEventListener("submit", function() {
+    // Send disabled select value via <form>
+    document.getElementById("studentList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
-	});
+    });
 
+	// set user selection if exists
+	selectionCriteria();
 });
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Get URL Parameters
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function getQueryParameterValue(key) {
+	// Get the query string from the URL
+	var queryString = window.location.search;
+
+	// Remove the leading '?' if it exists
+	if (queryString.startsWith('?')) {
+		queryString = queryString.substring(1);
+	}
+
+	// Split the query string into key-value pairs
+	var params = queryString.split('&');
+
+	// Iterate over the key-value pairs
+	for (var i = 0; i < params.length; i++) {
+		var keyValuePair = params[i].split('=');
+		var currentKey = decodeURIComponent(keyValuePair[0]);
+		if (currentKey === key) {
+			return keyValuePair.length > 1 ? decodeURIComponent(keyValuePair[1]) : null;
+		}
+	}
+	return null;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Set User Selection
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function selectionCriteria(){
+	var stateQuery = getQueryParameterValue('listState');
+	if(stateQuery != null) $("#listState").val(stateQuery);
+	var branchQuery = getQueryParameterValue('listBranch');
+	if(branchQuery != null) $("#listBranch").val(branchQuery);
+	var currentGradeQuery = getQueryParameterValue('listCurrentGrade');
+	if(currentGradeQuery != null) $("#listCurrentGrade").val(currentGradeQuery);
+	// console.log(stateQuery + ' , ' + branchQuery + ' , ' + currentGradeQuery);	
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Upgrade Student's Grade
@@ -62,15 +105,12 @@ $(document).ready(function () {
 function updateStudentInfo(){
 	
 	var listTo = $('#listToGrade').val();
-
 	// if listTo is null or empty, then display error message and exit
 	if(listTo == null || listTo == ''){
 		$('#warning-alert .modal-body').html('Please select grade to upgrade.');
 		$('#warning-alert').modal('show');
 		return;
 	}
-
-
 	var std = [];
 	$('#list-student-body input[type=checkbox]').each(function(){
 		if(this.checked){
@@ -130,17 +170,61 @@ function updateStudentInfo(){
 								<div class="col-md-2">
 									<label for="listState" class="label-form">State</label> 
 									<select class="form-control" id="listState" name="listState" disabled>
+										<option value="1">Victoria</option>
 									</select>
 								</div>
 								<div class="col-md-2">
 									<label for="listBranch" class="label-form">Branch</label> 
 									<select class="form-control" id="listBranch" name="listBranch">
 										<option value="0">All Branch</option>
+										<option value="12">Box Hill</option>
+										<option value="13">Braybrook</option>
+										<option value="14">Chadstone</option>
+										<option value="15">Cranbourne</option>
+										<option value="16">Epping</option>
+										<option value="17">Glen Waverley</option>
+										<option value="18">Narre Warren</option>
+										<option value="19">Micham</option>
+										<option value="20">Preston</option>
+										<option value="21">Richmond</option>
+										<option value="22">Springvale</option>
+										<option value="23">St.Albans</option>
+										<option value="24">Werribee</option>
+										<option value="25">Balwyn</option>
+										<option value="26">Rowville</option>
+										<option value="27">Caroline Springs</option>
+										<option value="28">Bayswater</option>
+										<option value="29">Point Cook</option>
+										<option value="30">Craigieburn</option>
+										<option value="31">Mernda</option>
+										<option value="32">Melton</option>
+										<option value="33">Glenroy</option>
+										<option value="34">Pakenham</option>
 									</select>
 								</div>
 								<div class="col-md-1">
 									<label for="listCurrentGrade" class="label-form">Current</label> 
 									<select class="form-control" id="listCurrentGrade" name="listCurrentGrade">
+										<option value="1">P2</option>
+										<option value="2">P3</option>
+										<option value="3">P4</option>
+										<option value="4">P5</option>
+										<option value="5">P6</option>
+										<option value="6">S7</option>
+										<option value="7">S8</option>
+										<option value="8">S9</option>
+										<option value="9">S10</option>
+										<option value="10">S10E</option>
+										<option value="11">TT6</option>
+										<option value="12">TT8</option>
+										<option value="13">TT8E</option>
+										<option value="14">SRW4</option>
+										<option value="15">SRW5</option>
+										<option value="16">SRW6</option>
+										<option value="17">SRW7</option>
+										<option value="18">SRW8</option>
+										<option value="19">JMSS</option>
+										<option value="20">VCE</option>
 									</select>
 								</div>
 								<div class="col-md-1">
@@ -163,18 +247,61 @@ function updateStudentInfo(){
 								<div class="col-md-2">
 									<label for="listState" class="label-form">State</label> 
 									<select class="form-control" id="listState" name="listState" disabled>
-										<option value="All">All State</option>
+										<option value="1">Victoria</option>
 									</select>
 								</div>
 								<div class="col-md-2">
 									<label for="listBranch" class="label-form">Branch</label> 
 									<select class="form-control" id="listBranch" name="listBranch" disabled>
-										<option value="All">All Branch</option>
+										<option value="0">All Branch</option>
+										<option value="12">Box Hill</option>
+										<option value="13">Braybrook</option>
+										<option value="14">Chadstone</option>
+										<option value="15">Cranbourne</option>
+										<option value="16">Epping</option>
+										<option value="17">Glen Waverley</option>
+										<option value="18">Narre Warren</option>
+										<option value="19">Micham</option>
+										<option value="20">Preston</option>
+										<option value="21">Richmond</option>
+										<option value="22">Springvale</option>
+										<option value="23">St.Albans</option>
+										<option value="24">Werribee</option>
+										<option value="25">Balwyn</option>
+										<option value="26">Rowville</option>
+										<option value="27">Caroline Springs</option>
+										<option value="28">Bayswater</option>
+										<option value="29">Point Cook</option>
+										<option value="30">Craigieburn</option>
+										<option value="31">Mernda</option>
+										<option value="32">Melton</option>
+										<option value="33">Glenroy</option>
+										<option value="34">Pakenham</option>
 									</select>
 								</div>
 								<div class="col-md-1">
 									<label for="listCurrentGrade" class="label-form">Current</label> 
 									<select class="form-control" id="listCurrentGrade" name="listCurrentGrade" disabled>
+										<option value="1">P2</option>
+										<option value="2">P3</option>
+										<option value="3">P4</option>
+										<option value="4">P5</option>
+										<option value="5">P6</option>
+										<option value="6">S7</option>
+										<option value="7">S8</option>
+										<option value="8">S9</option>
+										<option value="9">S10</option>
+										<option value="10">S10E</option>
+										<option value="11">TT6</option>
+										<option value="12">TT8</option>
+										<option value="13">TT8E</option>
+										<option value="14">SRW4</option>
+										<option value="15">SRW5</option>
+										<option value="16">SRW6</option>
+										<option value="17">SRW7</option>
+										<option value="18">SRW8</option>
+										<option value="19">JMSS</option>
+										<option value="20">VCE</option>
 									</select>
 								</div>
 								<div class="col-md-1">
@@ -322,5 +449,6 @@ function updateStudentInfo(){
     	</div>
 	</div>
 </div>
+
 
 

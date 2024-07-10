@@ -407,24 +407,6 @@ function updatePassword() {
 	}); 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			Show password dialogue
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function showPasswordModal(id) {
-	clearPassword();
-	$("#passwordId").val(id);
-	$('#passwordModal').modal('show');
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			Clear password fields
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function clearPassword() {
-	$("passwordId").val('');
-	$("#newPwd").val('');
-	$("#confirmPwd").val('');
-}
-
 </script>
 
 <style>
@@ -523,7 +505,6 @@ function clearPassword() {
 																</td>
 																<td class="text-center align-middle">
 																	<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveBranch('${branch.id}')"></i>&nbsp;
-																	<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Email Password" onclick="showPasswordModal('${branch.id}')"></i>&nbsp;
 																	<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete" onclick="showWarning('${branch.id}')"></i>
 																</td>
 															</tr>
@@ -592,7 +573,6 @@ function clearPassword() {
 				<tr height="80px">
 					<td colspan="8" style="text-align: right;">
 						<button type="button" class="btn btn-primary" style="width: 120px;" onclick="retrieveBranchCode('${branch}')"><i class="bi bi-pencil-square"></i>&nbsp;&nbsp;Edit</button>&nbsp;
-						<button type="button" class="btn btn-warning" style="width: 180px;" onclick="showPasswordModal(document.getElementById('branchId').textContent.trim())"><i class="bi bi-key-fill"></i>&nbsp;&nbsp;Email Password</button>
 					</td>
 				</tr>
 				</table> 
@@ -770,45 +750,6 @@ function clearPassword() {
 		</div>
 	</div>
 </div>
-
-<!-- Password Reset Dialogue -->
-<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content jae-border-warning">
-            <div class="modal-header btn-warning">
-               <h4 class="modal-title text-white" id="passwordModal"><i class="bi bi-key-fill text-dark"></i>&nbsp;&nbsp;Branch Email Password Reset</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <h5> Do you want to reset email password for branch ?</h5>
-				<p>
-					<div class="row mt-4">
-						<div class="col-md-5">
-							New Password
-						</div>
-						<div class="col-md-7">
-							<input type="password" class="form-control" id="newPwd" name="newPwd"/>
-						</div>
-					</div>
-					<div class="row mt-4">
-						<div class="col-md-5">
-							Confirm Password
-						</div>
-						<div class="col-md-7">
-							<input type="password" class="form-control" id="confirmPwd" name="confirmPwd"/>
-						</div>
-					</div>
-				</p>
-				<input type="hidden" id="passwordId" name="passwordId"/>	
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-warning" onclick="updatePassword()"><i class="bi bi-check-circle"></i>&nbsp;Reset</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
-            </div>
-    	</div>
-	</div>
-</div>
-
 
 <!-- Delete Dialogue -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

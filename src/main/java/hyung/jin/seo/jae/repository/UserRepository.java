@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, String>{
 
 	User findByUsername(String username);
 	
+	@Modifying
 	@Query(value = "UPDATE User u SET u.password = ?2 WHERE u.id = ?1 AND ACTIVE = 0", nativeQuery = true)
     void updatePassword(Long id, String password);    
 
@@ -27,6 +28,7 @@ public interface UserRepository extends JpaRepository<User, String>{
 	@Query(value = "UPDATE User u SET u.password = ?2 WHERE u.username = ?1 AND u.enabled = 0", nativeQuery = true)
 	void updatePassword(String username, String password);    
 
+	@Modifying
 	@Query(value = "DELETE FROM User WHERE username = ?1", nativeQuery = true)
 	void deleteByUsername(String username);    
 
