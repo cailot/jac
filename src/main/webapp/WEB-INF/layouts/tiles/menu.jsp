@@ -114,6 +114,7 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/testSchedule">Schedule</a>
 					</div>
 				</div>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
 			</div>
 		</li>
 		</c:if>

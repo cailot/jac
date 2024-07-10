@@ -137,6 +137,16 @@ public class JaeController {
 		return "testSchedulePage";
 	}
 
+
+	@GetMapping("/assessList")
+	public String assess(HttpSession session) {
+		return "assessListPage";
+	}
+
+	//////////////////////////////////////////////////
+	// STATS
+	/////////////////////////////////////////////////
+
 	@GetMapping("/activeStats")
 	public String activeStudentStats(HttpSession session) {
 		return "activeStatPage";
