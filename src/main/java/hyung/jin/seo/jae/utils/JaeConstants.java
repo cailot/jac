@@ -102,6 +102,8 @@ public interface JaeConstants {
 	String HOMEWORK_LIST = "HomeworkList";
 	
 	String EXTRAWORK_LIST = "ExtraworkList";
+
+	String ASSESSMENT_LIST = "AssessList";
 	
 	String PRACTICE_LIST = "PracticeList";
 
