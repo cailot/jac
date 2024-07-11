@@ -1,57 +1,20 @@
 package hyung.jin.seo.jae.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hyung.jin.seo.jae.dto.AssessmentAnswerDTO;
 import hyung.jin.seo.jae.dto.AssessmentDTO;
-import hyung.jin.seo.jae.dto.ExtraworkDTO;
-import hyung.jin.seo.jae.dto.HomeworkDTO;
-import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
-import hyung.jin.seo.jae.dto.PracticeDTO;
-import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
-import hyung.jin.seo.jae.dto.SimpleBasketDTO;
-import hyung.jin.seo.jae.dto.StudentPracticeDTO;
-import hyung.jin.seo.jae.dto.StudentTestDTO;
-import hyung.jin.seo.jae.dto.TestAnswerDTO;
-import hyung.jin.seo.jae.dto.TestDTO;
-import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Assessment;
 import hyung.jin.seo.jae.model.AssessmentAnswer;
-import hyung.jin.seo.jae.model.Extrawork;
-import hyung.jin.seo.jae.model.Homework;
-import hyung.jin.seo.jae.model.Practice;
-import hyung.jin.seo.jae.model.PracticeAnswer;
-import hyung.jin.seo.jae.model.PracticeSchedule;
-import hyung.jin.seo.jae.model.StudentPractice;
-import hyung.jin.seo.jae.model.StudentTest;
-import hyung.jin.seo.jae.model.Test;
-import hyung.jin.seo.jae.model.TestAnswer;
-import hyung.jin.seo.jae.model.TestAnswerItem;
-import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.repository.AssessmentAnswerRepository;
 import hyung.jin.seo.jae.repository.AssessmentRepository;
-import hyung.jin.seo.jae.repository.ExtraworkRepository;
-import hyung.jin.seo.jae.repository.HomeworkRepository;
-import hyung.jin.seo.jae.repository.PracticeAnswerRepository;
-import hyung.jin.seo.jae.repository.PracticeRepository;
-import hyung.jin.seo.jae.repository.PracticeScheduleRepository;
-import hyung.jin.seo.jae.repository.StudentPracticeRepository;
-import hyung.jin.seo.jae.repository.StudentTestRepository;
-import hyung.jin.seo.jae.repository.TestAnswerRepository;
-import hyung.jin.seo.jae.repository.TestRepository;
-import hyung.jin.seo.jae.repository.TestScheduleRepository;
 import hyung.jin.seo.jae.service.AssessmentService;
-import hyung.jin.seo.jae.service.ConnectedService;
 
 @Service
 public class AssessmentServiceImpl implements AssessmentService {
@@ -106,11 +69,13 @@ public class AssessmentServiceImpl implements AssessmentService {
 		try{
 			// 1. get associated TestAnswer
 			AssessmentAnswer aa = assessmentAnswerRepository.findAssessmentAnswerByAssessment(id);
-			// 2. empty TestAnswerCollection
-			aa.setAnswers(new ArrayList<>());
-			assessmentAnswerRepository.save(aa);
-			// 3. delete associated assessmentAnswer
-			assessmentAnswerRepository.deleteAssessmentAnswerByAssessment(id);
+			if(aa!=null){
+				// 2. empty TestAnswerCollection
+				aa.setAnswers(new ArrayList<>());
+				assessmentAnswerRepository.save(aa);
+				// 3. delete associated assessmentAnswer
+				assessmentAnswerRepository.deleteAssessmentAnswerByAssessment(id);
+			}
 			// 4. delete assessment
 			assessmentRepository.deleteById(id);
 		}catch(Exception e){
@@ -151,173 +116,69 @@ public class AssessmentServiceImpl implements AssessmentService {
 		return dtos;
 	}
 
-
-	/*
-	
-	
 	@Override
-	public List<Integer> getStudentPracticeAnswer(Long studentId, Long practionId) {
-		Optional<StudentPractice> sp = studentPracticeRepository.findByStudentIdAndPracticeId(studentId, practionId);
-		if(sp.isPresent()){
-			return sp.get().getAnswers();
-		}else{
-			return null;
-		}
-	}
-
-	@Override
-	public List<TestAnswerItem> getAnswersByTest(Long testId) {
-		Optional<TestAnswer> answer = testAnswerRepository.findByTestId(testId);
-		if(answer.isPresent()){
-			return answer.get().getAnswers();
-		}else{
-			return null;
-		}
-	}
-
-	@Override
-	public List<Integer> getStudentTestAnswer(Long studentId, Long testId) {
-		Optional<StudentTest> answer = studentTestRepository.findByStudentIdAndTestId(studentId, testId);
-		if(answer.isPresent()){
-			return answer.get().getAnswers();
-		}else{
-			return null;
-		}
-	}
-
-	@Override
-	public int getPracticeAnswerCount(Long practiceId) {
-		Optional<PracticeAnswer> answer = practiceAnswerRepository.findByPracticeId(practiceId);
-		if(answer.isPresent()){
-			List<Integer> answers =  answer.get().getAnswers();
-			if((answers != null) && (answers.size()>0)) return answers.get(0);
-		}
-		return 0;
-	}
-
-	@Override
-	public int getTestAnswerCount(Long testId) {
-		Optional<TestAnswer> answer = testAnswerRepository.findByTestId(testId);
-		if(answer.isPresent()){
-			List<TestAnswerItem> answers =  answer.get().getAnswers();
-			if((answers != null) && (answers.size()>0)) return answers.size();
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean isStudentPracticeExist(Long studentId, Long practiceId) {
-		Optional<StudentPractice> sp = studentPracticeRepository.findByStudentIdAndPracticeId(studentId, practiceId);
-		if(sp.isPresent()){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	@Override
-	public boolean isStudentTestExist(Long studentId, Long testId) {
-		Optional<StudentTest> st = studentTestRepository.findByStudentIdAndTestId(studentId, testId);
-		if(st.isPresent()){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	@Override
-	public PracticeAnswerDTO findPracticeAnswerByPractice(Long id) {
-		PracticeAnswerDTO dto = null;
+	public List<AssessmentDTO> listAssessment(String grade, long subjectId) {
+		List<AssessmentDTO> dtos = new ArrayList<>();
 		try{
-			PracticeAnswer answer = practiceAnswerRepository.findPracticeAnswerByPractice(id);
-			if(answer!=null){
-				dto = new PracticeAnswerDTO(answer);
-			}
+			dtos = assessmentRepository.findAssessmentByGradeNSubject(grade, subjectId);
 		}catch(Exception e){
-			System.out.println("No PracticeAnswer found");
-		}
-		return dto;
-	}
-
-	@Override
-	public StudentPracticeDTO findStudentPracticeByStudentNPractice(Long studentId, Long practiceId) {
-		StudentPracticeDTO dto = null;
-		try{
-			dto = studentPracticeRepository.findStudentPractice(studentId, practiceId);
-		}catch(Exception e){
-			System.out.println("No StudentPractice found");
-		}
-		return dto;	
-	}
-
-	@Override
-	public TestAnswerDTO findTestAnswerByTest(Long id) {
-		TestAnswerDTO dto = null;
-		try{
-			TestAnswer answer = testAnswerRepository.findTestAnswerByTest(id);
-			if(answer!=null){
-				dto = new TestAnswerDTO(answer);
-			}
-		}catch(Exception e){
-			System.out.println("No TestAnswer found");
-		}
-		return dto;
-	}
-
-	@Override
-	public StudentTestDTO findStudentTestByStudentNTest(Long studentId, Long testId) {
-		StudentTestDTO dto = null;
-		try{
-			dto =  studentTestRepository.findStudentTest(studentId, testId);
-		}catch(Exception e){
-			System.out.println("No StudentTest found");
-		}
-		return dto;
-	}
-
-	@Override
-	public List<PracticeDTO> listPracticeByTypeNGrade(int type, String grade) {
-		List<PracticeDTO> dtos = new ArrayList<>();
-		try{
-			dtos = practiceRepository.filterActivePracticeByTypeNGradeNVolume(type, grade, 0);
-		}catch(Exception e){
-			System.out.println("No Practice found");
+			System.out.println("No Assessment found");
 		}
 		return dtos;
 	}
 
 	@Override
-	public List<TestDTO> listTestByTypeNGrade(int type, String grade) {
-		List<TestDTO> dtos = new ArrayList<>();
+	public AssessmentAnswer findAssessmentAnswer(Long assessmentId) {
+		AssessmentAnswer answer = null;
 		try{
-			dtos = testRepository.filterActiveTestByTypeNGradeNVolume(type, grade, 0);
+			answer = assessmentAnswerRepository.findAssessmentAnswerByAssessment(assessmentId);
 		}catch(Exception e){
-			System.out.println("No Practice found");
+			System.out.println("No AssessmentAnswer found");
 		}
-		return dtos;
-	}
-
-
-	@Override
-	public String getPracticeTypeName(Long id) {
-		String name = "";
-		try{
-			name = practiceRepository.getPracticeTypeName(id);
-		}catch(Exception e){
-			System.out.println("No Practice found");
-		}
-		return name;
+		return answer;
 	}
 
 	@Override
-	public String getTestTypeName(Long id) {
-		String name = "";
+	public AssessmentAnswerDTO getAssessmentAnswer(Long assessmentId) {
+		AssessmentAnswerDTO dto = null;
 		try{
-			name = testRepository.getTestTypeName(id);
+			AssessmentAnswer answer = assessmentAnswerRepository.findAssessmentAnswerByAssessment(assessmentId);
+			if(answer!=null){
+				dto = new AssessmentAnswerDTO(answer);
+			}
 		}catch(Exception e){
-			System.out.println("No Test found");
+			System.out.println("No AssessmentAnswer found");
 		}
-		return name;	
+		return dto;
 	}
-*/
+
+	@Transactional
+	@Override
+	public AssessmentAnswer addAssessmentAnswer(AssessmentAnswer answer) {
+		AssessmentAnswer aa = assessmentAnswerRepository.save(answer);
+		return aa;
+	}
+
+	@Transactional
+	@Override
+	public AssessmentAnswer updateAssessmentAnswer(AssessmentAnswer newWork, Long id) {
+		// get by id
+		AssessmentAnswer existing = assessmentAnswerRepository.findById(id).get();
+		// update info
+		List newAns = newWork.getAnswers();
+		existing.setAnswers(newAns);
+		// update the existing record
+		AssessmentAnswer updated = assessmentAnswerRepository.save(existing);
+		// return updated record
+		return updated;
+	}
+
+	@Override
+	public List<Integer> getStudentAssessmentAnswer(Long studentId, Long assessId) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getStudentAssessmentAnswer'");
+	}
+
+
+
 }
