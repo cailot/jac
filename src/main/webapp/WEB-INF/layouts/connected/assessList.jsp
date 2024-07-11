@@ -88,15 +88,13 @@ function addAssessment() {
 function retrieveAssessInfo(id) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPractice/' + id,
+		url: '${pageContext.request.contextPath}/assessment/getAssessment/' + id,
 		type: 'GET',
 		success: function (assessment) {
-			// console.log(homework);
+			//console.log(assessment);
 			$("#editId").val(assessment.id);
-			$("#editPracticeType").val(assessment.practiceType);
 			$("#editGrade").val(assessment.grade);
-			$("#editVolume").val(assessment.volume);
-			$("#editInfo").val(assessment.info);
+			$("#editSubject").val(assessment.subject);
 			$("#editPdfPath").val(assessment.pdfPath);	
 			$("#editActive").val(assessment.active);
 			if (assessment.active == true) {
@@ -132,17 +130,15 @@ function updateAssessInfo() {
 	// get from formData
 	var assessment = {
 		id: workId,
-		practiceType : $("#editPracticeType").val(),
 		grade: $("#editGrade").val(),
-		volume: $("#editVolume").val(),
-		info: $("#editInfo").val(),
+		subject: $("#editSubject").val(),
 		pdfPath: $("#editPdfPath").val(),
 		active: $("#editActive").val(),
 	}
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updatePractice',
+		url: '${pageContext.request.contextPath}/assessment/updateAssessment',
 		type: 'PUT',
 		dataType: 'json',
 		data: JSON.stringify(assessment),
@@ -186,11 +182,47 @@ function updateEditActiveValue(checkbox) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before deleting Practice
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmDelete(testId) {
+    // Show the warning modal
+    $('#deleteConfirmModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeConfirmation').one('click', function() {
+        deleteAssess(testId);
+        $('#deleteConfirmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Delete Assessment
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function deleteAssess(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/assessment/delete/' + id,
+		type: 'DELETE',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Assessment deleted successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Answer Sheet
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function displayAnswerSheet(practiceId) {
-	//save practiceId 
-	document.getElementById("practiceId4Answer").value = practiceId;
+function displayAnswerSheet(assessId) {
+	//debugger
+	//save testId 
+	document.getElementById("assessId4Answer").value = assessId;
 	// clear answerId
 	document.getElementById("answerId").value = '';
 
@@ -198,11 +230,11 @@ function displayAnswerSheet(practiceId) {
 	// if exists, then display info
 	// if not, show empty form to register
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/checkPracticeAnswer/' + practiceId,
+		url: '${pageContext.request.contextPath}/assessment/checkAssessAnswer/' + assessId,
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
-			//console.log(answerSheet);
+			// console.log(answerSheet);
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
@@ -219,13 +251,17 @@ function displayAnswerSheet(practiceId) {
 					var cell1 = newRow.insertCell(0);
 					var cell2 = newRow.insertCell(1);
 					var cell3 = newRow.insertCell(2);
+					var cell4 = newRow.insertCell(3);
 					// Align the content of the cells to the center
 					cell1.style.textAlign = "center";
 					cell2.style.textAlign = "center";
-					cell3.style.textAlign = "center";
+					cell3.style.textAlign = "left";
+					cell4.style.textAlign = "center";
 					// Populate cells with data
-					cell1.innerHTML = i;
-					cell2.innerHTML = numToChar[answerSheet.answers[i]];
+					// console.log(answerSheet.answers[i]);
+					cell1.innerHTML = answerSheet.answers[i].question;
+					cell2.innerHTML = numToChar[answerSheet.answers[i].answer];
+					cell3.innerHTML = answerSheet.answers[i].topic;
 					// Create a remove button in the third cell
 					var removeIcon = document.createElement("i");
 					removeIcon.className = "bi bi-trash icon-button text-danger";
@@ -233,9 +269,10 @@ function displayAnswerSheet(practiceId) {
 						answerSheetTableBody.removeChild(newRow);
 					});
 					// Append the remove button to the third cell
-					cell3.appendChild(removeIcon);
+					cell4.appendChild(removeIcon);
+
 					// Find the correct position to insert the new row based on the 'question' order
-					var newRowQuestion = i;
+					var newRowQuestion = parseInt(answerSheet.answers[i].question);
 					var rows = answerSheetTableBody.getElementsByTagName("tr");
 					var insertIndex = 0;
 					for (var j = 0; j < rows.length; j++) {
@@ -253,24 +290,25 @@ function displayAnswerSheet(practiceId) {
 					} else {
 						answerSheetTableBody.insertBefore(newRow, rows[insertIndex]);
 					}
-
 				}
-
-				for (var i = 1; i < answerSheet.answers.length; i++) {
+				for (var i = 0; i < answerSheet.answers.length; i++) {
 					createRow(i, answerSheet, numToChar, answerSheetTableBody);
 				}
-
 			} else {
 				// Display an empty form to register the answer sheet
-				$("#addAnswerVideoPath").val("");
+				// $("#addAnswerVideoPath").val("");
 				$("#addAnswerPdfPath").val("");
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
 				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
 				answerQuestionNumberSelect.value = "1";
+				var correctAnswerSelect = document.getElementById("correctAnswerOption");
+				correctAnswerSelect.value = "1";
+				var answerTopicSelect = document.getElementById("answerTopic");
+				answerTopicSelect.value = "";
 			}
 			// Display the modal
-			$('#registerPracticeAnswerModal').modal('show');
+			$('#registerAssessAnswerModal').modal('show');
 		},
 		error: function (error) {
             // Handle error response
@@ -283,56 +321,51 @@ function displayAnswerSheet(practiceId) {
 //		Add Answer To Table
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function addAnswerToTable() {
-	// Get the selected question number
+	// Get user selections
 	var questionNumber = parseInt(document.getElementById("answerQuestionNumber").value);
-	// Get the selected radio button
-	var selectedRadioButton = document.querySelector('input[name="inlineRadioOptions"]:checked');
-	// Check if a radio button is selected
-	if (selectedRadioButton) {
-		// Get the selected radio button value
-		var radioButtonValue = selectedRadioButton.value;
-		// Map numeric values to corresponding letters
-		var letterMapping = ['A', 'B', 'C', 'D', 'E'];
-		var letterValue = letterMapping[parseInt(radioButtonValue) - 1];
-		// Get the table body
-		var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
-		// Find the correct position to insert the new row
-		var position = 0;
-		for (; position < tableBody.rows.length; position++) {
-			if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
-				break;
-			}
+	var selectedAnswerOption = document.getElementById("correctAnswerOption").value;
+	var answerTopicDescription = document.getElementById("answerTopic").value;
+	// Map numeric values to corresponding letters
+	var letterMapping = ['A', 'B', 'C', 'D', 'E'];
+	var letterValue = letterMapping[parseInt(selectedAnswerOption) - 1];
+	// Get the table body
+	var tableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
+	// Find the correct position to insert the new row
+	var position = 0;
+	for (; position < tableBody.rows.length; position++) {
+		if (parseInt(tableBody.rows[position].cells[0].innerHTML) > questionNumber) {
+			break;
 		}
-		// Create a new row at the correct position
-		var newRow = tableBody.insertRow(position);
-		// Insert cells into the row
-		var cell1 = newRow.insertCell(0);
-		var cell2 = newRow.insertCell(1);
-		var cell3 = newRow.insertCell(2);
-		// Align the content of the cells to the center
-		cell1.style.textAlign = "center";
-		cell2.style.textAlign = "center";
-		cell3.style.textAlign = "center";
-		// Populate cells with data
-		cell1.innerHTML = questionNumber;
-		cell2.innerHTML = letterValue;
-		// Create a remove button in the third cell
-		var removeIcon = document.createElement("i");
-		removeIcon.className = "bi bi-trash icon-button text-danger";
-		removeIcon.addEventListener('click', function () {
-			tableBody.removeChild(newRow);
-		});
-		// Append the remove button to the third cell
-		cell3.appendChild(removeIcon);
-		// Automatically choose the next question number
-		var nextQuestionNumber = questionNumber + 1;
-		document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
-		// Clear the selected radio button
-		selectedRadioButton.checked = false;
-	} else {
-		// Display an alert if no radio button is selected
-		alert("Please choose an answer option before adding.");
 	}
+	// Create a new row at the correct position
+	var newRow = tableBody.insertRow(position);
+	// Insert cells into the row
+	var cell1 = newRow.insertCell(0);
+	var cell2 = newRow.insertCell(1);
+	var cell3 = newRow.insertCell(2);
+	var cell4 = newRow.insertCell(3);
+	// Align the content of the cells to the center
+	cell1.style.textAlign = "center";
+	cell2.style.textAlign = "center";
+	cell3.style.textAlign = "left";
+	cell4.style.textAlign = "center";
+	// Populate cells with data
+	cell1.innerHTML = questionNumber;
+	cell2.innerHTML = letterValue;
+	cell3.innerHTML = answerTopicDescription;
+	// Create a remove button in the third cell
+	var removeIcon = document.createElement("i");
+	removeIcon.className = "bi bi-trash icon-button text-danger";
+	removeIcon.addEventListener('click', function() {
+		tableBody.removeChild(newRow);
+	});
+	// Append the remove button to the third cell
+	cell4.appendChild(removeIcon);
+	// Automatically choose the next question number
+	var nextQuestionNumber = questionNumber + 1;
+	document.getElementById("answerQuestionNumber").value = nextQuestionNumber;
+	// Clear the topic input value
+	document.getElementById("answerTopic").value = "";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,9 +374,7 @@ function addAnswerToTable() {
 function collectAndSubmitAnswers() {
     // Collect values from the modal
 	var answerId = document.getElementById("answerId").value;
-	var practiceId = document.getElementById("practiceId4Answer").value;
-    var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
-    var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
+	var assessId = document.getElementById("assessId4Answer").value;
 
     // Collect question number and selected value from the answerSheetTable
     var answerList = [];
@@ -365,32 +396,31 @@ function collectAndSubmitAnswers() {
         var questionNumber = cells[0].innerHTML;
         // var selectedRadioValue = cells[1].innerHTML;
 		var selectedRadioValue = charToNum[cells[1].innerHTML];  // Convert the character to a number
+		var answerTopic = cells[2].innerHTML;
 
         answerList.push({
             question: questionNumber,
-            answer: selectedRadioValue
+            answer: selectedRadioValue,
+			topic : answerTopic
         });
     }
-
     // Send the formData to the Spring controller using AJAX or other means
     $.ajax({
-        url: '${pageContext.request.contextPath}/connected/savePracticeAnswerSheet', // Replace with your actual Spring controller endpoint
+        url: '${pageContext.request.contextPath}/assessment/saveAssessAnswer', // Replace with your actual Spring controller endpoint
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
 			answerId : answerId,
-			practiceId : practiceId,
-			videoPath : answerVideoPath,
-			pdfPath : answerPdfPath,
+			assessId : assessId,
 			answers : answerList
 		}),
         success: function (response) {
             // Handle success response
             console.log(response);
 			// clear practionId to avoid confusion
-			document.getElementById("practiceId4Answer").value = '';
+			document.getElementById("assessId4Answer").value = '';
     		// Optionally, close the modal after submitting
-    		$('#registerPracticeAnswerModal').modal('hide');
+    		$('#registerAssessAnswerModal').modal('hide');
 			$('#success-alert .modal-body').html('Answer Sheet is successfully updated.');
 	        $('#success-alert').modal('show');
 			// Attach an event listener to the success alert close event
@@ -407,40 +437,6 @@ function collectAndSubmitAnswers() {
     });
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before deleting Practice
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmDelete(testId) {
-    // Show the warning modal
-    $('#deleteConfirmModal').modal('show');
-
-    // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
-        deleteAssess(testId);
-        $('#deleteConfirmModal').modal('hide');
-    });
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete Assessment
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function deleteAssess(id) {
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/deleteAssess/' + id,
-		type: 'DELETE',
-		success: function (result) {
-			$('#success-alert .modal-body').text('Practice deleted successfully');
-			$('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.reload();
-			});
-		},
-		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
-    });
-}
 
 </script>
 
@@ -471,7 +467,7 @@ function deleteAssess(id) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="classList" method="get" action="${pageContext.request.contextPath}/assessment/filterPractice">
+		<form id="classList" method="get" action="${pageContext.request.contextPath}/assessment/listAssessment">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -549,9 +545,9 @@ function deleteAssess(id) {
 													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
-																<c:when test="${assessment.grade == '1'}">English</c:when>
-																<c:when test="${assessment.grade == '2'}">Maths</c:when>
-																<c:when test="${assessment.grade == '3'}">General Ability</c:when>
+																<c:when test="${assessment.subject == '1'}">English</c:when>
+																<c:when test="${assessment.subject == '2'}">Maths</c:when>
+																<c:when test="${assessment.subject == '3'}">General Ability</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -646,53 +642,29 @@ function deleteAssess(id) {
 		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Edit</header>
+					<header class="text-primary font-weight-bold">Assessment Edit</header>
 					<form id="practiceEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-8">
-									<label for="editPracticeType" class="label-form">Practice Type</label>
-									<select class="form-control" id="editPracticeType" name="editPracticeType" disabled>
-									</select>
-								</div>
-								<div class="col-md-2">
+								<div class="col-md-4">
 									<label for="editGrade" class="label-form">Grade</label>
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
-								<div class="col-md-2">
-									<label for="editVolume" class="label-form">Set</label>
-									<select class="form-control" id="editVolume" name="editVolume">
+								<div class="col-md-8">
+									<label for="editSubject" class="label-form">Subject</label>
+									<select class="form-control" id="editSubject" name="editSubject" disabled>
+										<option value="1">English</option>
+										<option value="2">Maths</option>
+										<option value="3">General Ability</option>
 									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group mt-4">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
 							<div class="form-row">
 								<div class="col-md-8">
-									<input type="text" class="form-control" id="editInfo" name="editInfo" placeholder="Information" />
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 								<div class="input-group col-md-4">
 									<div class="input-group-prepend">
@@ -717,39 +689,22 @@ function deleteAssess(id) {
 	</div>
 </div>
 
-
 <!-- Add Answer Form Dialogue -->
-<div class="modal fade" id="registerPracticeAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="registerAssessAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content jae-border-success">
 			<div class="modal-body">
 				<section class="fieldset rounded border-success">
-					<header class="text-success font-weight-bold">Practice Answer Sheet</header>
-					<!-- <form id="practiceAnswerRegister"> -->
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
-									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
-									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
-								</div>
-							</div>
-						</div>
+					<header class="text-success font-weight-bold">Assessment Answer Sheet</header>
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 60%; margin-left: auto; margin-right: auto;">
+								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
-											<th data-field="question">Question #</th>
-											<th data-field="answer">Answer</th>
-											<th data-field="answer">Remove</th>
+											<th data-field="question" style="width: 10%;">Question#</th>
+											<th data-field="answer" style="width: 10%;">Answer</th>
+											<th data-field="topic" style="width: 70%;">Topic</th>
+											<th data-field="remove" style="width: 10%;">Remove</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -758,53 +713,46 @@ function deleteAssess(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="form-row align-items-center mb-4" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="col-md-3">
+									<label for="answerQuestionNumber" class="label-form">Number</label>
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
 										<c:forEach var="i" begin="1" end="50">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>
 								</div>
-								<div class="col-md-7" style="text-align: right;">
-									<style>
-										.form-check-input {
-											margin-right: 5px;
-										}
-										.form-check-label {
-											margin-right: 25px;
-										}
-									</style>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
-									<label class="form-check-label" for="inlineRadio1">A</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
-									<label class="form-check-label" for="inlineRadio2">B</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="3">
-									<label class="form-check-label" for="inlineRadio3">C</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4">
-									<label class="form-check-label" for="inlineRadio4">D</label>
-									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
-									<label class="form-check-label" for="inlineRadio5">E</label>
+								<div class="col-md-2">
+									<label for="correctAnswerOption" class="label-form">Answer</label>
+									<select class="form-control" id="correctAnswerOption" name="correctAnswerOption">
+										<option value="1">A</option>
+										<option value="2">B</option>
+										<option value="3">C</option>
+										<option value="4">D</option>
+										<option value="5">E</option>
+									</select>
+								</div>
+								<div class="col-md-5">
+									<label for="answerTopic" class="label-form">Topic</label>
+									<input type="text" class="form-control" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
 								</div>
 								<div class="col-md-2">
+									<label for="" class="label-form">&nbsp;</label>
 									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
 								</div>
+							</div>
 						</div>
 						<input type="hidden" id="answerId" name="answerId" />
-						<input type="hidden" id="practiceId4Answer" name="practiceId4Answer" />
-					<!-- </form> -->
+						<input type="hidden" id="assessId4Answer" name="assessId4Answer" />
 					<div class="mt-4 d-flex justify-content-end">
 						<button type="submit" class="btn btn-success" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearAssessForm('assessRegister')" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearPracticeForm('testRegister')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
 		</div>
 	</div>
 </div>
-
-
-
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
@@ -841,11 +789,11 @@ function deleteAssess(id) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Assessment Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to delete Practice ?</p>	
+                <p> Are you sure to delete Assessment ?</p>	
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>

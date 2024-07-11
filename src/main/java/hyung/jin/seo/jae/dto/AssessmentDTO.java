@@ -43,6 +43,7 @@ public class AssessmentDTO implements Serializable {
 	public Assessment convertToAssessment() {
     	Assessment work = new Assessment();
 		work.setPdfPath(this.pdfPath);
+		work.setActive(this.active);
 		return work;
 	}
 
@@ -51,6 +52,7 @@ public class AssessmentDTO implements Serializable {
 		this.pdfPath = work.getPdfPath();
 		this.grade = work.getGrade().getCode();
 		this.subject = work.getSubject().getId();
+		this.active = work.isActive();
 		this.registerDate = work.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 

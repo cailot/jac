@@ -7,21 +7,33 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import hyung.jin.seo.jae.dto.AssessmentAnswerDTO;
 import hyung.jin.seo.jae.dto.AssessmentDTO;
 import hyung.jin.seo.jae.model.Assessment;
+import hyung.jin.seo.jae.model.AssessmentAnswer;
+import hyung.jin.seo.jae.model.AssessmentAnswerItem;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.AssessmentService;
 import hyung.jin.seo.jae.service.CodeService;
+import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("assessment")
@@ -32,7 +44,6 @@ public class AssessmentController {
 
 	@Autowired
 	private AssessmentService assessmentService;
-	
 
 
 	// register test
@@ -56,6 +67,106 @@ public class AssessmentController {
 		return dto;
 	}
 
+
+	@GetMapping("/listAssessment")
+	public String listAssessment(
+			@RequestParam(value = "listGrade", required = false, defaultValue = "0") String grade,
+			@RequestParam(value = "listSubject", required = false, defaultValue = "0") Long subject,
+			Model model) {
+		List<AssessmentDTO> dtos = new ArrayList();
+		dtos = assessmentService.listAssessment(grade, subject);		
+		model.addAttribute(JaeConstants.ASSESSMENT_LIST, dtos);
+		return "assessListPage";
+	}
+
+	// get assessment
+	@GetMapping("/getAssessment/{id}")
+	@ResponseBody
+	public AssessmentDTO getAssessment(@PathVariable Long id) {
+		Assessment work = assessmentService.getAssessment(id);
+		AssessmentDTO dto = new AssessmentDTO(work);
+		return dto;
+	}
+
+	// update existing practice
+	@PutMapping("/updateAssessment")
+	@ResponseBody
+	public ResponseEntity<String> updateAssessment(@RequestBody AssessmentDTO formData) {
+		try{
+			// 1. create barebone Homework
+			Assessment work = formData.convertToAssessment();
+			// 2. update Assessment
+			work = assessmentService.updateAssessment(work, Long.parseLong(formData.getId()));
+			// 3.return flag
+			return ResponseEntity.ok("\"Assessment updated\"");
+		}catch(Exception e){
+			String message = "Error updating Assessment : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
+	@PostMapping(value = "/saveAssessAnswer")
+	@ResponseBody
+    public ResponseEntity<String> saveAssessAnswerSheet(@RequestBody Map<String, Object> payload) {
+        // Extract practiceId and answers from the payload
+		String answerId = payload.get("answerId").toString();
+		String assessId = payload.get("assessId").toString();
+		List<AssessmentAnswerItem> items = new ArrayList<>();
+		// convert the answers list from the payload to a List<Map<String, Object>>
+		ObjectMapper mapper = new ObjectMapper();
+		List<Map<String, Object>> answerList = mapper.convertValue(payload.get("answers"), new TypeReference<List<Map<String, Object>>>() {});
+
+		// Now iterate over answerList to access question, answer, and topic for each entry
+		for (Map<String, Object> answer : answerList) {
+			String question = StringUtils.defaultString(answer.get("question").toString(), "0");
+			String selectedAnswer = StringUtils.defaultString(answer.get("answer").toString(), "0");
+			String topic = StringUtils.defaultString(answer.get("topic").toString());
+			// create TestAnswerItem and put it into items
+			AssessmentAnswerItem item = new AssessmentAnswerItem(Integer.parseInt(question), Integer.parseInt(selectedAnswer), topic);
+			items.add(item);
+		}
+
+		// if answerId has some value, update TestAnswer; otherwise register.
+		if(StringUtils.isBlank(answerId)){
+			// ADD
+			// 1. create bare bone
+			AssessmentAnswer ta = new AssessmentAnswer();
+			// 2. populate AssessmentAnswer
+			ta.setAnswers(items);
+			// 3. get Assessment
+			Assessment assess = assessmentService.getAssessment(Long.parseLong(assessId));
+			// 4. associate Assessment
+			ta.setAssessment(assess);
+			// 5. register TestAnswer
+			assessmentService.addAssessmentAnswer(ta);
+		}else{
+			// UPDATE
+			// 1. get TestAnswer
+			AssessmentAnswer ta =  assessmentService.findAssessmentAnswer(Long.parseLong(answerId));
+			// 2. populate AssessmentAnswer
+			ta.setAnswers(items);
+			// 3. update AssessmentAnswer
+			assessmentService.updateAssessmentAnswer(ta, Long.parseLong(answerId));
+		}
+		return ResponseEntity.ok("\"Success\"");
+    }
+
+
+	// delete assessment by Id
+	@DeleteMapping(value = "/delete/{id}")
+	@ResponseBody
+    public ResponseEntity<String> removeBook(@PathVariable Long id) {
+       	assessmentService.deleteAssessment(id);
+		return ResponseEntity.ok("\"Assessment deleted successfully\"");
+    }
+
+	// check if AssessmentAnswer exists or not
+	@GetMapping("/checkAssessAnswer/{assessId}")
+	@ResponseBody
+	public AssessmentAnswerDTO findTestAnswer(@PathVariable Long assessId) {
+		AssessmentAnswerDTO answer = assessmentService.getAssessmentAnswer(assessId);
+		return answer;
+	}
 
 	// get Assessment
 	@GetMapping("/getAssessInfo/{grade}/{subject}")
@@ -109,7 +220,6 @@ public class AssessmentController {
 		answers.sort(Comparator.comparingInt(answer -> Integer.parseInt(answer.get("question").toString())));
 		List<Integer> answerList = new ArrayList<>();
 		for (Map<String, Object> answer : answers) {
-//			int questionNum = Integer.parseInt(answer.get("question").toString());
 			int selectedOption = Integer.parseInt(answer.get("answer").toString());
 			answerList.add(selectedOption);
 		}

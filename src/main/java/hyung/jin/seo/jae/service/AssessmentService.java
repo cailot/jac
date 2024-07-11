@@ -2,30 +2,10 @@ package hyung.jin.seo.jae.service;
 
 import java.util.List;
 
+import hyung.jin.seo.jae.dto.AssessmentAnswerDTO;
 import hyung.jin.seo.jae.dto.AssessmentDTO;
-import hyung.jin.seo.jae.dto.ExtraworkDTO;
-import hyung.jin.seo.jae.dto.HomeworkDTO;
-import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
-import hyung.jin.seo.jae.dto.PracticeDTO;
-import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
-import hyung.jin.seo.jae.dto.SimpleBasketDTO;
-import hyung.jin.seo.jae.dto.StudentPracticeDTO;
-import hyung.jin.seo.jae.dto.StudentTestDTO;
-import hyung.jin.seo.jae.dto.TestAnswerDTO;
-import hyung.jin.seo.jae.dto.TestDTO;
-import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Assessment;
-import hyung.jin.seo.jae.model.Extrawork;
-import hyung.jin.seo.jae.model.Homework;
-import hyung.jin.seo.jae.model.Practice;
-import hyung.jin.seo.jae.model.PracticeAnswer;
-import hyung.jin.seo.jae.model.PracticeSchedule;
-import hyung.jin.seo.jae.model.StudentPractice;
-import hyung.jin.seo.jae.model.StudentTest;
-import hyung.jin.seo.jae.model.Test;
-import hyung.jin.seo.jae.model.TestAnswer;
-import hyung.jin.seo.jae.model.TestAnswerItem;
-import hyung.jin.seo.jae.model.TestSchedule;
+import hyung.jin.seo.jae.model.AssessmentAnswer;
 
 public interface AssessmentService {
 
@@ -53,51 +33,44 @@ public interface AssessmentService {
 	// list Assessment by subject
 	List<AssessmentDTO> listAssessment(long subjectId);
 
+	// list Assessment by subject
+	List<AssessmentDTO> listAssessment(String grade, long subjectId);
+
+	// get AssessmentAnswer by assessment
+	AssessmentAnswerDTO getAssessmentAnswer(Long assessmentId);
+
+	// get AssessmentAnswer by assessment
+	AssessmentAnswer findAssessmentAnswer(Long assessmentId);
 
 
-	/* 
-	// retrieve TestAnswer by Id
-	TestAnswer getTestAnswer(Long id);
+	// register AssessmentAnswer
+	AssessmentAnswer addAssessmentAnswer(AssessmentAnswer answer);
 
-	// retrieve TestAnswer by Test
-	TestAnswerDTO findTestAnswerByTest(Long id);
+	// update AssessmentAnswer info by Id
+	AssessmentAnswer updateAssessmentAnswer(AssessmentAnswer newWork, Long id);
 
-	// register TestAnswer
-	TestAnswer addTestAnswer(TestAnswer crs);
+	// get Answer sheet by Assessment
+	// List<AssessmentAnswerItem> getAnswersByAssessment(Long assessId);
+
+	// get Student's answer by Student & Assessment
+	List<Integer> getStudentAssessmentAnswer(Long studentId, Long  assessId);
 	
-	// update TestAnswer info by Id
-	TestAnswer updateTestAnswer(TestAnswer newWork, Long id);
-
-	// get Answer sheet by Test
-	List<TestAnswerItem> getAnswersByTest(Long testId);
-
-	// get Student's answer by Student & Test
-	List<Integer> getStudentTestAnswer(Long studentId, Long  testId);
-
-
 	// retrieve StudentTest by Id
-	StudentTest getStudentTest(Long id);
+	// GuestStudentAssessment getStudentAssessment(Long id);
 
-	// retrieve TestAnswer by Test
-	StudentTestDTO findStudentTestByStudentNTest(Long studentId, Long testId);
+	// retrieve AssessmentAnswer by Assessment
+	// StudentTestDTO findStudentTestByStudentNTest(Long studentId, Long testId);
 
 	// register TestAnswer
-	StudentTest addStudentTest(StudentTest crs);
+	// StudentTest addStudentTest(StudentTest crs);
 	
 	// update TestAnswer info by Id
-	StudentTest updateStudentTest(StudentTest newWork, Long id);
+	// StudentTest updateStudentTest(StudentTest newWork, Long id);
 
 	// check if student has done the test
-	boolean isStudentTestExist(Long studentId, Long testId);
+	// boolean isStudentTestExist(Long studentId, Long testId);
 
 	// delete existing record to take test again
-	void deleteStudentTest(Long studentId, Long testId); 	
-
-	// list Test by type & grade
-	List<TestDTO> listTestByTypeNGrade(int type, String grade);
-
-	// get TestType name by test id
-	String getTestTypeName(Long id);
-	*/
+	// void deleteStudentTest(Long studentId, Long testId); 	
 
 }
