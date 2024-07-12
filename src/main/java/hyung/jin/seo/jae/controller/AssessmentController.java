@@ -26,10 +26,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.AssessmentAnswerDTO;
 import hyung.jin.seo.jae.dto.AssessmentDTO;
+import hyung.jin.seo.jae.dto.GuestStudentDTO;
 import hyung.jin.seo.jae.model.Assessment;
 import hyung.jin.seo.jae.model.AssessmentAnswer;
 import hyung.jin.seo.jae.model.AssessmentAnswerItem;
 import hyung.jin.seo.jae.model.Grade;
+import hyung.jin.seo.jae.model.GuestStudent;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.service.AssessmentService;
 import hyung.jin.seo.jae.service.CodeService;
@@ -66,6 +68,20 @@ public class AssessmentController {
 		AssessmentDTO dto = new AssessmentDTO(added);
 		return dto;
 	}
+
+	// register guest student
+	@PostMapping("/addGuest")
+	@ResponseBody
+	public GuestStudentDTO registerGuestStudent(@RequestBody GuestStudentDTO formData) {
+		// 1. create barebone
+		GuestStudent work = formData.convertToGuestStudent();
+		// 2. register Assessment
+		GuestStudent added = assessmentService.addGuestStudent(work);
+		// 3. return dto
+		GuestStudentDTO dto = new GuestStudentDTO(added);
+		return dto;
+	}
+
 
 
 	@GetMapping("/listAssessment")
