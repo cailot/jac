@@ -378,7 +378,7 @@ function deleteOnline(id) {
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<th class="text-center align-middle" style="width: 10%">Academic Year</th>
 										<th class="text-center align-middle" style="width: 10%">Day</th>
-										<th class="text-center align-middle" style="width: 5%">Week</th>
+										<th class="text-center align-middle" style="width: 5%">Set</th>
 										<th class="text-center align-middle" style="width: 10%">Start Time</th>
 										<th class="text-center align-middle" style="width: 10%">End Time</th>
 										<th class="text-center align-middle" style="width: 35%">Access URL</th>
@@ -420,7 +420,8 @@ function deleteOnline(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															Year <c:out value="${online.year}" />/<c:out value="${online.year+1}" />
+															<!-- Year <c:out value="${online.year}" />/<c:out value="${online.year+1}" /> -->
+															Year <c:out value="${fn:substring(online.year, 2, 4)}" />/<c:out value="${fn:substring(online.year+1, 2, 4)}" />
 														</span>
 													</td>
 													<td class="small align-middle">
@@ -537,15 +538,15 @@ function deleteOnline(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-2">
-									<label for="addWeek" class="label-form">Week</label>
+									<label for="addWeek" class="label-form">Set</label>
 									<select class="form-control" id="addWeek" name="addWeek">
 									</select>
 									<script>
 										// Get a reference to the select element
 										var selectElement = document.getElementById("addWeek");
 									  
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
+										// Loop to add options from 1 to 49
+										for (var i = 1; i <= 49; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 									  
@@ -641,15 +642,15 @@ function deleteOnline(id) {
 								</div>
 								
 								<div class="col-md-2">
-									<label for="editWeek" class="label-form">Week</label>
+									<label for="editWeek" class="label-form">Set</label>
 									<select class="form-control" id="editWeek" name="editWeek">
 									</select>
 									<script>
 										// Get a reference to the select element
 										var selectElement = document.getElementById("editWeek");
 									  
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
+										// Loop to add options from 1 to 49
+										for (var i = 1; i <= 49; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 									  

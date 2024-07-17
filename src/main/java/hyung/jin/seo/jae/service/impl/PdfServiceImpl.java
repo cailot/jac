@@ -173,7 +173,7 @@ public class PdfServiceImpl implements PdfService {
 	}
 
 
-	@Override
+	// @Override
 	public void generateInvoicePdf(String fileName, Map<String, Object> data){		
 		try {
 			// pdf directory - resources/pdf
@@ -234,7 +234,7 @@ public class PdfServiceImpl implements PdfService {
 		}
 	}
 
-	@Override
+	// @Override
 	public void generateReceiptPdf(String fileName, Map<String, Object> data) {
 		try {
 			// pdf directory - resources/pdf

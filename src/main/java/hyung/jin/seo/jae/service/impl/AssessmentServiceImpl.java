@@ -76,10 +76,12 @@ public class AssessmentServiceImpl implements AssessmentService {
 			AssessmentAnswer aa = assessmentAnswerRepository.findAssessmentAnswerByAssessment(id);
 			if(aa!=null){
 				// 2. empty TestAnswerCollection
-				aa.setAnswers(new ArrayList<>());
+				aa.setAnswers(null);
 				assessmentAnswerRepository.save(aa);
 				// 3. delete associated assessmentAnswer
-				assessmentAnswerRepository.deleteAssessmentAnswerByAssessment(id);
+				assessmentAnswerRepository.deleteById(aa.getId());
+				// 4. delete associated guestStudentAssessment
+				
 			}
 			// 4. delete assessment
 			assessmentRepository.deleteById(id);

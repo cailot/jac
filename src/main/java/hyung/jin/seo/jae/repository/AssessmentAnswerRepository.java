@@ -20,7 +20,7 @@ public interface AssessmentAnswerRepository extends JpaRepository<AssessmentAnsw
 	@Query(value = "SELECT * FROM AssessmentAnswer aa where aa.assessmentId = :assessmentId", nativeQuery = true)
 	AssessmentAnswer findAssessmentAnswerByAssessment(Long assessmentId);
 
-	@Modifying
-	@Query(value = "DELETE FROM AssessmentAnswer where assessmentId = :assessmentId", nativeQuery = true)
-	void deleteAssessmentAnswerByAssessment(Long assessmentId);
+	// @Modifying
+	// @Query(value = "DELETE FROM AssessmentAnswer where assessmentId = :assessmentId", nativeQuery = true)
+	// void deleteAssessmentAnswerByAssessment(Long assessmentId);
 }
