@@ -100,7 +100,12 @@
 		<put-attribute name="title" value="Test Schedule" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/testSchedule.jsp" />
 	</definition>
-
+	<!--Assessment List -->
+	<definition name="assessListPage" extends="base.definition">
+		<put-attribute name="title" value="Assessment List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/assessList.jsp" />
+	</definition>
+	
 
 
 	<!--Academic Cycle -->
