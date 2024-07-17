@@ -5,12 +5,12 @@ import java.util.Map;
 public interface PdfService {
 
 	// generate invoice pdf file
-	void generateInvoicePdf(String name, Map<String, Object> data);
+	// void generateInvoicePdf(String name, Map<String, Object> data);
 
 	byte[] generateInvoicePdf(Map<String, Object> data);
 
 	// generate reciept pdf file
-	void generateReceiptPdf(String name, Map<String, Object> data);
+	// void generateReceiptPdf(String name, Map<String, Object> data);
 
 	byte[] generateReceiptPdf(Map<String, Object> data);
 }

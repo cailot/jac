@@ -27,6 +27,7 @@ hyung/jin/seo/jae/repository/CycleRepository.class
 hyung/jin/seo/jae/repository/OnlineSessionRepository.class
 hyung/jin/seo/jae/repository/InvoiceRepository.class
 hyung/jin/seo/jae/controller/OnlineSessionController.class
+hyung/jin/seo/jae/repository/AssessmentRepository.class
 hyung/jin/seo/jae/model/StudentPractice.class
 hyung/jin/seo/jae/SqlScriptRunner.class
 hyung/jin/seo/jae/dto/TestDTO.class
@@ -57,6 +58,7 @@ hyung/jin/seo/jae/controller/StudentController.class
 hyung/jin/seo/jae/service/BookService.class
 hyung/jin/seo/jae/service/UserService.class
 hyung/jin/seo/jae/utils/StudentIdGenerator.class
+hyung/jin/seo/jae/repository/AssessmentAnswerRepository.class
 hyung/jin/seo/jae/dto/BookDTO.class
 hyung/jin/seo/jae/config/JaeSecurityConfig.class
 hyung/jin/seo/jae/model/Homework.class
@@ -71,6 +73,7 @@ hyung/jin/seo/jae/controller/EnrolmentController.class
 hyung/jin/seo/jae/utils/JaeUtils.class
 hyung/jin/seo/jae/model/StudentTest.class
 hyung/jin/seo/jae/service/TeacherService.class
+hyung/jin/seo/jae/controller/AssessmentController$1.class
 hyung/jin/seo/jae/service/PdfService.class
 hyung/jin/seo/jae/service/impl/StudentServiceImpl.class
 hyung/jin/seo/jae/model/Enrolment.class
@@ -81,6 +84,7 @@ hyung/jin/seo/jae/dto/CourseDTO.class
 hyung/jin/seo/jae/controller/BookController.class
 hyung/jin/seo/jae/dto/DayScheduleDTO.class
 hyung/jin/seo/jae/config/JaeTilesConfig.class
+hyung/jin/seo/jae/model/AssessmentAnswerItem.class
 hyung/jin/seo/jae/model/DaySchedule.class
 hyung/jin/seo/jae/dto/StudentPracticeDTO.class
 hyung/jin/seo/jae/dto/ClazzDTO.class
@@ -92,18 +96,22 @@ hyung/jin/seo/jae/service/CourseService.class
 hyung/jin/seo/jae/repository/JaeMySQLDialect.class
 hyung/jin/seo/jae/model/PracticeType.class
 hyung/jin/seo/jae/model/Course.class
+hyung/jin/seo/jae/dto/GuestStudentDTO.class
 hyung/jin/seo/jae/repository/HomeworkRepository.class
 hyung/jin/seo/jae/service/impl/EnrolmentServiceImpl.class
 hyung/jin/seo/jae/dto/ExtraworkDTO.class
+hyung/jin/seo/jae/controller/AssessmentController.class
 hyung/jin/seo/jae/dto/CycleDTO.class
 hyung/jin/seo/jae/dto/mobile/AttendanceRollStudentDTO.class
 hyung/jin/seo/jae/controller/UserController.class
+hyung/jin/seo/jae/model/GuestStudent.class
 hyung/jin/seo/jae/dto/OutstandingDTO.class
 hyung/jin/seo/jae/model/Cycle.class
 hyung/jin/seo/jae/controller/JaeController.class
 hyung/jin/seo/jae/model/OnlineSession.class
 hyung/jin/seo/jae/controller/BatchController.class
 hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.class
+hyung/jin/seo/jae/dto/AssessmentDTO.class
 hyung/jin/seo/jae/controller/ConnectedController$1.class
 hyung/jin/seo/jae/config/JaeWebConfig.class
 hyung/jin/seo/jae/service/StatsService.class
@@ -122,6 +130,7 @@ hyung/jin/seo/jae/dto/StateDTO.class
 hyung/jin/seo/jae/repository/TestAnswerRepository.class
 hyung/jin/seo/jae/repository/PracticeTypeRepository.class
 hyung/jin/seo/jae/repository/AttendanceRepository.class
+hyung/jin/seo/jae/model/Assessment.class
 hyung/jin/seo/jae/repository/EnrolmentRepository.class
 hyung/jin/seo/jae/utils/UsernameGenerator.class
 hyung/jin/seo/jae/repository/TestTypeRepository.class
@@ -132,12 +141,14 @@ hyung/jin/seo/jae/model/Practice.class
 hyung/jin/seo/jae/model/PracticeSchedule.class
 hyung/jin/seo/jae/dto/InvoiceDTO.class
 hyung/jin/seo/jae/service/impl/ConnectedServiceImpl.class
+hyung/jin/seo/jae/repository/GuestStudentRepository.class
 hyung/jin/seo/jae/model/Teacher.class
 hyung/jin/seo/jae/repository/BranchRepository.class
 hyung/jin/seo/jae/repository/SubjectRepository.class
 hyung/jin/seo/jae/service/impl/OutstandingServiceImpl.class
 hyung/jin/seo/jae/repository/TeacherRepository.class
 hyung/jin/seo/jae/service/OutstandingService.class
+hyung/jin/seo/jae/dto/AssessmentAnswerDTO.class
 hyung/jin/seo/jae/model/TestAnswer.class
 hyung/jin/seo/jae/service/impl/CourseServiceImpl.class
 hyung/jin/seo/jae/dto/TeacherDTO.class
@@ -152,7 +163,9 @@ hyung/jin/seo/jae/controller/rest/JaeRestController.class
 hyung/jin/seo/jae/utils/InvoiceIdGenerator.class
 hyung/jin/seo/jae/model/Test.class
 hyung/jin/seo/jae/repository/CourseRepository.class
+hyung/jin/seo/jae/model/AssessmentAnswer.class
 hyung/jin/seo/jae/service/PaymentService.class
+hyung/jin/seo/jae/service/impl/AssessmentServiceImpl.class
 hyung/jin/seo/jae/dto/AttendanceDTO.class
 hyung/jin/seo/jae/model/Invoice.class
 hyung/jin/seo/jae/model/Branch.class
@@ -164,3 +177,4 @@ hyung/jin/seo/jae/model/State.class
 hyung/jin/seo/jae/model/Material.class
 hyung/jin/seo/jae/controller/ConnectedController.class
 hyung/jin/seo/jae/controller/StatisticController.class
+hyung/jin/seo/jae/service/AssessmentService.class
