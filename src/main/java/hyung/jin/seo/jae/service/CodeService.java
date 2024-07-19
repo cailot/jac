@@ -78,6 +78,9 @@ public interface CodeService {
 	// update grade
 	Grade updateGrade(Grade newGrade, Long id);
 
+	// get previous grade
+	String getPreviousGrade(String code);
+
 	// delete grade
 	void deleteGrade(Long id);
 
