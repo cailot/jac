@@ -67,24 +67,10 @@ public class OnlineSessionController {
 	@GetMapping("/filterSession")
 	public String filterOnlineSessions(
 			@RequestParam(value = "listGrade", required = false) String grade,
-			@RequestParam(value = "listYear", required = false) String year, 
+			@RequestParam(value = "listSet", required = false) int set,
+			@RequestParam(value = "listYear", required = false) int year, 
 			Model model) {
-		List<OnlineSessionDTO> dtos = new ArrayList();
-		String filteredGrade = StringUtils.defaultString(grade);
-		String filteredYear = StringUtils.defaultString(year, "0");
-	    if ("0".equalsIgnoreCase(filteredGrade) && "0".equalsIgnoreCase(filteredYear)) {
-			// grade & year = all
-			dtos = onlineSessionService.allOnlineSessions();
-		} else if ("0".equalsIgnoreCase(filteredGrade)) {
-			// grade = all, year = some
-			dtos = onlineSessionService.filterOnlineSessionByYear(Integer.parseInt(filteredYear));
-		} else if ("0".equalsIgnoreCase(filteredYear)) {
-			// grade = some, year = all
-			dtos = onlineSessionService.filterOnlineSessionByGrade(grade);
-		} else {
-			// grade = some, year = some
-			dtos = onlineSessionService.filterOnlineSessionByGradeNYear(grade, Integer.parseInt(filteredYear));
-		}
+		List<OnlineSessionDTO> dtos = onlineSessionService.filterOnlineSessionByGradeNSetNYear(grade, set, year);	
 		model.addAttribute(JaeConstants.ONLINE_LIST, dtos);
 		return "onlineListPage";
 	}
