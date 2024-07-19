@@ -19,13 +19,16 @@ public interface OnlineSessionService {
 	List<OnlineSessionDTO> findInactiveOnlineSessionByClazz(Long clazzId);
 
 	// filter session by grade
-	List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade);
+	// List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade);
 
 	// filter session by year
 	List<OnlineSessionDTO> filterOnlineSessionByYear(int year);
 
 	// filter session by grade and year
-	List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year);
+	// List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year);
+
+	// filter session by grade , set and year
+	List<OnlineSessionDTO> filterOnlineSessionByGradeNSetNYear(String grade, int set, int year);
 
 	// return total count
 	long checkCount();

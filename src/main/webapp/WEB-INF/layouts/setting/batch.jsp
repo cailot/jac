@@ -43,12 +43,12 @@ function updateInactiveStudent() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function createCourseTemplate() {
 
-	// get value of 'academicYear' dropdown
-	var academicYear = $('#academicYear').val();
-	console.log(academicYear);
+	// get value of 'courseYear' dropdown
+	var courseYear = $('#courseYear').val();
+	console.log(courseYear);
 
 	$.ajax({
-		url: '${pageContext.request.contextPath}/batch/createCourse/' + academicYear,
+		url: '${pageContext.request.contextPath}/batch/createCourse/' + courseYear,
 		type: 'GET',
 		success: function (count) {
 			// Display the success alert
@@ -59,6 +59,29 @@ function createCourseTemplate() {
 			console.log('Error : ' + error);
 		}
 	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Create Online Template
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function createOnlineTemplate() {
+
+// get value of 'courseYear' dropdown
+var onlineYear = $('#onlineYear').val();
+console.log(onlineYear);
+
+$.ajax({
+	url: '${pageContext.request.contextPath}/batch/createOnline/' + onlineYear,
+	type: 'GET',
+	success: function (count) {
+		// Display the success alert
+		$('#success-alert .modal-body').text(count);
+		$('#success-alert').modal('show');
+	},
+	error: function (xhr, status, error) {
+		console.log('Error : ' + error);
+	}
+});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +112,19 @@ function confirmCreateCourse() {
     });
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm Create Online Class Template
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function confirmCreateOnline() {
+    // Show the warning modal
+    $('#createOnlineModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeCreateOnline').one('click', function() {
+        createOnlineTemplate();
+        $('#createOnlineModal').modal('hide');
+    });
+}
 </script>
 
 <style>
@@ -127,6 +163,12 @@ function confirmCreateCourse() {
 			<td class="left-cell" style="vertical-align: middle;"><b>Create Course Template</b></td>
 			<td class="text-right" style="vertical-align: middle;">
 				<button type="button" class="btn btn-primary" style="width: 120px;" onclick="confirmCreateCourse()"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Create</button>
+			</td>
+		</tr>
+		<tr height="80px">
+			<td class="left-cell" style="vertical-align: middle;"><b>Create Online Class Template</b><span class="text-warning">  (JAC Study)</span></td>
+			<td class="text-right" style="vertical-align: middle;">
+				<button type="button" class="btn btn-primary" style="width: 120px;" onclick="confirmCreateOnline()"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;Create</button>
 			</td>
 		</tr>
 		</table> 
@@ -179,8 +221,8 @@ function confirmCreateCourse() {
 				</div>
 				<!-- Year Selection Dropdown -->
 				<div class="form-group">
-					<label for="academicYear">Select Year:</label>
-					<select class="form-control" id="academicYear" name="academicYear">
+					<label for="courseYear">Select Year:</label>
+					<select class="form-control" id="courseYear" name="courseYear">
 						<%
 							Calendar now = Calendar.getInstance();
 							int currentYear = now.get(Calendar.YEAR);
@@ -209,3 +251,73 @@ function confirmCreateCourse() {
 		</div>
 	</div>
 </div>
+
+<!-- Online Modal -->
+<div class="modal fade" id="createOnlineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content" style="border: 2px solid #ffc107; border-radius: 10px;">
+			<div class="modal-header bg-warning" style="display: block;">
+				<p style="text-align: center; margin-bottom: 0;"><span style="font-size:18px"><strong>Create Online Session for JAC Study Batch</strong></span></p>
+			</div>
+			<div class="modal-body" style="background-color: #f8f9fa; border-radius: 5px; padding: 20px;">
+				<div style="text-align: center; margin-bottom: 20px;">
+					<img src="${pageContext.request.contextPath}/image/online_template.png" style="width: 80px; height: 80px; border-radius: 5%;">
+				</div>
+				<!-- Year Selection Dropdown -->
+				<div class="form-group">
+					<div class="form-row">
+						<div class="col-md-6">
+							<label for="onlineYear">Select Year:</label>
+							<select class="form-control" id="onlineYear" name="onlineYear">
+								<option value="<%= currentYear %>">Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+								<%
+									// Adding the last five years
+									for (int i = currentYear - 1; i >= currentYear - 2; i--) {
+								%>
+									<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+								<%
+								}
+								%>
+							</select>
+						</div>
+						<div class="col-md-6 d-flex justify-content-center align-items-center mt-4">
+							<p>
+								<a href="/login">Download CSV Template</a>
+							</p>
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-12">
+							<span class="text-bold"><strong>Create Online Session Template</strong></span>
+							The system will generate a basic template for an online session for JAC Study, tailored to a specific academic cycle. Please review the generated session and make any necessary modifications, such as adjusting the access URL.
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-12 text-center">
+							<span class="text-bold"><strong>Ready to upload CSV template file ?</strong></span>
+						</div>
+					</div>
+					<div class="form-row mt-3">
+						<div class="col-md-8">
+							<!-- Include CSRF token -->
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<div class="input-group">
+								<input type="file" name="file" class="file-input form-control" id="file-input" onchange="updateFileName(this)">
+								<label for="file-input" class="upload-label input-group-text">Choose File</label>
+							</div>
+							<div id="file-name-container"></div>
+						</div>
+						<div class="col-md-4 text-right">
+							<button type="submit" class="upload-button btn btn-primary">Upload</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="agreeCreateOnline">Please, Process Template</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">No, I don't want</button>
+			</div>
+		</div>
+	</div>
+</div>
+

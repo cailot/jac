@@ -69,11 +69,22 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		return dtos;
 	}
 
+	// @Override
+	// public List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year) {
+	// 	List<OnlineSessionDTO> dtos = new ArrayList<>();
+	// 	try{
+	// 		dtos = onlineSessionRepository.filterOnlineSessionByGradeNYear(grade, year);
+	// 	}catch(Exception e){
+	// 		System.out.println("No OnlineSession found");
+	// 	}
+	// 	return dtos;
+	// }
+
 	@Override
-	public List<OnlineSessionDTO> filterOnlineSessionByGradeNYear(String grade, int year) {
+	public List<OnlineSessionDTO> filterOnlineSessionByGradeNSetNYear(String grade, int set, int year) {
 		List<OnlineSessionDTO> dtos = new ArrayList<>();
 		try{
-			dtos = onlineSessionRepository.filterOnlineSessionByGradeNYear(grade, year);
+			dtos = onlineSessionRepository.filterOnlineSessionByGradeNSetNYear(grade, set, year);
 		}catch(Exception e){
 			System.out.println("No OnlineSession found");
 		}
@@ -141,16 +152,16 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		return dto;
 	}
 
-	@Override
-	public List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade) {
-		List<OnlineSessionDTO> dtos = new ArrayList<>();
-		try{
-			dtos = onlineSessionRepository.filterOnlineSessionByGrade(grade);
-		}catch(Exception e){
-			System.out.println("No OnlineSession found");
-		}
-		return dtos;
-	}
+	// @Override
+	// public List<OnlineSessionDTO> filterOnlineSessionByGrade(String grade) {
+	// 	List<OnlineSessionDTO> dtos = new ArrayList<>();
+	// 	try{
+	// 		dtos = onlineSessionRepository.filterOnlineSessionByGrade(grade);
+	// 	}catch(Exception e){
+	// 		System.out.println("No OnlineSession found");
+	// 	}
+	// 	return dtos;
+	// }
 
 	@Override
 	public List<OnlineSessionDTO> filterOnlineSessionByYear(int year) {
@@ -183,5 +194,6 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 			System.out.println("No OnlineSession found");
 		}
 	}
+
 
 }

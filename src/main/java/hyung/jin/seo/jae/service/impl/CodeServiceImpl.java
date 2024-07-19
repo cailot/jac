@@ -298,6 +298,18 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public String getPreviousGrade(String code) {
+		String previous = "";
+		try {
+			previous = gradeRepository.getPrevious(code);
+		} catch (Exception e) {
+			System.out.println("No grade found");
+		}
+		return previous;
+	}
+
+
+	@Override
 	public DaySchedule getDay(Long id) {
 		DaySchedule day = null;
 		try {
@@ -456,5 +468,6 @@ public class CodeServiceImpl implements CodeService {
 		} 
 		return email;
 	}
+
 
 }
