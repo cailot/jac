@@ -64,13 +64,13 @@ function createCourseTemplate() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Create Online Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function createOnlineTemplate() {
+function createOnlineTemplate1() {
 
-// get value of 'courseYear' dropdown
-var onlineYear = $('#onlineYear').val();
-console.log(onlineYear);
+	// get value of 'courseYear' dropdown
+	var onlineYear = $('#onlineYear').val();
+	console.log(onlineYear);
 
-$.ajax({
+	$.ajax({
 	url: '${pageContext.request.contextPath}/batch/createOnline/' + onlineYear,
 	type: 'GET',
 	success: function (count) {
@@ -81,7 +81,48 @@ $.ajax({
 	error: function (xhr, status, error) {
 		console.log('Error : ' + error);
 	}
-});
+	});
+}
+
+function createOnlineTemplate() {
+	// Create a FormData object
+	const formData = new FormData();
+	
+	// Get the file from the file input
+	const fileInput = document.getElementById('file-input');
+	if (fileInput.files.length > 0) {
+		const file = fileInput.files[0];
+		formData.append('file', file);
+	} else {
+		alert('Please select a file to upload.');
+		return;
+	}
+	
+	// Get the selected year from the dropdown
+	const yearSelect = document.getElementById('onlineYear');
+	const selectedYear = yearSelect.value;
+	formData.append('year', selectedYear);
+	
+	// Use fetch API to send the FormData to the server
+	fetch('${pageContext.request.contextPath}/batch/createOnline', {
+		method: 'POST',
+		body: formData
+	})
+	.then(response => {
+		if (response.ok) {
+			return response.json();
+		}
+		throw new Error('Network response was not ok.');
+	})
+	.then(data => {
+		// Display the success alert
+		$('#success-alert .modal-body').text(data);
+		$('#success-alert').modal('show');
+	})
+	.catch(error => {
+		console.error('There was a problem with the fetch operation:', error);
+		alert('Error uploading file and year.');
+	});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,14 +323,18 @@ function confirmCreateOnline() {
 						</div>
 						<div class="col-md-6 d-flex justify-content-center align-items-center mt-4">
 							<p>
-								<a href="/login">Download CSV Template</a>
+								<a href="${pageContext.request.contextPath}/template/online_template.csv">Download CSV Template</a>
 							</p>
 						</div>
 					</div>
 					<div class="form-row mt-3">
 						<div class="col-md-12">
 							<span class="text-bold"><strong>Create Online Session Template</strong></span>
-							The system will generate a basic template for an online session for JAC Study, tailored to a specific academic cycle. Please review the generated session and make any necessary modifications, such as adjusting the access URL.
+							The system will generate a basic template for an online session tailored to the specific academic cycle of JAC Study. Please note the following prerequisites:
+							<ul class="text-danger mt-2 font-italic font-bold">
+								<li>The academic cycle MUST be registered.</li>
+								<li>The online course MUST be registered.</li>
+							</ul>
 						</div>
 					</div>
 					<div class="form-row mt-3">
@@ -298,17 +343,16 @@ function confirmCreateOnline() {
 						</div>
 					</div>
 					<div class="form-row mt-3">
-						<div class="col-md-8">
+						<div class="offset-md-4"></div>
+						<div class="col-md-7">
 							<!-- Include CSRF token -->
 							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 							<div class="input-group">
-								<input type="file" name="file" class="file-input form-control" id="file-input" onchange="updateFileName(this)">
-								<label for="file-input" class="upload-label input-group-text">Choose File</label>
+								<input type="file" name="file" class="file-input" id="file-input">
 							</div>
 							<div id="file-name-container"></div>
 						</div>
-						<div class="col-md-4 text-right">
-							<button type="submit" class="upload-button btn btn-primary">Upload</button>
+						<div class="offset-md-1">
 						</div>
 					</div>
 				</div>
