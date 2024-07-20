@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.CourseDTO;
 import hyung.jin.seo.jae.dto.CycleDTO;
@@ -41,6 +42,7 @@ import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.OnlineSessionService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("batch")
@@ -623,239 +625,110 @@ public class BatchController {
 		return courses;
 	}
 
-	// create online template
-	@GetMapping("/createOnline/{year}")
+	@PostMapping("/createOnline")
 	@ResponseBody
-	public ResponseEntity<String> createOnlineTemplate(@PathVariable("year") int year) {
-		try {
-			// 1. get Cycle
-			// Cycle cycle = cycleService.findCycleByYear(year);
-			// int year = cycle.getYear();
-			// 2. create Online
-			List<OnlineSession> onlines = getOnline(year);
-			// 3. add Course
-			for (OnlineSession online : onlines) {
-				onlineSessionService.addOnlineSession(online);
+    public ResponseEntity<String> processOnlineBatch(@RequestParam("file") MultipartFile file, @RequestParam("year") int year) {
+
+		// 1. validate uploaded file	
+		if (file != null && !file.isEmpty()) {
+			String originalFilename = file.getOriginalFilename();
+			if (originalFilename != null) {
+				String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+				if ("csv".equalsIgnoreCase(fileExtension)) {
+					// File extension is CSV, proceed with further processing
+				} else {
+					// Invalid file extension
+					return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid file format. Please upload a CSV file.");
+				}
+			} else {
+				// File name not found
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File name not found. Please try again.");
 			}
-			// 4. return success message// // 3. return success;
-			return ResponseEntity.ok("Online template generated success");
-		} catch (Exception e) {
-			String message = "Error registering Class: " + e.getMessage();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
-		}
-	}
-
-	private List<OnlineSession> getOnline(int year) {
-		List<OnlineSession> onlines = new ArrayList<>();
-
-		// P2
-		Clazz clazz = clazzService.getOnlineByGradeNYear("1", year);
-		for(int i=1; i<50; i++){
-			OnlineSession p2 = new OnlineSession();
-			// fixed
-			p2.setActive(true);
-			p2.setDay("1");
-			p2.setStartTime("16:00");
-			p2.setEndTime("19:30");
-			p2.setClazz(clazz);
-			// variable
-			p2.setWeek(i);
-			p2.setAddress("www.google.com");
-			onlines.add(p2);
-		}
-
-		// P3
-		clazz = clazzService.getOnlineByGradeNYear("2", year);
-		for(int i=1; i<50; i++){
-			OnlineSession p3 = new OnlineSession();
-			// fixed
-			p3.setActive(true);
-			p3.setDay("1");
-			p3.setStartTime("16:00");
-			p3.setEndTime("19:30");
-			p3.setClazz(clazz);
-			// variable
-			p3.setWeek(i);
-			p3.setAddress("www.google.com");
-			onlines.add(p3);
-		}
-
-		// P4
-		clazz = clazzService.getOnlineByGradeNYear("3", year);
-		for(int i=1; i<50; i++){
-			OnlineSession p4 = new OnlineSession();
-			// fixed
-			p4.setActive(true);
-			p4.setDay("1");
-			p4.setStartTime("16:00");
-			p4.setEndTime("19:30");
-			p4.setClazz(clazz);
-			// variable
-			p4.setWeek(i);
-			p4.setAddress("www.google.com");
-			onlines.add(p4);
-		}
-
-		// P5
-		clazz = clazzService.getOnlineByGradeNYear("4", year);
-		for(int i=1; i<50; i++){
-			OnlineSession p5 = new OnlineSession();
-			// fixed
-			p5.setActive(true);
-			p5.setDay("2");
-			p5.setStartTime("16:00");
-			p5.setEndTime("19:30");
-			p5.setClazz(clazz);
-			// variable
-			p5.setWeek(i);
-			p5.setAddress("www.google.com");
-			onlines.add(p5);
-		}
-
-		// P6
-		clazz = clazzService.getOnlineByGradeNYear("5", year);
-		for(int i=1; i<50; i++){
-			OnlineSession p6 = new OnlineSession();
-			// fixed
-			p6.setActive(true);
-			p6.setDay("2");
-			p6.setStartTime("16:00");
-			p6.setEndTime("19:30");
-			p6.setClazz(clazz);
-			// variable
-			p6.setWeek(i);
-			p6.setAddress("www.google.com");
-			onlines.add(p6);
-		}
-
-		// S7
-		clazz = clazzService.getOnlineByGradeNYear("6", year);
-		for(int i=1; i<50; i++){
-			OnlineSession s7 = new OnlineSession();
-			// fixed
-			s7.setActive(true);
-			s7.setDay("2");
-			s7.setStartTime("16:00");
-			s7.setEndTime("19:30");
-			s7.setClazz(clazz);
-			// variable
-			s7.setWeek(i);
-			s7.setAddress("www.google.com");
-			onlines.add(s7);
-		}
-
-		// S8
-		clazz = clazzService.getOnlineByGradeNYear("7", year);
-		for(int i=1; i<50; i++){
-			OnlineSession s8 = new OnlineSession();
-			// fixed
-			s8.setActive(true);
-			s8.setDay("3");
-			s8.setStartTime("16:00");
-			s8.setEndTime("19:30");
-			s8.setClazz(clazz);
-			// variable
-			s8.setWeek(i);
-			s8.setAddress("www.google.com");
-			onlines.add(s8);
-		}
-
-		// S9
-		clazz = clazzService.getOnlineByGradeNYear("8", year);
-		for(int i=1; i<50; i++){
-			OnlineSession s9 = new OnlineSession();
-			// fixed
-			s9.setActive(true);
-			s9.setDay("3");
-			s9.setStartTime("16:00");
-			s9.setEndTime("19:30");
-			s9.setClazz(clazz);
-			// variable
-			s9.setWeek(i);
-			s9.setAddress("www.google.com");
-			onlines.add(s9);
-		}
-
-		// S10
-		clazz = clazzService.getOnlineByGradeNYear("9", year);
-		for(int i=1; i<50; i++){
-			OnlineSession s10 = new OnlineSession();
-			// fixed
-			s10.setActive(true);
-			s10.setDay("3");
-			s10.setStartTime("16:00");
-			s10.setEndTime("19:30");
-			s10.setClazz(clazz);
-			// variable
-			s10.setWeek(i);
-			s10.setAddress("www.google.com");
-			onlines.add(s10);
-		}
-
-		// TT6
-		clazz = clazzService.getOnlineByGradeNYear("11", year);
-		for(int i=1; i<50; i++){
-			OnlineSession tt6 = new OnlineSession();
-			// fixed
-			tt6.setActive(true);
-			tt6.setDay("2");
-			tt6.setStartTime("16:00");
-			tt6.setEndTime("19:30");
-			tt6.setClazz(clazz);
-			// variable
-			tt6.setWeek(i);
-			tt6.setAddress("www.google.com");
-			onlines.add(tt6);
-		}
-
-		// TT8
-		clazz = clazzService.getOnlineByGradeNYear("12", year);
-		for(int i=1; i<50; i++){
-			OnlineSession tt8 = new OnlineSession();
-			// fixed
-			tt8.setActive(true);
-			tt8.setDay("3");
-			tt8.setStartTime("16:00");
-			tt8.setEndTime("19:30");
-			tt8.setClazz(clazz);
-			// variable
-			tt8.setWeek(i);
-			tt8.setAddress("www.google.com");
-			onlines.add(tt8);
+		} else {
+			// No file uploaded
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No file uploaded. Please select a file to upload.");
 		}
 		
-		// JMSS
-		clazz = clazzService.getOnlineByGradeNYear("19", year);
-		for(int i=1; i<50; i++){
-			OnlineSession jmss = new OnlineSession();
-			// fixed
-			jmss.setActive(true);
-			jmss.setDay("2");
-			jmss.setStartTime("16:00");
-			jmss.setEndTime("19:30");
-			jmss.setClazz(clazz);
-			// variable
-			jmss.setWeek(i);
-			jmss.setAddress("www.google.com");
-			onlines.add(jmss);
+		// 2. proccess online session
+		int lineCount = 0;
+		if (file != null && !file.isEmpty()) {
+			try {
+				// Create a BufferedReader to read the lines from the uploaded CSV file
+				BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					lineCount++;
+					String[] columns = line.split(",");	
+					if(lineCount ==1) continue; // skip header in csv
+					String grade = JaeUtils.getGradeCode(StringUtils.trimToEmpty(columns[0]));
+					int week = Integer.parseInt(StringUtils.trimToEmpty(columns[1]));
+					String url = StringUtils.trimToEmpty(columns[2]);
+					// create OnlineSession
+					OnlineSession session = getOnlineSession(grade, year, week, url);
+					// register OnlineSession	
+					session = onlineSessionService.addOnlineSession(session);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+		// return success message
+		return ResponseEntity.ok("\"Online Session template generated success\"");							
+    }
 
-		// VCE
-		// clazz = clazzService.getOnlineByGradeNYear("20", year);
-		// for(int i=1; i<50; i++){
-		// 	OnlineSession vce = new OnlineSession();
-		// 	// fixed
-		// 	vce.setActive(true);
-		// 	vce.setDay("3");
-		// 	vce.setStartTime("16:00");
-		// 	vce.setEndTime("19:30");
-		// 	vce.setClazz(clazz);
-		// 	// variable
-		// 	vce.setWeek(i);
-		// 	vce.setAddress("www.google.com");
-		// 	onlines.add(vce);
-		// }
-
-		return onlines;
+	// return OnlineSession
+	private OnlineSession getOnlineSession(String grade, int year, int set, String url){
+		// get Clazz
+		Clazz clazz = clazzService.getOnlineByGradeNYear(grade, year);
+		// create OnlineSession
+		OnlineSession online = new OnlineSession();
+		// fixed
+		online.setActive(true);		
+		online.setDay(getDay4Online(grade));
+		online.setStartTime("16:00");
+		online.setEndTime("19:30");
+		online.setClazz(clazz);
+		// variable
+		online.setWeek(set);
+		online.setAddress(url);
+		// return OnlineSession
+		return online;		
 	}
+
+	private String getDay4Online(String grade){
+		String day = "0";
+		switch (grade) {
+			case "1":
+				day = "1"; // Monday
+			case "2":
+				day = "1";
+			case "3":
+				day = "1";
+				break;
+			case "4":
+				day = "2"; // Tuesday
+			case "5":
+				day = "2";
+			case "6":
+				day = "2";
+				break;
+			case "7":
+				day = "3"; // Wednessday
+			case "8":
+				day = "3";
+			case "9":
+				day = "3";
+				break;
+			case "11":
+				day = "2";
+				break;
+			case "12":
+				day = "3";
+				break;
+			default:
+				break;
+		}
+		return day;
+	}
+
 }
