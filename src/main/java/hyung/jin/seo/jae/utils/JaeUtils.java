@@ -165,6 +165,34 @@ public class JaeUtils {
 		return gradeText;
 	}
 
+	// return grade name
+	public static String getGradeCode(String value) {
+		String gradeText = "";
+		switch(value) {
+			case "P2": gradeText = "1"; break;
+			case "P3": gradeText = "2"; break;
+			case "P4": gradeText = "3"; break;
+			case "P5": gradeText = "4"; break;
+			case "P6": gradeText = "5"; break;
+			case "S7": gradeText = "6"; break;
+			case "S8": gradeText = "7"; break;
+			case "S9": gradeText = "8"; break;
+			case "S10": gradeText = "9"; break;
+			case "S10E": gradeText = "10"; break;
+			case "TT6": gradeText = "11"; break;
+			case "TT8": gradeText = "12"; break;
+			case "TT8E": gradeText = "13"; break;
+			case "SRW4": gradeText = "14"; break;
+			case "SRW5": gradeText = "15"; break;
+			case "SRW6": gradeText = "16"; break;
+			case "SRW7": gradeText = "17"; break;
+			case "SRW8": gradeText = "18"; break;
+			case "JMSS": gradeText = "19"; break;
+			case "VCE": gradeText = "20"; 
+		}
+		return gradeText;
+	}
+
 	// get year from date format
 	public static int getYear(String date){
 		int year = 0;
