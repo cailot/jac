@@ -59,17 +59,6 @@ $(document).ready(function () {
 		getCoursesByGrade(grade, '#addCourse', addDay);
 	});
 
-	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-	// $('#editGrade').change(function () {
-	// 	var grade = $(this).val();
-	// 	// get value from editStartDate
-	// 	var editDay = $('#editStartDate').val();
-	// 	// change format as 'yyyy-mm-dd'
-	// 	var date = editDay.split("/");
-	// 	editDay = date[2] + '-' + date[1] + '-' + date[0];
-	// 	getCoursesByGrade(grade, '#editCourse', editDay);
-	// });
-
 	// initialise state list when loading
 	listState('#listState');
 	listState('#addState');
