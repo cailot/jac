@@ -39,23 +39,36 @@ $(document).ready(function () {
 	});
 
 	$("#addStartDate").datepicker({
-		dateFormat: 'dd/mm/yy'
+		dateFormat: 'dd/mm/yy',
+		minDate: new Date()
 	});
 	$("#editStartDate").datepicker({
 		dateFormat: 'dd/mm/yy'
+		// minDate: new Date()
 	});
 
 	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
 	$('#addGrade').change(function () {
 		var grade = $(this).val();
-		getCoursesByGrade(grade, '#addCourse');
+		// get value from addStartDate
+		var addDay = $('#addStartDate').val();
+		// change format as 'yyyy-mm-dd'
+		var date = addDay.split("/");
+		addDay = date[2] + '-' + date[1] + '-' + date[0];
+		// console.log(today);
+		getCoursesByGrade(grade, '#addCourse', addDay);
 	});
 
 	// When the Grade dropdown changes, send an Ajax request to get the corresponding Type
-	$('#editGrade').change(function () {
-		var grade = $(this).val();
-		getCoursesByGrade(grade, '#editCourse');
-	});
+	// $('#editGrade').change(function () {
+	// 	var grade = $(this).val();
+	// 	// get value from editStartDate
+	// 	var editDay = $('#editStartDate').val();
+	// 	// change format as 'yyyy-mm-dd'
+	// 	var date = editDay.split("/");
+	// 	editDay = date[2] + '-' + date[1] + '-' + date[0];
+	// 	getCoursesByGrade(grade, '#editCourse', editDay);
+	// });
 
 	// initialise state list when loading
 	listState('#listState');
@@ -165,9 +178,13 @@ function retrieveClassInfo(clazzId) {
 		url: '${pageContext.request.contextPath}/class/get/class/' + clazzId,
 		type: 'GET',
 		success: async function (clazz) {
-			//console.log(clazz);
+			console.log(clazz.startDate);
+			// Set date value
+			// var date = new Date(clazz.startDate); // Replace with your date value
+			// $("#editStartDate").datepicker('setDate', date);
+			
 			// firstly populate courses by grade then set the selected option
-			await editInitialiseCourseByGrade(clazz.grade, clazz.courseId);
+			await editInitialiseCourseByGrade(clazz.grade, clazz.startDate, clazz.courseId);
 			$("#editId").val(clazz.id);
 			$("#editState").val(clazz.state);
 			$("#editBranch").val(clazz.branch);
@@ -261,12 +278,11 @@ function updateClassInfo() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Populate courses by grade
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getCoursesByGrade(grade, toWhere) {
+function getCoursesByGrade(grade, toWhere, today) {
 	// get onsite courses by grade
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/listCoursesByGrade',
+		url: '${pageContext.request.contextPath}/class/listCoursesByGrade/' + grade + '/' + today,
 		method: 'GET',
-		data: { grade: grade },
 		success: function (data) {
 			$(toWhere).empty(); // clear the previous options
 			$.each(data, function (index, value) {
@@ -280,7 +296,6 @@ function getCoursesByGrade(grade, toWhere) {
 		}
 	});
 }
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear class register form
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -303,11 +318,14 @@ function updateEditActiveValue(checkbox) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 		Initialise courses by grade in edit dialog
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-function editInitialiseCourseByGrade(grade, courseId) {
+function editInitialiseCourseByGrade(grade, startDate, courseId) {
+	// var editDay = $('#editStartDate').val();
+	// // change format as 'yyyy-mm-dd'
+	// var date = editDay.split("/");
+	// editDay = date[2] + '-' + date[1] + '-' + date[0];
 	$.ajax({
-		url: '${pageContext.request.contextPath}/class/listCoursesByGrade',
+		url: '${pageContext.request.contextPath}/class/listCoursesByGrade/' + grade + '/' + startDate,
 		method: 'GET',
-		data: { grade: grade },
 		success: function (data) {
 			$('#editCourse').empty(); // clear the previous options
 			$.each(data, function (index, value) {
@@ -443,7 +461,15 @@ function deleteClass(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<script>
+							var today = new Date();
+							var day = today.getDate();
+							var month = today.getMonth() + 1; // Note: January is 0
+							var year = today.getFullYear();
+							var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+							//console.log(formattedDate);
+						</script>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerClassModal" onclick="getCoursesByGrade('1', '#addCourse', formattedDate)"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -626,8 +652,7 @@ function deleteClass(id) {
 </div>
 
 <!-- Add Form Dialogue -->
-<div class="modal fade" id="registerClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-	aria-hidden="true">
+<div class="modal fade" id="registerClassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content jae-border-info">
 			<div class="modal-body">
@@ -677,14 +702,6 @@ function deleteClass(id) {
 									<label for="addStartDate" class="label-form">Start Date</label>
 									<input type="text" class="form-control datepicker" id="addStartDate" name="addStartDate" placeholder="dd/mm/yyyy" />
 								</div>
-								<script>
-									var today = new Date();
-									var day = today.getDate();
-									var month = today.getMonth() + 1; // Note: January is 0
-									var year = today.getFullYear();
-									var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-									document.getElementById('addStartDate').value = formattedDate;
-								</script>
 							</div>
 						</div>
 					</form>
@@ -697,6 +714,19 @@ function deleteClass(id) {
 		</div>
 	</div>
 </div>
+<!-- whenever add dialogue launches, start date is set to today -->
+<script>
+	$('#registerClassModal').on('shown.bs.modal', function () {
+		var today = new Date();
+		var day = today.getDate();
+		var month = today.getMonth() + 1; // Note: January is 0
+		var year = today.getFullYear();
+		var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+		document.getElementById('addStartDate').value = formattedDate;
+	});
+</script>
+
+
 
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel"
