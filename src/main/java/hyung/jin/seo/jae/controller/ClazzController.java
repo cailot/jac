@@ -170,19 +170,7 @@ public class ClazzController {
 		return dtos;
 	}
 
-	// bring onsite courses based on grade
-	// @GetMapping("/listCoursesByGrade")
-	// @ResponseBody
-	// public List<CourseDTO> listCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
-	// 	int year = cycleService.academicYear();
-	// 	// int week = cycleService.academicWeeks();
-	// 	List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
-	// 	// set year
-	// 	for (CourseDTO dto : dtos) {
-	// 		dto.setYear(year);
-	// 	}
-	// 	return dtos;
-	// }
+	// bring active courses based on grade & date
 	@GetMapping("/listCoursesByGrade/{grade}/{today}")
 	@ResponseBody
 	public List<CourseDTO> listCoursesByGrade(@PathVariable("grade") String grade, @PathVariable("today") String today) {
@@ -197,10 +185,6 @@ public class ClazzController {
 		int year = cycleService.academicYear(formatted);
 		// search active Course by grade & year
 		List<CourseDTO> dtos = courseService.findByGradeNYear(grade, year);
-		// set year
-		// for (CourseDTO dto : dtos) {
-		// 	dto.setYear(year);
-		// }
 		return dtos;
 	}
 
