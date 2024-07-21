@@ -260,6 +260,7 @@ function  gradeName(value){
 	}
 	return gradeText;
 }
+
 // get day name
 function  dayName(value){
 	var dayText = '';
