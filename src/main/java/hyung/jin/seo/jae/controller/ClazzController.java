@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.CourseService;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("class")
@@ -169,16 +171,36 @@ public class ClazzController {
 	}
 
 	// bring onsite courses based on grade
-	@GetMapping("/listCoursesByGrade")
+	// @GetMapping("/listCoursesByGrade")
+	// @ResponseBody
+	// public List<CourseDTO> listCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
+	// 	int year = cycleService.academicYear();
+	// 	// int week = cycleService.academicWeeks();
+	// 	List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
+	// 	// set year
+	// 	for (CourseDTO dto : dtos) {
+	// 		dto.setYear(year);
+	// 	}
+	// 	return dtos;
+	// }
+	@GetMapping("/listCoursesByGrade/{grade}/{today}")
 	@ResponseBody
-	public List<CourseDTO> listCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
-		int year = cycleService.academicYear();
-		// int week = cycleService.academicWeeks();
-		List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
-		// set year
-		for (CourseDTO dto : dtos) {
-			dto.setYear(year);
+	public List<CourseDTO> listCoursesByGrade(@PathVariable("grade") String grade, @PathVariable("today") String today) {
+		String formatted = "";
+		try {
+			formatted = JaeUtils.convertToddMMyyyyFormat(today);
+		} catch (ParseException e) {
+			// set formatted as today with dd/MM/yyyy format
+			formatted = JaeUtils.getToday();
+			e.printStackTrace();
 		}
+		int year = cycleService.academicYear(formatted);
+		// search active Course by grade & year
+		List<CourseDTO> dtos = courseService.findByGradeNYear(grade, year);
+		// set year
+		// for (CourseDTO dto : dtos) {
+		// 	dto.setYear(year);
+		// }
 		return dtos;
 	}
 
