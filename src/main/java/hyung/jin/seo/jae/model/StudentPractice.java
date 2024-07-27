@@ -18,11 +18,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.ForeignKey;
 
 @Getter
 @Setter
@@ -38,11 +40,11 @@ public class StudentPractice{ // bridge table between Student & Practice
     private Long id;
     
 	@ManyToOne
-	@JoinColumn(name = "studentId")
+	@JoinColumn(name = "studentId", foreignKey = @ForeignKey(name = "FK_StudentPractice_Student"))
 	private Student student;
 	
 	@ManyToOne
-	@JoinColumn(name = "practiceId")
+	@JoinColumn(name = "practiceId", foreignKey = @ForeignKey(name = "FK_StudentPractice_Practice"))
 	private Practice practice;
 	
 	@CreationTimestamp
@@ -52,7 +54,8 @@ public class StudentPractice{ // bridge table between Student & Practice
 	private double score;
 
 	@ElementCollection
-    @CollectionTable(name = "StudentPracticeAnswerCollection") // Set the custom table name
+    @CollectionTable(name = "StudentPracticeAnswerCollection",
+	joinColumns = @JoinColumn(name="StudentPractice_id", foreignKey = @ForeignKey(name="FK_StudentPracticeAnswerCollection_StudentPractice"))) // Set the custom table name
     private List<Integer> answers = new ArrayList<>();
 
 }

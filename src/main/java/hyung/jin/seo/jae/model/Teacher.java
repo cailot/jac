@@ -12,6 +12,7 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,6 +21,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +32,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="Teacher")
+@Table(name = "Teacher", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "email", name = "UK_Teacher_Email")
+})
 public class Teacher implements Serializable{
     
 	@Id
@@ -55,7 +59,7 @@ public class Teacher implements Serializable{
     @Column(length = 100, nullable = true)
     private String phone;
     
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(length = 100, nullable = false)
     private String email;
     
     @Column(length = 200, nullable = true)
@@ -104,8 +108,8 @@ public class Teacher implements Serializable{
 		CascadeType.DETACH
 	})
     @JoinTable(name="Teacher_Class",
-    joinColumns = @JoinColumn(name="teacherId"),
-    inverseJoinColumns = @JoinColumn(name="clazzId")
+    joinColumns = @JoinColumn(name="teacherId", foreignKey = @ForeignKey(name="FK_Teacher_Class_Teacher")),
+    inverseJoinColumns = @JoinColumn(name="clazzId", foreignKey = @ForeignKey(name="FK_Teacher_Class_Class"))
     )
     private Set<Clazz> clazzs = new HashSet<>();
     

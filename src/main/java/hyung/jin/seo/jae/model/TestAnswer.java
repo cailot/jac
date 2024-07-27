@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +42,12 @@ public class TestAnswer {
     private String pdfPath;
 
     @ElementCollection
-    @CollectionTable(name = "TestAnswerCollection") // Set the custom table name
+    @CollectionTable(name = "TestAnswerCollection", 
+    joinColumns = @JoinColumn(name="TestAnswer_id", foreignKey = @ForeignKey(name="FK_TestAnswerCollection_TestAnswer"))) // Set the custom table name
     private List<TestAnswerItem> answers = new ArrayList<>();
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "testId")
+    @JoinColumn(name = "testId", foreignKey = @ForeignKey(name = "FK_TestAnswer_Test"))
     private Test test;
     
 }
