@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 
 @Getter
@@ -51,7 +52,7 @@ public class Outstanding {
     private Long paymentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoiceId")
+    @JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Outstanding_Invoice"))
     private Invoice invoice;
 	
 }

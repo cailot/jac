@@ -352,6 +352,8 @@ public class EnrolmentController {
 					data.setExtra(JaeConstants.NEW_ENROLMENT);
 					data.setId(enrolment.getId()+"");
 					data.setInvoiceId(invoice.getId()+"");
+					// update day to code
+					data.setDay(clazzService.getDay(clazz.getId()));
 
 					// 5. put into List<EnrolmentDTO>
 					dtos.add(data);
@@ -418,6 +420,8 @@ public class EnrolmentController {
 					existing.setCredit(credit);
 					existing.setDiscount(discount);
 					enrolmentService.updateEnrolment(existing, existing.getId());
+					// update day to code
+					data.setDay(clazzService.getDay(existing.getClazz().getId()));
 					// 4. put into List<EnrolmentDTO>
 					dtos.add(data);
 					// 5. remove enrolmentId from enrolmentIds
@@ -509,6 +513,8 @@ public class EnrolmentController {
 				data.setId(added.getId());
 				data.setInvoiceId(invoice.getId()+"");
 
+				// update day to code
+				data.setDay(clazzService.getDay(clazz.getId()));
 				// 4.  put into List<EnrolmentDTO>
 				dtos.add(data);
 				

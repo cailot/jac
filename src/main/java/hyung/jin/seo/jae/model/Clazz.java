@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.ForeignKey;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -39,15 +40,8 @@ public class Clazz{ // bridge table between Course & Cycle
     private Long id;
     
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "courseId")
+	@JoinColumn(name = "courseId", foreignKey = @ForeignKey(name = "FK_Class_Course"))
 	private Course course;
-	
-	// @ManyToOne(cascade = CascadeType.ALL)
-	// @JoinColumn(name = "cycleId")
-	// private Cycle cycle;
-	
-    // @Column(columnDefinition = "DECIMAL(10,2)")
-	// private double price;
 
 	@CreationTimestamp
     private LocalDate registerDate;

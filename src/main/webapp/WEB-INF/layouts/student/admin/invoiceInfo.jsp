@@ -24,8 +24,8 @@ $(document).ready(
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
-	//debugger;
-	//console.log(data);
+	// debugger;
+	// console.log(data);
 	if((data.online)&&(data.discount === DISCOUNT_FREE)){
 		// console.log('online');
 		return;

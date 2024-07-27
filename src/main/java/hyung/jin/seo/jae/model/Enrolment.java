@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.ForeignKey;
 
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.Column;
@@ -33,15 +34,15 @@ public class Enrolment{ // bridge table between Student & Class
     private Long id;
     
 	@ManyToOne
-	@JoinColumn(name = "studentId")
+	@JoinColumn(name = "studentId", foreignKey = @ForeignKey(name = "FK_Enrolment_Student"))
 	private Student student;
 	
 	@ManyToOne
-	@JoinColumn(name = "clazzId")
+	@JoinColumn(name = "clazzId", foreignKey = @ForeignKey(name = "FK_Enrolment_Clazz"))
 	private Clazz clazz;
 
 	@ManyToOne
-	@JoinColumn(name = "invoiceId")
+	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Enrolment_Invoice"))
 	private Invoice invoice;
 	
 	@CreationTimestamp

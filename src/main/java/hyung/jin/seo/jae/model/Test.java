@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 
 @Getter
@@ -48,12 +49,12 @@ public class Test{
     private LocalDate registerDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gradeId")
+    @JoinColumn(name = "gradeId", foreignKey = @ForeignKey(name = "FK_Test_Grade"))
     private Grade grade;	
      
     
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "testTypeId")
+    @JoinColumn(name = "testTypeId", foreignKey = @ForeignKey(name = "FK_Test_TestType"))
     private TestType testType;
 
 }

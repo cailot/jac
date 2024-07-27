@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.ForeignKey;
 
 import javax.persistence.Column;
 
@@ -32,11 +33,11 @@ public class Attendance{ // bridge table between Student & Class
     private Long id;
     
 	@ManyToOne
-	@JoinColumn(name = "studentId")
+	@JoinColumn(name = "studentId", foreignKey = @ForeignKey(name = "FK_Attendance_Student"))
 	private Student student;
 	
 	@ManyToOne
-	@JoinColumn(name = "clazzId")
+	@JoinColumn(name = "clazzId", foreignKey = @ForeignKey(name = "FK_Attendance_Clazz"))
 	private Clazz clazz;
 
 	@Column

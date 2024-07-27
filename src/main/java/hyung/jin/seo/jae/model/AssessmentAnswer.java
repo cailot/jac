@@ -15,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CollectionTable;
+import javax.persistence.ForeignKey;
 import javax.persistence.ElementCollection;
 
 import java.util.ArrayList;
@@ -34,11 +35,12 @@ public class AssessmentAnswer {
     private Long id;
 
     @ElementCollection
-    @CollectionTable(name = "AssessmentAnswerCollection") // Set the custom table name
+    @CollectionTable(name = "AssessmentAnswerCollection",
+    joinColumns = @JoinColumn(name="AssessmentAnswer_id", foreignKey = @ForeignKey(name="FK_AssessmentAnswerCollection_AssessmentAnswer"))) // Set the custom table name
     private List<AssessmentAnswerItem> answers = new ArrayList<>();
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assessmentId")
+    @JoinColumn(name = "assessmentId", foreignKey = @ForeignKey(name = "FK_AssessmentAnswer_Assessment"))
     private Assessment assessment;
     
 }
