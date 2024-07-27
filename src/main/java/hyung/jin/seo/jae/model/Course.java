@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -63,8 +64,8 @@ public class Course{
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "CourseSubjectLink",
-		joinColumns = { @JoinColumn(name = "courseId")},
-		inverseJoinColumns = { @JoinColumn(name = "subjectId")}
+		joinColumns = { @JoinColumn(name = "courseId", foreignKey = @ForeignKey(name = "FK_CourseSubjectLink_Course")) },
+		inverseJoinColumns = { @JoinColumn(name = "subjectId", foreignKey = @ForeignKey(name = "FK_CourseSubjectLink_Subject")) }
 	)
 	private List<Subject> subjects = new ArrayList<>();
 
@@ -76,6 +77,6 @@ public class Course{
 	private Set<Clazz> classes = new LinkedHashSet<>();
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "cycleId")
+	@JoinColumn(name = "cycleId", foreignKey = @ForeignKey(name = "FK_Course_Cycle"))
 	private Cycle cycle;
 }

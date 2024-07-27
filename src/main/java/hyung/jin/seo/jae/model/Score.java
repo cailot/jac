@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ import javax.persistence.Column;
 @Table(name="Score")
 public class Score {
     
-	  @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
@@ -32,7 +33,7 @@ public class Score {
     private String name;
     
     @ManyToOne
-    @JoinColumn(name = "studentTestId")
+    @JoinColumn(name = "studentTestId", foreignKey = @ForeignKey(name = "FK_Score_StudentTest"))
     private StudentTest studentTest;
 
     @Column

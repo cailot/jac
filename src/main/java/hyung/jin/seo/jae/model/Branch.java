@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Column;
 import java.time.LocalDate;
 
@@ -72,7 +73,7 @@ public class Branch {
     private LocalDate registerDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stateId")
+    @JoinColumn(name = "stateId", foreignKey = @ForeignKey(name = "FK_Branch_State"))
     private State state;
 
  }

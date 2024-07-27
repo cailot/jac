@@ -53,8 +53,8 @@ public class PracticeSchedule {
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "PracticeScheculeLink",
-		joinColumns = { @JoinColumn(name = "practiceScheduleId")},
-		inverseJoinColumns = { @JoinColumn(name = "practiceId")}
+		joinColumns = { @JoinColumn(name = "practiceScheduleId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_PracticeSchedule")) },
+		inverseJoinColumns = { @JoinColumn(name = "practiceId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_Practice")) }
 	)
 	private Set<Practice> practices = new LinkedHashSet();
 

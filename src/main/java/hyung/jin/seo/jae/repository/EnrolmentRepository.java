@@ -14,11 +14,11 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 
 	// bring latest EnrolmentDTO by student id, called from retrieveEnrolment() in
 	// courseInfo.jsp
-	@Query(value = "SELECT en.id, en.registerDate, en.cancelled, en.cancellationReason, en.startWeek, en.endWeek, en.info, COALESCE(inv.id, 0) AS invoiceId, en.credit, en.discount, COALESCE(inv.amount, 0.0) AS amount, COALESCE(inv.paidAmount, 0.0) AS paidAmount, inv.paymentDate, en.studentId, en.clazzId, co.description, cl.price, co.online, cy.year, co.grade, cl.day FROM Enrolment en LEFT JOIN Invoice inv ON en.invoiceId = inv.id JOIN Class cl ON en.clazzId = cl.id JOIN Course co ON cl.courseId = co.id JOIN Cycle cy ON cl.cycleId = cy.id WHERE en.studentId = :studentId AND en.old = 0", nativeQuery = true)
+	@Query(value = "SELECT en.id, en.registerDate, en.cancelled, en.cancellationReason, en.startWeek, en.endWeek, en.info, COALESCE(inv.id, 0) AS invoiceId, en.credit, en.discount, COALESCE(inv.amount, 0.0) AS amount, COALESCE(inv.paidAmount, 0.0) AS paidAmount, inv.paymentDate, en.studentId, en.clazzId, co.description, cl.price, co.online, cy.year, co.grade, cl.day FROM Enrolment en LEFT JOIN Invoice inv ON en.invoiceId = inv.id JOIN Class cl ON en.clazzId = cl.id JOIN Course co ON cl.courseId = co.id JOIN jac.Cycle cy ON cl.cycleId = cy.id WHERE en.studentId = :studentId AND en.old = 0", nativeQuery = true)
 	List<Object[]> findEnrolmentByStudentId(@Param("studentId") long studentId);
 
 	// get start and end week by student id and year in studentList.jsp
-	@Query(value = "SELECT en.startWeek, en.endWeek FROM Enrolment en LEFT JOIN Class cl ON en.clazzId = cl.id JOIN Cycle cy ON cl.cycleId = cy.id WHERE en.studentId = :studentId AND cy.year = :year", nativeQuery = true)
+	@Query(value = "SELECT en.startWeek, en.endWeek FROM Enrolment en LEFT JOIN Class cl ON en.clazzId = cl.id JOIN jac.Cycle cy ON cl.cycleId = cy.id WHERE en.studentId = :studentId AND cy.year = :year", nativeQuery = true)
 	List<Object[]> findStartAndEndWeekByStudentIdAndYear(@Param("studentId") long studentId, @Param("year") int year);
 
 	// bring latest EnrolmentDTO by student id

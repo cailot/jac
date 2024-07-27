@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class TestType implements Serializable{
 		CascadeType.REFRESH,
 		CascadeType.DETACH
 	})
-	@JoinColumn(name = "testTypeId")
+	@JoinColumn(name = "testTypeId", foreignKey = @ForeignKey(name = "FK_TestType_Test"))
 	private Set<Test> tests = new LinkedHashSet<>();
 
 	public void addTest(Test test){

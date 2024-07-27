@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -61,8 +62,8 @@ public class TestSchedule {
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "TestScheculeLink",
-		joinColumns = { @JoinColumn(name = "testScheduleId")},
-		inverseJoinColumns = { @JoinColumn(name = "testId")}
+		joinColumns = { @JoinColumn(name = "testScheduleId", foreignKey = @ForeignKey(name = "FK_TestSchedule_Test")) },
+		inverseJoinColumns = { @JoinColumn(name = "testId", foreignKey = @ForeignKey(name = "FK_Test_TestSchedule")) }
 	)
 	private Set<Test> tests = new LinkedHashSet();
 

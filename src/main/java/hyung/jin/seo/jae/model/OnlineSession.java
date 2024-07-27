@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 
 @Getter
@@ -58,7 +59,7 @@ public class OnlineSession {
     private LocalDate registerDate;
 
     @ManyToOne
-    @JoinColumn(name = "clazzId")
+    @JoinColumn(name = "clazzId", foreignKey = @ForeignKey(name = "FK_OnlineSession_Clazz"))
     private Clazz clazz;
 
 }

@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -47,10 +48,10 @@ public class Practice {
     private LocalDate registerDate;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gradeId")
+    @JoinColumn(name = "gradeId", foreignKey = @ForeignKey(name = "FK_Practice_Grade"))
     private Grade grade;
 	
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "practiceTypeId")
+    @JoinColumn(name = "practiceTypeId", foreignKey = @ForeignKey(name = "FK_Practice_PracticeType"))
     private PracticeType practiceType;
 }

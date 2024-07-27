@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.ForeignKey;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -35,11 +36,11 @@ public class Material{ // bridge table between Invoice & Book
     private Long id;
     
 	@ManyToOne
-	@JoinColumn(name = "invoiceId")
+	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Material_Invoice"))
 	private Invoice invoice;
 	
 	@ManyToOne
-	@JoinColumn(name = "bookId")
+	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_Material_Book"))
 	private Book book;
 	
 	@CreationTimestamp

@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,11 +42,12 @@ public class PracticeAnswer {
     private String pdfPath;
 
     @ElementCollection
-    @CollectionTable(name = "PracticeAnswerCollection") // Set the custom table name
+    @CollectionTable(name = "PracticeAnswerCollection",
+    joinColumns = @JoinColumn(name="PracticeAnswer_id", foreignKey = @ForeignKey(name="FK_PracticeAnswerCollection_PracticeAnswer"))) // Set the custom table name
     private List<Integer> answers = new ArrayList<>();
     
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "practiceId")
+    @JoinColumn(name = "practiceId", foreignKey = @ForeignKey(name = "FK_PracticeAnswer_Practice"))
     private Practice practice;
 
 }

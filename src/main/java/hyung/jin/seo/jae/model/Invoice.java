@@ -20,6 +20,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.ForeignKey;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -62,7 +63,7 @@ public class Invoice{
 		CascadeType.REFRESH,
 		CascadeType.DETACH
 	})
-	@JoinColumn(name = "invoiceId")
+	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Invoice_Payment"))
 	private Set<Payment> payments = new LinkedHashSet<>();
 
 	public void addPayment(Payment payment){
@@ -75,7 +76,7 @@ public class Invoice{
 		CascadeType.REFRESH,
 		CascadeType.DETACH
 	})
-	@JoinColumn(name = "invoiceId")
+	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Invoice_Outstanding"))
 	private Set<Outstanding> outstandings = new LinkedHashSet<>();
 
 	public void addOutstanding(Outstanding stand){

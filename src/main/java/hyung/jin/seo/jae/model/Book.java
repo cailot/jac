@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ForeignKey;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,8 +57,8 @@ public class Book {
     @ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "BookSubjectLink",
-		joinColumns = { @JoinColumn(name = "bookId")},
-		inverseJoinColumns = { @JoinColumn(name = "subjectId")}
+		joinColumns = { @JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_BookSubjectLink_Book")) },
+		inverseJoinColumns = { @JoinColumn(name = "subjectId", foreignKey = @ForeignKey(name = "FK_BookSubjectLink_Subject")) }
 	)
 	private List<Subject> subjects = new ArrayList<>();
 
@@ -76,7 +77,5 @@ public class Book {
     public void addMaterial(Material material){
     	materials.add(material);
     }
-
-
 	
 }

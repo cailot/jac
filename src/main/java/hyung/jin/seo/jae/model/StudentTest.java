@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,11 +39,11 @@ public class StudentTest{ // bridge table between Student & Test
     private Long id;
     
 	@ManyToOne
-	@JoinColumn(name = "studentId")
+	@JoinColumn(name = "studentId", foreignKey = @ForeignKey(name = "FK_StudentTest_Student"))
 	private Student student;
 	
 	@ManyToOne
-	@JoinColumn(name = "testId")
+	@JoinColumn(name = "testId", foreignKey = @ForeignKey(name = "FK_StudentTest_Test"))
 	private Test test;
 
 	@CreationTimestamp
@@ -52,6 +53,7 @@ public class StudentTest{ // bridge table between Student & Test
 	private double score;
 
 	@ElementCollection
-    @CollectionTable(name = "StudentTestAnswerCollection") // Set the custom table name
+    @CollectionTable(name = "StudentTestAnswerCollection",
+	joinColumns = @JoinColumn(name="StudentTest_id", foreignKey = @ForeignKey(name="FK_StudentTestAnswerCollection_StudentTest"))) // Set the custom table name
     private List<Integer> answers = new ArrayList<>();
 }
