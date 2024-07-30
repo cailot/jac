@@ -43,6 +43,9 @@ public class OnlineSession {
     @Column(length = 10, nullable = true)
     private String day;
     
+    @Column(length = 50, nullable = true)
+    private String title;
+
     @Column(length = 20, nullable = true)
     private String startTime;
 

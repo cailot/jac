@@ -4,11 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.jpa.repository.Query;
-
-import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.OnlineSession;
-import hyung.jin.seo.jae.utils.JaeUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +28,8 @@ public class OnlineSessionDTO implements Serializable{
 
 	private String day;
 
+	private String title;
+
 	private String startTime;
 
 	private String endTime;
@@ -50,6 +48,7 @@ public class OnlineSessionDTO implements Serializable{
 		this.address = session.getAddress();
 		this.grade = session.getClazz().getCourse().getGrade();
 		this.day = session.getDay();
+		this.title	= session.getTitle();
 		this.startTime = session.getStartTime();
 		this.endTime = session.getEndTime();
 		this.year = session.getClazz().getCourse().getCycle().getYear();
@@ -64,19 +63,21 @@ public class OnlineSessionDTO implements Serializable{
 		session.setWeek(week);
 		session.setAddress(address);
 		session.setDay(day);
+		session.setTitle(title);
 		session.setStartTime(startTime);
 		session.setEndTime(endTime);
 		if(StringUtils.isNotBlank(registerDate)) session.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		return session;
     }
 
-	public OnlineSessionDTO(long id, boolean active, int week, String address, String grade, String day, String startTime, String endTime, int year, LocalDate registerDate, long clazzId){
+	public OnlineSessionDTO(long id, boolean active, int week, String address, String grade, String day, String title, String startTime, String endTime, int year, LocalDate registerDate, long clazzId){
 		this.id = String.valueOf(id);
 		this.active = active;
 		this.week = week;
 		this.address = address;
 		this.grade = grade;
 		this.day = day;
+		this.title = title;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.year = year;
