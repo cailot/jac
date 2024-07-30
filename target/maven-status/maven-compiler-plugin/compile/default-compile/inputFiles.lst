@@ -86,6 +86,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/ClazzService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Practice.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/StatsDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/GuestStudentAssessment.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/PaymentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/CycleRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Extrawork.java

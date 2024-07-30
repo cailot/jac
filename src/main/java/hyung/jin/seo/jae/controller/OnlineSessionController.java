@@ -62,7 +62,6 @@ public class OnlineSessionController {
 		return count;
 	}
 
-	
 	// bring all online sessions in database
 	@GetMapping("/filterSession")
 	public String filterOnlineSessions(
@@ -74,7 +73,6 @@ public class OnlineSessionController {
 		model.addAttribute(JaeConstants.ONLINE_LIST, dtos);
 		return "onlineListPage";
 	}
-
 
 	// register online session
 	@PostMapping("/register")

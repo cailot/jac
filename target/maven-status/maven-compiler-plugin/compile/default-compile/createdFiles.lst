@@ -25,6 +25,7 @@ hyung/jin/seo/jae/repository/TestScheduleRepository.class
 hyung/jin/seo/jae/dto/MaterialDTO.class
 hyung/jin/seo/jae/repository/CycleRepository.class
 hyung/jin/seo/jae/repository/OnlineSessionRepository.class
+hyung/jin/seo/jae/model/GuestStudentAssessment.class
 hyung/jin/seo/jae/repository/InvoiceRepository.class
 hyung/jin/seo/jae/controller/OnlineSessionController.class
 hyung/jin/seo/jae/repository/AssessmentRepository.class

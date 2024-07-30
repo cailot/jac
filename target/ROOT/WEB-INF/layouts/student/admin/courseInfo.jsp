@@ -571,7 +571,7 @@ function associateRegistration(){
 				enrolData.day = $(this).find('.clazzChoice option:selected').text();
 				if(enrolData.day === ""){ // if day is not selected from dropdown
 					enrolData.day = $(this).find('.day').text()
-				}	
+				}
 				var clazz = {
 					"id" : enrolData.id,
 					"startWeek" : enrolData.startWeek,
@@ -630,6 +630,7 @@ function associateRegistration(){
 							}
 						});
 					}
+					// debugger
 					// update the invoice table 
 					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
 					// console.log('isFreeOnline : ' + isFreeOnline);
