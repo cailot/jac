@@ -96,6 +96,7 @@ function addOnline() {
 		grade: $("#addGrade").val(),
 		year: $("#addYear").val(),
 		day: $("#addDay").val(),
+		title: $("#addTitle").val(),
 		week: $("#addWeek").val(),
 		startTime: $("#addStartTime").val(),
 		endTime: $("#addEndTime").val(),
@@ -147,6 +148,7 @@ function retrieveOnlineInfo(onlineId) {
 			$("#editGrade").val(online.grade);
 			$("#editYear").val(online.year);			
 			$("#editDay").val(online.day);
+			$("#editTitle").val(online.title);
 			$("#editWeek").val(online.week);
 			$("#editStartTime").val(online.startTime);
 			$("#editEndTime").val(online.endTime);
@@ -210,6 +212,7 @@ function updateOnlineInfo() {
 		grade: $("#editGrade").val(),
 		year: $("#editYear").val(),
 		day: $("#editDay").val(),
+		title: $("#editTitle").val(),
 		week: $("#editWeek").val(),
 		startTime: $("#editStartTime").val(),
 		endTime: $("#editEndTime").val(),
@@ -403,10 +406,11 @@ function deleteOnline(id) {
 									<tr>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<th class="text-center align-middle" style="width: 10%">Academic Year</th>
-										<th class="text-center align-middle" style="width: 10%">Day</th>
+										<th class="text-center align-middle" style="width: 8%">Day</th>
 										<th class="text-center align-middle" style="width: 5%">Set</th>
-										<th class="text-center align-middle" style="width: 10%">Start Time</th>
-										<th class="text-center align-middle" style="width: 10%">End Time</th>
+										<th class="text-center align-middle" style="width: 6%">Start</th>
+										<th class="text-center align-middle" style="width: 6%">End</th>
+										<th class="text-center align-middle" style="width: 10%">Title</th>
 										<th class="text-center align-middle" style="width: 35%">Access URL</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
@@ -480,6 +484,11 @@ function deleteOnline(id) {
 													<td class="small align-middle">
 														<span>
 															<c:out value="${online.endTime}" />
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${online.title}" />
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
@@ -599,24 +608,24 @@ function deleteOnline(id) {
 										}
 									</script>
 								</div>
-								<div class="offset-md-1"></div>
-								<div class="col-md-4">
+								<div class="col-md-5">
 									<label for="addStartTime" class="label-form">Start Time</label>
-									<!-- <input type="text" class="form-control datetimepicker-input" id="addStartTime" name="addStartTime" placeholder="HH:mm" /> -->
 									<input id="addStartTime" name="addStartTime" />
 								</div>
-								<div class="offset-md-1"></div>
-								<div class="col-md-4">
+								<div class="col-md-5">
 									<label for="addEndTime" class="label-form">End Time</label>
-									<!-- <input type="text" class="form-control datepicker" id="addEndTime" name="addEndTime" placeholder="HH:mm" /> -->
 									<input id="addEndTime" name="addEndTime" />
 								</div>
-								<div class="offset-md-1"></div>
+								
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12 mb-4">
+								<div class="col-md-3">
+									<label for="addTitle" class="label-form">Title</label>
+									<input id="addTitle" name="addTitle" type="text" class="form-control"/>
+								</div>
+								<div class="col-md-9">
 									<label for="addAddress" class="label-form">Access URL</label>
 									<input type="text" class="form-control" id="addAddress" name="addAddress" placeholder="https://" title="Please enter access address" />
 								</div>
@@ -729,7 +738,11 @@ function deleteOnline(id) {
 						</div>
 						<div class="form-group">
 							<div class="form-row mt-3 mb-4">
-								<div class="col-md-12">
+								<div class="col-md-3">
+									<label for="editTitle" class="label-form">Title</label>
+									<input type="text" class="form-control" id="editTitle" name="editTitle" />
+								</div>
+								<div class="col-md-9">
 									<label for="editAddress" class="label-form">Access URL</label>
 									<input type="text" class="form-control" id="editAddress" name="editAddress" />
 								</div>
