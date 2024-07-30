@@ -119,6 +119,9 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 		// day
 		String newDay = session.getDay();
 		existing.setDay(newDay);
+		// title
+		String newTitle = session.getTitle();
+		existing.setTitle(newTitle);
 		// startTime
 		String newStart = session.getStartTime();
 		existing.setStartTime(newStart);
