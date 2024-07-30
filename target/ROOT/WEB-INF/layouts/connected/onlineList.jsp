@@ -337,6 +337,32 @@ function deleteOnline(id) {
 							<option value="0">All</option>
 						</select>
 					</div>
+					<div class="col-md-1">
+						<label for="listSet" class="label-form">Set</label>
+						<select class="form-control" id="listSet" name="listSet">
+						</select>
+						<script>
+							// Get a reference to the select element
+							var selectElement = document.getElementById("listSet");
+							// Create a new option element for 'All'
+							var allOption = document.createElement("option");
+							// Set the value and text content for the 'All' option
+							allOption.value = "0";
+							allOption.textContent = "All";
+							// Append the 'All' option to the select element
+							selectElement.appendChild(allOption);
+							// Loop to add options from 1 to 49
+							for (var i = 1; i <= 49; i++) {
+								// Create a new option element
+								var option = document.createElement("option");
+								// Set the value and text content for the option
+								option.value = i;
+								option.textContent = i;
+								// Append the option to the select element
+								selectElement.appendChild(option);
+							}
+						</script>
+					</div>
 					<div class="col-md-2">
 						<label for="listYear" class="label-form">Academic Year</label>
 						<select class="form-control" id="listYear" name="listYear">
@@ -357,7 +383,7 @@ function deleteOnline(id) {
 							%>
 						</select>
 					</div>
-					<div class="offset-md-6"></div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<label for="listState" class="label-form text-white">0</label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -426,7 +452,19 @@ function deleteOnline(id) {
 													</td>
 													<td class="small align-middle">
 														<span class="text-capitalize">
-															<c:out value="${online.day}" />
+															<!-- <c:out value="${online.day}" /> -->
+															<c:choose>
+																<c:when test="${online.day == '1'}">Monday</c:when>
+																<c:when test="${online.day == '2'}">Tuesday</c:when>
+																<c:when test="${online.day == '3'}">Wednessday</c:when>
+																<c:when test="${online.day == '4'}">Thursday</c:when>
+																<c:when test="${online.day == '5'}">Friday</c:when>
+																<c:when test="${online.day == '6'}">Saturday Morning</c:when>
+																<c:when test="${online.day == '7'}">Saturday Afternoon</c:when>
+																<c:when test="${online.day == '8'}">Sunday Morning</c:when>
+																<c:when test="${online.day == '9'}">Sunday Afternoon</c:when>
+																<c:otherwise></c:otherwise>
+															</c:choose>
 														</span>
 													</td>
 													<td class="small align-middle text-center">
@@ -524,13 +562,15 @@ function deleteOnline(id) {
 								<div class="col-md-3">
 									<label for="addDay" class="label-form">Day</label>
 									<select class="form-control" id="addDay" name="addDay">
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
+										<option value="1">Monday</option>
+										<option value="2">Tuesday</option>
+										<option value="3">Wednesday</option>
+										<option value="4">Thursday</option>
+										<option value="5">Friday</option>
+										<option value="6">Saturday Morning</option>
+										<option value="7">Saturday Afternoon</option>
+										<option value="8">Sunday Morning</option>
+										<option value="9">Sunday Afternoon</option>
 									</select>
 								</div>
 							</div>
@@ -631,13 +671,15 @@ function deleteOnline(id) {
 								<div class="col-md-3">
 									<label for="editDay" class="label-form">Day</label>
 									<select class="form-control" id="editDay" name="editDay" disabled>
-										<option value="Monday">Monday</option>
-										<option value="Tuesday">Tuesday</option>
-										<option value="Wednesday">Wednesday</option>
-										<option value="Thursday">Thursday</option>
-										<option value="Friday">Friday</option>
-										<option value="Saturday">Saturday</option>
-										<option value="Sunday">Sunday</option>
+										<option value="1">Monday</option>
+										<option value="2">Tuesday</option>
+										<option value="3">Wednesday</option>
+										<option value="4">Thursday</option>
+										<option value="5">Friday</option>
+										<option value="6">Saturday Morning</option>
+										<option value="7">Saturday Afternoon</option>
+										<option value="8">Sunday Morning</option>
+										<option value="9">Sunday Afternoon</option>
 									</select>
 								</div>
 								

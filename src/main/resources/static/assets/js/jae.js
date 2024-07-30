@@ -279,6 +279,24 @@ function  dayName(value){
 	return dayText;
 }
 
+// get day code
+function dayCode(value){
+	var day = '';
+	switch(value) {
+		case 'All': day = '0'; break;
+		case 'Monday': day = '1'; break;
+		case 'Tuesday': day = '2'; break;
+		case 'Wednesday': day = '3'; break;
+		case 'Thursday': day = '4'; break;
+		case 'Friday': day = '5'; break;
+		case 'SATAM': day = '6'; break;
+		case 'SATPM': day = '7'; break;
+		case 'SUNAM': day = '8'; break;
+		case 'SUNPM': day = '9'; break;
+	}
+	return day;
+}
+
 // get the context path dynamically
 function getContextPath(){
 	var contextPath = window.location.pathname.split('/')[1];
