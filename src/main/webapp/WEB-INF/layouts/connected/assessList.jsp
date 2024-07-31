@@ -31,9 +31,9 @@ $(document).ready(function () {
 	});
 
 	// initialise state list when loading
-	listGrade('#listGrade');
-	listGrade('#addGrade');
-	listGrade('#editGrade');
+	// listGrade('#listGrade');
+	// listGrade('#addGrade');
+	// listGrade('#editGrade');
 	listPracticeType('#listPracticeType');
 	listPracticeType('#addPracticeType');
 	listPracticeType('#editPracticeType');
@@ -470,10 +470,20 @@ function collectAndSubmitAnswers() {
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/assessment/listAssessment">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-1">
-						<label for="listGrade" class="label-form">Grade</label>
+					<div class="col-md-2">
+						<label for="listGrade" class="label-form">Year</label>
 						<select class="form-control" id="listGrade" name="listGrade">
 							<option value="0">All</option>
+							<option value="10">Year 1</option>
+							<option value="1">Year 2</option>
+							<option value="2">Year 3</option>
+							<option value="3">Year 4</option>
+							<option value="4">Year 5</option>
+							<option value="5">Year 6</option>
+							<option value="6">Year 7</option>
+							<option value="7">Year 8</option>
+							<option value="8">Year 9</option>
+							<option value="9">Year 10</option>	
 						</select>
 					</div>
 					<div class="col-md-2">
@@ -485,7 +495,7 @@ function collectAndSubmitAnswers() {
 							<option value="3">General Ability</option>
 						</select>
 					</div>					
-					<div class="offset-md-6"></div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -518,26 +528,16 @@ function collectAndSubmitAnswers() {
 													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
-																<c:when test="${assessment.grade == '1'}">P2</c:when>
-																<c:when test="${assessment.grade == '2'}">P3</c:when>
-																<c:when test="${assessment.grade == '3'}">P4</c:when>
-																<c:when test="${assessment.grade == '4'}">P5</c:when>
-																<c:when test="${assessment.grade == '5'}">P6</c:when>
-																<c:when test="${assessment.grade == '6'}">S7</c:when>
-																<c:when test="${assessment.grade == '7'}">S8</c:when>
-																<c:when test="${assessment.grade == '8'}">S9</c:when>
-																<c:when test="${assessment.grade == '9'}">S10</c:when>
-																<c:when test="${assessment.grade == '10'}">S10E</c:when>
-																<c:when test="${assessment.grade == '11'}">TT6</c:when>
-																<c:when test="${assessment.grade == '12'}">TT8</c:when>
-																<c:when test="${assessment.grade == '13'}">TT8E</c:when>
-																<c:when test="${assessment.grade == '14'}">SRW4</c:when>
-																<c:when test="${assessment.grade == '15'}">SRW5</c:when>
-																<c:when test="${assessment.grade == '16'}">SRW6</c:when>
-																<c:when test="${assessment.grade == '17'}">SRW7</c:when>
-																<c:when test="${assessment.grade == '18'}">SRW8</c:when>
-																<c:when test="${assessment.grade == '19'}">JMSS</c:when>
-																<c:when test="${assessment.grade == '20'}">VCE</c:when>
+																<c:when test="${assessment.grade == '1'}">Year 2</c:when>
+																<c:when test="${assessment.grade == '2'}">Year 3</c:when>
+																<c:when test="${assessment.grade == '3'}">Year 4</c:when>
+																<c:when test="${assessment.grade == '4'}">Year 5</c:when>
+																<c:when test="${assessment.grade == '5'}">Year 6</c:when>
+																<c:when test="${assessment.grade == '6'}">Year 7</c:when>
+																<c:when test="${assessment.grade == '7'}">Year 8</c:when>
+																<c:when test="${assessment.grade == '8'}">Year 9</c:when>
+																<c:when test="${assessment.grade == '9'}">Year 10</c:when>
+																<c:when test="${assessment.grade == '10'}">Year 1</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -605,6 +605,16 @@ function collectAndSubmitAnswers() {
 								<div class="col-md-4">
 									<label for="addGrade" class="label-form">Grade</label>
 									<select class="form-control" id="addGrade" name="addGrade">
+										<option value="10">Year 1</option>
+										<option value="1">Year 2</option>
+										<option value="2">Year 3</option>
+										<option value="3">Year 4</option>
+										<option value="4">Year 5</option>
+										<option value="5">Year 6</option>
+										<option value="6">Year 7</option>
+										<option value="7">Year 8</option>
+										<option value="8">Year 9</option>
+										<option value="9">Year 10</option>
 									</select>
 								</div>
 								<div class="col-md-8">
@@ -649,6 +659,16 @@ function collectAndSubmitAnswers() {
 								<div class="col-md-4">
 									<label for="editGrade" class="label-form">Grade</label>
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
+										<option value="10">Year 1</option>
+										<option value="1">Year 2</option>
+										<option value="2">Year 3</option>
+										<option value="3">Year 4</option>
+										<option value="4">Year 5</option>
+										<option value="5">Year 6</option>
+										<option value="6">Year 7</option>
+										<option value="7">Year 8</option>
+										<option value="8">Year 9</option>
+										<option value="9">Year 10</option>
 									</select>
 								</div>
 								<div class="col-md-8">
