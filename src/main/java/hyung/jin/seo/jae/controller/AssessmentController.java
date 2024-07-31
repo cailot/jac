@@ -158,7 +158,7 @@ public class AssessmentController {
 		}else{
 			// UPDATE
 			// 1. get TestAnswer
-			AssessmentAnswer ta =  assessmentService.findAssessmentAnswer(Long.parseLong(answerId));
+			AssessmentAnswer ta =  assessmentService.findAssessmentAnswer(Long.parseLong(assessId));
 			// 2. populate AssessmentAnswer
 			ta.setAnswers(items);
 			// 3. update AssessmentAnswer
