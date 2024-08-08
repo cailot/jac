@@ -217,7 +217,7 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		//console.log(data);
+		console.log(data);
 		// console.log(value);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
@@ -416,7 +416,9 @@ $.ajax({
 				type: 'GET',
 				data: {
 					grade: grade,
-					year: year
+					year: year,
+					state: state,
+					branch: branch
 				},
 				success: function(data) {
 					// if any online course is found with grade & year

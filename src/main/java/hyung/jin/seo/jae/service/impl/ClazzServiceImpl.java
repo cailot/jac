@@ -199,10 +199,10 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public Long getOnlineId(String grade, int year) {
+	public Long getOnlineId(String grade, int year, String state, String branch) {
 		Long id = 0L;
 		try {
-			id = clazzRepository.getOnlineClazzId(grade, year);
+			id = clazzRepository.getOnlineClazzId(grade, year, state, branch);
 		} catch (Exception e) {
 			System.out.println("No class found");
 		}
