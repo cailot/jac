@@ -79,8 +79,8 @@ public class ClazzController {
 	// get online course Id
 	@GetMapping("/id")
 	@ResponseBody
-	Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
-		Long id = clazzService.getOnlineId(grade, year);
+	Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
+		Long id = clazzService.getOnlineId(grade, year, state, branch);
 		return id;
 	}
 

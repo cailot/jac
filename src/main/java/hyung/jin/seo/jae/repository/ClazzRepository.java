@@ -91,8 +91,8 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	String getName(Long clazzId);
 
 	// get class id by grade and year
-	@Query(value = "SELECT c.id FROM Clazz c where c.course.grade = ?1 AND c.course.cycle.year = ?2 AND c.course.online = true")
-	Long getOnlineClazzId(String grade, int year);
+	@Query(value = "SELECT c.id FROM Clazz c where c.course.grade = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = ?4 AND c.course.online = true")
+	Long getOnlineClazzId(String grade, int year, String state, String branch);
 
 	// get class by grade and year
 	@Query(value = "SELECT c FROM Clazz c where c.course.grade = :grade AND c.course.cycle.year = :year AND c.course.online = true")
