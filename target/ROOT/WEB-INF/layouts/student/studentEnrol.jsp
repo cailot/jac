@@ -428,7 +428,7 @@ function activateStudent(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { height: 50px } 
+	/* tr { height: 50px }  */
 </style>
 
 

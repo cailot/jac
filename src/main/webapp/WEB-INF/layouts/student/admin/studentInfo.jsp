@@ -1,5 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script>
 $(function() {
+
 	// initiate datepicker
 	$( "#formRegisterDate" ).datepicker({
 		dateFormat: 'dd/mm/yy'
@@ -14,7 +16,7 @@ $(function() {
 			searchStudent();
 		}
 	});
-	// initialise state list when loading
+	// initialise state, branch, grade list when loading
 	listState('#formState');
 	listState('#addState');
 	listBranch('#formBranch');
@@ -35,6 +37,12 @@ $(function() {
 			}
 		});
 	}
+
+	// <c:if test="${not empty studentId}">
+    //     console.log("Student ID: ${studentId}");
+	// 	searchStudentById('${studentId}');
+    // </c:if>
+
 });
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -86,6 +94,7 @@ function addStudent() {
 		relation2 : $("#addRelation2").val(),
 		contactNo1 : $("#addContact1").val(),
 		contactNo2 : $("#addContact2").val(),
+		address : $("#addAddress").val(),
 		memo : $("#addMemo").val(),
 		state : $("#addState").val(),
 		branch : $("#addBranch").val(),
@@ -405,7 +414,6 @@ function updateStudentInfo() {
 //		Display selected student in student search
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
-	//console.log(value);
 	clearStudentForm();
 	$("#formId").val(value['id']);
 	//debugger;
@@ -452,9 +460,11 @@ function displayStudentInfo(value) {
 	$("#formBranch").val(value['branch']);
 	$("#formEndDate").val(value['endDate']);
 	
-	// Set date value
-	// const tempDate = formatDate(value['registerDate']);
-	// var date = new Date(tempDate); // Replace with your date value
+	
+	// set dateFormat again for direct link from enrolment page
+	$("#formRegisterDate").datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
 	var date = new Date(value['registerDate']); // Replace with your date value
 	$("#formRegisterDate").datepicker('setDate', date);
 	
@@ -463,7 +473,6 @@ function displayStudentInfo(value) {
 	// clear search keyword
 	$("#formKeyword").val('');
 
-	
 	// associate courseInfo.jsp 
 	// 1. display same selected grade to Course Register section in courseInfo.jsp
 	readyForCourseRegistration(value['grade']);
@@ -511,6 +520,24 @@ function clearCourseRegisteration(){
 	$('#courseTable > tbody').empty();
 	$('#bookTable > tbody').empty();			
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 	Search Student by Id
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function searchStudentById(id){
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/get/' + id,
+		type : 'GET',
+		success : function(data) {
+			displayStudentInfo(data);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 
 </script>
 
@@ -886,3 +913,4 @@ function clearCourseRegisteration(){
     	</div>
 	</div>
 </div>
+
