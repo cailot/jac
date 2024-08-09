@@ -533,13 +533,26 @@ function clearAttendanceInfo() {
 												<td class="small align-middle text-left">
 													${attend.studentName}</td>
 												<td class="small align-middle text-left">
-													<span class="text-uppercase">
+													<!-- <span class="text-uppercase">
 														[<c:out value="${attend.clazzGrade}" />]
-													</span>
+													</span> -->
 													<c:out value="${attend.clazzName}" />
 												</td>
 												<td class="small align-middle text-center">
-													<c:out value="${attend.clazzDay}" />
+													<!-- <c:out value="${attend.clazzDay}" /> -->
+													<c:choose>
+														<c:when test="${attend.clazzDay == '1'}">Monday</c:when>
+														<c:when test="${attend.clazzDay == '2'}">Tuesday</c:when>
+														<c:when test="${attend.clazzDay == '3'}">Wednessday</c:when>
+														<c:when test="${attend.clazzDay == '4'}">Thursday</c:when>
+														<c:when test="${attend.clazzDay == '5'}">Friday</c:when>
+														<c:when test="${attend.clazzDay == '6'}">Saturday Morning</c:when>
+														<c:when test="${attend.clazzDay == '7'}">Saturday Afternoon</c:when>
+														<c:when test="${attend.clazzDay == '8'}">Sunday Morning</c:when>
+														<c:when test="${attend.clazzDay == '9'}">Sunday Afternoon</c:when>
+														<c:when test="${attend.clazzDay == '0'}">All</c:when>
+														<c:otherwise></c:otherwise>
+													</c:choose>
 												</td>
 												<c:forEach items="${attend.status}" var="status" varStatus="loop">
 													<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">

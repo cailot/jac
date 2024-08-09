@@ -86,6 +86,7 @@ function addStudent() {
 		relation2 : $("#addRelation2").val(),
 		contactNo1 : $("#addContact1").val(),
 		contactNo2 : $("#addContact2").val(),
+		address : $("#addAddress").val(),
 		memo : $("#addMemo").val(),
 		state : $("#addState").val(),
 		branch : $("#addBranch").val(),

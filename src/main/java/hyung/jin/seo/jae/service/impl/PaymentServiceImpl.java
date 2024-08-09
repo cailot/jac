@@ -119,4 +119,15 @@ public class PaymentServiceImpl implements PaymentService {
 		return invoiceId;
 	}
 
+	@Override
+	public double getTotalPaidById(Long id, Long invoiceId) {
+		double paid = 0L;
+		try{
+			paid = paymentRepository.getTotalPaidById(id, invoiceId);
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return paid;
+	}
+
 }

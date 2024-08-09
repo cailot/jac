@@ -23,7 +23,7 @@ public class PaymentDTO extends MoneyDTO{
 
 	private List enrols;
 
-	// private List books;
+	private double upto;
 
 	private double total;
 

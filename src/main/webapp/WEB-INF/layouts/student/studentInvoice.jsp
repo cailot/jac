@@ -345,8 +345,8 @@ function clearStudentInfo() {
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Payment Date</th>
 										<th class="align-middle text-center" style="width: 10%">Method</th>
 										<th class="align-middle text-center" style="width: 10%">Total</th>
-										<th class="align-middle text-center" style="width: 10%">Remaining</th>
 										<th class="align-middle text-center" style="width: 10%">Paid</th>
+										<th class="align-middle text-center" style="width: 10%">Remaining</th>
 										<th class="align-middle text-center" style="width: 30%">Enrolled Course Information</th>
 										<th class="align-middle text-center" style="width: 5%" data-orderable="false">Note</th>
 										<th class="align-middle text-center" style="width: 5%" data-orderable="false">Receipt</th>
@@ -368,11 +368,11 @@ function clearStudentInfo() {
 												<td class="small align-middle text-right mr-1"> <!-- payment total with 2 decimal places -->
 													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
 												</td>
-												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
-												</td>
-												<td class="small align-middle text-right mr-1"> 
+												<td class="small align-middle text-right mr-1">  <!-- payment onetime paid with 2 decimal places -->
 													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
+												</td>
+												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
+													<fmt:formatNumber value="${payment.total - payment.upto}" pattern="#0.00" />
 												</td>
 												<!-- Display a property of each object -->
 												<td class="small align-middle ml-1" style="white-space: nowrap; padding: 0px;">

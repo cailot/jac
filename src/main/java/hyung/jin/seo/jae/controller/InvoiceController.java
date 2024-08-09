@@ -156,11 +156,12 @@ public class InvoiceController {
 				String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
 				enrol.setExtra(start + " ~ " + end);
 			}
-			// get Material list - no need to get material list
-			// List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
+			// 1. associate payment with enrolment
+			// 2. update totalPaid amount so far
 			for(PaymentDTO payment : payments){
 				payment.setEnrols(enrolments);
-				// payment.setBooks(materials);
+				double totalPaid = paymentService.getTotalPaidById(Long.parseLong(payment.getId()), invoiceId);
+				payment.setUpto(totalPaid);
 			}
 			paymentDTOs.addAll(payments);
 		}

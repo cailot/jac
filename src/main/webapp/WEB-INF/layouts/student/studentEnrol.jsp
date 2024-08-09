@@ -409,6 +409,13 @@ function activateStudent(id) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Link To Student Admin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function linkToStudent(studentId) {
+    window.location.href = '/studentAdmin?id=' + studentId;
+}
+
 </script>
 
 <style>
@@ -428,7 +435,7 @@ function activateStudent(id) {
 		padding-bottom: 35px;
 	}
 
-	/* tr { height: 50px }  */
+
 </style>
 
 
@@ -564,6 +571,7 @@ function activateStudent(id) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td>
 												<td class="text-center align-middle">
+													<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Link to Student Information" onclick="linkToStudent('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
