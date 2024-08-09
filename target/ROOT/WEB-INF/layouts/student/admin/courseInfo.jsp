@@ -53,13 +53,17 @@ $(document).ready(
 			// if year & grade is not empty, remove assocaited free online class from basketTable
 			if(year !== '' && grade !== ''){
 				var clazzId = '0';
+				var state = $('#formState').val();
+				var branch = $('#formBranch').val();
 				// find relavant free online class and remove it from basket
 				$.ajax({
 					url: '${pageContext.request.contextPath}/class/id',
 					type: 'GET',
 					data: {
 						grade: grade,
-						year: year
+						year: year,
+						state: state,
+						branch: branch
 					},
 					success: function(data) {
 						// if any online course is found with grade & year
@@ -217,7 +221,7 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		//console.log(data);
+		console.log(data);
 		// console.log(value);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
@@ -416,7 +420,9 @@ $.ajax({
 				type: 'GET',
 				data: {
 					grade: grade,
-					year: year
+					year: year,
+					state: state,
+					branch: branch
 				},
 				success: function(data) {
 					// if any online course is found with grade & year
@@ -738,7 +744,7 @@ function retrieveEnrolment(studentId){
 		success: function(response) {
 			// Handle the response
 			$.each(response, function(index, value){
-				// debugger;
+				//debugger;
 				// It is an EnrolmentDTO object     
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table

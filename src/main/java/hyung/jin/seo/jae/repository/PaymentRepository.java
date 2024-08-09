@@ -14,4 +14,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>{
 
 	@Query(value = "SELECT p.invoiceId FROM Payment p WHERE p.id = ?1", nativeQuery = true)
 	Long findInvoiceIdById(Long id);
+
+	@Query(value = "SELECT SUM(amount) FROM Payment p WHERE p.id <= ?1 AND p.invoiceId = ?2", nativeQuery = true)
+	double getTotalPaidById(Long id, Long invoiceId);
+
 }
