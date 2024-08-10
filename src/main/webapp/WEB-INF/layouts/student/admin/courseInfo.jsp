@@ -21,7 +21,7 @@ const DISCOUNT_FREE = '100%';
 $(document).ready(
 	function() {
 		// load grades
-		listGrade('#registerGrade');
+		// listGrade('#registerGrade');
 
 		// make an AJAX call on page load to get the academic year and week
 		$.ajax({
@@ -66,6 +66,7 @@ $(document).ready(
 						branch: branch
 					},
 					success: function(data) {
+						// debugger
 						// if any online course is found with grade & year
 						if((data !== '') && (data > 0)){
 							// find and remove free online class from basket
@@ -1075,6 +1076,26 @@ function cellEnterKeyUpdateTotalBasket(cell){
 					<div class="col-md-2">
 						<select class="form-control form-control-sm" id="registerGrade" name="registerGrade">
 							<option>Grade</option>
+							<option value="1">P2</option>
+							<option value="2">P3</option>
+							<option value="3">P4</option>
+							<option value="4">P5</option>
+							<option value="5">P6</option>
+							<option value="6">S7</option>
+							<option value="7">S8</option>
+							<option value="8">S9</option>
+							<option value="9">S10</option>
+							<option value="10">S10E</option>
+							<option value="11">TT6</option>
+							<option value="12">TT8</option>
+							<option value="13">TT8E</option>
+							<option value="14">SRW4</option>
+							<option value="15">SRW5</option>
+							<option value="16">SRW6</option>
+							<option value="17">SRW7</option>
+							<option value="18">SRW8</option>
+							<option value="19">JMSS</option>
+							<option value="20">VCE</option>
 						</select>
 					</div>
 					<div class="offset-md-8">
