@@ -517,8 +517,8 @@ function linkToStudent(studentId) {
 										<th class="align-middle text-center">End</th>
 										<th class="align-middle text-center">Main Email</th>
 										<th class="align-middle text-center">Main Contact</th>
-										<th class="align-middle text-center">Sub Email</th>
-										<th class="align-middle text-center">Sub Contact</th>
+										<!-- <th class="align-middle text-center">Sub Email</th>
+										<th class="align-middle text-center">Sub Contact</th> -->
 										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
@@ -527,7 +527,9 @@ function linkToStudent(studentId) {
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
 											<tr>
-												<td class="small align-middle" id="studentId" name="studentId"><span class="ml-1"><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent('${student.id}')">
+													<span class="ml-1"><c:out value="${student.id}" /></span>
+												</td>												
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.firstName}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
 												<td class="small align-middle text-center">
@@ -568,8 +570,8 @@ function linkToStudent(studentId) {
 												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>	
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td>
+												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td> -->
 												<td class="text-center align-middle">
 													<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Link to Student Information" onclick="linkToStudent('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
