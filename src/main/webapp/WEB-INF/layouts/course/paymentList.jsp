@@ -56,11 +56,6 @@ $(document).ready(function () {
 
     });
     
-	$('table .password').on('click', function(){
-		var username = $(this).parent().find('#username').val();
-		$('#passwordModal #usernamepassword').val(username);
-	});
-	
 	$("#start").datepicker({
 		dateFormat: 'dd/mm/yy',
 		onClose: function (selectedDate) {

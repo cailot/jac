@@ -285,6 +285,16 @@ public class StudentServiceImpl implements StudentService {
 		return dtos;
 	}
 
+	@Override
+	public List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = studentRepository.listOverdueStudent(branch, grade, year, week);	
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return dtos;
+	}
 
 
 }
