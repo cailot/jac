@@ -271,6 +271,20 @@ public class StudentServiceImpl implements StudentService {
 		return affectedRow;
 	}
 
+	@Override
+	public List<StudentDTO> listPaymentStudent(String branch, String grade, String from, String to) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDate fromDate = LocalDate.parse(from, formatter);
+			LocalDate toDate = LocalDate.parse(to, formatter);
+			dtos = studentRepository.listPaymentStudent(branch, grade, fromDate, toDate);	
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return dtos;
+	}
+
 
 
 }

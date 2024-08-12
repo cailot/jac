@@ -50,4 +50,8 @@ public interface StudentService {
 	Long getMaxId(String state, String branch);
 
 	int updateInactiveStudent(int days);
+
+	// list payment students in paymentList.jsp
+	List<StudentDTO> listPaymentStudent(String branch, String grade, String from, String to);
+
 }

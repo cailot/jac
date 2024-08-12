@@ -70,6 +70,8 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
 			</div>
 		</li>
 		<!-- User -->
@@ -138,7 +140,8 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
-				  <a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Student Invoice</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Payment</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Overdue</a>
 			</div>
 		</li>
 		</c:if>

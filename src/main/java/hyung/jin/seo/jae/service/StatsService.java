@@ -25,4 +25,7 @@ public interface StatsService {
 	// list invoice students by branch, grade, date & active
 	List<StudentDTO> listInvoiceStudent4Stats(String branch, String grade, String from, String to);
 
+	// list overdue students by branch & grade
+	List<StudentDTO> listOverdueStudent4Stats(String branch, String grade);
+
 }

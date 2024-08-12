@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.PaymentDTO;
+import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.repository.PaymentRepository;
 import hyung.jin.seo.jae.service.PaymentService;
@@ -129,5 +131,4 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		return paid;
 	}
-
 }

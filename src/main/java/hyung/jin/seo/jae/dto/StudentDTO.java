@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class StudentDTO implements Serializable{
     
     private String id;
@@ -133,6 +135,21 @@ public class StudentDTO implements Serializable{
         this.endDate = (std.getEndDate()!=null) ? std.getEndDate().toString() : ""; 
     }
     
+	// this constructor is specially designed to cover paymentList.jsp 
+	public StudentDTO(long id, String firstName, String lastName, String grade, String state, String branch, LocalDate registerDate, String method, double amount, long invoiceId, long paymentId) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+        this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.relation1 = method;
+		this.relation2 = Double.toString(amount);
+		this.contactNo1 = Long.toString(invoiceId);
+		this.contactNo2 = Long.toString(paymentId);
+    }
+
 	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, String password, int active) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
@@ -151,6 +168,24 @@ public class StudentDTO implements Serializable{
 		this.active = active;
     }
 
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, LocalDate enrolDate, int active) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
+        this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
+        this.contactNo2 = (contactNo2 !=null) ? contactNo2 : "";
+        this.email1 = (email1!=null) ? email1 : "";
+		this.email2 = (email2!=null) ? email2 : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+        this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.endDate = (endDate!=null) ? endDate.toString() : "";
+		this.password = (enrolDate!=null) ? enrolDate.toString() : "";
+		this.active = active;
+    }
+
 	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, String password, int active, int startWeek, int endWeek) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
@@ -166,6 +201,27 @@ public class StudentDTO implements Serializable{
         this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
 		this.endDate = (endDate!=null) ? endDate.toString() : "";
 		this.password = (password!=null) ? password : "";
+		this.active = active;
+		this.startWeek = startWeek;
+		this.endWeek = endWeek;
+    }
+
+	// replace Password with enrolment date
+	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String contactNo1, String contactNo2, String email1, String email2, String state, String branch, LocalDate registerDate, LocalDate endDate, LocalDate enrolDate, int active, int startWeek, int endWeek) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
+        this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
+        this.contactNo2 = (contactNo2 !=null) ? contactNo2 : "";
+        this.email1 = (email1!=null) ? email1 : "";
+		this.email2 = (email2!=null) ? email2 : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+        this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.endDate = (endDate!=null) ? endDate.toString() : "";
+		this.password = (enrolDate!=null) ? enrolDate.toString() : "";
 		this.active = active;
 		this.startWeek = startWeek;
 		this.endWeek = endWeek;

@@ -33,4 +33,5 @@ public interface PaymentService {
 
 	// get total paid by Payment
 	double getTotalPaidById(Long id, Long invoiceId);
+
 }
