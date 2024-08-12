@@ -63,17 +63,21 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 
         // retrieve overdue student by state, branch & grade called from studentList.jsp
         @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s " +
-                       "JOIN Enrolment e ON s.id = e.student.id " +
-                       "JOIN Invoice i ON i.id = e.invoice.id " +
-                       "JOIN Clazz clazz ON clazz.id = e.clazz.id " +
-                       "JOIN Course course ON course.id = clazz.course.id " +
-                       "JOIN Cycle cycle ON cycle.id = course.cycle.id " +
-                       "WHERE (i.amount > i.paidAmount) " +
-                       "AND (?1 = '0' OR s.branch = ?1) " +
-                       "AND (?2 = '0' OR s.grade = ?2) " +
-                       "AND ((cycle.year < ?3) OR (cycle.year = ?3 AND e.startWeek <= ?4))") 
+        "JOIN Enrolment e ON s.id = e.student.id " +
+        "JOIN Invoice i ON i.id = e.invoice.id " +
+        "JOIN Clazz clazz ON clazz.id = e.clazz.id " +
+        "JOIN Course course ON course.id = clazz.course.id " +
+        "JOIN Cycle cycle ON cycle.id = course.cycle.id " +
+        "WHERE (i.amount > i.paidAmount) " +
+        "AND (?1 = '0' OR s.branch = ?1) " +
+        "AND (?2 = '0' OR s.grade = ?2) " +
+        "AND ((cycle.year < ?3) OR (cycle.year = ?3 AND e.startWeek <= ?4))") 
         List<StudentDTO> listOverdueStudent4Stats(String branch, String grade, int year, int week);
 
+
+
+
+        // retrieve overdue student by state, branch & grade called from paymentList.jsp
         @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.state, s.branch, p.registerDate, p.method, p.amount, i.id, p.id) FROM Student s " +
         "JOIN s.enrolments e " +  // Assuming Student has a 'Set<Enrolment> enrolments' relationship
         "JOIN e.invoice i " +
@@ -82,6 +86,22 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (?2 = '0' OR s.grade = ?2) " +
         "AND (p.registerDate BETWEEN ?3 AND ?4)")
         List<StudentDTO> listPaymentStudent(String branch, String grade, LocalDate from, LocalDate to);
+
+        // retrieve overdue student by state, branch & grade called from overdueList.jsp
+        @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.email1, s.state, s.branch, e.startWeek, e.endWeek, clazz.name) FROM Student s " +
+        "JOIN Enrolment e ON s.id = e.student.id " +
+        "JOIN Invoice i ON i.id = e.invoice.id " +
+        "JOIN Clazz clazz ON clazz.id = e.clazz.id " +
+        "JOIN Course course ON course.id = clazz.course.id " +
+        "JOIN Cycle cycle ON cycle.id = course.cycle.id " +
+        "WHERE (i.amount > i.paidAmount) " +
+        "AND (e.discount != '100%') " +
+        "AND (?1 = '0' OR s.branch = ?1) " +
+        "AND (?2 = '0' OR s.grade = ?2) " +
+        "AND ((cycle.year < ?3) OR (cycle.year = ?3 AND e.startWeek <= ?4))") 
+        List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week);
+
+
 
         // search student by keyword for Id
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.id = ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
