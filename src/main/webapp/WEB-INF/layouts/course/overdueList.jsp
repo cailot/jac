@@ -413,10 +413,7 @@ function activateStudent(id) {
 //		Link To Student Admin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function linkToStudent(studentId) {
-    //window.location.href = '/studentAdmin?id=' + studentId;
-	var url = '/studentAdmin?id=' + studentId;  
-	var win = window.open(url, '_blank');
-	win.focus();
+    window.location.href = '/studentAdmin?id=' + studentId;
 }
 
 </script>

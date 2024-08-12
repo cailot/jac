@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.repository.StudentRepository;
+import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.StatsService;
 
 @Service
@@ -18,6 +19,9 @@ public class StatsServiceImpl implements StatsService {
 	
 	@Autowired
 	StudentRepository studentRepository;
+
+	@Autowired
+	CycleService cycleService;
 
 	@Override
 	public List<StatsDTO> getActiveStats(String from, String to) {
@@ -98,4 +102,16 @@ public class StatsServiceImpl implements StatsService {
 		return dtos;
 	}
 
+	@Override
+	public List<StudentDTO> listOverdueStudent4Stats(String branch, String grade) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		int year = cycleService.academicYear();
+		int week = cycleService.academicWeeks();
+		try{
+			dtos = studentRepository.listOverdueStudent4Stats(branch, grade, year, week);
+		}catch(Exception e){
+			System.out.println("No Student found");
+		}
+		return dtos;
+	}
 }

@@ -726,7 +726,8 @@ function export2Excel(){
 		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
 	</div>
 	<div class="col-md-2">
-		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+		<label for="toDate" class="label-form">To Date</label>
+		<input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
 	</div>
 	<!-- put blank col-md-1 -->
 	<div class="offset-md-5"></div>

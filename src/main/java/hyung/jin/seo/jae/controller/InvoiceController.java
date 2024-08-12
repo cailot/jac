@@ -13,9 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ch.qos.logback.core.joran.spi.NoAutoStart;
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
@@ -47,6 +50,7 @@ import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
 import hyung.jin.seo.jae.service.PaymentService;
 import hyung.jin.seo.jae.service.PdfService;
+import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
@@ -84,6 +88,9 @@ public class InvoiceController {
 	
 	@Autowired
 	private EmailService emailService;
+
+	// @Autowired
+	// private StatsService statsService;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -687,5 +694,30 @@ public class InvoiceController {
 			return ResponseEntity.ok("Error");
 		}
 	}
+
+	// payment list for paymentList.jsp
+	@GetMapping("/paymentList")
+	public String listInvoiceStudents(@RequestParam("branch") String branch, 
+									@RequestParam("grade") String grade,
+									@RequestParam("start") String fromDate,
+									@RequestParam("end") String toDate, Model model
+									) {
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, start, end);
+		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		return "paymentListPage";
+	}
+
 
 }
