@@ -47,6 +47,16 @@
 		<put-attribute name="title" value="Grade List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/gradeList.jsp" />
 	</definition>
+	<!--Payment -->
+	<definition name="paymentListPage" extends="base.definition">
+		<put-attribute name="title" value="Payment List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/paymentList.jsp" />
+	</definition>
+	<!--Overdue -->
+	<definition name="overdueListPage" extends="base.definition">
+		<put-attribute name="title" value="Overdue List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/overdueList.jsp" />
+	</definition>
 
 
 	<!-- Users-->

@@ -82,6 +82,16 @@ public class JaeController {
 		return "classListPage";
 	}
 
+	@GetMapping("/paymentList")
+	public String paymentList(HttpSession session) {
+		return "paymentListPage";
+	}
+
+	@GetMapping("/overdueList")
+	public String overdueList(HttpSession session) {
+		return "overdueListPage";
+	}
+
 	@GetMapping("/onlineList")
 	public String onlineList(HttpSession session) {
 		return "onlineListPage";
