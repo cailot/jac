@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.qos.logback.core.joran.spi.NoAutoStart;
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
@@ -50,7 +48,6 @@ import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
 import hyung.jin.seo.jae.service.PaymentService;
 import hyung.jin.seo.jae.service.PdfService;
-import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
@@ -88,9 +85,6 @@ public class InvoiceController {
 	
 	@Autowired
 	private EmailService emailService;
-
-	// @Autowired
-	// private StatsService statsService;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -697,7 +691,7 @@ public class InvoiceController {
 
 	// payment list for paymentList.jsp
 	@GetMapping("/paymentList")
-	public String listInvoiceStudents(@RequestParam("branch") String branch, 
+	public String paymentStudents(@RequestParam("branch") String branch, 
 									@RequestParam("grade") String grade,
 									@RequestParam("start") String fromDate,
 									@RequestParam("end") String toDate, Model model
@@ -719,5 +713,15 @@ public class InvoiceController {
 		return "paymentListPage";
 	}
 
+	// overdue list for overdueList.jsp
+	@GetMapping("/overdueList")
+	public String overdueStudents(@RequestParam("branch") String branch, 
+									@RequestParam("grade") String grade, Model model) {
+		int year = cycleService.academicYear();
+		int week = cycleService.academicWeeks();
+		List<StudentDTO> dtos = studentService.listOverdueStudent(branch, grade, year, week);
+		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		return "overdueListPage";
+	}
 
 }
