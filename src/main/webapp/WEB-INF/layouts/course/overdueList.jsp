@@ -226,8 +226,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 													</span>
 												</td>	
 												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Full Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-calculator text-primary hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayReceipt('${student.id}', '${student.firstName}', '${student.lastName}', '${student.contactNo1}', '${student.contactNo2}')"></i>
+													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Full Payment History" onclick="displayFullHistory('${student.id}')"></i>
 												</td>
 											</tr>
 										</c:forEach>
