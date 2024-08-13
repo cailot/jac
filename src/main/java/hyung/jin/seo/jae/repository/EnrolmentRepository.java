@@ -62,7 +62,8 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	List<Long> findEnrolmentIdByStudentId(long studentId);
 
 	// return enrolment id by invoice id
-	@Query("SELECT e.id FROM Enrolment e WHERE e.invoice.id = ?1 and e.old = false")
+	// @Query("SELECT e.id FROM Enrolment e WHERE e.invoice.id = ?1 and e.old = false")
+	@Query("SELECT e.id FROM Enrolment e WHERE e.invoice.id = ?1")
 	List<Long> findEnrolmentIdByInvoiceId(long invoiceId);
 
 	// return latest invoice id by student id
