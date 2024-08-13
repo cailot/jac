@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,6 +101,7 @@ public class StatsServiceImpl implements StatsService {
 			System.out.println("No Student found");
 		}
 		return dtos;
+		// return dtos.stream().distinct().collect(Collectors.toList());
 	}
 
 	@Override
