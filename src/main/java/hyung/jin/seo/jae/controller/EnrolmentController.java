@@ -290,18 +290,19 @@ public class EnrolmentController {
 		
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		// 1. check Invoice available
-		boolean isInvoiceExist = false;
+		boolean isLastInvoice = false;
 		// 2. get latest Invoice by studentId
 		Invoice invo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		// 3. check whether Invoice is already created and still available
 		if((invo!=null) && (invo.getAmount() > invo.getPaidAmount())){
-			isInvoiceExist = true;
+		// if((invo!=null) && (invo.getAmount() > invo.getPaidAmount())){
+			isLastInvoice = true;
 		}
 		// 4. get Student to associate to Enrolment later
 		Student student = studentService.getStudent(studentId);
 		// 5. if no Invoice or Invoice is already paid, create new Invoice; otherwise use existing Invoice
 		Invoice invoice = null;
-		if(isInvoiceExist){
+		if(isLastInvoice){
 			invoice = invo;
 		}else{
 			Invoice empty = new Invoice();
@@ -313,7 +314,7 @@ public class EnrolmentController {
 
 		for(EnrolmentDTO data : formData){
 			// if Invoice is already created and still available, use it
-			if(isInvoiceExist){
+			if(isLastInvoice){
 				// check class already belong to Invoice
 				// Invoice already created but additional Enrolment (ADD)
 				if(StringUtils.isEmpty(data.getId())){
