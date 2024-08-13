@@ -119,7 +119,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice getLastActiveInvoiceByStudentId(Long studentId) {
-		return invoiceRepository.findInvoiceByStudentId(studentId);
+		return invoiceRepository.findLastInvoiceByStudentId(studentId);
 	}
 
 	@Override
