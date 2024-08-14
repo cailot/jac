@@ -613,11 +613,11 @@ public class EnrolmentController {
 		
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		// 1. check new Enrolment or not
-		boolean isNewEnrolment = false;
+		boolean isNewEnrolment = true;
 		// 1-1. check paid invoiceId is included in formData
 		for(EnrolmentDTO data : formData){
-			if(StringUtils.isBlank(data.getInvoiceId()) && !StringUtils.equalsIgnoreCase("100%", data.getDiscount())){
-				isNewEnrolment = true;
+			if(StringUtils.isNotBlank(data.getInvoiceId()) && !StringUtils.equalsIgnoreCase("100%", data.getDiscount())){
+				isNewEnrolment = false;
 				break;
 			}
 		}

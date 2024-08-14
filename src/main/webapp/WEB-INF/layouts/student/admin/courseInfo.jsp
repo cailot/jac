@@ -48,49 +48,15 @@ $(document).ready(
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
 			var tr = $(this).closest('tr');
-    		var year = tr.find('.year').text(); // Get the text content of the <td class="year"> elements within the <tr>
-    		var grade = tr.find('.grade').text(); // Get the value of the <td class="grade"> elements within the <tr>
-			// if year & grade is not empty, remove assocaited free online class from basketTable
-			if(year !== '' && grade !== ''){
-				var clazzId = '0';
-				var state = $('#formState').val();
-				var branch = $('#formBranch').val();
-				// find relavant free online class and remove it from basket
-				$.ajax({
-					url: '${pageContext.request.contextPath}/class/id',
-					type: 'GET',
-					data: {
-						grade: grade,
-						year: year,
-						state: state,
-						branch: branch
-					},
-					success: function(data) {
-						// debugger
-						// if any online course is found with grade & year
-						if((data !== '') && (data > 0)){
-							// find and remove free online class from basket
-							$('#basketTable > tbody > tr').each(function() {
-								var exist = $(this).find('.data-type').text();
-								if(exist.indexOf('|') !== -1){
-									var hiddenValues = exist.split('|');
-									//console.log(hiddenValues[1]);
-									if(hiddenValues[0] === CLASS && parseInt(hiddenValues[1]) === data){
-										// remove row from basket
-										$(this).remove();
-										console.log('object :>> ', hiddenValues);
-									}
-								}
-							});
-						}
-					},
-					error : function(xhr, status, error) {
-						console.log('Error : ' + error);
-					}
-				});
-			}	
-			// remove row from basket
-			tr.remove();
+			var pairId = tr.data('pair-id');
+			// search another row with the same pairId
+			$('#basketTable > tbody > tr').each(function() {
+				var exist = $(this).data('pair-id');
+				if(exist === pairId){
+					$(this).remove();
+				}
+			});
+
 			updateTotalBasket();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
@@ -149,7 +115,7 @@ function listCourses(grade) {
 					}).join(', ');
 				}
 				row.append($('<td class="smaller-table-font course-title col-10" style="padding-left: 20px;">').html(value.name + ' - ' + value.description + '  [' + subjectsString + ']'));
-				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ","  + grade + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 				$('#courseTable > tbody').append(row);
 			});
 		},
@@ -191,7 +157,7 @@ function listBooks(grade) {
 				}
 				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));				
 				row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
-				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned +  ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 				$('#bookTable > tbody').append(row);
 			});
 		},
@@ -205,8 +171,7 @@ function listBooks(grade) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Add class to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addClassToBasket(value) {
-
+function addClassToBasket(value, gradePair) {
 var state = $('#formState').val();
 var branch = $('#formBranch').val();
 
@@ -222,7 +187,7 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		console.log(data);
+		//console.log(data);
 		// console.log(value);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
@@ -235,7 +200,7 @@ $.ajax({
 			start_week = 1;
 			end_week = 10;
 		}    
-		var row = $('<tr class="d-flex">');
+		var row = $('<tr class="d-flex" data-pair-id="' + gradePair + '">');
 		// dynamic clazz id assign
 		var dropdown = $('<select class="clazzChoice">');
 		$.each(data, function(index, clazz) {
@@ -442,7 +407,7 @@ $.ajax({
 										clazzName = title.split('-')[0].trim();
 										clazzDescription = title.split('-')[1].trim();
 									}
-									var row = $('<tr class="d-flex">');
+									var row = $('<tr class="d-flex" data-pair-id=' + gradePair + '>');
 									row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
 									row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
@@ -486,8 +451,9 @@ $.ajax({
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Add book to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addBookToBasket(value){
-	//console.log(value);
+function addBookToBasket(value, index){
+	// console.log(value);
+	// console.log(index);
 	// if book is already in basket, skip
 	if(isSameRowExisting(BOOK, value.id)){
 		showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
@@ -749,7 +715,7 @@ function retrieveEnrolment(studentId){
 				// It is an EnrolmentDTO object     
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table
-					var row = $('<tr class="d-flex">');
+					var row = $('<tr class="d-flex" data-pair-id=' + value.grade + '>');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 					if(value.extra === OVERDUE){
 						row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" title="Overdue"></i></td>')); // item
