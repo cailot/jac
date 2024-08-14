@@ -484,7 +484,7 @@ function clearStudentInfo() {
 														<!-- if enrol is not free online, then display -->
 														<c:if test="${enrol.online != true and enrol.discount != '100%'}">		
 															<tr style="background-color : transparent !important;">
-																<td class="small align-middle" style="white-space: nowrap;">[${enrol.grade.toUpperCase()}] ${enrol.name}&nbsp;</td>
+																<td class="small align-middle" style="white-space: nowrap;">${enrol.name}&nbsp;</td>
 																<td class="small align-middle" style="white-space: nowrap;">(${enrol.extra})</td>
 															</tr>
 														</c:if>
