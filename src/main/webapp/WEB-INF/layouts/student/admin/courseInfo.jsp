@@ -237,7 +237,7 @@ $.ajax({
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').attr('id', 'onsiteStart').text(start_week); // start week
+		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(start_week); // start week
 		startWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -256,7 +256,7 @@ $.ajax({
 		});
 		row.append(startWeekCell);
 		
-		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').attr('id', 'onsiteEnd').text(end_week); // end week
+		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').text(end_week); // end week
 			endWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -275,7 +275,7 @@ $.ajax({
 		});
 		row.append(endWeekCell);
 
-		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').attr('id', 'onsiteWeeks').text((end_week - start_week) + 1);// weeks  
+		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').text((end_week - start_week) + 1);// weeks  
 		weeksCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -414,13 +414,13 @@ $.ajax({
 									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
 									row.append($('<td class="smaller-table-font day">').text('All')); // day
 									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-									var onlineStartWeek = startWeekCell.clone().addClass('onlineStart').attr('id', 'onlineStart').text(start_week);
+									var onlineStartWeek = startWeekCell.clone().removeClass('onsiteStart').addClass('onlineStart').text(start_week);
 									row.append(onlineStartWeek);
-									var onlineEndWeek = endWeekCell.clone().addClass('onlineEnd').attr('id', 'onlineEnd').text(end_week);
+									var onlineEndWeek = endWeekCell.clone().removeClass('onsiteEnd').addClass('onlineEnd').text(end_week);
 									row.append(onlineEndWeek);
-									var onlineWeeks = weeksCell.clone().addClass('onlineWeeks').attr('id', 'onlineWeeks').text((end_week - start_week) + 1);
+									var onlineWeeks = weeksCell.clone().removeClass('onsiteWeeks').addClass('onlineWeeks').text((end_week - start_week) + 1);
 									row.append(onlineWeeks);
-									row.append($('<td class="smaller-table-font text-center credit onlineCredit" id="onlineCredit" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center credit onlineCredit" contenteditable="true">').text(0));
 									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
 									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
 									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
@@ -728,7 +728,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
 					row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-					var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onlineStart').attr('id', 'onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').attr('id', 'onsiteStart').text(value.startWeek); // start week;
+					var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(value.startWeek); // start week;
 					startWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -747,7 +747,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(startWeekCell);
 
-					var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onlineEnd').attr('id', 'onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').attr('id', 'onsiteEnd').text(value.endWeek); // end week;
+					var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').text(value.endWeek); // end week;
 					endWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -766,7 +766,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(endWeekCell);
 
-					var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onlineWeeks').attr('id', 'onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').attr('id', 'onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
+					var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
 					weeksCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -784,7 +784,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(weeksCell);
 
-					var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').attr('id', 'onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onsiteCredit').attr('id', 'onsiteCredit').text(value.credit); // credit;				
+					var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onsiteCredit').text(value.credit); // credit;				
 					var previousCredit = parseInt(creditCell.text());
 					creditCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
