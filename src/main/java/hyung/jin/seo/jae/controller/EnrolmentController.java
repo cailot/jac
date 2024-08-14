@@ -702,9 +702,9 @@ public class EnrolmentController {
 
 			// 3-3. update existing Enrolment
 			for(EnrolmentDTO data : formData){
-				// 3-3-1. check invoice is same what we are going to update
+
+				// 3-3-1. get invoice to update
 				if(existingInvo.getId()!=Long.parseLong(StringUtils.defaultString(data.getInvoiceId(),"O"))) continue;
-				
 				// 3-3-2. get existing Enrolment
 				Enrolment existing = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
 				
