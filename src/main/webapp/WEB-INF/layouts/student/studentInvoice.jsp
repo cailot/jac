@@ -475,7 +475,7 @@ function clearStudentInfo() {
 													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
 												</td>
 												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
+													<fmt:formatNumber value="${payment.total - payment.upto}" pattern="#0.00" />
 												</td>
 												<!-- Display a property of each object -->
 												<td class="small align-middle ml-1" style="white-space: nowrap; padding: 0px;">
@@ -515,7 +515,7 @@ function clearStudentInfo() {
 										<th colspan="2"></th>
 										<th colspan="2" class="text-right small align-middle">Total Paid:</th>
 										<th colspan="5" class="text-left small align-middle">
-											<span id="totalPaid" class="text-primary ml-2"></span>
+											<span id="totalPaid" class="text-primary ml-5"></span>
 										</th>
 									</tr>
 								</tfoot>

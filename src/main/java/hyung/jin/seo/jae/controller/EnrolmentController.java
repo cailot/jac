@@ -122,6 +122,9 @@ public class EnrolmentController {
 				// 4. get outstandings by invoice id and add to list dtos
 				List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
 				for(OutstandingDTO stand : stands){
+					// update remaining
+					double totalPaid = outstandingService.getTotalPaidById(Long.parseLong(stand.getId()), invoiceId);
+					stand.setRemaining(stand.getAmount()-totalPaid);
 					dtos.add(stand);
 				}
 			}
@@ -278,7 +281,12 @@ public class EnrolmentController {
 		if(!isValidInvoice) return dtos;
 		// 4. bring all related Outstandings
 		dtos = outstandingService.getOutstandingtByInvoice(invo.getId());
-		// 5. return OutstandingDTO list
+		// 5. update remaining amount
+		for(OutstandingDTO dto : dtos){
+			double totalPaid = outstandingService.getTotalPaidById(Long.parseLong(dto.getId()), invo.getId());
+			dto.setRemaining(dto.getAmount()-totalPaid);
+		}
+		// 6. return OutstandingDTO list
 		return dtos;
 	}
 
