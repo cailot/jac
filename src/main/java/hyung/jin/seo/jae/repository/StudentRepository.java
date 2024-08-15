@@ -116,9 +116,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.firstName LIKE ?1 OR s.lastName LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
 	List<StudentDTO> searchStudentByKeywordName(String keyword, String state, String branch);
 
-        // list active enrolled student, PASSWORD is replaced with enrolment date 
+        // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
         @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
-        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "WHERE s.endDate IS NULL " +
@@ -131,9 +131,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")
 	List<StudentDTO> listActiveStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year);
 
-        // list inactive enrolled student, PASSWORD is replaced with enrolment date 
+        // list inactive enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
 	@Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
-        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "WHERE s.endDate IS NOT NULL " +

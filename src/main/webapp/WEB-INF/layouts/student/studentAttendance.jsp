@@ -200,6 +200,16 @@ function clearAttendanceInfo() {
 	$('#attendanceTable').DataTable().clear().draw();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Link To Student Admin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function linkToStudent(studentId) {
+    //window.location.href = '/studentAdmin?id=' + studentId;
+	var url = '/studentAdmin?id=' + studentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
 </script>
 
 <style>
@@ -528,7 +538,7 @@ function clearAttendanceInfo() {
 									<tbody>
 										<c:forEach var="attend" items="${attendanceInfo}">
 											<tr data-row-id="${attend.clazzId}-${attend.studentId}">
-												<td class="small align-middle text-center">
+												<td class="small align-middle text-center hand-cursor" data-toggle="tooltip" title="Link to Student Information" onclick="linkToStudent('${attend.studentId}')">
 													${attend.studentId}</td>
 												<td class="small align-middle text-left">
 													${attend.studentName}</td>

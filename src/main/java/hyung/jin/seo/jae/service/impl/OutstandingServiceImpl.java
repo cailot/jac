@@ -98,4 +98,15 @@ public class OutstandingServiceImpl implements OutstandingService {
 		return updated;
 	}
 
+	@Override
+	public double getTotalPaidById(Long id, Long invoiceId) {
+		double paid = 0L;
+		try{
+			paid = outstandingRepository.getTotalPaidById(id, invoiceId);
+		}catch(Exception e){
+			System.out.println("No outstanding found");
+		}
+		return paid;
+	}
+
 }

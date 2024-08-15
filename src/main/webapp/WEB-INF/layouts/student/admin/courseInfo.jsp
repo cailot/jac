@@ -712,7 +712,7 @@ function retrieveEnrolment(studentId){
 		success: function(response) {
 			// Handle the response
 			$.each(response, function(index, value){
-				//debugger;
+				// debugger;
 				// It is an EnrolmentDTO object     
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table
@@ -888,7 +888,7 @@ function retrieveEnrolment(studentId){
 					if(!freeOnline){
 						addEnrolmentToInvoiceList(value);
 					}
-				} else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
+				}else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
 					// update invoice table with Outstanding
 					addOutstandingToInvoiceList(value);
 				}else{  // Book

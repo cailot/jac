@@ -15,16 +15,38 @@ $(document).ready(function() {
     var scrollHeight = windowHeight * 0.35; // Adjust the percentage as needed
 
 	$.fn.dataTable.moment('DD/MM/YYYY');
-    $('#attendanceTable').DataTable({
-        "scrollY": scrollHeight + "px",
-        "scrollCollapse": true,
+    // $('#attendanceTable').DataTable({
+    //     "scrollY": scrollHeight + "px",
+    //     "scrollCollapse": true,
+	// 	"lengthChange": false,
+	// 	"searching": false,
+	// 	"paging": false,
+	// 	"info": false,
+	// 	"ordering": false,
+	// 	"order": [[ 2, "asc" ]]
+    // });
+	$('#attendanceTable').DataTable({
+		"scrollY": scrollHeight + "px",
+		"scrollCollapse": true,
 		"lengthChange": false,
 		"searching": false,
 		"paging": false,
 		"info": false,
 		"ordering": false,
-		"order": [[ 2, "asc" ]]
-    });
+		"order": [[ 2, "asc" ]],
+		"language": {
+			"emptyTable": "",    // Removes the "No data available in table" message
+			"zeroRecords": ""    // Removes the "No matching records found" message
+		},
+		"drawCallback": function(settings) {
+        $('#attendanceTable tbody tr:first-child').css('border-top', '1px solid #dee2e6');
+    	}
+	});
+
+	// Remove the empty row if data is present
+	// $('#attendanceTable').on('draw.dt', function() {
+    //     $('tr.dataTables_empty').remove();
+    // });
 
     // $('.dataTables_length').addClass('bs-select');
 });
@@ -118,6 +140,7 @@ function clearAttendanceTable() {
 
 </script>
 
+
 <div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 	<form id="accetandanceForm">
 		<div class="form-group">
@@ -130,7 +153,6 @@ function clearAttendanceTable() {
 								<th class="smaller-table-font text-center" style="width: 35%;">Week</th>
 								<th class="smaller-table-font text-center" style="width: 50%;">Day</th>
 								<th class="smaller-table-font text-left" style="width: 15%;">Status</th>
-								<!-- <th class="smaller-table-font text-center" style="width: 30%;">Class</th> -->
 							</tr>
 						</thead>
 						<tbody>
@@ -142,4 +164,32 @@ function clearAttendanceTable() {
 		</div>
 	</form>
 </div>
+	
+<style>
+#attendanceTable thead th {
+    border-top: 1px solid #dee2e6; /* Adjust color to match your theme */
+    border-bottom: 1px solid #dee2e6; /* Add bottom border for header consistency */
+}
+
+#attendanceTable tbody tr:first-child td {
+    border-top: 1px solid #dee2e6; /* Ensure the first row's top cells have a border */
+}
+
+#attendanceTable tbody tr {
+    padding: 0; /* Remove any padding from the rows */
+    margin: 0; /* Remove any margin from the rows */
+}
+
+#attendanceTable tbody tr td {
+    padding: 8px; /* Add some padding for better readability */
+    margin: 0; /* Remove any margin from the cells */
+    border-bottom: 1px solid #dee2e6; /* Ensure consistent borders between rows */
+}
+
+.dataTables_empty {
+    display: none; /* Ensure the empty table message is hidden */
+}
+
+
+</style>
 	

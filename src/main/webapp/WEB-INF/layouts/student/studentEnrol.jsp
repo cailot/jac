@@ -523,7 +523,7 @@ function displayFullHistory(studentId) {
 										<th class="align-middle text-center">First Name</th>
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Gender</th>
+										<th class="align-middle text-center">Class</th>
 										<th class="align-middle text-center" data-orderable="false">Enrolment Date</th>
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
@@ -571,7 +571,11 @@ function displayFullHistory(studentId) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<!-- <td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td> -->
+												<td class="small align-middle text-left">
+													<c:out value="${student.contactNo2}" />
+												</td>
+												
 												<td class="small align-middle text-center">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.password}" pattern="yyyy-MM-dd" />

@@ -13,6 +13,7 @@ public interface OutstandingRepository extends JpaRepository<Outstanding, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.OutstandingDTO(o.id, o.paid, o.invoice.amount, o.registerDate, o.paymentId, o.invoice.id, o.info) FROM Outstanding o WHERE o.invoice.id = ?1")
 	List<OutstandingDTO> findByInvoiceId(Long invoiceId);
 
-	// @Query(value = "SELECT o.id FROM Outstanding o WHERE o.invoice.id = ?1 ORDER BY o.id DESC")
-	// List<Long> findIdByInvoiceId(Long invoiceId);
+	@Query(value = "SELECT SUM(paid) FROM Outstanding o WHERE o.id <= ?1 AND o.invoiceId = ?2", nativeQuery = true)
+	double getTotalPaidById(Long id, Long invoiceId);
+
 }
