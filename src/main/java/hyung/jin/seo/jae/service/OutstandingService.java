@@ -25,4 +25,7 @@ public interface OutstandingService {
 	// update Outstanding
 	Outstanding updateOutstanding(Outstanding stand, Long id);
 
+	// get total paid by id
+	double getTotalPaidById(Long id, Long invoiceId);
+
 }
