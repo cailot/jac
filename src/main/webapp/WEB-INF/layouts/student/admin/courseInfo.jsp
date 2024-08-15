@@ -576,7 +576,7 @@ function associateRegistration(){
 	
 	// 1. Make the AJAX enrolment for class
 	$.ajax({
-		url: '${pageContext.request.contextPath}/enrolment/associateClazz1/' + studentId,
+		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
 		method: 'POST',
 		data: JSON.stringify(enrolData),
 		contentType: 'application/json',

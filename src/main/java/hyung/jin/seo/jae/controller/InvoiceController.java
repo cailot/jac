@@ -149,7 +149,7 @@ public class InvoiceController {
 		List<PaymentDTO> paymentDTOs = new ArrayList<PaymentDTO>();
 		for(Long invoiceId : invoiceIds){
 			List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoiceId);
-			// get Enrolment lilst
+			// get Enrolment list
 			List<EnrolmentDTO> enrolments = enrolmentService.findAllEnrolmentByInvoiceAndStudent(invoiceId, stdId);
 			for(EnrolmentDTO enrol : enrolments){
 				// 9-1. set period of enrolment to extra field
