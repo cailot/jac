@@ -125,6 +125,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (:state = '0' OR s.state = :state) " +
         "AND (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
+        "AND e.old = false " +
         "AND e.discount != '" + "100%" + "' " +
         "AND e.clazz.id IN (" +
         "SELECT cla.id FROM Clazz cla WHERE cla.course.cycle.id IN (" +
@@ -140,6 +141,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (:state = '0' OR s.state = :state) " +
         "AND (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
+        "AND e.old = false " +
         "AND e.discount != '" + "100%" + "' " +
         "AND e.clazz.id IN (" +
         "SELECT cla.id FROM Clazz cla WHERE cla.course.cycle.id IN (" +

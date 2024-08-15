@@ -116,6 +116,7 @@ public class StudentController {
 	// search student list with state, branch, grade, start date or active
 	@GetMapping("/list")
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
+		// return only active enrolled (enrolment.active = true) current/stopped students
 		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, year, active);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "studentEnrolPage";

@@ -291,6 +291,7 @@ public class EnrolmentController {
 	}
 
 
+	/*
 
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
@@ -614,8 +615,9 @@ public class EnrolmentController {
 		return dtos;
 	}
 
+	*/
 
-	@PostMapping("/associateClazz1/{studentId}")
+	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
 	public List<EnrolmentDTO> associateClazz1(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
 		
@@ -773,16 +775,6 @@ public class EnrolmentController {
 						//////////////////////////////////////////////////////////
 					}
 
-
-
-
-
-
-
-
-
-
-
 				}else{ // if invoice id is same, it means existing Enrolment
 
 					// 3-3-2. get existing Enrolment
@@ -882,7 +874,57 @@ public class EnrolmentController {
 
 			}// end of loop
 
-		}
+			// 4. archive enrolments not in formData (DELETE)
+			for(Long enrolmentId : enrolIds) {
+				// update Invoice amount
+				Enrolment enrolment = enrolmentService.getEnrolment(enrolmentId);
+				int start = enrolment.getStartWeek();	
+				int end = enrolment.getEndWeek();
+				int credit = enrolment.getCredit();
+				double price = clazzService.getPrice(enrolment.getClazz().getId());
+				// check discount is % or amount value
+				String discount =StringUtils.defaultString(enrolment.getDiscount(), "0");
+				double discountAmount = 0;
+				if(discount.contains("%")){
+					discountAmount = (((end-start+1)-credit) * price) * (Double.parseDouble(discount.replace("%", ""))/100);
+				}else{
+					discountAmount = Double.parseDouble(discount);
+				}
+				double enrolmentPrice = ((((end-start+1)-credit) * price) - discountAmount);
+				existingInvo.setCredit(existingInvo.getCredit() - credit);
+				existingInvo.setDiscount(existingInvo.getDiscount() - discountAmount);
+				existingInvo.setAmount(existingInvo.getAmount() - enrolmentPrice);
+				// invoiceService.updateInvoice(existingInvo, existingInvo.getId());
+				// archive Enrolment - Invoice will be automatically updated
+				enrolmentService.archiveEnrolment(enrolmentId);
+
+				// remove enrolmentId from enrolmentIds
+				// enrolIds.remove(enrolmentId);
+
+				///////////////// Attendance ////////////////////////
+				long clazzId = enrolment.getClazz().getId();
+				List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
+				for(AttendanceDTO attendance : attandances){
+					// check attendDate is later than today
+					LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+					LocalDate today = LocalDate.now();
+					if(attendDate.isAfter(today)){
+						// delete attendance
+						long attendId = Long.parseLong(attendance.getId());
+						attendanceService.deleteAttendance(attendId);
+					}
+				}
+				//////////////////////////////////////////////////////////
+			}
+
+
+
+
+		}// end of Invoice check (new/existing)
+
+
+
+
 
 		return dtos;
 	}
