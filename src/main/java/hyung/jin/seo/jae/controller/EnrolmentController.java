@@ -27,6 +27,7 @@ import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
+import hyung.jin.seo.jae.model.InvoiceHistory;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.AttendanceService;
@@ -34,6 +35,7 @@ import hyung.jin.seo.jae.service.BookService;
 import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EnrolmentService;
+import hyung.jin.seo.jae.service.InvoiceHistoryService;
 import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
@@ -61,6 +63,9 @@ public class EnrolmentController {
 
 	@Autowired
 	private InvoiceService invoiceService;
+
+	@Autowired
+	private InvoiceHistoryService invoiceHistoryService;
 
 	@Autowired
 	private BookService bookService;
@@ -231,20 +236,21 @@ public class EnrolmentController {
 		// 1-2. if not, add or update(skip) Materials
 		// 1-2-1. get Invoice
 		//Invoice invo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
-		Invoice invo = invoiceService.getLastInvoiceByStudentId(studentId);
+		Invoice existingInvo = invoiceService.getLastInvoiceByStudentId(studentId);
 		// 1-2-2. bring all registered Book - bookId & invoiceId
-		List<Long> registeredIds = materialService.findBookIdByInvoiceId(invo.getId());
+		List<Long> registeredIds = materialService.findBookIdByInvoiceId(existingInvo.getId());
 		for(MaterialDTO material : formData){
 			// 1-2-3. check if formData has Id or not. if there is no id it means new Material
 			if(StringUtils.isBlank(material.getId())){
 				// 1-2-3-1. get Book
 				Book book = bookService.getBook(Long.parseLong(material.getBookId()));
 				// 1-2-3-2. update invoice amount
-				invo.setAmount(invo.getAmount() + book.getPrice());
+				existingInvo.setAmount(existingInvo.getAmount() + book.getPrice());
 				// 1-2-3-3. create Material
 				Material newMaterial = new Material();
 				newMaterial.setBook(book);
-				newMaterial.setInvoice(invo);
+				newMaterial.setInvoice(existingInvo);
+				// newMaterial.setInvoiceHistory(null);
 				// 1-2-3-4. save Material - Invoice will be automatically updated
 				newMaterial = materialService.addMaterial(newMaterial);
 			}
@@ -257,12 +263,12 @@ public class EnrolmentController {
 		for(Long deleteId : registeredIds){
 			// 3-2. update Invoice
 			double price = bookService.getPrice(deleteId);
-			invo.setAmount(invo.getAmount() - price);
+			existingInvo.setAmount(existingInvo.getAmount() - price);
 			// 3-3. remove Material by bookId & invoiceId - Invoice will be automatically upated
-			materialService.deleteMaterialByInvoiceAndBook(invo.getId(), deleteId);
+			materialService.deleteMaterialByInvoiceAndBook(existingInvo.getId(), deleteId);
 		}
 		// 1-4. add MaterialDTO to return list
-		Set<Material> materials = invo.getMaterials();
+		Set<Material> materials = existingInvo.getMaterials();
 		for (Material material : materials) {
 			dtos.add(new MaterialDTO(material));
 		}
@@ -642,6 +648,11 @@ public class EnrolmentController {
 			newInvo.setStudentId(studentId);
 			invoiceService.addInvoice(newInvo);
 
+			// 3-1-1. create InvoiceHistory
+			InvoiceHistory history = new InvoiceHistory();
+			history.setInvoice(newInvo);
+			invoiceHistoryService.addInvoiceHistory(history);
+
 			// 3-2. create new Enrolment
 			for(EnrolmentDTO data : formData){
 
@@ -672,6 +683,8 @@ public class EnrolmentController {
 				enrolment.setClazz(clazz);
 				enrolment.setStudent(student);
 				enrolment.setInvoice(newInvo);
+				// add invoice history
+				enrolment.setInvoiceHistory(history);
 				
 				// 3-2-4. save new Enrolment - Invoice will be automatically updated
 				enrolmentService.addEnrolment(enrolment);
@@ -702,7 +715,11 @@ public class EnrolmentController {
 					}
 					//////////////////////////////////////////////////////////
 				}
-			}
+			} // end of processing new enrolments
+			// update invoice history's amount & paid amount
+			history.setAmount(newInvo.getAmount());
+			history.setPaidAmount(newInvo.getPaidAmount());
+			invoiceHistoryService.updateInvoiceHistory(history, history.getId());
 
 		}else{ // if invoice exists, get last active Invoice
 			Invoice existingInvo = invoiceService.getLastActiveInvoiceByStudentId(studentId);

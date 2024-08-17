@@ -993,7 +993,36 @@ function cellEnterKeyUpdateTotalBasket(cell){
 	});
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Clear exsiting enrolment 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function removeAllInBasket(){
+	// get id from 'formId'
+	const studentId = $('#formId').val();
+	// check if last invoice is full paid or not
+	$.ajax({
+		url: '${pageContext.request.contextPath}/invoice/last/' + studentId,
+		method: 'GET',
+		success: function(response) {
+			// console.log(response);
+			// Handle the response
+			if(response === false){
+				$('#warning-alert .modal-body').text('Last invoice is not fully paid');
+				$('#warning-alert').modal('toggle');
+				return;
+			}else{
+				// clean up enrolments in basket table
+				clearEnrolmentBasket();
+				// clean up invoice table
+				clearInvoiceTable();
+			}
+		},
+		error: function(xhr, status, error) {
+			// Handle the error
+			console.error(error);
+		}
+	});
+}
 </script>
 
 	<style>
@@ -1065,10 +1094,13 @@ function cellEnterKeyUpdateTotalBasket(cell){
 							<option value="20">VCE</option>
 						</select>
 					</div>
-					<div class="offset-md-8">
+					<div class="offset-md-6">
 					</div>
 					<div class="col-md-2">
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
+					</div>
+					<div class="col-md-2">
+						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Clear</button>
 					</div>
 				</div>
 			</div>

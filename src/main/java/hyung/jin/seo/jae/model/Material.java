@@ -38,6 +38,10 @@ public class Material{ // bridge table between Invoice & Book
 	@ManyToOne
 	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Material_Invoice"))
 	private Invoice invoice;
+
+	@ManyToOne
+	@JoinColumn(name = "invoiceHistoryId", foreignKey = @ForeignKey(name = "FK_Material_InvoiceHistory"))
+	private InvoiceHistory invoiceHistory;
 	
 	@ManyToOne
 	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_Material_Book"))
@@ -51,5 +55,8 @@ public class Material{ // bridge table between Invoice & Book
 
 	@Column(length = 100)
     private String info;
+
+	@Column
+	private boolean old;
 
 }
