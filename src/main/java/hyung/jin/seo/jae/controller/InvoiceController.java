@@ -35,6 +35,7 @@ import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
+import hyung.jin.seo.jae.model.InvoiceHistory;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Outstanding;
 import hyung.jin.seo.jae.model.Payment;
@@ -43,6 +44,7 @@ import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EmailService;
 import hyung.jin.seo.jae.service.EnrolmentService;
+import hyung.jin.seo.jae.service.InvoiceHistoryService;
 import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
@@ -58,6 +60,9 @@ public class InvoiceController {
 
 	@Autowired
 	private InvoiceService invoiceService;
+
+	@Autowired
+	private InvoiceHistoryService invoiceHistoryService;
 
 	@Autowired
 	private EnrolmentService enrolmentService;
@@ -174,7 +179,7 @@ public class InvoiceController {
 
 	// get payment history
 	@GetMapping("/receiptInfo")
-	public String receiptHistory(@RequestParam("studentId") String studentId, @RequestParam("invoiceId") String invoiceId, @RequestParam("paymentId") String paymentId, @RequestParam("branchCode") String branchCode, HttpSession session) {
+	public String receiptHistory(@RequestParam("invoiceId") String invoiceId, @RequestParam("invoiceHistoryId") String invoiceHistoryId, @RequestParam("paymentId") String paymentId, @RequestParam("branchCode") String branchCode, HttpSession session) {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
@@ -186,8 +191,9 @@ public class InvoiceController {
 		List<String> headerGrade = new ArrayList<String>();
 		String headerDueDate = JaeUtils.getToday();
 
-		//3. bring to EnrolmentDTO
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(Long.parseLong(invoiceId));
+		//3. bring to EnrolmentDTO - get list by invoice history id
+		// List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(Long.parseLong(invoiceId));
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceHistory(Long.parseLong(invoiceHistoryId));
 		for(EnrolmentDTO enrol : enrols){
 			// if free online course, skip it
 			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
@@ -227,8 +233,9 @@ public class InvoiceController {
 		header.setInfo(String.join(", ", headerGrade));
 		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
 		
-		// 5. bring to MaterialDTO - bring materials by invoice id from Book_Invoice table
-		materials = materialService.findMaterialByInvoice(Long.parseLong(invoiceId));	
+		// 5. bring to MaterialDTO - bring materials by invoice id from Book_Invoice table, list will be brought by invoice history id
+		//materials = materialService.findMaterialByInvoice(Long.parseLong(invoiceId));	
+		materials = materialService.findMaterialByInvoiceHistory(Long.parseLong(invoiceHistoryId));
 		// 5-1. set MaterialDTO objects into session for payment receipt
 		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
 		
@@ -263,6 +270,9 @@ public class InvoiceController {
 		double paidAmount = formData.getAmount();
 		// 2. get Invoice
 		Invoice invoice = invoiceService.getInvoice(invoId);
+		// 2-1. get invoice history
+		InvoiceHistory history = invoiceHistoryService.getLastInvoiceHistory(invoId);
+
 		// 3. check if full paid or not
 		double amount = invoice.getAmount();
 		boolean fullPaid =  (amount - paidAmount) <= 0;
@@ -274,6 +284,12 @@ public class InvoiceController {
 		invoice.setPaidAmount(paidAmount + invoice.getPaidAmount());
 		invoice.addPayment(paid);
 		invoice.setPaymentDate(LocalDate.now());
+		// 5-1. update InvoiceHistory
+		history.setPaidAmount(invoice.getPaidAmount());
+		history.setAmount(invoice.getAmount());
+		history.addPayment(payment);
+
+
 		// 6. Create MoneyDTO for header
 		MoneyDTO header = new MoneyDTO();
 		List<String> headerGrade = new ArrayList<String>();
@@ -289,6 +305,8 @@ public class InvoiceController {
 		// 7-1 if full paid, return EnrolmentDTO list
 		if(fullPaid){
 			invoiceService.updateInvoice(invoice, invoId);
+			// 7-1-1. update InvoiceHistory will be done automatically
+			// invoiceHistoryService.updateInvoiceHistory(history, history.getId());
 			// 8-1. bring to EnrolmentDTO
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
@@ -352,6 +370,10 @@ public class InvoiceController {
 			// 9-2. add Outstanding to Invoice
 			invoice.addOutstanding(outstanding);
 			invoiceService.updateInvoice(invoice, invoId);
+			// 9-2-1. update InvoiceHistory is done automatically
+			// invoiceHistoryService.addInvoiceHistory(history, history.getId());
+
+
 			// 10-2. bring to EnrolmentDTO
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
 			for(EnrolmentDTO enrol : enrols){
@@ -724,4 +746,18 @@ public class InvoiceController {
 		return "overdueListPage";
 	}
 
+	// register new invoice
+	@GetMapping("/last/{studentId}")
+	@ResponseBody
+	public boolean lastInvoiceChecl(@PathVariable("studentId") Long studentId) {	
+		// 1. get latest invoice by student id
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);
+		// 2. check full paid or not
+		double amount = invoice.getAmount();
+		double paidAmount = invoice.getPaidAmount();
+		boolean fullPaid =  (amount - paidAmount) <= 0;
+		// 3. return info
+		return fullPaid;
+	}
+	
 }

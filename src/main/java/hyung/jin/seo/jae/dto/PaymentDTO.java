@@ -21,6 +21,8 @@ public class PaymentDTO extends MoneyDTO{
 
 	private String invoiceId;
 
+	private String invoiceHistoryId;
+
 	private List enrols;
 
 	private double upto;
@@ -43,7 +45,8 @@ public class PaymentDTO extends MoneyDTO{
 		this.method = (obj[3]!=null) ? String.valueOf(obj[3]) : ""; // method
 		this.info = (obj[4]!=null) ? String.valueOf(obj[4]) : ""; // info
 		this.registerDate = (obj[5]!=null) ? String.valueOf(obj[5]) : null; // registerDate
-		this.invoiceId = (obj[6]!=null) ? String.valueOf(obj[6]) : ""; // invoiceId
+		this.invoiceId = (obj[6]!=null) ? String.valueOf(obj[6]) : "0"; // invoiceId
+		this.invoiceHistoryId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0"; // invoiceHistoryId
 	}
 
 	public PaymentDTO(long id, double amount, double total, String method, String info, LocalDate registerDate){

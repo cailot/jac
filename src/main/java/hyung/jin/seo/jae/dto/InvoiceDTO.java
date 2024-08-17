@@ -24,7 +24,7 @@ public class InvoiceDTO extends MoneyDTO{
 
 	private double paidAmount;
 
-	private String enrolmentId;
+	// private String enrolmentId;
 
 	public InvoiceDTO(Invoice invoice){
 		this.id = String.valueOf(invoice.getId());

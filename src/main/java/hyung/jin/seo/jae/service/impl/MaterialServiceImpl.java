@@ -58,6 +58,18 @@ public class MaterialServiceImpl implements MaterialService {
 	}
 
 	@Override
+	public List<MaterialDTO> findMaterialByInvoiceHistory(Long id) {
+		List<MaterialDTO> dtos = new ArrayList<>();
+		try{
+			dtos = materialRepository.findMaterialByInvoiceHistoryId(id);
+		}catch(Exception e){
+			System.out.println("No material found");
+		}
+		// materialRepository.findMaterialByInvoiceId(id);
+		return dtos;
+	}
+
+	@Override
 	public Material getMaterial(Long id) {
 		Material material = null;
 		try{

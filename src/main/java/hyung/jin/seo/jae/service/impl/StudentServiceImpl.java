@@ -109,6 +109,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	@Transactional
 	public Student addStudent(Student std) {
 		//String pwd = std.getPassword();
 		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -210,6 +211,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteStudent(Long id) {
 		try {
 			studentRepository.deleteById(id);

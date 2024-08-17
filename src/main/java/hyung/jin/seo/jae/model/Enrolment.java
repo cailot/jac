@@ -44,7 +44,11 @@ public class Enrolment{ // bridge table between Student & Class
 	@ManyToOne
 	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Enrolment_Invoice"))
 	private Invoice invoice;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "invoiceHistoryId", foreignKey = @ForeignKey(name = "FK_Enrolment_InvoiceHistory"))
+	private InvoiceHistory invoiceHistory;
+
 	@CreationTimestamp
     private LocalDate registerDate;
 
