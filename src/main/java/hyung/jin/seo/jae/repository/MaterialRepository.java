@@ -17,6 +17,9 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	@Query("SELECT new hyung.jin.seo.jae.dto.MaterialDTO(m.id, m.registerDate, m.paymentDate, m.info, m.book.id, m.book.name, m.book.price, m.invoice.id) FROM Material m WHERE m.invoice.id = ?1") 
 	List<MaterialDTO> findMaterialByInvoiceId(Long invoiceId);
 
+	@Query("SELECT new hyung.jin.seo.jae.dto.MaterialDTO(m.id, m.registerDate, m.paymentDate, m.info, m.book.id, m.book.name, m.book.price, m.invoice.id) FROM Material m WHERE m.invoiceHistory.id = ?1") 
+	List<MaterialDTO> findMaterialByInvoiceHistoryId(Long invoiceHistoryId);
+
 	@Query("SELECT new hyung.jin.seo.jae.dto.MaterialDTO(m.id, m.registerDate, m.paymentDate, m.info, m.book.id, m.book.name, m.book.price, m.invoice.id) FROM Material m WHERE m.invoice.id = ?1 AND m.book.id = ?2") 
 	MaterialDTO findMaterialByInvoiceIdAndBookId(Long invoiceId, Long bookId);
 

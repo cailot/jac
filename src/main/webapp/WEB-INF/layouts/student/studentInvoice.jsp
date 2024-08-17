@@ -258,12 +258,12 @@ function getInvoice(studentId) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Payment History in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
+function displayPaymentHistory(studentId, firstName, lastName, invoiceId, invoiceHistoryId, paymentId){
 	var branch = window.branch;
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
+	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&invoiceHistoryId=' + invoiceHistoryId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
 	var win = window.open(url, '_blank');
 	win.focus();
 }
@@ -504,7 +504,7 @@ function clearStudentInfo() {
 													</c:choose>
 												</td>																						
 												<td class="text-center align-middle">
-													<i class="bi bi-calculator text-success hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
+													<i class="bi bi-calculator text-success hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.invoiceHistoryId}', '${payment.id}')"></i>
 												</td> 
 											</tr>
 										</c:forEach>

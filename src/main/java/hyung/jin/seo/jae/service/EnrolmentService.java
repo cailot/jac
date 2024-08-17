@@ -15,6 +15,9 @@ public interface EnrolmentService {
 	// list enrolments by invoice Id
 	List<EnrolmentDTO> findEnrolmentByInvoice(Long invoiceId);
 
+	// list enrolments by invoice history Id
+	List<EnrolmentDTO> findEnrolmentByInvoiceHistory(Long invoiceHistoryId);
+
 	// list enrolments by clazz Id
 	List<EnrolmentDTO> findEnrolmentByClazz(Long claszzId);
 
