@@ -1100,7 +1100,7 @@ function removeAllInBasket(){
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
 					</div>
 					<div class="col-md-2">
-						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Clear</button>
+						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Start New</button>
 					</div>
 				</div>
 			</div>

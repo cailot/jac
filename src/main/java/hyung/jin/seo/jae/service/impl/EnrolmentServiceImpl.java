@@ -212,6 +212,17 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	}
 
 	@Override
+	public List<Enrolment> getEnrolmentByInvoice(Long invoiceId) {
+		List<Enrolment> dtos = new ArrayList<>();
+		try {
+			dtos = enrolmentRepository.getEnrolmentByInvoiceId(invoiceId);
+		} catch (Exception e) {
+			System.out.println("No enrolment found");
+		}
+		return dtos;
+	}
+
+	@Override
 	public List<EnrolmentDTO> findEnrolmentByInvoiceHistory(Long invoiceHistoryId) {
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		try {
@@ -221,7 +232,6 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		}
 		return dtos;
 	}
-
 
 	@Override
 	public List<Long> findEnrolmentIdByInvoiceId(Long invoiceId) {
@@ -233,6 +243,17 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		}
 		return enrolmentIds;
 	}
+
+	// @Override
+	// public List<Long> findEnrolmentByInvoiceId(Long invoiceId) {
+	// 	List<Long> enrolmentIds = new ArrayList<>();
+	// 	try {
+	// 		enrolmentIds = enrolmentRepository.findEnrolmentIdByInvoiceId(invoiceId);
+	// 	} catch (Exception e) {
+	// 		System.out.println("No enrolment found");
+	// 	}
+	// 	return enrolmentIds;
+	// }
 
 	@Override
 	public Long findLatestInvoiceIdByStudent(Long studentId) {
