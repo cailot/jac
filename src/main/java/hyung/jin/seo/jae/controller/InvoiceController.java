@@ -262,6 +262,121 @@ public class InvoiceController {
 	public List makePayment(@PathVariable("studentId") Long studentId, @PathVariable("branchCode") String branchCode, @RequestBody PaymentDTO formData, HttpSession session) {
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
+
+		// 2. create basket
+		List dtos = new ArrayList();
+		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
+		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
+		
+		// 3. get lastest invoice id by student id
+		Long invoId = invoiceService.getInvoiceIdByStudentId(studentId);
+		double paidAmount = formData.getAmount();
+		
+		// 4. get Invoice
+		Invoice invoice = invoiceService.getInvoice(invoId);
+		// 5. get invoice history
+		InvoiceHistory history = invoiceHistoryService.getLastInvoiceHistory(invoId);
+
+		// 6. check total amount in invoice
+		double amount = invoice.getAmount();
+		
+		// 7. create payment
+		Payment payment = formData.convertToPayment();
+		payment.setTotal(amount);
+		Payment paid = paymentService.addPayment(payment);	
+		
+		// 8. update Invoice
+		invoice.setPaidAmount(paidAmount + invoice.getPaidAmount());
+		invoice.addPayment(paid);
+		invoice.setPaymentDate(LocalDate.now());
+		// 9. update InvoiceHistory
+		history.setPaidAmount(invoice.getPaidAmount());
+		history.setAmount(invoice.getAmount());
+		history.addPayment(payment);
+		invoiceService.updateInvoice(invoice, invoId);
+		// update InvoiceHistory is done automatically
+
+		// 10. payment note based on branch code
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
+
+		// 11. Create MoneyDTO for header
+		MoneyDTO header = new MoneyDTO();
+		List<String> headerGrade = new ArrayList<String>();
+		String headerDueDate = JaeUtils.getToday();
+		
+		// 12. bring to EnrolmentDTO
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
+		for(EnrolmentDTO enrol : enrols){
+			// if free online course, skip it
+			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			if(isFreeOnline) continue;
+		
+			enrol.setInvoiceId(String.valueOf(invoId));				
+			// 12-1. set period of enrolment to extra field
+			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
+			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
+			enrol.setExtra(start + " ~ " + end);
+
+			// 12-2. set headerGrade
+			if(!headerGrade.contains(enrol.getGrade())){
+				headerGrade.add(enrol.getGrade().toUpperCase());
+			}
+			// 12-3. set earliest start date to headerDueDate
+			try {
+				if(JaeUtils.isEarlier(start, headerDueDate)){
+					headerDueDate = start;
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			// 12-4. add to dtos
+			enrolments.add(enrol);
+		}
+
+		// 13. set EnrolmentDTO objects into session for payment receipt
+		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
+			
+		// 14. bring to MaterialDTO - bring materials by invoice id from Book_Invoice table
+		materials = materialService.findMaterialByInvoice(invoId);
+		
+		// 15. set MaterialDTO payment date
+		for(MaterialDTO material : materials){
+			material.setPaymentDate(JaeUtils.getToday());
+			// material update
+			Material mat = materialService.getMaterial(Long.parseLong(material.getId()));
+			mat.setPaymentDate(LocalDate.now());
+			materialService.updateMaterial(mat, Long.parseLong(material.getId()));
+		}
+		
+		// 16. set MaterialDTO objects into session for payment receipt
+		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+			
+		// 17. get payment
+		List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoId);
+		
+		// 18. set OutstandingDTO objects into session for payment receipt
+		session.setAttribute(JaeConstants.PAYMENT_OUTSTANDINGS, payments);
+
+		// 19. Header Info - Due Date & Grade
+		header.setRegisterDate(headerDueDate);
+		header.setInfo(String.join(", ", headerGrade));
+		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
+			
+		// 20. return
+		dtos.addAll(enrolments);
+		dtos.addAll(materials);
+		dtos.addAll(payments);
+		return dtos;
+	}
+
+	@PostMapping("/payment1/{studentId}/{branchCode}")
+	@ResponseBody
+	public List makePayment1(@PathVariable("studentId") Long studentId, @PathVariable("branchCode") String branchCode, @RequestBody PaymentDTO formData, HttpSession session) {
+		// 1. flush session from previous payment
+		JaeUtils.clearSession(session);
 		List dtos = new ArrayList();
 		List<EnrolmentDTO> enrolments = new ArrayList<EnrolmentDTO>();
 		List<MaterialDTO> materials = new ArrayList<MaterialDTO>();
@@ -698,7 +813,7 @@ public class InvoiceController {
 			materialService.updateMaterial(material, dataId);
 			// 4-2. return flag
 			return ResponseEntity.ok("Material Info Update Success");
-		}else if(JaeConstants.PAYMENT.equalsIgnoreCase(dataType)){
+		}else if((JaeConstants.PAYMENT.equalsIgnoreCase(dataType))||(JaeConstants.FULL_PAID.equalsIgnoreCase(dataType))){
 			// 2-3. get Payment
 			Payment payment = paymentService.findPaymentById(dataId);
 			// 3-3. update Payment
