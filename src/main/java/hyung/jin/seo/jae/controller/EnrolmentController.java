@@ -22,6 +22,7 @@ import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.OutstandingDTO;
+import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
@@ -39,6 +40,7 @@ import hyung.jin.seo.jae.service.InvoiceHistoryService;
 import hyung.jin.seo.jae.service.InvoiceService;
 import hyung.jin.seo.jae.service.MaterialService;
 import hyung.jin.seo.jae.service.OutstandingService;
+import hyung.jin.seo.jae.service.PaymentService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
@@ -68,6 +70,9 @@ public class EnrolmentController {
 	private InvoiceHistoryService invoiceHistoryService;
 
 	@Autowired
+	private PaymentService paymentService;
+
+	@Autowired
 	private BookService bookService;
 
 	@Autowired
@@ -92,7 +97,10 @@ public class EnrolmentController {
 		
 		for(Long invoiceId : invoiceIds){
 			boolean isStillActive = false;
-			boolean isInvoicePaid = invoiceService.isPaidInvoice(invoiceId);
+			// boolean isFullPaid = invoiceService.isFullPaidInvoice(invoiceId);
+			double totalAmount = invoiceService.getInvoiceTotalAmount(invoiceId);
+			double paidAmount = invoiceService.getPaidAmount(invoiceId);
+			boolean isFullPaid = (totalAmount == paidAmount);
 
 			// 1. get enrolments by invoice id
 			List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
@@ -104,7 +112,7 @@ public class EnrolmentController {
 				// 2. check if enrolment is active or not
 				boolean isActive = currentYear >= enrol.getYear() && currentWeek <= enrol.getEndWeek();
 				// if full paid, set extra as paid
-				if(isInvoicePaid){
+				if(isFullPaid){
 					enrol.setExtra(JaeConstants.FULL_PAID);
 				}
 				if(isActive){
@@ -112,30 +120,32 @@ public class EnrolmentController {
 					dtos.add(enrol);
 				}else{ // if not active, check if fully paid or not
 					// 2-1. if not fully paid, set Overdue to extra
-					if(!isInvoicePaid){
+					if(!isFullPaid){
 						enrol.setExtra(JaeConstants.OVERDUE);
 						dtos.add(enrol);
 					}
 				}
 			}
-			if((isStillActive) || (!isInvoicePaid)){
-				// 3. get materials by invoice id and add to list dtos
-				List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
-				for(MaterialDTO material : materials){
-					dtos.add(material);
-				}
-				// 4. get outstandings by invoice id and add to list dtos
-				List<OutstandingDTO> stands = outstandingService.getOutstandingtByInvoice(invoiceId);
-				for(OutstandingDTO stand : stands){
-					// update remaining
-					double totalPaid = outstandingService.getTotalPaidById(Long.parseLong(stand.getId()), invoiceId);
-					stand.setRemaining(stand.getAmount()-totalPaid);
-					dtos.add(stand);
-				}
+
+				
+			// 3. get materials by invoice id and add to list dtos
+			List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
+			for(MaterialDTO material : materials){
+				dtos.add(material);
 			}
+			
+			// 4. get payments by invoice id and add to list dtos
+			List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoiceId);
+			for(PaymentDTO payment : payments){
+				// payment.setTotal(totalAmount); // override total as total amount in invoice
+				double totalPaid = paymentService.getTotalPaidById(Long.parseLong(payment.getId()), invoiceId);
+				payment.setUpto(totalPaid);
+				dtos.add(payment);
+			}
+
 		}
 
-		// 4. return dtos mixed by enrolments and outstandings
+		// 5. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}
 
@@ -193,69 +203,41 @@ public class EnrolmentController {
 	@ResponseBody
 	public List<MaterialDTO> associateBook(@PathVariable Long studentId, @RequestBody MaterialDTO[] formData) {
 		List<MaterialDTO> dtos = new ArrayList<>();
-		// 1. check if formData is empty or not
-		// 1-1. if empty, it means delete existing Materials then return empty list
-		if((formData==null)||(formData.length==0)){
-			// 1-1-1. get Invoice
-			Invoice invo = invoiceService.getLastInvoiceByStudentId(studentId);
-			// 1-1-2. get all registered Materials
-			List<MaterialDTO> materials = materialService.findMaterialByInvoice(invo.getId());
-			for(MaterialDTO material : materials){
-				// 1-1-3. delete Materials
-				double price = material.getPrice();
-				invo.setAmount(invo.getAmount() - price);
-				materialService.deleteMaterial(Long.parseLong(material.getId()));
-			}
-			// 1-1-4. return empty list
-			return dtos;
+		
+		// 1. get Invoice
+		Invoice existingInvo = invoiceService.getLastInvoiceByStudentId(studentId);
+		InvoiceHistory existingInvoHistory = invoiceHistoryService.getLastInvoiceHistory(existingInvo.getId());
+		
+		// 2. remove existing Materials
+		if(existingInvo!=null){
+			detachBook(existingInvo);	
 		}
 
-		// 1-2. if not, add or update(skip) Materials
-		// 1-2-1. get Invoice
-		//Invoice invo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
-		Invoice existingInvo = invoiceService.getLastInvoiceByStudentId(studentId);
-		// 1-2-2. bring all registered Book - bookId & invoiceId
-		List<Long> registeredIds = materialService.findBookIdByInvoiceId(existingInvo.getId());
+		// 3. register Books
 		for(MaterialDTO material : formData){
-			// 1-2-3. check if formData has Id or not. if there is no id it means new Material
-			if(StringUtils.isBlank(material.getId())){
-				// 1-2-3-1. get Book
-				Book book = bookService.getBook(Long.parseLong(material.getBookId()));
-				// 1-2-3-2. update invoice amount
-				existingInvo.setAmount(existingInvo.getAmount() + book.getPrice());
-				// 1-2-3-3. create Material
-				Material newMaterial = new Material();
-				newMaterial.setBook(book);
-				newMaterial.setInvoice(existingInvo);
-				// newMaterial.setInvoiceHistory(null);
-				// 1-2-3-4. save Material - Invoice will be automatically updated
-				newMaterial = materialService.addMaterial(newMaterial);
-			}
-			// 1-2-4. if there is id, it means existing Material so no need to update, simply remove from registeredIds
-			else{
-				registeredIds.remove(Long.parseLong(material.getBookId()));
-			}	
+			// 3-1. get book
+			Book book = bookService.getBook(Long.parseLong(material.getBookId()));
+			// 3-2. update invoice amount
+			existingInvo.setAmount(existingInvo.getAmount() + book.getPrice());
+			// 3-3. create Material
+			Material newMaterial = new Material();
+			newMaterial.setBook(book);
+			newMaterial.setInvoice(existingInvo);
+			newMaterial.setInvoiceHistory(existingInvoHistory);
+			// 3-4. save Material - Invoice/InvoiceHistory will be automatically updated
+			newMaterial = materialService.addMaterial(newMaterial);
+			MaterialDTO dto = new MaterialDTO(newMaterial);
+			dtos.add(dto);
 		}
-		// 1-3. if bookId is in the list but no passed then delete - delete book
-		for(Long deleteId : registeredIds){
-			// 3-2. update Invoice
-			double price = bookService.getPrice(deleteId);
-			existingInvo.setAmount(existingInvo.getAmount() - price);
-			// 3-3. remove Material by bookId & invoiceId - Invoice will be automatically upated
-			materialService.deleteMaterialByInvoiceAndBook(existingInvo.getId(), deleteId);
-		}
-		// 1-4. add MaterialDTO to return list
-		Set<Material> materials = existingInvo.getMaterials();
-		for (Material material : materials) {
-			dtos.add(new MaterialDTO(material));
-		}
+
+		// 4. return MaterialDTO list
 		return dtos;
 	}
 
-	@PostMapping("/associateOutstanding/{studentId}")
+	@PostMapping("/associatePayment/{studentId}")
 	@ResponseBody
-	public List<OutstandingDTO> associateOutstanding(@PathVariable Long studentId) {
-		List<OutstandingDTO> dtos = new ArrayList<>();
+	public List<PaymentDTO> associateOutstanding(@PathVariable Long studentId) {
+		List<PaymentDTO> dtos = new ArrayList<>();
 		// 1. get Invoice
 		Invoice invo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		// 2. check if invoice has owing amount
@@ -263,342 +245,15 @@ public class EnrolmentController {
 		// 3. if invoice is already paid or null, return empty list
 		if(!isValidInvoice) return dtos;
 		// 4. bring all related Outstandings
-		dtos = outstandingService.getOutstandingtByInvoice(invo.getId());
+		dtos = paymentService.getPaymentByInvoice(invo.getId());
 		// 5. update remaining amount
-		for(OutstandingDTO dto : dtos){
-			double totalPaid = outstandingService.getTotalPaidById(Long.parseLong(dto.getId()), invo.getId());
-			dto.setRemaining(dto.getAmount()-totalPaid);
-		}
+		// for(PaymentDTO dto : dtos){
+		// 	double totalPaid = outstandingService.getTotalPaidById(Long.parseLong(dto.getId()), invo.getId());
+		// 	dto.setRemaining(dto.getAmount()-totalPaid);
+		// }
 		// 6. return OutstandingDTO list
 		return dtos;
 	}
-
-
-	/*
-
-	@PostMapping("/associateClazz/{studentId}")
-	@ResponseBody
-	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
-		
-		List<EnrolmentDTO> dtos = new ArrayList<>();
-		// 1. check Invoice available
-		boolean isLastInvoice = false;
-		// 2. get latest Invoice by studentId
-		Invoice invo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
-		// 3. check whether Invoice is already created and still available
-		if(invo!=null){
-		// if((invo!=null) && (invo.getAmount() > invo.getPaidAmount())){
-			isLastInvoice = true;
-		}
-		// 4. get Student to associate to Enrolment later
-		Student student = studentService.getStudent(studentId);
-		// 5. if no Invoice or Invoice is already paid, create new Invoice; otherwise use existing Invoice
-		Invoice invoice = null;
-		if(isLastInvoice){
-			invoice = invo;
-		}else{
-			Invoice empty = new Invoice();
-			empty.setStudentId(studentId);
-			invoice = invoiceService.addInvoice(empty);
-		}		
-		// 6. get registered enrolments by invoice id
-		List<Long> registeredIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
-
-		for(EnrolmentDTO data : formData){
-			// if Invoice is already created and still available, use it
-			if(isLastInvoice){
-				// check class already belong to Invoice
-				// Invoice already created but additional Enrolment (ADD)
-				if(StringUtils.isEmpty(data.getId())){
-					// 1. create new Enrolment
-					Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-					// 2. update Invoice amount
-					// check discount is % or amount value
-					String discount =StringUtils.defaultString(data.getDiscount(), "0");
-					double discountAmount = 0;
-					if(discount.contains("%")){
-						discountAmount = (((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
-					}else{
-						discountAmount = Double.parseDouble(discount);
-					}
-					double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - discountAmount);
-					int credit = data.getCredit();
-					// double discount = data.getDiscount();
-					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
-					invoice.setCredit(invoice.getCredit() + credit);
-					invoice.setDiscount(invoice.getDiscount() + discountAmount);
-					// invoiceService.updateInvoice(invoice, invoice.getId());
-					// 3. associate new Enrolment with Clazz,Student,Invoice
-					Enrolment enrolment = new Enrolment();
-					int startWeek = data.getStartWeek();
-					int endWeek = data.getEndWeek();
-					enrolment.setStartWeek(startWeek);
-					enrolment.setEndWeek(endWeek);
-					enrolment.setCredit(data.getCredit());
-					enrolment.setDiscount(data.getDiscount());
-					enrolment.setClazz(clazz);
-					enrolment.setStudent(student);
-					enrolment.setInvoice(invoice);
-
-					// 4. save new Enrolment - Invoice will be automatically updated
-					enrolmentService.addEnrolment(enrolment);
-					data.setExtra(JaeConstants.NEW_ENROLMENT);
-					data.setId(enrolment.getId()+"");
-					data.setInvoiceId(invoice.getId()+"");
-					// update day to code
-					data.setDay(clazzService.getDay(clazz.getId()));
-
-					// 5. put into List<EnrolmentDTO>
-					dtos.add(data);
-
-					// 6. if onlline class, skip attendance; otherwise create attendance	
-					if(!data.isOnline()){
-						///////////////// Attendance ////////////////////////
-						int academicYear = clazzService.getAcademicYear(clazz.getId());
-						String clazzDay = clazzService.getDay(clazz.getId());
-						for(int i = startWeek; i <= endWeek; i++){
-							Attendance attendance = new Attendance();
-							attendance.setWeek(i+"");
-							attendance.setStudent(student);
-							attendance.setClazz(clazz);
-							attendance.setDay(clazzDay);
-							attendance.setStatus(JaeConstants.ATTEND_OTHER);
-							
-							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-							attendance.setAttendDate(attendDate);
-							
-							attendanceService.addAttendance(attendance);
-						}
-						//////////////////////////////////////////////////////////
-					}
-				}else{ // Invoice already created and registered Enrolment, update Enrolment (UPDATE)
-					// 1. get existing Enrolment
-					Enrolment existing = enrolmentService.getEnrolment(Long.parseLong(data.getId()));
-					// 2. update invoice amount (extract existing amount, credit, discount)
-					int existStart = existing.getStartWeek();
-					int existEnd = existing.getEndWeek();
-					int existCredit = existing.getCredit();
-					// check discount is % or amount value
-					String existDiscount =StringUtils.defaultString(existing.getDiscount(), "0");
-					double existDCAmount = 0;
-					if(existDiscount.contains("%")){
-						existDCAmount = (((existEnd-existStart+1)-existCredit) * data.getPrice()) * (Double.parseDouble(existDiscount.replace("%", ""))/100);
-					}else{
-						existDCAmount = Double.parseDouble(existDiscount);
-					}
-					double existTotal = ((((existEnd-existStart+1)-existCredit) * data.getPrice()) - existDCAmount);
-					// extract existing values <MINUS>
-					invoice.setCredit(invoice.getCredit() - existCredit);
-					invoice.setDiscount(invoice.getDiscount() - existDCAmount);
-					invoice.setAmount(invoice.getAmount() - existTotal);
-					// update with new values <PLUS>
-					int startWeek = data.getStartWeek();
-					int endWeek = data.getEndWeek();
-					int credit = data.getCredit();
-					// check discount is % or amount value
-					String discount =StringUtils.defaultString(data.getDiscount(), "0");
-					double discountAmount = 0;
-					if(discount.contains("%")){
-						discountAmount = (((endWeek-startWeek+1)-credit) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
-					}else{
-						discountAmount = Double.parseDouble(discount);
-					}
-					double enrolmentPrice = ((((endWeek-startWeek+1)-credit) * data.getPrice()) - discountAmount);
-					invoice.setCredit(invoice.getCredit() + credit);
-					invoice.setDiscount(invoice.getDiscount() + discountAmount);
-					invoice.setAmount(invoice.getAmount() + enrolmentPrice);
-					// 3. update Enrolment - Invoice will be automatically updated
-					existing.setStartWeek(startWeek);
-					existing.setEndWeek(endWeek);
-					existing.setCredit(credit);
-					existing.setDiscount(discount);
-					enrolmentService.updateEnrolment(existing, existing.getId());
-					// update day to code
-					data.setDay(clazzService.getDay(existing.getClazz().getId()));
-					// 4. put into List<EnrolmentDTO>
-					dtos.add(data);
-					// 5. remove enrolmentId from enrolmentIds
-					registeredIds.remove(existing.getId());
-
-					// 6. if onlline class, skip attendance; otherwise update attendance
-					if(!data.isOnline()){
-						///////////////// Attendance ////////////////////////
-						Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-						int academicYear = clazzService.getAcademicYear(clazz.getId());
-						String clazzDay = clazzService.getDay(clazz.getId());
-						List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazz.getId());
-						int minValue = Integer.parseInt(attendances.get(0).getWeek());
-						int maxValue = Integer.parseInt(attendances.get(attendances.size()-1).getWeek());
-						LocalDate today = LocalDate.now();		
-						for(AttendanceDTO attendance : attendances){
-							// check attendDate is later than today
-							LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-							if(attendDate.isAfter(today)){
-								// update attendance
-								int week = Integer.parseInt(attendance.getWeek());
-								// if week is before startWeek or after endWeek, delete attendance
-								if((week < startWeek) || (week > endWeek)){
-									long attendId = Long.parseLong(attendance.getId());
-									attendanceService.deleteAttendance(attendId);
-								}							
-							}
-						}
-						// add new attendance if not exist
-						for(int i = startWeek; i <= endWeek; i++){
-							// check week does not belong to min/max value, then add attendance
-							if((i < minValue) || (i > maxValue)){
-								Attendance attendance = new Attendance();
-								attendance.setWeek(i+"");
-								attendance.setStudent(student);
-								attendance.setClazz(clazz);
-								attendance.setDay(clazzDay);
-								attendance.setStatus(JaeConstants.ATTEND_OTHER);
-								LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-								attendance.setAttendDate(attendDate);
-								attendanceService.addAttendance(attendance);
-							}
-						}
-						//////////////////////////////////////////////////////////
-					}
-
-				}
-
-			}else{ // if no Invoice or Invoice is already paid, create new Invoice (ADD)
-				
-				///////// check if enrolment is fully paid from previous invoice ///////////
-				boolean isAlreadyFullPaid = StringUtils.equalsIgnoreCase(data.getExtra(), JaeConstants.FULL_PAID);
-				// if so, no need to create new enrolment, skip it
-				if(isAlreadyFullPaid) continue;
-				/////////////
-
-				// 1. create new Enrolment
-				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
-				// 2. update Invoice amount
-				// check discount is % or amount value
-				String discount =StringUtils.defaultString(data.getDiscount(), "0");
-				double discountAmount = 0;
-				if(discount.contains("%")){
-					discountAmount = (((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
-				}else{
-					discountAmount = Double.parseDouble(discount);
-				}
-				double enrolmentPrice = ((((data.getEndWeek()-data.getStartWeek()+1)-data.getCredit()) * data.getPrice()) - discountAmount);
-				int credit = data.getCredit();
-				// double discount = data.getDiscount();
-				invoice.setAmount(invoice.getAmount() + enrolmentPrice);
-				invoice.setCredit(invoice.getCredit() + credit);
-				invoice.setDiscount(invoice.getDiscount() + discountAmount);
-				// invoiceService.updateInvoice(invoice, invoice.getId());
-				// 3. associate new Enrolment with Clazz,Student,Invoice
-				Enrolment enrolment = new Enrolment();
-				int startWeek = data.getStartWeek();
-				int endWeek = data.getEndWeek();
-				enrolment.setStartWeek(startWeek);
-				enrolment.setEndWeek(endWeek);
-				enrolment.setCredit(data.getCredit());
-				enrolment.setDiscount(data.getDiscount());
-				enrolment.setClazz(clazz);
-				enrolment.setStudent(student);
-				enrolment.setInvoice(invoice);
-				// 4. save new Enrolment - Invoice will be automatically updated
-				EnrolmentDTO added = enrolmentService.addEnrolment(enrolment);
-				data.setExtra(JaeConstants.NEW_ENROLMENT);
-				data.setId(added.getId());
-				data.setInvoiceId(invoice.getId()+"");
-
-				// update day to code
-				data.setDay(clazzService.getDay(clazz.getId()));
-				// 4.  put into List<EnrolmentDTO>
-				dtos.add(data);
-				
-				// 5. if onlline class, skip attendance; otherwise create attendance
-				if(!data.isOnline()){	
-					///////////////// Attendance ////////////////////////
-					int academicYear = clazzService.getAcademicYear(clazz.getId());
-					String clazzDay = clazzService.getDay(clazz.getId());
-					for(int i = startWeek; i <= endWeek; i++){
-						Attendance attendance = new Attendance();
-						attendance.setWeek(i+"");
-						attendance.setStudent(student);
-						attendance.setClazz(clazz);
-						attendance.setDay(clazzDay);
-						attendance.setStatus(JaeConstants.ATTEND_OTHER);
-						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-						attendance.setAttendDate(attendDate);
-						attendanceService.addAttendance(attendance);
-					}
-					//////////////////////////////////////////////////////////
-				}
-			}
-		}// end of loop
-		
-		// 6. archive enrolments not in formData (DELETE)
-		for(Long enrolmentId : registeredIds) {
-			// update Invoice amount
-			Enrolment enrolment = enrolmentService.getEnrolment(enrolmentId);
-			int start = enrolment.getStartWeek();	
-			int end = enrolment.getEndWeek();
-			int credit = enrolment.getCredit();
-			double price = clazzService.getPrice(enrolment.getClazz().getId());
-			// check discount is % or amount value
-			String discount =StringUtils.defaultString(enrolment.getDiscount(), "0");
-			double discountAmount = 0;
-			if(discount.contains("%")){
-				discountAmount = (((end-start+1)-credit) * price) * (Double.parseDouble(discount.replace("%", ""))/100);
-			}else{
-				discountAmount = Double.parseDouble(discount);
-			}
-			double enrolmentPrice = ((((end-start+1)-credit) * price) - discountAmount);
-			invoice.setCredit(invoice.getCredit() - credit);
-			invoice.setDiscount(invoice.getDiscount() - discountAmount);
-			invoice.setAmount(invoice.getAmount() - enrolmentPrice);
-			// invoiceService.updateInvoice(invoice, invoice.getId());
-			// archive Enrolment - Invoice will be automatically updated
-			enrolmentService.archiveEnrolment(enrolmentId);
-
-			// remove enrolmentId from registeredIds
-			// registeredIds.remove(enrolmentId);
-
-			///////////////// Attendance ////////////////////////
-			long clazzId = enrolment.getClazz().getId();
-			List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
-			for(AttendanceDTO attendance : attandances){
-				// check attendDate is later than today
-				LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-				LocalDate today = LocalDate.now();
-				if(attendDate.isAfter(today)){
-					// delete attendance
-					long attendId = Long.parseLong(attendance.getId());
-					attendanceService.deleteAttendance(attendId);
-				}
-			}
-			//////////////////////////////////////////////////////////
-		}
-
-		// 7. if only one left and it is online free course, then remove (DELETE)
-		List<Long> finalIds = enrolmentService.findEnrolmentIdByInvoiceId(invoice.getId());
-		if(finalIds.size()==1){
-			Long lastEnrolmentId = finalIds.get(0);
-			EnrolmentDTO lastEnrol = enrolmentService.getActiveEnrolment(lastEnrolmentId);
-			boolean isFreeOnline = lastEnrol.isOnline() && lastEnrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
-			
-			if(isFreeOnline){
-				// archive Enrolment - Invoice will be automatically updated
-				enrolmentService.archiveEnrolment(lastEnrolmentId);
-				// remove EnrolmentDTO from dtos
-				for(EnrolmentDTO dto : dtos){
-					if(dto.getId().equalsIgnoreCase(lastEnrolmentId+"")){
-						dtos.remove(dto);
-						break;
-					}
-				}
-			}
-		}
-
-		return dtos;
-	}
-
-	*/
 
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
@@ -841,6 +496,27 @@ public class EnrolmentController {
 
 	}
 
+	/////////////////////////////////////////////////////////
+	// detach already registered books
+	// 1. Update Invoice amount
+	// 2. Update Material : old = true
+	///////////////////////////////////////////////////////
+	private void detachBook(Invoice invoice){
+		// 1. get registered material by invoice id
+		List<MaterialDTO> books = materialService.findMaterialByInvoice(invoice.getId());
+		// 2. archive enrolments by updating old = true
+		for(MaterialDTO book : books){
+			// 3. get enrolled info
+			Long bookId = Long.parseLong(StringUtils.defaultIfBlank(book.getId(), "0"));
+			double price = book.getPrice();
+			// 4. update invoice amount
+			invoice.setAmount(invoice.getAmount() - price);
+			// 5. update invoice
+			invoiceService.updateInvoice(invoice, invoice.getId()); // need??
+			// 6. update material
+			materialService.archiveMaterial(bookId);
+		}
+	}
 
 
 }

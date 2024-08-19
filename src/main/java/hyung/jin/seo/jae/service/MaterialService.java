@@ -42,5 +42,8 @@ public interface MaterialService {
 	// return Book ids by invoice id
 	List<Long> findBookIdByInvoiceId(long invoiceId);
 
+	// archive material
+	void archiveMaterial(Long id);
+
 
 }

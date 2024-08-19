@@ -14,15 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MaterialDTO extends MoneyDTO{
-    
-	// private String id;
-
-	// private String registerDate;
-
-	// private double amount;
-
-	// private String info;
-
+ 
 	private String name;
 
 	private double price;
@@ -33,6 +25,8 @@ public class MaterialDTO extends MoneyDTO{
 
 	private String invoiceId;
 
+	private String invoiceHistoryId;
+
 
 	public MaterialDTO(Material material){
 		this.id = String.valueOf(material.getId());
@@ -42,6 +36,7 @@ public class MaterialDTO extends MoneyDTO{
 		this.paymentDate = (material.getPaymentDate()!=null) ? material.getPaymentDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
 		this.bookId = (material.getBook()!=null) ? String.valueOf(material.getBook().getId()) : "";
 		this.invoiceId = (material.getInvoice()!=null) ? String.valueOf(material.getInvoice().getId()) : "";
+		this.invoiceHistoryId = (material.getInvoiceHistory()!=null) ? String.valueOf(material.getInvoiceHistory().getId()) : "";
 		this.info = (material.getInfo()!=null) ? material.getInfo() : "";
 	}
 
@@ -55,7 +50,7 @@ public class MaterialDTO extends MoneyDTO{
     	return material;
     }
 
-	public MaterialDTO(long id, LocalDate registerDate, LocalDate paymentDate, String info, long bookId, String name, double price, long invoiceId){
+	public MaterialDTO(long id, LocalDate registerDate, LocalDate paymentDate, String info, long bookId, String name, double price, long invoiceId, long invoiceHistoryId){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.paymentDate = (paymentDate!=null) ? paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
@@ -64,6 +59,7 @@ public class MaterialDTO extends MoneyDTO{
 		this.name = name;
 		this.price = price;
 		this.invoiceId = String.valueOf(invoiceId);
+		this.invoiceHistoryId = String.valueOf(invoiceHistoryId);
 	}
 	
 }

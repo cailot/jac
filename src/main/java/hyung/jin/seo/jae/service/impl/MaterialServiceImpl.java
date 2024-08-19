@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.MaterialDTO;
+import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.repository.MaterialRepository;
 import hyung.jin.seo.jae.service.MaterialService;
@@ -152,5 +153,20 @@ public class MaterialServiceImpl implements MaterialService {
 	@Override
 	public void deleteMaterial(Long id) {
 		materialRepository.deleteById(id);
+	}
+
+	@Override
+	public void archiveMaterial(Long id) {
+		// 1. get Material
+		Material material = null;
+		try {
+			material = materialRepository.findById(id).get();
+			// 2. set old to true
+			material.setOld(true);
+			// 3. save
+			materialRepository.save(material);
+		} catch (Exception e) {
+			System.out.println("No materialRepository found");
+		}
 	}
 }
