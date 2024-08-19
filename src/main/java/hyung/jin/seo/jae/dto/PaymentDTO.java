@@ -1,7 +1,9 @@
 package hyung.jin.seo.jae.dto;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +47,8 @@ public class PaymentDTO extends MoneyDTO{
 		this.method = (obj[3]!=null) ? String.valueOf(obj[3]) : ""; // method
 		this.info = (obj[4]!=null) ? String.valueOf(obj[4]) : ""; // info
 		this.registerDate = (obj[5]!=null) ? String.valueOf(obj[5]) : null; // registerDate
+		// SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		// this.registerDate = (obj[5] != null) ? dateFormat.format((Date) obj[5]) : null; // registerDate
 		this.invoiceId = (obj[6]!=null) ? String.valueOf(obj[6]) : "0"; // invoiceId
 		this.invoiceHistoryId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0"; // invoiceHistoryId
 	}
@@ -57,6 +61,17 @@ public class PaymentDTO extends MoneyDTO{
 		this.info = info;
 		this.registerDate = (registerDate!=null) ? registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
+
+	// public PaymentDTO(long id, double amount, String info, LocalDate registerDate, long invoiceId, long invoiceHistoryId, double total){
+	// 	this.id = String.valueOf(id);
+	// 	this.amount = amount;
+	// 	this.info = info;
+	// 	this.registerDate = (registerDate!=null) ? registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+	// 	this.invoiceId = String.valueOf(invoiceId);
+	// 	this.invoiceHistoryId = String.valueOf(invoiceHistoryId);
+	// 	this.total = total; // invoice amount
+	// }
+
 
 	public Payment convertToPayment() {
     	Payment payment = new Payment();

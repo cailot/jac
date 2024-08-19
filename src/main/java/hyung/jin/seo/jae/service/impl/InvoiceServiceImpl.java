@@ -150,7 +150,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	}
 
 	@Override
-	public boolean isPaidInvoice(Long id) {
+	public boolean isFullPaidInvoice(Long id) {
 		double balance =0;
 		try{
 			balance = invoiceRepository.isPaidInvoice(id);
@@ -158,5 +158,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 			System.out.println("No invoice found");
 		}
 		return (balance <= 0) ? true : false;
+	}
+
+	@Override
+	public double getPaidAmount(Long id) {
+		double balance =0;
+		try{
+			balance = invoiceRepository.getInvoicePaidAmount(id);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		return balance;
 	}
 }

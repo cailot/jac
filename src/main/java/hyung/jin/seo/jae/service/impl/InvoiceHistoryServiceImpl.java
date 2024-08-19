@@ -108,16 +108,8 @@ public class InvoiceHistoryServiceImpl implements InvoiceHistoryService {
 
 	@Override
 	public InvoiceHistory getLastInvoiceHistory(Long invoiceId) {
-		// InvoiceHistory history = null;
-		// try{
-		// 	history = invoiceHistoryRepository.findTopByInvoiceIdOrderByIdDesc(invoiceId);
-		// }catch(Exception e){
-		// 	System.out.println("No InvoiceHistory found");
-		// }
-		// return history;
 		Optional<InvoiceHistory> history = invoiceHistoryRepository.findTopByInvoiceIdOrderByIdDesc(invoiceId);
 		return history.orElseThrow(() -> new RuntimeException("No InvoiceHistory found"));
-	
 	}
 
 }

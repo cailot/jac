@@ -666,17 +666,17 @@ function associateRegistration(){
 
 			// 4. check any outstanding, if exists, show it to invoice table
 			$.ajax({
-				url: '${pageContext.request.contextPath}/enrolment/associateOutstanding/' + studentId,
+				url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
+					console.log(response);
 					// remove outstandings from invoice table
-					removeOutstandingFromInvoiceList();
+					removePaymentFromInvoiceList();
 					// Handle the response
 					if(response.length >0){
 						$.each(response, function(index, value){
-							// console.log(value);
-							addOutstandingToInvoiceList(value);
+							addPaymentToInvoiceList(value);
 						});
 					}
 				},
@@ -888,10 +888,12 @@ function retrieveEnrolment(studentId){
 					if(!freeOnline){
 						addEnrolmentToInvoiceList(value);
 					}
-				}else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
-					// update invoice table with Outstanding
-					addOutstandingToInvoiceList(value);
-				}else{  // Book
+				// }else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
+				// 	// update invoice table with Outstanding
+				// 	addOutstandingToInvoiceList(value);
+				// //}else {  // Book
+				}else if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object
+				
 					// update my lecture table
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.bookId)); // 0
@@ -913,7 +915,16 @@ function retrieveEnrolment(studentId){
 					$('#basketTable > tbody').append(row);
 					// update invoice table with Book
 					addBookToInvoiceList(value);
+
+				}else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
+					// update invoice table with Outstanding
+					addOutstandingToInvoiceList(value);
+				
+				}else{//} if (value.hasOwnProperty('upto')) { // It is an PaymentDTO object
+					// update invoice table with Payment
+					addPaymentToInvoiceList(value);
 				}
+				
 			});
 			// update basket total
 			updateTotalBasket();					
