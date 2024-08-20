@@ -137,7 +137,7 @@ public class EnrolmentController {
 			// 4. get payments by invoice id and add to list dtos
 			List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoiceId);
 			for(PaymentDTO payment : payments){
-				// payment.setTotal(totalAmount); // override total as total amount in invoice
+				payment.setTotal(totalAmount); // override total as total amount in invoice
 				double totalPaid = paymentService.getTotalPaidById(Long.parseLong(payment.getId()), invoiceId);
 				payment.setUpto(totalPaid);
 				dtos.add(payment);
