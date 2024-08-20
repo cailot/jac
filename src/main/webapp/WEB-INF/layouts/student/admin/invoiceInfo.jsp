@@ -3,8 +3,8 @@
 <script>
 
 const PAYMENT = 'Payment';
-const FULL_PAID = 'Full';
-const OUTSTANDING = 'Outstanding';
+// const FULL_PAID = 'Full';
+// const OUTSTANDING = 'Outstanding';
 
 
 $(document).ready(
@@ -290,7 +290,6 @@ function displayPayment(){
 	$("#payAmount").val($("#payRxAmount").val());
 	// $("#payAmount").val($("#payRxAmount").val().toFixed(2));
 
-  
 	// payAmount
     $("#payAmount").on('input', function(){
         var payAmount = parseFloat($("#payAmount").val()).toFixed(2);
@@ -579,17 +578,17 @@ function addInformation(){
 						if ($(this).find('.enrolment-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'\')"></i>');		
 						}
-					}else if(dataType === OUTSTANDING){
-						if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
-						}
+					// }else if(dataType === OUTSTANDING){
+					// 	if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
+					// 		(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
+					// 	}
 					}else if(dataType === BOOK){
 						if ($(this).find('.material-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
 						}
-					}else if(dataType === FULL_PAID){
+					}else if(dataType === PAYMENT){
 						if ($(this).find('.payment-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(FULL_PAID, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(FULL_PAID, ' + dataId + ', \'\')"></i>');
+							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'\')"></i>');
 						}
 					}
 				}
