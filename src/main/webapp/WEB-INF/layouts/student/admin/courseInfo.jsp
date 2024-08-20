@@ -46,15 +46,25 @@ $(document).ready(
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
 			var tr = $(this).closest('tr');
-			var pairId = tr.data('pair-id');
-			// search another row with the same pairId
-			$('#basketTable > tbody > tr').each(function() {
-				var exist = $(this).data('pair-id');
-				if(exist === pairId){
-					$(this).remove();
+			// how to check data-type contains 'book' or 'class' ?
+			// if it is 'book', simply remove <tr>, if it is 'class', remove all rows with the same pairId 
+			var hiddens = tr.find('.data-type').text();
+			if(hiddens.indexOf('|') !== -1){
+				var hiddenValues = hiddens.split('|');
+				if(hiddenValues[0] === BOOK){
+					// how to delete current row from baskettable?
+					tr.remove();
+				}else if(hiddenValues[0] === CLASS){
+					var pairId = tr.data('pair-id');
+					// search another row with the same pairId
+					$('#basketTable > tbody > tr').each(function() {
+						var exist = $(this).data('pair-id');
+						if(exist === pairId){
+							$(this).remove();
+						}
+					});
 				}
-			});
-
+			}
 			updateTotalBasket();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
@@ -582,9 +592,10 @@ function associateRegistration(){
 		contentType: 'application/json',
 		success: function(response) {
 			//debugger;
-			removeEnrolmentFromInvoiceList();	
+			// removeEnrolmentFromInvoiceList();	
 			// need to clear existing Outstanding??
-			removeOutstandingFromInvoiceList();
+			// removePaymentFromInvoiceList();
+			clearInvoiceTable();
 
 			if(response.length >0){
 				$.each(response, function(index, value){

@@ -797,14 +797,14 @@ public class InvoiceController {
 			enrolmentService.updateEnrolment(enrolment, dataId);
 			// 4-1. return flag
 			return ResponseEntity.ok("Enrolment Info Update Success");
-		}else if(JaeConstants.OUTSTANDING.equalsIgnoreCase(dataType)){
-			// 2-2. get Outstanding
-			Outstanding outstanding = outstandingService.getOutstanding(dataId);
-			// 3-2. update Outstanding
-			outstanding.setInfo(info);
-			outstandingService.updateOutstanding(outstanding, dataId);
-			// 4-2. return flag
-			return ResponseEntity.ok("Outstanding Info Update Success");
+		// }else if(JaeConstants.OUTSTANDING.equalsIgnoreCase(dataType)){
+		// 	// 2-2. get Outstanding
+		// 	Outstanding outstanding = outstandingService.getOutstanding(dataId);
+		// 	// 3-2. update Outstanding
+		// 	outstanding.setInfo(info);
+		// 	outstandingService.updateOutstanding(outstanding, dataId);
+		// 	// 4-2. return flag
+		// 	return ResponseEntity.ok("Outstanding Info Update Success");
 		}else if(JaeConstants.BOOK.equalsIgnoreCase(dataType)){
 			// 2-3. get Material
 			Material material = materialService.getMaterial(dataId);
