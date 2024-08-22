@@ -6,7 +6,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <%@ page import="hyung.jin.seo.jae.utils.JaeConstants" %>
 
 <%
@@ -24,7 +23,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $('#pdfExportButton').click(function () {
-        fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
+        fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&invoiceHistoryId=${param.invoiceHistoryId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
             .then(response => response.blob())
             .then(blob => {
                 var link = document.createElement('a');
@@ -40,7 +39,7 @@ $(document).ready(function () {
 ///////////////////////////////////////////////////////////////////////////
 function sendEmail() {
     $.ajax({
-		url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
+		url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&invoiceHistoryId=${param.invoiceHistoryId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
 		type : 'GET',
 		success : function(data) {
             // assume sent
@@ -210,7 +209,7 @@ function sendEmail() {
                             </td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
-                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for payments -->
                             <c:if test="${empty sessionScope.payments}">
                                 <c:set var="paidTotal" value="${paidTotal + enrolment.paid}" />
                             </c:if>
@@ -234,7 +233,7 @@ function sendEmail() {
                             </td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + book.price}" />
-                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for payments -->
                             <c:if test="${empty sessionScope.materials}">
                                 <c:set var="paidTotal" value="${paidTotal + book.price}" />
                             </c:if>

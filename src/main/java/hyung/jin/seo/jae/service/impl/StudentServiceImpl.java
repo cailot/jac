@@ -280,7 +280,11 @@ public class StudentServiceImpl implements StudentService {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate fromDate = LocalDate.parse(from, formatter);
 			LocalDate toDate = LocalDate.parse(to, formatter);
-			dtos = studentRepository.listPaymentStudent(branch, grade, fromDate, toDate);	
+			List<Object[]> objs = studentRepository.listPaymentStudent(branch, grade, fromDate, toDate);
+			for(Object[] obj : objs){
+				StudentDTO dto = new StudentDTO(obj);
+				dtos.add(dto);
+			}	
 		}catch(Exception e){
 			System.out.println("No student found");
 		}

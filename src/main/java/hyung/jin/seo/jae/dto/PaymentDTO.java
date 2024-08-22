@@ -1,9 +1,7 @@
 package hyung.jin.seo.jae.dto;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
