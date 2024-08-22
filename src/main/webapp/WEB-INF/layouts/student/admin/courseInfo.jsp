@@ -72,6 +72,8 @@ $(document).ready(
 		// Add event listeners to the input fields within the same row
 		$('#basketTable').on('input', '.onsiteStart, .onsiteEnd, .onsiteWeeks, .onsiteCredit', function () {
 			var $onsiteRow = $(this).closest('tr');  // Find the closest onsite row
+			// how to set .discount = 0?
+			$onsiteRow.find('.discount').text(0);
 			var pairId = $onsiteRow.data('pair-id');  // Get the pair ID
 			var $onlineRow = $('#basketTable').find('tr[data-pair-id="' + pairId + '"]').not($onsiteRow);  // Find the corresponding online row
 
@@ -592,9 +594,6 @@ function associateRegistration(){
 		contentType: 'application/json',
 		success: function(response) {
 			//debugger;
-			// removeEnrolmentFromInvoiceList();	
-			// need to clear existing Outstanding??
-			// removePaymentFromInvoiceList();
 			clearInvoiceTable();
 
 			if(response.length >0){
@@ -899,10 +898,6 @@ function retrieveEnrolment(studentId){
 					if(!freeOnline){
 						addEnrolmentToInvoiceList(value);
 					}
-				// }else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
-				// 	// update invoice table with Outstanding
-				// 	addOutstandingToInvoiceList(value);
-				// //}else {  // Book
 				}else if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object
 				
 					// update my lecture table
@@ -927,9 +922,9 @@ function retrieveEnrolment(studentId){
 					// update invoice table with Book
 					addBookToInvoiceList(value);
 
-				}else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
-					// update invoice table with Outstanding
-					addOutstandingToInvoiceList(value);
+				// }else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
+				// 	// update invoice table with Outstanding
+				// 	addOutstandingToInvoiceList(value);
 				
 				}else{//} if (value.hasOwnProperty('upto')) { // It is an PaymentDTO object
 					// update invoice table with Payment

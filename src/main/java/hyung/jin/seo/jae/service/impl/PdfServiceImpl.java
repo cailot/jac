@@ -36,7 +36,7 @@ import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
-import hyung.jin.seo.jae.dto.OutstandingDTO;
+import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -363,7 +363,7 @@ public class PdfServiceImpl implements PdfService {
 	private Object[] getInvoiceDetailTable(float wholeWidth, Map<String, Object> data) {
 		List<EnrolmentDTO> enrolments = data.get(JaeConstants.PAYMENT_ENROLMENTS) != null ? (List<EnrolmentDTO>) data.get(JaeConstants.PAYMENT_ENROLMENTS) : new ArrayList<>();
 		List<MaterialDTO> materials = data.get(JaeConstants.PAYMENT_MATERIALS) != null ? (List<MaterialDTO>) data.get(JaeConstants.PAYMENT_MATERIALS) : new ArrayList<>();
-		List<OutstandingDTO> outstandings = data.get(JaeConstants.PAYMENT_OUTSTANDINGS) != null ? (List<OutstandingDTO>) data.get(JaeConstants.PAYMENT_OUTSTANDINGS) : new ArrayList<>();
+		List<PaymentDTO> payments = data.get(JaeConstants.PAYMENT_PAYMENTS) != null ? (List<PaymentDTO>) data.get(JaeConstants.PAYMENT_PAYMENTS) : new ArrayList<>();
 		InvoiceDTO invoice = data.get(JaeConstants.INVOICE_INFO) != null ? (InvoiceDTO) data.get(JaeConstants.INVOICE_INFO) : new InvoiceDTO();
 		Table detail = new Table(new float[]{(wholeWidth)*3/12, (wholeWidth)*3/12, (wholeWidth)/12, (wholeWidth)*2/12, (wholeWidth)/12, (wholeWidth)*2/12});
 		detail.setBorder(new SolidBorder(1)); // Set the border to a solid line with a width of 2
@@ -408,14 +408,14 @@ public class PdfServiceImpl implements PdfService {
 			detail.addCell(new Cell().add(boldCell(String.format("%.2f", material.getPrice()))).setTextAlignment(TextAlignment.RIGHT));	
 			finalTotal += material.getPrice();
 		}
-		// outstandings
-		for(OutstandingDTO outstanding : outstandings){
+		// payments
+		for(PaymentDTO payment : payments){
 			detail.addCell(new Cell().add(boldCell("Payment")).setTextAlignment(TextAlignment.CENTER));
-			detail.addCell(new Cell().add(boldCell(outstanding.getRegisterDate()+"")).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add(boldCell(payment.getRegisterDate()+"")).setTextAlignment(TextAlignment.CENTER));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
-			double paid = outstanding.getPaid();
+			double paid = payment.getAmount();
 			String paidAmount = (paid > 0.00) ? " - " + String.format("%.2f", paid) : "0.00";
 			detail.addCell(new Cell().add(boldCell(paidAmount)).setTextAlignment(TextAlignment.RIGHT));
 		}
@@ -428,7 +428,7 @@ public class PdfServiceImpl implements PdfService {
 	private Object[] getReceiptDetailTable(float wholeWidth, Map<String, Object> data) {
 		List<EnrolmentDTO> enrolments = data.get(JaeConstants.PAYMENT_ENROLMENTS) != null ? (List<EnrolmentDTO>) data.get(JaeConstants.PAYMENT_ENROLMENTS) : new ArrayList<>();
 		List<MaterialDTO> materials = data.get(JaeConstants.PAYMENT_MATERIALS) != null ? (List<MaterialDTO>) data.get(JaeConstants.PAYMENT_MATERIALS) : new ArrayList<>();
-		List<OutstandingDTO> outstandings = data.get(JaeConstants.PAYMENT_OUTSTANDINGS) != null ? (List<OutstandingDTO>) data.get(JaeConstants.PAYMENT_OUTSTANDINGS) : new ArrayList<>();
+		List<PaymentDTO> payments = data.get(JaeConstants.PAYMENT_PAYMENTS) != null ? (List<PaymentDTO>) data.get(JaeConstants.PAYMENT_PAYMENTS) : new ArrayList<>();
 		InvoiceDTO invoice = data.get(JaeConstants.INVOICE_INFO) != null ? (InvoiceDTO) data.get(JaeConstants.INVOICE_INFO) : new InvoiceDTO();
 		Table detail = new Table(new float[]{(wholeWidth)*3/12, (wholeWidth)*3/12, (wholeWidth)/12, (wholeWidth)*2/12, (wholeWidth)/12, (wholeWidth)*2/12});
 		detail.setBorder(new SolidBorder(1)); // Set the border to a solid line with a width of 2
@@ -475,14 +475,14 @@ public class PdfServiceImpl implements PdfService {
 			detail.addCell(new Cell().add(boldCell(String.format("%.2f", material.getPrice()))).setTextAlignment(TextAlignment.RIGHT));	
 			finalTotal += material.getPrice();
 		}
-		// outstandings
-		for(OutstandingDTO outstanding : outstandings){
+		// payments
+		for(PaymentDTO payment : payments){
 			detail.addCell(new Cell().add(boldCell("Payment")).setTextAlignment(TextAlignment.CENTER));
-			detail.addCell(new Cell().add(boldCell(outstanding.getRegisterDate()+"")).setTextAlignment(TextAlignment.CENTER));
+			detail.addCell(new Cell().add(boldCell(payment.getRegisterDate()+"")).setTextAlignment(TextAlignment.CENTER));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
 			detail.addCell(new Cell().add("").setTextAlignment(TextAlignment.RIGHT));
-			double paid = outstanding.getPaid();
+			double paid = payment.getAmount();
 			paidTotal += paid;
 			String paidAmount = (paid > 0.00) ? " - " + String.format("%.2f", paid) : "0.00";
 			detail.addCell(new Cell().add(boldCell(paidAmount)).setTextAlignment(TextAlignment.RIGHT));

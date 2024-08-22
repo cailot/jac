@@ -6,7 +6,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <%@ page import="hyung.jin.seo.jae.utils.JaeConstants" %>
 
     

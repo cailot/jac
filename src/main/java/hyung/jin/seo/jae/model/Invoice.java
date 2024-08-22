@@ -70,18 +70,18 @@ public class Invoice{
 		payments.add(payment);
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = {
-		CascadeType.PERSIST,
-		CascadeType.MERGE,
-		CascadeType.REFRESH,
-		CascadeType.DETACH
-	})
-	@JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Invoice_Outstanding"))
-	private Set<Outstanding> outstandings = new LinkedHashSet<>();
+	// @OneToMany(fetch = FetchType.LAZY, cascade = {
+	// 	CascadeType.PERSIST,
+	// 	CascadeType.MERGE,
+	// 	CascadeType.REFRESH,
+	// 	CascadeType.DETACH
+	// })
+	// @JoinColumn(name = "invoiceId", foreignKey = @ForeignKey(name = "FK_Invoice_Outstanding"))
+	// private Set<Outstanding> outstandings = new LinkedHashSet<>();
 
-	public void addOutstanding(Outstanding stand){
-		outstandings.add(stand);
-	}
+	// public void addOutstanding(Outstanding stand){
+	// 	outstandings.add(stand);
+	// }
 
 	@OneToMany(mappedBy = "invoice", cascade = {
      	CascadeType.PERSIST,
