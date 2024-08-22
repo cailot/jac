@@ -62,7 +62,14 @@
 		<!-- Class -->
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Lecture</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">
+					<c:if test="${isAdmin}">
+						Lecture
+					</c:if>
+					<c:if test="${!isAdmin}">
+						Class
+					</c:if>
+				</span>
 			</a>
 			<div class="dropdown-menu">
 				<c:if test="${isAdmin}">
@@ -72,6 +79,7 @@
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Study Status</a>
 			</div>
 		</li>
 		<!-- User -->

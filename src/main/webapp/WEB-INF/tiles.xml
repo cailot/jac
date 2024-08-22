@@ -57,6 +57,11 @@
 		<put-attribute name="title" value="Overdue List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/overdueList.jsp" />
 	</definition>
+	<!--Study -->
+	<definition name="studyListPage" extends="base.definition">
+		<put-attribute name="title" value="JAC Study List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/studyList.jsp" />
+	</definition>
 
 
 	<!-- Users-->

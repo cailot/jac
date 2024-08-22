@@ -18,7 +18,7 @@
   
 <script>
 $(document).ready(function () {
-    $('#paymentListTable').DataTable({
+    $('#studyListTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -32,28 +32,6 @@ $(document).ready(function () {
  	        },
  	        'print'
         ],
-
-		// sum for paid
-		footerCallback: function (row, data, start, end, display) {
-    		var api = this.api();
-    		// Custom function to parse and sum values
-			var parseAndSum = function (data) {
-				var total = 0;
-				for (var i = 0; i < data.length; i++) {
-					var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-					if (!isNaN(value)) {
-						total += value;
-					}
-				}
-				return total;
-			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer
-			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toFixed(2) + '</span>');
-		}
-
-
     });
     
 	$("#start").datepicker({
@@ -89,7 +67,7 @@ $(document).ready(function () {
 	}
 
 	// send diabled select value via <form>
-    document.getElementById("paymentList").addEventListener("submit", function() {
+    document.getElementById("studyList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
 		document.getElementById("branch").disabled = false;
     });
@@ -150,7 +128,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="paymentList" method="get" action="${pageContext.request.contextPath}/invoice/paymentList">
+		<form id="studyList" method="get" action="${pageContext.request.contextPath}/invoice/studyList">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -188,7 +166,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 				<div class="form-row">
 					<div class="col-md-12">
 						<div class="table-wrap">
-							<table id="paymentListTable" class="table table-striped table-bordered" style="width: 100%;">
+							<table id="studyListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
 										<th class="align-middle text-center">ID</th>

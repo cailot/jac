@@ -155,7 +155,7 @@ public interface JaeConstants {
 
 	String ENROLMENT = "Enrolment";
 
-	String OUTSTANDING = "Outstanding";
+	// String OUTSTANDING = "Outstanding";
 
 	String BOOK = "Book";
 

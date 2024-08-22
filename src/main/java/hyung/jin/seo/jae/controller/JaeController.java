@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 public class JaeController {
@@ -54,6 +55,8 @@ public class JaeController {
 
 	@GetMapping("/studentInvoice")
 	public String studentInvoice(HttpSession session) {
+		// clear existing session info
+		JaeUtils.clearSession(session);
 		return "studentInvoicePage";
 	}
 
@@ -90,6 +93,11 @@ public class JaeController {
 	@GetMapping("/overdueList")
 	public String overdueList(HttpSession session) {
 		return "overdueListPage";
+	}
+
+	@GetMapping("/studyList")
+	public String studyList(HttpSession session) {
+		return "studyListPage";
 	}
 
 	@GetMapping("/onlineList")

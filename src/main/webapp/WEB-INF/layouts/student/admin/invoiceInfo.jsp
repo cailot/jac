@@ -1,5 +1,4 @@
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <script>
 
 const PAYMENT = 'Payment';

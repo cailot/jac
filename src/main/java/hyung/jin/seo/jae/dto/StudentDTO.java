@@ -136,7 +136,7 @@ public class StudentDTO implements Serializable{
     }
 
 	// for statistics dto
-	public StudentDTO(long id, String firstName, String lastName, String grade, String gender, String state, String branch, LocalDate registerDate, LocalDate endDate, String email1, String contactNo1) {
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String gender, String state, String branch, LocalDate registerDate, LocalDate endDate, String email1, String contactNo1) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -152,7 +152,7 @@ public class StudentDTO implements Serializable{
 
     
 	// this constructor is specially designed to cover paymentList.jsp 
-	public StudentDTO(long id, String firstName, String lastName, String grade, String state, String branch, LocalDate registerDate, String method, double amount, long invoiceId, long paymentId) {
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String state, String branch, LocalDate registerDate, String method, Double amount, Long invoiceId, Long paymentId) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -166,8 +166,25 @@ public class StudentDTO implements Serializable{
 		this.contactNo2 = Long.toString(paymentId);
     }
 
+	// this constructor is specially designed to cover paymentList.jsp - Payment List
+	//public StudentDTO(Long id, String firstName, String lastName, String grade, String state, String branch, LocalDate registerDate, String method, Double amount, Long invoiceId, Long invoiceHistoryId, Long paymentId) {
+    public StudentDTO(Object[] obj){
+		this.id = (obj[0]!=null) ? String.valueOf(obj[0]) : "0";
+        this.firstName = (obj[1]!=null) ? String.valueOf(obj[1]) : "";
+        this.lastName = (obj[2]!=null) ? String.valueOf(obj[2]) : "";
+        this.grade = (obj[3]!=null) ? String.valueOf(obj[3]) : "";
+		this.state = (obj[4]!=null) ? String.valueOf(obj[4]) : "";
+        this.branch = (obj[5]!=null) ? String.valueOf(obj[5]) : "";
+        this.registerDate = (obj[6]!=null) ? String.valueOf(obj[6]) : "";
+		this.relation1 = (obj[7]!=null) ? String.valueOf(obj[7]) : "";
+		this.relation2 = (obj[8]!=null) ? String.valueOf(obj[8]) : "0.0";
+		this.contactNo1 = (obj[9]!=null) ? String.valueOf(obj[9]) : "0";
+		this.email1 = (obj[10]!=null) ? String.valueOf(obj[10]) : "0";
+		this.contactNo2 = (obj[11]!=null) ? String.valueOf(obj[11]) : "0";
+    }
+
 	// this constructor is specially designed to cover overdueList.jsp
-	public StudentDTO(long id, String firstName, String lastName, String grade, String contactNo1, String email1, String state, String branch, int startWeek, int endWeek, String clazz) {
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String contactNo1, String email1, String state, String branch, Integer startWeek, Integer endWeek, String clazz) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";

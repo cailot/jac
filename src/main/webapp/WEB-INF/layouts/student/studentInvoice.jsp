@@ -30,122 +30,27 @@ $(document).ready(function () {
  	        'print'
         ],
 		order : [[1, 'desc'], [0, 'desc']], // order by invoiceId desc, id desc
-		// sum for paid
-		// footerCallback: function (row, data, start, end, display) {
-    	// 	var api = this.api();
-    	// 	// Custom function to parse and sum values
-		// 	var parseAndSum = function (data) {
-		// 		var total = 0;
-		// 		for (var i = 0; i < data.length; i++) {
-		// 			var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-		// 			if (!isNaN(value)) {
-		// 				total += value;
-		// 			}
-		// 		}
-		// 		return total;
-		// 	};
-		// 	// Total over all pages
-		// 	var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-		// 	// Update footer
-		// 	$(api.column(6).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
-		// }
-		
-		
-// 		footerCallback: function (row, data, start, end, display) {
-//     var api = this.api();
+	footerCallback: function (row, data, start, end, display) {
+		var api = this.api();
 
-//     // Custom function to parse and sum values
-//     var parseAndSum = function (data) {
-//         var total = 0;
-//         console.log('Column Data:', data); // Debugging: Log the column data
-//         for (var i = 0; i < data.length; i++) {
-//             var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-//             console.log('Parsed Value:', value); // Debugging: Log each parsed value
-//             if (!isNaN(value)) {
-//                 total += value;
-//             }
-//         }
-//         return total;
-//     };
+		// Custom function to parse and sum values
+		var parseAndSum = function (data) {
+			var total = 0;
+			for (var i = 0; i < data.length; i++) {
+				var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
+				if (!isNaN(value)) {
+					total += value;
+				}
+			}
+			return total;
+		};
 
-//     // Total over all pages
-//     var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
-//     console.log('Total Paid:', totalPaid); // Debugging: Log the total paid value
+		// Total over all pages
+		var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
 
-//     // Update footer with total paid amount
-//     $('#totalPaid').html('$' + totalPaid.toFixed(2));
-// }
-
-// footerCallback: function (row, data, start, end, display) {
-//     var api = this.api();
-
-//     // Custom function to parse and sum values
-//     var parseAndSum = function (data) {
-//         var total = 0;
-//         console.log('Column Data:', data); // Debugging: Log the column data
-//         for (var i = 0; i < data.length; i++) {
-//             var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-//             console.log('Parsed Value:', value); // Debugging: Log each parsed value
-//             if (!isNaN(value)) {
-//                 total += value;
-//             }
-//         }
-//         return total;
-//     };
-
-//     // Total over all pages
-//     var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
-//     console.log('Total Paid:', totalPaid); // Debugging: Log the total paid value
-
-//     // Update footer with total paid amount
-//     $(api.column(5).footer()).html('Total Paid: <span class="text-primary">$' + totalPaid.toFixed(2) + '</span>');
-// }
-
-footerCallback: function (row, data, start, end, display) {
-    var api = this.api();
-
-    // Custom function to parse and sum values
-    var parseAndSum = function (data) {
-        var total = 0;
-        for (var i = 0; i < data.length; i++) {
-            var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-            if (!isNaN(value)) {
-                total += value;
-            }
-        }
-        return total;
-    };
-
-    // Total over all pages
-    var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
-
-    // Update footer with total paid amount
-    $('#totalPaid').html('$' + totalPaid.toFixed(2));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		// Update footer with total paid amount
+		$('#totalPaid').html('$' + totalPaid.toFixed(2));
+	}
 
     });
 
