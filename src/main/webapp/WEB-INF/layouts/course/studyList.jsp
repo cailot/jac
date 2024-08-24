@@ -128,7 +128,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studyList" method="get" action="${pageContext.request.contextPath}/invoice/studyList">
+		<form id="studyList" method="get" action="${pageContext.request.contextPath}/loginCheck/studyList">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -169,82 +169,70 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<table id="studyListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">ID</th>
-										<th class="align-middle text-center">First Name</th>
-										<th class="align-middle text-center">Last Name</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Method</th>
-										<th class="align-middle text-center" data-orderable="false">Payment Date</th>
-										<th class="align-middle text-center">Amount</th>
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" style="width: 10%;">Student ID</th>
+										<th class="align-middle text-center" style="width: 10%;">First Name</th>
+										<th class="align-middle text-center" style="width: 10%;">Last Name</th>
+										<th class="align-middle text-center" style="width: 10%;">Grade</th>
+										<th class="align-middle text-center" style="width: 15%;">Main Contact</th>
+										<th class="align-middle text-center" style="width: 15%;">Main Email</th>								
+										<th class="align-middle text-center" style="width: 10%;">Start Date</th>
+										<th class="align-middle text-center" style="width: 5%;">Logins</th>
+										<th class="align-middle text-center" style="width: 5%;">Total</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
 								<c:choose>
-									<c:when test="${StudentList != null}">
-										<c:forEach items="${StudentList}" var="student">
+									<c:when test="${LoginList != null}">
+										<c:forEach items="${LoginList}" var="login">
 											<tr>
-												<td class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent('${student.id}')">
-													<span class="ml-1"><c:out value="${student.id}" /></span>
+												<td class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent('${login.studentId}')">
+													<span class="ml-1"><c:out value="${login.studentId}" /></span>
 												</td>												
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.firstName}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.firstName}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.lastName}" /></span></td>
 												<td class="small align-middle text-center">
 													<span>
 														<c:choose>
-															<c:when test="${student.grade == '1'}">P2</c:when>
-															<c:when test="${student.grade == '2'}">P3</c:when>
-															<c:when test="${student.grade == '3'}">P4</c:when>
-															<c:when test="${student.grade == '4'}">P5</c:when>
-															<c:when test="${student.grade == '5'}">P6</c:when>
-															<c:when test="${student.grade == '6'}">S7</c:when>
-															<c:when test="${student.grade == '7'}">S8</c:when>
-															<c:when test="${student.grade == '8'}">S9</c:when>
-															<c:when test="${student.grade == '9'}">S10</c:when>
-															<c:when test="${student.grade == '10'}">S10E</c:when>
-															<c:when test="${student.grade == '11'}">TT6</c:when>
-															<c:when test="${student.grade == '12'}">TT8</c:when>
-															<c:when test="${student.grade == '13'}">TT8E</c:when>
-															<c:when test="${student.grade == '14'}">SRW4</c:when>
-															<c:when test="${student.grade == '15'}">SRW5</c:when>
-															<c:when test="${student.grade == '16'}">SRW6</c:when>
-															<c:when test="${student.grade == '17'}">SRW7</c:when>
-															<c:when test="${student.grade == '18'}">SRW8</c:when>
-															<c:when test="${student.grade == '19'}">JMSS</c:when>
-															<c:when test="${student.grade == '20'}">VCE</c:when>
+															<c:when test="${login.grade == '1'}">P2</c:when>
+															<c:when test="${login.grade == '2'}">P3</c:when>
+															<c:when test="${login.grade == '3'}">P4</c:when>
+															<c:when test="${login.grade == '4'}">P5</c:when>
+															<c:when test="${login.grade == '5'}">P6</c:when>
+															<c:when test="${login.grade == '6'}">S7</c:when>
+															<c:when test="${login.grade == '7'}">S8</c:when>
+															<c:when test="${login.grade == '8'}">S9</c:when>
+															<c:when test="${login.grade == '9'}">S10</c:when>
+															<c:when test="${login.grade == '10'}">S10E</c:when>
+															<c:when test="${login.grade == '11'}">TT6</c:when>
+															<c:when test="${login.grade == '12'}">TT8</c:when>
+															<c:when test="${login.grade == '13'}">TT8E</c:when>
+															<c:when test="${login.grade == '14'}">SRW4</c:when>
+															<c:when test="${login.grade == '15'}">SRW5</c:when>
+															<c:when test="${login.grade == '16'}">SRW6</c:when>
+															<c:when test="${login.grade == '17'}">SRW7</c:when>
+															<c:when test="${login.grade == '18'}">SRW8</c:when>
+															<c:when test="${login.grade == '19'}">JMSS</c:when>
+															<c:when test="${login.grade == '20'}">VCE</c:when>
 															<c:otherwise></c:otherwise>
 														</c:choose>
 													</span>
 												</td>
-												<!-- paid method -->
-												<td class="small align-middle text-left text-capitalize ml-2"><span><c:out value="${student.relation1}" /></span></td>
-												<!-- paid date -->
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.contactNo1}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.email1}" /></span></td>
 												<td class="small align-middle text-center">
 													<span>
-														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
+														<c:out value="${login.startDate}" />
 													</span>
 												</td>
-												<!-- paid amount -->
-												<td class="small align-middle text-right mr-1">
-													<fmt:formatNumber value="${student.relation2}" pattern="#0.00" />
-												</td>	
-												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-calculator text-primary hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayReceipt('${student.id}', '${student.firstName}', '${student.lastName}', '${student.contactNo1}', '${student.email1}', '${student.contactNo2}')"></i>
-												</td>
+												<!-- count -->
+												<td class="small align-middle text-center"><span><c:out value="${login.count}" /></span></td>
+												<!-- total -->
+												<td class="small align-middle text-center"><span><c:out value="${login.total}" /></span></td>
 											</tr>
 										</c:forEach>
 									</c:when>
 								</c:choose>
 								</tbody>
-								<tfoot>
-									<tr>
-										<td colspan="6" style="text-align:right;"><strong>Total Amount:</strong></td>
-										<td id="totalAmount" class="text-right">0.00</td>
-										<td></td>
-									</tr>
-								</tfoot>
 							</table>
 						</div>
 					</div>

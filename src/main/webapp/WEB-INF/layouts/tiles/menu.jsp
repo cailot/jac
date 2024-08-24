@@ -79,7 +79,7 @@
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Study Status</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studyList">Study Status</a>
 			</div>
 		</li>
 		<!-- User -->

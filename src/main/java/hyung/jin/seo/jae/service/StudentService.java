@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.service;
 
 import java.util.List;
 
+import hyung.jin.seo.jae.dto.LoginActivityDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 
