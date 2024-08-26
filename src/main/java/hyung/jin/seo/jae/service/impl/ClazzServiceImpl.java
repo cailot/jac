@@ -199,10 +199,10 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public Long getOnlineId(String grade, int year, String state, String branch) {
+	public Long getOnlineId(String grade, int year) {
 		Long id = 0L;
 		try {
-			id = clazzRepository.getOnlineClazzId(grade, year, state, branch);
+			id = clazzRepository.getOnlineClazzId(grade, year);
 		} catch (Exception e) {
 			System.out.println("No class found");
 		}
@@ -268,9 +268,9 @@ public class ClazzServiceImpl implements ClazzService {
 	public List<ClazzDTO> listOnlineClazz(String state, String branch, String grade, String year) {
 		List<ClazzDTO> dtos = null;
 		if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, "0"))) {
-			dtos = clazzRepository.findOnlineClassForStateNBranchNGradeNYear(state, branch, grade, Integer.parseInt(year));
+			dtos = clazzRepository.findOnlineClassForStateNBranchNGradeNYear(JaeConstants.VICTORIA_CODE, JaeConstants.HEAD_OFFICE_CODE, grade, Integer.parseInt(year));
 		} else {
-			dtos = clazzRepository.findOnlineClassForStateNBranchNGrade(state, branch, grade);
+			dtos = clazzRepository.findOnlineClassForStateNBranchNGrade(JaeConstants.VICTORIA_CODE, JaeConstants.HEAD_OFFICE_CODE, grade);
 		}
 		return dtos;
 	}

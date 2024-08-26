@@ -57,10 +57,15 @@
 		<put-attribute name="title" value="Overdue List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/overdueList.jsp" />
 	</definition>
-	<!--Study -->
-	<definition name="studyListPage" extends="base.definition">
-		<put-attribute name="title" value="JAC Study List" />
-		<put-attribute name="body" value="/WEB-INF/layouts/course/studyList.jsp" />
+	<!--Connected Login check -->
+	<definition name="connectedAttendListPage" extends="base.definition">
+		<put-attribute name="title" value="Connected Class Login List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/connectedAttendList.jsp" />
+	</definition>
+	<!--Online status check -->
+	<definition name="onlineStatusListPage" extends="base.definition">
+		<put-attribute name="title" value="Online Class Status List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/onlineStatusList.jsp" />
 	</definition>
 
 

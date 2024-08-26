@@ -66,8 +66,8 @@ public interface ClazzService {
 	// get name
 	String getName(Long id);
 
-	// get class id by grade, year, state & branch
-	Long getOnlineId(String grade, int year, String state, String branch);
+	// get class id by grade, year
+	Long getOnlineId(String grade, int year);
 
 	// get online class by grade and year
 	Clazz getOnlineByGradeNYear(String grade, int year);
