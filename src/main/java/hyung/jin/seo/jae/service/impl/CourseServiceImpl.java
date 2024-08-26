@@ -39,11 +39,11 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public List<CourseDTO> findByGrade(String grade) {
+	public List<CourseDTO> findByGradeNYear(String grade, int year) {
 		// 1. get courses
 		List<CourseDTO> dtos = new ArrayList<>();
 		try{
-			dtos = courseRepository.getByGrade(grade);
+			dtos = courseRepository.getByGradeNYear(grade, year);
 		}catch(Exception e){
 			System.out.println("No course found");
 		}
@@ -63,11 +63,11 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public List<CourseDTO> findByGradeNYear(String grade, int year) {
+	public List<CourseDTO> findActiveByGradeNYear(String grade, int year) {
 		// 1. get courses
 		List<CourseDTO> dtos = new ArrayList<>();
 		try{
-			dtos = courseRepository.getByGradeNYear(grade, year);
+			dtos = courseRepository.getActiveByGradeNYear(grade, year);
 		}catch(Exception e){
 			System.out.println("No course found");
 		}

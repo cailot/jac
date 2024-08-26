@@ -95,9 +95,14 @@ public class JaeController {
 		return "overdueListPage";
 	}
 
-	@GetMapping("/studyList")
-	public String studyList(HttpSession session) {
-		return "studyListPage";
+	@GetMapping("/onlineStatus")
+	public String onlineStatusList(HttpSession session) {
+		return "onlineStatusListPage";
+	}
+
+	@GetMapping("/connectedAttend")
+	public String connectedAttendList(HttpSession session) {
+		return "connectedAttendListPage";
 	}
 
 	@GetMapping("/onlineList")

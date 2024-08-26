@@ -10,13 +10,13 @@ public interface CourseService {
 	List<CourseDTO> allCourses();
 
 	// list all Course by grade
-	List<CourseDTO> findByGrade(String grade);
+	List<CourseDTO> findByGradeNYear(String grade, int year);
 
 	// list all active Course by grade
 	List<CourseDTO> findActiveByGrade(String grade);
 
 	// list all Course by grade & year
-	List<CourseDTO> findByGradeNYear(String grade, int year);
+	List<CourseDTO> findActiveByGradeNYear(String grade, int year);
 
 	// list onsite Course by grade
 	List<CourseDTO> findOnsiteByGrade(String grade);

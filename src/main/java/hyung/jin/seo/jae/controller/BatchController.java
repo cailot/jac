@@ -192,7 +192,21 @@ public class BatchController {
 			for (Course course : courses) {
 				courseService.addCourse(course);
 			}
-			// 4. return success message// // 3. return success;
+			// 4. create Online Class under Head Office
+			for(Course course : courses){
+				if(course.isOnline()){
+					Clazz clazz = new Clazz();
+					clazz.setActive(true);
+					clazz.setDay("0");
+					clazz.setName("E-Learning");
+					clazz.setState(JaeConstants.VICTORIA_CODE);
+					clazz.setBranch(JaeConstants.HEAD_OFFICE_CODE);
+					clazz.setStartDate(cycle.getStartDate());
+					clazz.setCourse(course);
+					clazzService.addClazz(clazz);
+				}
+			}
+			// 5. return success message// // 3. return success;
 			return ResponseEntity.ok("Course template generated success");
 		} catch (Exception e) {
 			String message = "Error registering Class: " + e.getMessage();
@@ -662,9 +676,10 @@ public class BatchController {
 					if(lineCount ==1) continue; // skip header in csv
 					String grade = JaeUtils.getGradeCode(StringUtils.trimToEmpty(columns[0]));
 					int week = Integer.parseInt(StringUtils.trimToEmpty(columns[1]));
-					String url = StringUtils.trimToEmpty(columns[2]);
+					String title = JaeUtils.getGradeCode(StringUtils.trimToEmpty(columns[2]));
+					String url = StringUtils.trimToEmpty(columns[3]);
 					// create OnlineSession
-					OnlineSession session = getOnlineSession(grade, year, week, url);
+					OnlineSession session = getOnlineSession(grade, year, week, title, url);
 					// register OnlineSession	
 					session = onlineSessionService.addOnlineSession(session);
 				}
@@ -677,7 +692,7 @@ public class BatchController {
     }
 
 	// return OnlineSession
-	private OnlineSession getOnlineSession(String grade, int year, int set, String url){
+	private OnlineSession getOnlineSession(String grade, int year, int set, String title, String url){
 		// get Clazz
 		Clazz clazz = clazzService.getOnlineByGradeNYear(grade, year);
 		// create OnlineSession
@@ -690,6 +705,7 @@ public class BatchController {
 		online.setClazz(clazz);
 		// variable
 		online.setWeek(set);
+		online.setTitle(title);
 		online.setAddress(url);
 		// return OnlineSession
 		return online;		

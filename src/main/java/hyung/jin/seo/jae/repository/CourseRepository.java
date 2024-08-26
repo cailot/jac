@@ -21,14 +21,20 @@ public interface CourseRepository extends JpaRepository<Course, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.grade = :grade AND c.active = true")
 	List<CourseDTO> getActiveByGrade(@Param("grade") String grade);
 
-	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.grade = :grade AND c.cycle.year =:year AND c.active = true")
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE (:grade = '0' OR c.grade = :grade) AND (:year = 0 OR c.cycle.year = :year)")
 	List<CourseDTO> getByGradeNYear(@Param("grade") String grade, @Param("year") int year);
+
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE (:grade = '0' OR c.grade = :grade) AND (:year = 0 OR c.cycle.year = :year) AND c.active = true")
+	List<CourseDTO> getActiveByGradeNYear(@Param("grade") String grade, @Param("year") int year);
 
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.grade = :grade AND c.online = 0 AND c.active = true")
 	List<CourseDTO> findOnsiteByGrade(@Param("grade") String grade);
 
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.grade = :grade AND c.online = 1 AND c.active = true")
 	List<CourseDTO> findOnlineByGrade(@Param("grade") String grade);
+
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.cycle.year = :year AND c.online = 1 AND c.active = true")
+	List<CourseDTO> findOnlineByYear(@Param("year") int year);
 
 	@Modifying
     @Query("UPDATE Course c SET c.active = false WHERE c.id = :id")

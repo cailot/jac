@@ -128,7 +128,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studyList" method="get" action="${pageContext.request.contextPath}/loginCheck/studyList">
+		<form id="studyList" method="get" action="${pageContext.request.contextPath}/loginCheck/connectedAttend">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
