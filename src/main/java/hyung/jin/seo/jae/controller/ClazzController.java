@@ -77,10 +77,10 @@ public class ClazzController {
 	}
 
 	// get online course Id
-	@GetMapping("/id")
+	@GetMapping("/onlineId")
 	@ResponseBody
-	Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
-		Long id = clazzService.getOnlineId(grade, year, state, branch);
+	Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
+		Long id = clazzService.getOnlineId(grade, year);
 		return id;
 	}
 
@@ -121,14 +121,14 @@ public class ClazzController {
 
 	// bring all classes in database
 	@GetMapping("/listCourse")
-	public String listCourses(@RequestParam(value = "listGrade", required = false) String grade, Model model) {
+	public String listCourses(@RequestParam(value = "listYear", required = true) int year, @RequestParam(value = "listGrade", required = false) String grade, Model model) {
 		List<CourseDTO> dtos = null;
 		// if grade has some value
-		if ((StringUtils.isNotBlank(grade)) && !(JaeConstants.ALL.equalsIgnoreCase(grade))) {
-			dtos = courseService.findByGrade(grade);
-		} else { // if grade has no value, simply bring all
-			dtos = courseService.allCourses();
-		}
+		// if ((StringUtils.isNotBlank(grade)) && !(JaeConstants.ALL.equalsIgnoreCase(grade))) {
+		dtos = courseService.findByGradeNYear(grade, year);
+		// } else { // if grade has no value, simply bring all
+			// dtos = courseService.allCourses();
+		// }
 		model.addAttribute(JaeConstants.COURSE_LIST, dtos);
 		return "courseListPage";
 	}
@@ -151,7 +151,7 @@ public class ClazzController {
 		}
 		// if new academic year is going to start, display next year classes
 		if (week > JaeConstants.ACADEMIC_START_COMMING_WEEKS) {
-			List<CourseDTO> nexts = courseService.findByGradeNYear(grade, year+1);
+			List<CourseDTO> nexts = courseService.findActiveByGradeNYear(grade, year+1);
 			if(nexts.size() > 0){
 				for(CourseDTO next : nexts){
 					// update description
@@ -184,7 +184,7 @@ public class ClazzController {
 		}
 		int year = cycleService.academicYear(formatted);
 		// search active Course by grade & year
-		List<CourseDTO> dtos = courseService.findByGradeNYear(grade, year);
+		List<CourseDTO> dtos = courseService.findActiveByGradeNYear(grade, year);
 		return dtos;
 	}
 
@@ -326,7 +326,7 @@ public class ClazzController {
 		try {
 			// 1. create Course
 			Course course = formData.convertToCourse();
-			course.setActive(formData.isActive());
+			course.setActive(true); // any update will make it active
 			// 2. associate Subjects
 			List<SubjectDTO> subjects = formData.getSubjects();
 			for(SubjectDTO subject : subjects){

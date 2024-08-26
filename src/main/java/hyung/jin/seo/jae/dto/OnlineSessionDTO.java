@@ -40,7 +40,6 @@ public class OnlineSessionDTO implements Serializable{
 
 	private String clazzId;
 
-
 	public OnlineSessionDTO(OnlineSession session){
 		this.id = String.valueOf(session.getId());
 		this.active = session.isActive();
@@ -85,29 +84,4 @@ public class OnlineSessionDTO implements Serializable{
 		this.clazzId = String.valueOf(clazzId);
 	}
 
-
-
-	// public OnlineSessionDTO(Object[] obj){
-	// 	this.id = (obj[0]!=null) ? String.valueOf(obj[0]) : null;
-	// 	this.registerDate = (obj[1]!=null) ? String.valueOf(obj[1]) : null;
-	// 	this.cancelled = (obj[2]!=null) ? (boolean)obj[2] : false;
-	// 	this.cancellationReason = (obj[3]!=null) ? (String)obj[3] : null;
-	// 	this.startWeek = (obj[4]!=null) ? (int)obj[4] : 0;
-	// 	this.endWeek = (obj[5]!=null) ? (int)obj[5] : 0;
-	// 	this.info = (obj[6]!=null) ? String.valueOf(obj[6]) : "";				
-	// 	this.invoiceId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0";
-	// 	this.credit = (obj[8]!=null) ? Integer.parseInt(String.valueOf(obj[8])) : 0;
-	// 	this.discount = (obj[9]!=null) ? String.valueOf(obj[9]) : "0";
-	// 	this.amount = (obj[10]!=null) ? Double.parseDouble(String.valueOf(obj[10])) : 0;
-	// 	this.paid = (obj[11]!=null) ? Double.parseDouble(String.valueOf(obj[11])) : 0;
-	// 	this.paymentDate = (obj[12] != null) ? JaeUtils.dateFormat.format(obj[12]) : null;
-	// 	this.studentId = (obj[13]!=null) ? String.valueOf(obj[13]) : "0";
-	// 	this.clazzId = (obj[14]!=null) ? String.valueOf(obj[14]) : "0";
-	// 	this.name = (obj[15]!=null) ? (String)obj[15] : null;
-	// 	this.price = (obj[16]!=null) ? Double.parseDouble(String.valueOf(obj[16])) : 0;
-	// 	this.online = (obj[17]!=null) ? (boolean)obj[17] : false;
-	// 	this.year = (obj[18]!=null) ? String.valueOf(obj[18]) : null;
-	// 	this.grade = (obj[19]!=null) ? (String)obj[19] : null;
-	// 	this.day = (obj[20]!=null) ? (String)obj[20] : null;
-	// }
 }

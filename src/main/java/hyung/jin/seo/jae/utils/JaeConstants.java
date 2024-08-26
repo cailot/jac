@@ -11,6 +11,10 @@ public interface JaeConstants {
 	String ONSITE = "Onsite";
 
 	String ONLINE = "Online";
+
+	String VICTORIA_CODE = "1";
+
+	String HEAD_OFFICE_CODE = "90";
 	
 	///////////////////////////////////////////////////////////////////////
 	//

@@ -395,13 +395,13 @@ $.ajax({
 			var clazzId = 0;
 			var isNewClazz = (value.description.indexOf(ACADEMIC_NEXT_YEAR_COURSE_SUFFIX) !== -1);
 			$.ajax({
-				url: '${pageContext.request.contextPath}/class/id',
+				url: '${pageContext.request.contextPath}/class/onlineId',
 				type: 'GET',
 				data: {
 					grade: grade,
-					year: year,
-					state: state,
-					branch: branch
+					year: year
+					// state: state,
+					// branch: branch
 				},
 				success: function(data) {
 					// if any online course is found with grade & year
