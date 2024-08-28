@@ -8,9 +8,12 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ConfigurableApplicationContext;
 
 import hyung.jin.seo.jae.dto.CycleDTO;
+import hyung.jin.seo.jae.dto.OnlineActivityDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.model.OnlineActivity;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EmailService;
+import hyung.jin.seo.jae.service.OnlineActivityService;
 import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -38,6 +41,9 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	@Autowired
 	private StatsService statsService;
 
+	@Autowired
+	private OnlineActivityService onlineActivityService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(JaeApplication.class, args);
 	}
@@ -54,6 +60,12 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
 
 
+
+		
+		// List<OnlineActivityDTO> list = onlineActivityService.listStudentStatus("0", "0", 10);
+		// for(OnlineActivityDTO dto: list){
+		// 	System.out.println(dto);
+		// }
 
 		// List<StudentDTO> students = statsService.listOverdueStudent4Stats("13", "11");
 		// for(StudentDTO student: students){

@@ -265,16 +265,6 @@ public interface JaeConstants {
 
 	////////////////////////////////////
 	//
-	//	USER ROLE
-	//
-	////////////////////////////////////
-
-	String ROLE_ADMIN = "Role_Administrator";
-
-	String ROLE_STAFF = "Role_Staff";
-	
-	////////////////////////////////////
-	//
 	//	STUDENT MIGRATION
 	//
 	////////////////////////////////////
@@ -284,4 +274,49 @@ public interface JaeConstants {
 	String BATCH_SUCCESS = "batchSuccess";
 
 	String BATCH_LIST = "batchList";
+
+		////////////////////////////////////
+	//
+	//	USER ROLE
+	//
+	////////////////////////////////////
+
+	String ROLE_ADMIN = "Role_Administrator";
+
+	String ROLE_STAFF = "Role_Staff";
+	
+	String ADMINISTRATOR = "Administrator";
+
+	String STAFF = "Staff";
+
+	////////////////////////////////////
+	//
+	//	SUBJECT
+	//
+	////////////////////////////////////
+	String SUBJECT_MATH = "Maths";
+
+	String SUBJECT_ENGLISH = "English";
+
+	String SUBJECT_GA = "General Ability";
+
+	String SUBJECT_GA_SHORT = "G.A";
+
+	////////////////////////////////////
+	//
+	//	ACCESS FROM
+	//
+	////////////////////////////////////
+	String ONLINE_FROM = "online";
+
+	String CONNECTED_FROM = "connected";
+
+	////////////////////////////////////
+	//
+	//	STATUS
+	//
+	////////////////////////////////////
+	int STATUS_PROCESSING = 1;
+
+	int STATUS_COMPLETED = 2;
 }
