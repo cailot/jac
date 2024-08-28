@@ -5,7 +5,7 @@
 
 <script>
 const ATTENDANCE = 'attendance';
-const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Saturday', 'Sunday', 'Sunday'];
 					
 
 $(document).ready(function() {
@@ -65,7 +65,7 @@ function retrieveAttendance(studentId) {
 			success: function(response) {
 				// Handle the response
 				$.each(response, function(index, value){
-					//console.log(value.attendDate + '--' +value.clazzDay);
+					// console.log(value.attendDate + '--' +value.clazzDay);
 					var id = value.id;  
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
