@@ -589,7 +589,7 @@ function displayFullHistory(studentId) {
 												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td> -->
 												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Full Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
+													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>

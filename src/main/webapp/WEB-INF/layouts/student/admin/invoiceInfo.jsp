@@ -90,7 +90,7 @@ function addEnrolmentToInvoiceList(data) {
 //		Add Payment to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addPaymentToInvoiceList(data) {
-	// console.log(data);
+	console.log('addPaymentToInvoiceList >>>> ' + data);
 	// debugger;
 	var newPayment = $('<tr>');
 	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" title="payment"></i></td>'));
