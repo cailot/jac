@@ -12,5 +12,4 @@ public interface LoginActivityService {
 	// list students login count in studyList.jsp
 	List<LoginActivityDTO> listStudentLogin(String branch, String grade, String from, String to);
 
-
 }

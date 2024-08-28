@@ -2,6 +2,8 @@ package hyung.jin.seo.jae.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
@@ -202,16 +204,16 @@ public class JaeUtils {
 		}
 		return year;
 	}
-	// // convert linefeed to <br/>
-	// public static String fromLinefeed2Br(String msg){
-	// 	String contents = StringUtils.defaultString(msg);
-	// 	return contents.replaceAll("\n", "<br/>");
-	// }
 
-	// // convert <br/> to linefeed
-	// public static String fromBr2Linefeed(String msg){
-	// 	String contents = StringUtils.defaultString(msg);
-	// 	return contents.replaceAll("<br/>", "\n");
-	// }
+	// return difference between startDateTime and endDateTime
+	public static long getDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) throws ParseException {
+		if (startDateTime != null && endDateTime != null) {
+            Duration duration = Duration.between(startDateTime, endDateTime);
+            return duration.toMinutes();
+        } else {
+            return 0; // or handle the null case as needed
+        }
+	}
+
 	
 }
