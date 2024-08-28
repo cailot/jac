@@ -1,10 +1,9 @@
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
-
 <script>
 
-const FULL_PAID = 'Full';
-const OUTSTANDING = 'Outstanding';
+const PAYMENT = 'Payment';
+// const FULL_PAID = 'Full';
+// const OUTSTANDING = 'Outstanding';
 
 
 $(document).ready(
@@ -25,7 +24,7 @@ $(document).ready(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data) {
 	// debugger;
-	// console.log(data);
+	//  console.log(data);
 	if((data.online)&&(data.discount === DISCOUNT_FREE)){
 		// console.log('online');
 		return;
@@ -88,37 +87,42 @@ function addEnrolmentToInvoiceList(data) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Add Outstanding to invoiceListTable
+//		Add Payment to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addOutstandingToInvoiceList(data) {
-	//console.log(data);
-	//debugger;
-	var newOS = $('<tr>');
-	newOS.append($('<td class="text-center"><i class="bi bi-exclamation-circle" title="outstanding"></i></td>'));
-	newOS.append($('<td class="smaller-table-font">').text('Outstanding'));
-	newOS.append($('<td>')); // year
-	newOS.append($('<td>')); // day
-	newOS.append($('<td>')); // start
-	newOS.append($('<td>')); // end
-	newOS.append($('<td>')); // weeks
-	newOS.append($('<td>')); // credit
-	newOS.append($('<td>')); // discount
-	newOS.append($('<td class="smaller-table-font text-right">').html(data.paid + ' <i class="bi bi-check2-circle text-danger" title="paid"></i>')); // price	
+function addPaymentToInvoiceList(data) {
+	// console.log(data);
+	// debugger;
+	var newPayment = $('<tr>');
+	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" title="payment"></i></td>'));
+	newPayment.append($('<td class="smaller-table-font">').text('Paid'));
+	newPayment.append($('<td>')); // year
+	newPayment.append($('<td>')); // day
+	newPayment.append($('<td>')); // start
+	newPayment.append($('<td>')); // end
+	newPayment.append($('<td>')); // weeks
+	newPayment.append($('<td>')); // credit
+	newPayment.append($('<td>')); // discount
+	newPayment.append($('<td class="smaller-table-font text-right">').text((data.amount).toFixed(2))); // price	
 	// set editable attribute to true if the amount is not fully paid	
-	newOS.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text((data.remaining).toFixed(2))); // amount
-	newOS.append($('<td class="smaller-table-font text-center paid-date">').text(data.registerDate)); // payment date
-	newOS.append($('<td class="hidden-column paid">').text(data.paid));
-	newOS.append($('<td class="hidden-column outstanding-match">').text(OUTSTANDING + '|' + data.id));
+	newPayment.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text((data.total - data.upto).toFixed(2))); // remaining
+	
+	var registerDate = new Date(data.registerDate); // Assuming data.registerDate is in 'yyyy-MM-dd' format
+	var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+	var formattedDate = registerDate.toLocaleDateString('en-GB', options); // For dd/MM/yyyy format
+	newPayment.append($('<td class="smaller-table-font text-center paid-date">').text(formattedDate));
+
+	newPayment.append($('<td class="hidden-column paid">').text(data.amount));
+	newPayment.append($('<td class="hidden-column payment-match">').text(PAYMENT + '|' + data.id));
 
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
-	isNotBlank(data.info) ? newOS.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newOS.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'OUTSTANDING' + ', ' +  data.id + ', \'\')"></i>'));		
+	isNotBlank(data.info) ? newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'\')"></i>'));		
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
-		if ($(this).find('.outstanding-match').text() === newOS.find('.outstanding-match').text()) {
+		if ($(this).find('.payment-match').text() === newPayment.find('.payment-match').text()) {
 			$(this).remove();
 		}
 	});
-	$('#invoiceListTable > tbody').prepend(newOS);
+	$('#invoiceListTable > tbody').prepend(newPayment);
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -194,15 +198,15 @@ function removeBookFromInvoiceList() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Remove Outstanding from invoiceListTable
+//		Remove Payment from invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function removeOutstandingFromInvoiceList() {
+function removePaymentFromInvoiceList() {
 	$('#invoiceListTable > tbody > tr').each(function() {
-		var hiddens = $(this).find('.outstanding-match').text();
+		var hiddens = $(this).find('.payment-match').text();
 		if(hiddens.indexOf('|') !== -1){
 			var hiddenValues = hiddens.split('|');
 			//console.log(hiddenValues[1]);
-			if(hiddenValues[0] === OUTSTANDING){
+			if(hiddenValues[0] === PAYMENT){
 				$(this).remove();
 			}
 		}
@@ -285,7 +289,6 @@ function displayPayment(){
 	$("#payAmount").val($("#payRxAmount").val());
 	// $("#payAmount").val($("#payRxAmount").val().toFixed(2));
 
-  
 	// payAmount
     $("#payAmount").on('input', function(){
         var payAmount = parseFloat($("#payAmount").val()).toFixed(2);
@@ -383,13 +386,20 @@ function makePayment(){
 					if(!isFreeOnline){
 						addEnrolmentToInvoiceList(value);
 					}
-				}else if (value.hasOwnProperty('remaining')) {
-					// It is an OutstandingDTO object, extract paymentId
-					var temp = value.paymentId;
+				// }else if (value.hasOwnProperty('remaining')) {
+				// 	// It is an OutstandingDTO object, extract paymentId
+				// 	var temp = value.paymentId;
+				// 	if(temp > lastPaymentId){
+				// 		lastPaymentId = temp;
+				// 	}
+				// 	addOutstandingToInvoiceList(value);
+				}else if (value.hasOwnProperty('method')) { // payment
+					// It is an PaymentDTO object, extract paymentId
+					var temp = value.id;
 					if(temp > lastPaymentId){
 						lastPaymentId = temp;
 					}
-					addOutstandingToInvoiceList(value);
+					addPaymentToInvoiceList(value);
 				}else{
 					// It is a BookDTO object
 					addBookToInvoiceList(value);
@@ -481,7 +491,6 @@ function displayInvoiceInformation(){
 		type : 'GET',
 		success : function(response) {
 			// assign info into invoiceInfo
-			// response = response.replace(/\\n/g, "\n");
 			document.getElementById('invoiceInfo').value = response;
 			// show invoice dialogue
 			$('#invoiceModal').modal('toggle');
@@ -567,13 +576,17 @@ function addInformation(){
 						if ($(this).find('.enrolment-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'\')"></i>');		
 						}
-					}else if(dataType === OUTSTANDING){
-						if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
-						}
+					// }else if(dataType === OUTSTANDING){
+					// 	if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
+					// 		(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
+					// 	}
 					}else if(dataType === BOOK){
 						if ($(this).find('.material-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
+						}
+					}else if(dataType === PAYMENT){
+						if ($(this).find('.payment-match').text() === (dataType + '|' + dataId)) {
+							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'\')"></i>');
 						}
 					}
 				}

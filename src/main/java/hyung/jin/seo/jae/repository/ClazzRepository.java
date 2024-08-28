@@ -27,8 +27,11 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2")
 	List<ClazzDTO> findClassForCourseIdNCycle(Long id, int year);
 
-	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = ?4")
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = ?4 AND c.active=true")
 	List<ClazzDTO> findClassForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch);
+
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = '90' AND c.course.online = true")
+	List<ClazzDTO> findOnlineClassForCourseIdNCycleNState(Long id, int year, String state);
 
 	// list onsite class for state, branch, grade
 	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE (?1 = '0' OR c.state = ?1) AND (?2 = '0' OR c.branch = ?2) AND (?3 = '0' OR c.course.grade = ?3) AND c.course.online = 0")

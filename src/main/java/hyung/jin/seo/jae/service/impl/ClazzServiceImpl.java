@@ -243,6 +243,18 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
+	public List<ClazzDTO> findOnlineClazzForCourseIdNCycleNState(Long id, int year, String state) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try {
+			dtos = clazzRepository.findOnlineClassForCourseIdNCycleNState(id, year, state);
+		} catch (Exception e) {
+			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
+
+	@Override
 	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		// if (StringUtils.isNotBlank(year) && (!StringUtils.equals(year, JaeConstants.ALL))) {

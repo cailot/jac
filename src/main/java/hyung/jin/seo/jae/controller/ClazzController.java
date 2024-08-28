@@ -139,7 +139,8 @@ public class ClazzController {
 	public List<CourseDTO> getCoursesByGrade(@RequestParam(value = "grade", required = true) String grade) {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
-		List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
+		// List<CourseDTO> dtos = courseService.findActiveByGrade(grade);
+		List<CourseDTO> dtos = courseService.findActiveByGradeNYear(grade, year);
 		// associate subjects
 		for(CourseDTO dto : dtos){
 			Course course = courseService.getCourse(Long.parseLong(dto.getId()));
@@ -197,6 +198,15 @@ public class ClazzController {
 		return dtos;
 	}
 
+	// search classes by id & year & state & branch
+	@GetMapping("/onlineClassByCourse")
+	@ResponseBody
+	List<ClazzDTO> getOnlineClassByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year,
+			@RequestParam("state") String state) {
+		List<ClazzDTO> dtos = clazzService.findOnlineClazzForCourseIdNCycleNState(courseId, year, state);
+		return dtos;
+	}
+	
 	// get class by Id
 	@GetMapping("/get/class/{id}")
 	@ResponseBody

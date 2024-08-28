@@ -190,8 +190,9 @@ var branch = $('#formBranch').val();
 
 let grade = value.grade;	  
 let year = value.year;	
+let isOnline = value.online;
 $.ajax({
-	url: '${pageContext.request.contextPath}/class/classesByCourse',
+	url: isOnline ? '${pageContext.request.contextPath}/class/onlineClassByCourse' : '${pageContext.request.contextPath}/class/classesByCourse',
 	type: 'GET',
 	data: {
 	  courseId: value.id,

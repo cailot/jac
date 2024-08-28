@@ -1,5 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script>
 $(function() {
+
 	// initiate datepicker
 	$( "#formRegisterDate" ).datepicker({
 		dateFormat: 'dd/mm/yy'
@@ -14,12 +16,12 @@ $(function() {
 			searchStudent();
 		}
 	});
-	// initialise state list when loading
+	// initialise state, branch, grade list when loading
 	listState('#formState');
 	listState('#addState');
-	listBranch('#formBranch');
+	// listBranch('#formBranch');
 	listBranch('#addBranch');
-	listGrade('#formGrade')
+	// listGrade('#formGrade')
 	listGrade('#addGrade');
 
 	// only for Staff
@@ -35,6 +37,7 @@ $(function() {
 			}
 		});
 	}
+
 });
 	
 ///////////////////////////////////////////////////////////////////////////
@@ -406,10 +409,8 @@ function updateStudentInfo() {
 //		Display selected student in student search
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
-	//console.log(value);
 	clearStudentForm();
 	$("#formId").val(value['id']);
-	//debugger;
 	if(value['endDate']===''){ // active student
 		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
 		$("#formLastName").val(value['lastName']).css("color", "black").prop('disabled', false);
@@ -444,7 +445,6 @@ function displayStudentInfo(value) {
 		$("#formContact2").val(value['contactNo2']).css("color", "red").prop('disabled', true);
 		$("#formMemo").val(value['memo']).css("color", "red").prop('disabled', true);
 		$("#formState").prop('disabled', true);
-		$("#formBranch").prop('disabled', true);
 		$("#formRegisterDate").prop('disabled', true);
 		$('#formActive').prop('checked', false);
 		$("#formActive").prop("disabled", false);
@@ -453,9 +453,10 @@ function displayStudentInfo(value) {
 	$("#formBranch").val(value['branch']);
 	$("#formEndDate").val(value['endDate']);
 	
-	// Set date value
-	// const tempDate = formatDate(value['registerDate']);
-	// var date = new Date(tempDate); // Replace with your date value
+	// set dateFormat again for direct link from enrolment page
+	$("#formRegisterDate").datepicker({
+		dateFormat: 'dd/mm/yy'
+	});
 	var date = new Date(value['registerDate']); // Replace with your date value
 	$("#formRegisterDate").datepicker('setDate', date);
 	
@@ -464,7 +465,6 @@ function displayStudentInfo(value) {
 	// clear search keyword
 	$("#formKeyword").val('');
 
-	
 	// associate courseInfo.jsp 
 	// 1. display same selected grade to Course Register section in courseInfo.jsp
 	readyForCourseRegistration(value['grade']);
@@ -512,6 +512,24 @@ function clearCourseRegisteration(){
 	$('#courseTable > tbody').empty();
 	$('#bookTable > tbody').empty();			
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 	Search Student by Id
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+function searchStudentById(id){
+	$.ajax({
+		url : '${pageContext.request.contextPath}/student/get/' + id,
+		type : 'GET',
+		success : function(data) {
+			displayStudentInfo(data);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
 
 </script>
 
@@ -601,6 +619,31 @@ function clearCourseRegisteration(){
 			<div class="col-md-4">
 				<label for="formBranch" class="label-form">Branch</label> 
 				<select class="form-control" id="formBranch" name="formBranch">
+					<option value="12">Box Hill</option>
+					<option value="13">Braybrook</option>
+					<option value="14">Chadstone</option>
+					<option value="15">Cranbourne</option>
+					<option value="16">Epping</option>
+					<option value="17">Glen Waverley</option>
+					<option value="18">Narre Warren</option>
+					<option value="19">Mitcham</option>
+					<option value="20">Preston</option>
+					<option value="21">Richmond</option>
+					<option value="22">Springvale</option>
+					<option value="23">St.Albans</option>
+					<option value="24">Werribee</option>
+					<option value="25">Balwyn</option>
+					<option value="26">Rowville</option>
+					<option value="27">Caroline Springs</option>
+					<option value="28">Bayswater</option>
+					<option value="29">Point Cook</option>
+					<option value="30">Craigieburn</option>
+					<option value="31">Mernda</option>
+					<option value="32">Melton</option>
+					<option value="33">Glenroy</option>
+					<option value="34">Pakenham</option>
+					<option value="90">JAC Head Office Vic</option>
+					<option value="99">Testing</option>
 				</select>
 			</div>
 			<div class="col-md-4">
@@ -621,7 +664,29 @@ function clearCourseRegisteration(){
 				<input type="text" id="formActiveLabel" class="form-control" placeholder="Activated" readonly>
 			</div>
 			<div class="col-md-3">
+				<!-- <select class="form-control" id="formGrade" name="formGrade">
+				</select> -->
 				<select class="form-control" id="formGrade" name="formGrade">
+					<option value="1">P2</option>
+					<option value="2">P3</option>
+					<option value="3">P4</option>
+					<option value="4">P5</option>
+					<option value="5">P6</option>
+					<option value="6">S7</option>
+					<option value="7">S8</option>
+					<option value="8">S9</option>
+					<option value="9">S10</option>
+					<option value="10">S10E</option>
+					<option value="11">TT6</option>
+					<option value="12">TT8</option>
+					<option value="13">TT8E</option>
+					<option value="14">SRW4</option>
+					<option value="15">SRW5</option>
+					<option value="16">SRW6</option>
+					<option value="17">SRW7</option>
+					<option value="18">SRW8</option>
+					<option value="19">JMSS</option>
+					<option value="20">VCE</option>
 				</select>
 			</div>
 		</div>
@@ -887,3 +952,4 @@ function clearCourseRegisteration(){
     	</div>
 	</div>
 </div>
+

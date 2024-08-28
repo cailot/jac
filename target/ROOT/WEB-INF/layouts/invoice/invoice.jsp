@@ -6,7 +6,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <%@ page import="hyung.jin.seo.jae.utils.JaeConstants" %>
 
     
@@ -192,36 +191,31 @@ function sendEmail() {
                     </c:forEach>
                 </c:if>
 
-                <!-- Check if outstandings attribute exists in session -->
-                <c:if test="${not empty sessionScope.outstandings}">
-                    <!-- Retrieve the outstandings from session -->
-                    <c:set var="outstandings" value="${sessionScope.outstandings}" />
-                    <c:forEach items="${outstandings}" var="outstanding">
+                <!-- Check if payments attribute exists in session -->
+                <c:if test="${not empty sessionScope.payments}">
+                    <!-- Retrieve the payments from session -->
+                    <c:set var="payments" value="${sessionScope.payments}" />
+                    <c:forEach items="${payments}" var="payment">
                         <tr>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <%-- [<c:out value="${fn:toUpperCase(outstanding.invoiceId)}" />] <c:out value="${outstanding.id}" /> --%>
                                 Payment
                             </td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <c:out value="${outstanding.registerDate}" />
+                                <c:out value="${payment.registerDate}" />
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.paid}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.remaining}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.amount}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <!-- <c:out value="${outstanding.paid}" /> -->
                                 <c:choose>
-                                    <c:when test="${outstanding.paid >= 0}">
-                                        <fmt:formatNumber value="${- outstanding.paid}" pattern="#0.00" />
+                                    <c:when test="${payment.amount >= 0}">
+                                        <fmt:formatNumber value="${- payment.amount}" pattern="#0.00" />
                                     </c:when>
                                     <c:otherwise>
-                                        <fmt:formatNumber value="${outstanding.paid}" pattern="#0.00" />
+                                        <fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
                                     </c:otherwise>
                                 </c:choose>
                             </td>

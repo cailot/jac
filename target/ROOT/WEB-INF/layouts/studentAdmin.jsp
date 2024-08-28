@@ -39,6 +39,14 @@
     </div>
  </div>
 
+ <!-- fill in student info if page is linked from enrolment list -->
+ <script>
+	<c:if test="${not empty std}">
+		//displayStudentInfo(JSON.parse('${std}'));
+		displayStudentInfo(${std});
+    </c:if>
+ </script>
+
  
 
 

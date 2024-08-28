@@ -20,8 +20,6 @@ const DISCOUNT_FREE = '100%';
 
 $(document).ready(
 	function() {
-		// load grades
-		listGrade('#registerGrade');
 
 		// make an AJAX call on page load to get the academic year and week
 		$.ajax({
@@ -48,80 +46,62 @@ $(document).ready(
 		$('#basketTable').on('click', 'a', function(e) {
 			e.preventDefault();
 			var tr = $(this).closest('tr');
-    		var year = tr.find('.year').text(); // Get the text content of the <td class="year"> elements within the <tr>
-    		var grade = tr.find('.grade').text(); // Get the value of the <td class="grade"> elements within the <tr>
-			// if year & grade is not empty, remove assocaited free online class from basketTable
-			if(year !== '' && grade !== ''){
-				var clazzId = '0';
-				var state = $('#formState').val();
-				var branch = $('#formBranch').val();
-				// find relavant free online class and remove it from basket
-				$.ajax({
-					url: '${pageContext.request.contextPath}/class/id',
-					type: 'GET',
-					data: {
-						grade: grade,
-						year: year,
-						state: state,
-						branch: branch
-					},
-					success: function(data) {
-						// if any online course is found with grade & year
-						if((data !== '') && (data > 0)){
-							// find and remove free online class from basket
-							$('#basketTable > tbody > tr').each(function() {
-								var exist = $(this).find('.data-type').text();
-								if(exist.indexOf('|') !== -1){
-									var hiddenValues = exist.split('|');
-									//console.log(hiddenValues[1]);
-									if(hiddenValues[0] === CLASS && parseInt(hiddenValues[1]) === data){
-										// remove row from basket
-										$(this).remove();
-										console.log('object :>> ', hiddenValues);
-									}
-								}
-							});
+			// how to check data-type contains 'book' or 'class' ?
+			// if it is 'book', simply remove <tr>, if it is 'class', remove all rows with the same pairId 
+			var hiddens = tr.find('.data-type').text();
+			if(hiddens.indexOf('|') !== -1){
+				var hiddenValues = hiddens.split('|');
+				if(hiddenValues[0] === BOOK){
+					// how to delete current row from baskettable?
+					tr.remove();
+				}else if(hiddenValues[0] === CLASS){
+					var pairId = tr.data('pair-id');
+					// search another row with the same pairId
+					$('#basketTable > tbody > tr').each(function() {
+						var exist = $(this).data('pair-id');
+						if(exist === pairId){
+							$(this).remove();
 						}
-					},
-					error : function(xhr, status, error) {
-						console.log('Error : ' + error);
-					}
-				});
-			}	
-			// remove row from basket
-			tr.remove();
+					});
+				}
+			}
 			updateTotalBasket();
 			showAlertMessage('deleteAlert', '<center><i class="bi bi-trash"></i> &nbsp;&nbsp Item is now removed from My Lecture</center>');
 		});
 
-		// synchronise value between onsite and online class
-		$('#basketTable').on('input', '#onsiteStart', function() {
-			syncValues();
-    	});
-		$('#basketTable').on('input', '#onsiteEnd', function() {
-			syncValues();
-    	});
-		$('#basketTable').on('input', '#onsiteCredit', function() {
-			syncValues();
-    	});
-		$('#basketTable').on('input', '#onsiteWeeks', function() {
-			syncValues();
-    	});
+		// Add event listeners to the input fields within the same row
+		$('#basketTable').on('input', '.onsiteStart, .onsiteEnd, .onsiteWeeks, .onsiteCredit', function () {
+			var $onsiteRow = $(this).closest('tr');  // Find the closest onsite row
+			// how to set .discount = 0?
+			$onsiteRow.find('.discount').text(0);
+			var pairId = $onsiteRow.data('pair-id');  // Get the pair ID
+			var $onlineRow = $('#basketTable').find('tr[data-pair-id="' + pairId + '"]').not($onsiteRow);  // Find the corresponding online row
 
-		function syncValues() {
-			// Parse integer values from onsite start and end dates
-			var onsiteStartValue = parseInt($('#onsiteStart').text(), 10);
-			$('#onlineStart').text(onsiteStartValue);
-			var onsiteEndValue = parseInt($('#onsiteEnd').text(), 10);
-			$('#onlineEnd').text(onsiteEndValue);
-			var onsiteWeeksValue = parseInt($('#onsiteWeeks').text(), 10);
-			$('#onlineWeeks').text(onsiteWeeksValue);
-			var onsiteCreditValue = parseInt($('#onsiteCredit').text(), 10);
-			$('#onlineCredit').text(onsiteCreditValue);
-    	}
+			syncValues($onsiteRow, $onlineRow);  // Pass both rows to the syncValues function
+   		});
+
 	}
 );
-	
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Sync values between onsite and online rows    
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function syncValues($onsiteRow, $onlineRow) {
+    // Parse integer values from the onsite start and end dates within the same row
+    var onsiteStartValue = parseInt($onsiteRow.find('.onsiteStart').text(), 10);
+    $onlineRow.find('.onlineStart').text(onsiteStartValue);
+
+    var onsiteEndValue = parseInt($onsiteRow.find('.onsiteEnd').text(), 10);
+    $onlineRow.find('.onlineEnd').text(onsiteEndValue);
+
+    var onsiteWeeksValue = parseInt($onsiteRow.find('.onsiteWeeks').text(), 10);
+    $onlineRow.find('.onlineWeeks').text(onsiteWeeksValue);
+
+    var onsiteCreditValue = parseInt($onsiteRow.find('.onsiteCredit').text(), 10);
+    $onlineRow.find('.onlineCredit').text(onsiteCreditValue);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Search Course based on Grade    
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +128,7 @@ function listCourses(grade) {
 					}).join(', ');
 				}
 				row.append($('<td class="smaller-table-font course-title col-10" style="padding-left: 20px;">').html(value.name + ' - ' + value.description + '  [' + subjectsString + ']'));
-				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ","  + grade + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 				$('#courseTable > tbody').append(row);
 			});
 		},
@@ -190,7 +170,7 @@ function listBooks(grade) {
 				}
 				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));				
 				row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
-				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned + ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned +  ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 				$('#bookTable > tbody').append(row);
 			});
 		},
@@ -204,8 +184,7 @@ function listBooks(grade) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Add class to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addClassToBasket(value) {
-
+function addClassToBasket(value, gradePair) {
 var state = $('#formState').val();
 var branch = $('#formBranch').val();
 
@@ -221,7 +200,7 @@ $.ajax({
 	  branch : branch	
 	},
 	success: function(data) {
-		console.log(data);
+		//console.log(data);
 		// console.log(value);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
@@ -234,7 +213,7 @@ $.ajax({
 			start_week = 1;
 			end_week = 10;
 		}    
-		var row = $('<tr class="d-flex">');
+		var row = $('<tr class="d-flex" data-pair-id="' + gradePair + '">');
 		// dynamic clazz id assign
 		var dropdown = $('<select class="clazzChoice">');
 		$.each(data, function(index, clazz) {
@@ -270,7 +249,7 @@ $.ajax({
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onsiteStart').text(start_week); // start week
+		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(start_week); // start week
 		startWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -289,7 +268,7 @@ $.ajax({
 		});
 		row.append(startWeekCell);
 		
-		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onsiteEnd').text(end_week); // end week
+		var endWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').text(end_week); // end week
 			endWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -308,7 +287,7 @@ $.ajax({
 		});
 		row.append(endWeekCell);
 
-		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onsiteWeeks').text((end_week - start_week) + 1);// weeks  
+		var weeksCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').text((end_week - start_week) + 1);// weeks  
 		weeksCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 			var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -326,7 +305,7 @@ $.ajax({
 		});
 		row.append(weeksCell);
 
-		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').attr('id','onsiteCredit').addClass('credit').text(0); // credit
+		var creditCell = $('<td class="smaller-table-font text-center" contenteditable="true">').attr('id','onsiteCredit').addClass('credit onsiteCredit').text(0); // credit
 		var previousCredit = parseInt(creditCell.text());
 		creditCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
@@ -416,13 +395,13 @@ $.ajax({
 			var clazzId = 0;
 			var isNewClazz = (value.description.indexOf(ACADEMIC_NEXT_YEAR_COURSE_SUFFIX) !== -1);
 			$.ajax({
-				url: '${pageContext.request.contextPath}/class/id',
+				url: '${pageContext.request.contextPath}/class/onlineId',
 				type: 'GET',
 				data: {
 					grade: grade,
-					year: year,
-					state: state,
-					branch: branch
+					year: year
+					// state: state,
+					// branch: branch
 				},
 				success: function(data) {
 					// if any online course is found with grade & year
@@ -441,19 +420,19 @@ $.ajax({
 										clazzName = title.split('-')[0].trim();
 										clazzDescription = title.split('-')[1].trim();
 									}
-									var row = $('<tr class="d-flex">');
+									var row = $('<tr class="d-flex" data-pair-id=' + gradePair + '>');
 									row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
 									row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
 									row.append($('<td class="smaller-table-font day">').text('All')); // day
 									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-									var onlineStartWeek = startWeekCell.clone().attr('id', 'onlineStart').text(start_week);
+									var onlineStartWeek = startWeekCell.clone().removeClass('onsiteStart').addClass('onlineStart').text(start_week);
 									row.append(onlineStartWeek);
-									var onlineEndWeek = endWeekCell.clone().attr('id', 'onlineEnd').text(end_week);
+									var onlineEndWeek = endWeekCell.clone().removeClass('onsiteEnd').addClass('onlineEnd').text(end_week);
 									row.append(onlineEndWeek);
-									var onlineWeeks = weeksCell.clone().attr('id', 'onlineWeeks').text((end_week - start_week) + 1);
+									var onlineWeeks = weeksCell.clone().removeClass('onsiteWeeks').addClass('onlineWeeks').text((end_week - start_week) + 1);
 									row.append(onlineWeeks);
-									row.append($('<td class="smaller-table-font text-center credit" id="onlineCredit" contenteditable="true">').text(0));
+									row.append($('<td class="smaller-table-font text-center credit onlineCredit" contenteditable="true">').text(0));
 									row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text('100%'));
 									row.append($('<td class="smaller-table-font text-center price">').text(0)); // price
 									row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(0)); // amount					
@@ -485,8 +464,9 @@ $.ajax({
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Add book to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addBookToBasket(value){
-	//console.log(value);
+function addBookToBasket(value, index){
+	// console.log(value);
+	// console.log(index);
 	// if book is already in basket, skip
 	if(isSameRowExisting(BOOK, value.id)){
 		showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
@@ -614,9 +594,7 @@ function associateRegistration(){
 		contentType: 'application/json',
 		success: function(response) {
 			//debugger;
-			removeEnrolmentFromInvoiceList();	
-			// need to clear existing Outstanding??
-			removeOutstandingFromInvoiceList();
+			clearInvoiceTable();
 
 			if(response.length >0){
 				$.each(response, function(index, value){
@@ -698,17 +676,17 @@ function associateRegistration(){
 
 			// 4. check any outstanding, if exists, show it to invoice table
 			$.ajax({
-				url: '${pageContext.request.contextPath}/enrolment/associateOutstanding/' + studentId,
+				url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
+					console.log(response);
 					// remove outstandings from invoice table
-					removeOutstandingFromInvoiceList();
+					removePaymentFromInvoiceList();
 					// Handle the response
 					if(response.length >0){
 						$.each(response, function(index, value){
-							// console.log(value);
-							addOutstandingToInvoiceList(value);
+							addPaymentToInvoiceList(value);
 						});
 					}
 				},
@@ -744,11 +722,11 @@ function retrieveEnrolment(studentId){
 		success: function(response) {
 			// Handle the response
 			$.each(response, function(index, value){
-				//debugger;
+				// debugger;
 				// It is an EnrolmentDTO object     
 				if (value.hasOwnProperty('extra')) {
 					// update my lecture table
-					var row = $('<tr class="d-flex">');
+					var row = $('<tr class="d-flex" data-pair-id=' + value.grade + '>');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 					if(value.extra === OVERDUE){
 						row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" title="Overdue"></i></td>')); // item
@@ -760,7 +738,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
 					row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
-					var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week').attr('id', 'onsiteStart').text(value.startWeek); // start week;
+					var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(value.startWeek); // start week;
 					startWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -779,7 +757,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(startWeekCell);
 
-					var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week').attr('id', 'onsiteEnd').text(value.endWeek); // end week;
+					var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').text(value.endWeek); // end week;
 					endWeekCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -798,7 +776,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(endWeekCell);
 
-					var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks').attr('id', 'onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
+					var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
 					weeksCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
 						var row = $(this).closest('tr'); // Get the closest <tr> element
@@ -816,7 +794,7 @@ function retrieveEnrolment(studentId){
 					});
 					row.append(weeksCell);
 
-					var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').attr('id', 'onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit').attr('id', 'onsiteCredit').text(value.credit); // credit;				
+					var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onsiteCredit').text(value.credit); // credit;				
 					var previousCredit = parseInt(creditCell.text());
 					creditCell.on('input', function() {
 						var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
@@ -920,10 +898,8 @@ function retrieveEnrolment(studentId){
 					if(!freeOnline){
 						addEnrolmentToInvoiceList(value);
 					}
-				} else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
-					// update invoice table with Outstanding
-					addOutstandingToInvoiceList(value);
-				}else{  // Book
+				}else if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object
+				
 					// update my lecture table
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.bookId)); // 0
@@ -945,7 +921,16 @@ function retrieveEnrolment(studentId){
 					$('#basketTable > tbody').append(row);
 					// update invoice table with Book
 					addBookToInvoiceList(value);
+
+				// }else if (value.hasOwnProperty('remaining')) { // It is an OutstandingDTO object
+				// 	// update invoice table with Outstanding
+				// 	addOutstandingToInvoiceList(value);
+				
+				}else{//} if (value.hasOwnProperty('upto')) { // It is an PaymentDTO object
+					// update invoice table with Payment
+					addPaymentToInvoiceList(value);
 				}
+				
 			});
 			// update basket total
 			updateTotalBasket();					
@@ -1025,7 +1010,36 @@ function cellEnterKeyUpdateTotalBasket(cell){
 	});
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Clear exsiting enrolment 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function removeAllInBasket(){
+	// get id from 'formId'
+	const studentId = $('#formId').val();
+	// check if last invoice is full paid or not
+	$.ajax({
+		url: '${pageContext.request.contextPath}/invoice/last/' + studentId,
+		method: 'GET',
+		success: function(response) {
+			// console.log(response);
+			// Handle the response
+			if(response === false){
+				$('#warning-alert .modal-body').text('Last invoice is not fully paid');
+				$('#warning-alert').modal('toggle');
+				return;
+			}else{
+				// clean up enrolments in basket table
+				clearEnrolmentBasket();
+				// clean up invoice table
+				clearInvoiceTable();
+			}
+		},
+		error: function(xhr, status, error) {
+			// Handle the error
+			console.error(error);
+		}
+	});
+}
 </script>
 
 	<style>
@@ -1075,12 +1089,35 @@ function cellEnterKeyUpdateTotalBasket(cell){
 					<div class="col-md-2">
 						<select class="form-control form-control-sm" id="registerGrade" name="registerGrade">
 							<option>Grade</option>
+							<option value="1">P2</option>
+							<option value="2">P3</option>
+							<option value="3">P4</option>
+							<option value="4">P5</option>
+							<option value="5">P6</option>
+							<option value="6">S7</option>
+							<option value="7">S8</option>
+							<option value="8">S9</option>
+							<option value="9">S10</option>
+							<option value="10">S10E</option>
+							<option value="11">TT6</option>
+							<option value="12">TT8</option>
+							<option value="13">TT8E</option>
+							<option value="14">SRW4</option>
+							<option value="15">SRW5</option>
+							<option value="16">SRW6</option>
+							<option value="17">SRW7</option>
+							<option value="18">SRW8</option>
+							<option value="19">JMSS</option>
+							<option value="20">VCE</option>
 						</select>
 					</div>
-					<div class="offset-md-8">
+					<div class="offset-md-6">
 					</div>
 					<div class="col-md-2">
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
+					</div>
+					<div class="col-md-2">
+						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Start New</button>
 					</div>
 				</div>
 			</div>

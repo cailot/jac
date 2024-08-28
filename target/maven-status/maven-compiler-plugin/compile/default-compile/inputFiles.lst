@@ -2,17 +2,21 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/PracticeType.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/InvoiceDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/StatsService.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/InvoiceHistoryDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/StudentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/GradeRepository.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/InvoiceHistoryServiceImpl.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/OnlineActivityService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TeacherDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/MaterialDTO.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/OutstandingRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Test.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/BookServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/AssessmentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/InvoiceHistoryRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/MaterialServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/ClazzController.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/LoginActivityController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/AssessmentDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/EnrolmentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/AssessmentService.java
@@ -23,6 +27,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OnlineSessionDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/StudentController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Grade.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/InvoiceHistoryService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/JaeApplication.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Payment.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/CourseDTO.java
@@ -38,6 +43,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/CycleServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/InvoiceRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TestDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/LoginActivityDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/EmailService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/AssessmentAnswerRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PaymentRepository.java
@@ -53,6 +59,8 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/UsernameGenerator.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/ConnectedController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeScheduleRepository.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OnlineActivityDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/OnlineActivity.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/BranchDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/AttendanceRepository.java
@@ -60,7 +68,6 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/InvoiceService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/AssessmentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/TestType.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Outstanding.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/EnrolmentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/CourseRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/UserRepository.java
@@ -69,7 +76,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/StudentIdGenerator.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/EnrolmentController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/ConnectedServiceImpl.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/OutstandingServiceImpl.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/OnlineActivityServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/CourseService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/StudentService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/StudentPractice.java
@@ -80,6 +87,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/TestScheduleRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/ClazzServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/PdfService.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/LoginActivityService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/BookDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/config/JaeWebConfig.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/PracticeAnswerDTO.java
@@ -90,6 +98,8 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/PaymentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/CycleRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Extrawork.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/LoginActivity.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/OnlineActivityRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/GuestStudent.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/StudentPracticeDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TestAnswerDTO.java
@@ -104,6 +114,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/OnlineSession.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/UserDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/AssessmentController.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/InvoiceHistory.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/CourseServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/StateRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/EmailServiceImpl.java
@@ -112,7 +123,6 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/ClazzDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Teacher.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/SimpleBasketDTO.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OutstandingDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/TeacherRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/InvoiceIdGenerator.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/OnlineSessionController.java
@@ -151,13 +161,13 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Material.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/TestAnswerRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/AttendanceServiceImpl.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/OutstandingService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/SubjectDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeAnswerRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/DayScheduleDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/GuestStudentRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/TestSchedule.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/SubjectRepository.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/LoginActivityRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/TestAnswerItem.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/PaymentDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/AttendanceDTO.java
@@ -170,6 +180,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/DaySchedule.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/ExtraworkRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/GradeDTO.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/LoginActivityServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/StudentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/rest/JaeRestController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/StudentTestRepository.java

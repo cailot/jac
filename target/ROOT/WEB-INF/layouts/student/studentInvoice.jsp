@@ -30,25 +30,28 @@ $(document).ready(function () {
  	        'print'
         ],
 		order : [[1, 'desc'], [0, 'desc']], // order by invoiceId desc, id desc
-		// sum for paid
-		footerCallback: function (row, data, start, end, display) {
-    		var api = this.api();
-    		// Custom function to parse and sum values
-			var parseAndSum = function (data) {
-				var total = 0;
-				for (var i = 0; i < data.length; i++) {
-					var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-					if (!isNaN(value)) {
-						total += value;
-					}
+	footerCallback: function (row, data, start, end, display) {
+		var api = this.api();
+
+		// Custom function to parse and sum values
+		var parseAndSum = function (data) {
+			var total = 0;
+			for (var i = 0; i < data.length; i++) {
+				var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
+				if (!isNaN(value)) {
+					total += value;
 				}
-				return total;
-			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer
-			$(api.column(6).footer()).html('Total Paid : <span class="text-primary">$' + totalOutstanding.toFixed(2) + '</span>');
-		}		
+			}
+			return total;
+		};
+
+		// Total over all pages
+		var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
+
+		// Update footer with total paid amount
+		$('#totalPaid').html('$' + totalPaid.toFixed(2));
+	}
+
     });
 
 	// key enter event for 'studentKeyword' field
@@ -160,12 +163,12 @@ function getInvoice(studentId) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Payment History in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayPaymentHistory(studentId, firstName, lastName, invoiceId, paymentId){
+function displayPaymentHistory(studentId, firstName, lastName, invoiceId, invoiceHistoryId, paymentId){
 	var branch = window.branch;
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
+	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&invoiceHistoryId=' + invoiceHistoryId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
 	var win = window.open(url, '_blank');
 	win.focus();
 }
@@ -250,6 +253,11 @@ function clearStudentInfo() {
 	}
 
 	tr { height: 50px } 
+
+	tfoot th, tfoot td {
+    vertical-align: middle;
+    padding-top: 15px; /* Add padding to adjust the vertical position */
+}
 </style>
 
 <!-- List Body -->
@@ -372,7 +380,7 @@ function clearStudentInfo() {
 													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
 												</td>
 												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total - payment.amount}" pattern="#0.00" />
+													<fmt:formatNumber value="${payment.total - payment.upto}" pattern="#0.00" />
 												</td>
 												<!-- Display a property of each object -->
 												<td class="small align-middle ml-1" style="white-space: nowrap; padding: 0px;">
@@ -381,7 +389,7 @@ function clearStudentInfo() {
 														<!-- if enrol is not free online, then display -->
 														<c:if test="${enrol.online != true and enrol.discount != '100%'}">		
 															<tr style="background-color : transparent !important;">
-																<td class="small align-middle" style="white-space: nowrap;">[${enrol.grade.toUpperCase()}] ${enrol.name}&nbsp;</td>
+																<td class="small align-middle" style="white-space: nowrap;">${enrol.name}&nbsp;</td>
 																<td class="small align-middle" style="white-space: nowrap;">(${enrol.extra})</td>
 															</tr>
 														</c:if>
@@ -401,7 +409,7 @@ function clearStudentInfo() {
 													</c:choose>
 												</td>																						
 												<td class="text-center align-middle">
-													<i class="bi bi-calculator text-success hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.id}')"></i>
+													<i class="bi bi-calculator text-success hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayPaymentHistory('${studentId}', '${studentFirstName}', '${studentLastName}', '${payment.invoiceId}', '${payment.invoiceHistoryId}', '${payment.id}')"></i>
 												</td> 
 											</tr>
 										</c:forEach>
@@ -409,11 +417,11 @@ function clearStudentInfo() {
 								</tbody>
 								<tfoot>
 									<tr>
-										<th></th>
-										<th></th>
 										<th colspan="2"></th>
-										<th colspan="3" class="text-right small align-middle"></th>
-										<th colspan="2" class="text-right small"></th>
+										<th colspan="2" class="text-right small align-middle">Total Paid:</th>
+										<th colspan="5" class="text-left small align-middle">
+											<span id="totalPaid" class="text-primary ml-5"></span>
+										</th>
 									</tr>
 								</tfoot>
 							</table>

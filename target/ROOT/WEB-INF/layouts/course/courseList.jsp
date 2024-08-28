@@ -99,7 +99,7 @@ function addCourse() {
 		online : $("#addOnline").is(':checked') ? true : false,
 		subjects : subjectIds
 	}
-	console.log(course);
+	//console.log(course);
 	
 	// Send AJAX to server
 	$.ajax({
@@ -397,12 +397,32 @@ function updateSubjects(action) {
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
-						<label for="listGrade" class="label-form">Grade</label>
-						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All Grade</option>
+						<label for="listYear" class="label-form">Year</label>
+						<select class="form-control" id="listYear" name="listYear">
+							<%
+								Calendar now = Calendar.getInstance();
+								int currentYear = now.get(Calendar.YEAR);
+								int nextYear = currentYear + 1;
+							%>
+							<option value="0">All</option>
+							<option value="<%= currentYear %>">Academic Year <%= currentYear %>/<%= (currentYear%100)+1 %></option>
+							<%
+								// Adding the last five years
+								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
+							%>
+								<option value="<%= i %>">Academic Year <%= i %>/<%= (i%100)+1 %></option>
+							<%
+							}
+							%>
 						</select>
 					</div>
-					<div class="offset-md-7"></div>
+					<div class="col-md-1">
+						<label for="listGrade" class="label-form">Grade</label>
+						<select class="form-control" id="listGrade" name="listGrade">
+							<option value="0">All</option>
+						</select>
+					</div>
+					<div class="offset-md-6"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -558,11 +578,6 @@ function updateSubjects(action) {
 								<div class="col-md-4">
 									<label for="addYear" class="label-form">Academic Year</label> 
 									<select class="form-control" id="addYear" name="addYear">
-										<%
-											Calendar now = Calendar.getInstance();
-											int currentYear = now.get(Calendar.YEAR);
-											int nextYear = currentYear + 1;
-										%>
 										<option value="<%= currentYear %>">Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
 										<%
 											// Adding the last five years
