@@ -6,7 +6,6 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 
 <%@ page import="hyung.jin.seo.jae.dto.EnrolmentDTO" %>
-<%@ page import="hyung.jin.seo.jae.dto.OutstandingDTO" %>
 <%@ page import="hyung.jin.seo.jae.utils.JaeConstants" %>
 
 <%
@@ -24,7 +23,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $('#pdfExportButton').click(function () {
-        fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
+        fetch("${pageContext.request.contextPath}/invoice/exportReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&invoiceHistoryId=${param.invoiceHistoryId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}")
             .then(response => response.blob())
             .then(blob => {
                 var link = document.createElement('a');
@@ -40,7 +39,7 @@ $(document).ready(function () {
 ///////////////////////////////////////////////////////////////////////////
 function sendEmail() {
     $.ajax({
-		url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
+		url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&invoiceHistoryId=${param.invoiceHistoryId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
 		type : 'GET',
 		success : function(data) {
             // assume sent
@@ -108,7 +107,7 @@ function sendEmail() {
 <div id="invoice">
     <!-- Watermark Container -->
     <div class="watermark-container">
-        <div class="watermark">RECIEVED</div>
+        <div class="watermark">RECEIVED</div>
     </div>
 
     <div class="invoice WordSection1" style="min-width: 1080px; padding-top: 35px; padding-bottom: 35px; font-family: 'arial',sans-serif;">
@@ -128,7 +127,6 @@ function sendEmail() {
 
         <table style="width: 90%; margin: 0 auto 10px; border-collapse: collapse; table-layout: fixed; border: 0; color: #444;">
             <c:set var="paymentMeta" value="${sessionScope.receiptHeader}" />
-            <!-- <c:out value="${paymentMeta}" /> -->
             <tr>
                 <td style="width: 100px; font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; font-weight: bold; background: none; border: 0;">Date : </td>
                 <td style="font-size: 16px; line-height: 2; vertical-align: middle; text-align: left; font-family: 'arial', sans-serif; background: none; border: 0;font-weight: 600 !important;"><%= today %></td>
@@ -211,8 +209,8 @@ function sendEmail() {
                             </td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + totalPrice}" />
-                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
-                            <c:if test="${empty sessionScope.outstandings}">
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for payments -->
+                            <c:if test="${empty sessionScope.payments}">
                                 <c:set var="paidTotal" value="${paidTotal + enrolment.paid}" />
                             </c:if>
                         </tr>
@@ -235,7 +233,7 @@ function sendEmail() {
                             </td>
                             <!-- Add the amount to the finalTotal variable -->
                             <c:set var="finalTotal" value="${finalTotal + book.price}" />
-                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for Outstandings -->
+                            <!-- Add the paid to the paidTotal variable. if full paid made, consider paidTotal; otherwise skip now for payments -->
                             <c:if test="${empty sessionScope.materials}">
                                 <c:set var="paidTotal" value="${paidTotal + book.price}" />
                             </c:if>
@@ -243,44 +241,45 @@ function sendEmail() {
                     </c:forEach>
                 </c:if>
 
-                <!-- Check if outstandings attribute exists in session -->
-                <c:if test="${not empty sessionScope.outstandings}">
-                    <!-- Retrieve the outstandings from session -->
-                    <c:set var="outstandings" value="${sessionScope.outstandings}" />
-                    <c:forEach items="${outstandings}" var="outstanding">
+
+
+
+                <!-- Check if payments attribute exists in session -->
+                <c:if test="${not empty sessionScope.payments}">
+                    <!-- Retrieve the payments from session -->
+                    <c:set var="payments" value="${sessionScope.payments}" />
+                    <c:forEach items="${payments}" var="payment">
                         <tr>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <%-- [<c:out value="${fn:toUpperCase(outstanding.invoiceId)}" />] <c:out value="${outstanding.id}" /> --%>
                                 Payment
                             </td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <c:out value="${outstanding.registerDate}" />
+                                <c:out value="${payment.registerDate}" />
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.paid}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.remaining}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <%-- <c:out value="${outstanding.amount}" /> --%>
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
-                                <!-- <c:out value="${outstanding.paid}" /> -->
                                 <c:choose>
-                                    <c:when test="${outstanding.paid >= 0}">
-                                        <fmt:formatNumber value="${- outstanding.paid}" pattern="#0.00" />
+                                    <c:when test="${payment.amount >= 0}">
+                                        <fmt:formatNumber value="${- payment.amount}" pattern="#0.00" />
                                     </c:when>
                                     <c:otherwise>
-                                        <fmt:formatNumber value="${outstanding.paid}" pattern="#0.00" />
+                                        <fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
                                     </c:otherwise>
                                 </c:choose>
                             </td>
                             <!-- Add the paid to the paidTotal variable -->
-                            <c:set var="paidTotal" value="${paidTotal + outstanding.paid}" />
+                            <c:set var="paidTotal" value="${paidTotal + payment.amount}" />
                         </tr>
                     </c:forEach>
                 </c:if>
+
+
+                
             </tbody>
         </table>
 

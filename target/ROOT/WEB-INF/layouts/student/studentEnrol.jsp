@@ -409,6 +409,25 @@ function activateStudent(id) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Link To Student Admin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function linkToStudent(studentId) {
+    //window.location.href = '/studentAdmin?id=' + studentId;
+	var url = '/studentAdmin?id=' + studentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Display Payment History
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function displayFullHistory(studentId) {
+	var url = '/invoice/history?studentKeyword=' + studentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
 </script>
 
 <style>
@@ -428,7 +447,7 @@ function activateStudent(id) {
 		padding-bottom: 35px;
 	}
 
-	/* tr { height: 50px }  */
+
 </style>
 
 
@@ -504,14 +523,14 @@ function activateStudent(id) {
 										<th class="align-middle text-center">First Name</th>
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Gender</th>
-										<th class="align-middle text-center" data-orderable="false">Register Date</th>
+										<th class="align-middle text-center">Class</th>
+										<th class="align-middle text-center" data-orderable="false">Enrolment Date</th>
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
 										<th class="align-middle text-center">Main Email</th>
 										<th class="align-middle text-center">Main Contact</th>
-										<th class="align-middle text-center">Sub Email</th>
-										<th class="align-middle text-center">Sub Contact</th>
+										<!-- <th class="align-middle text-center">Sub Email</th>
+										<th class="align-middle text-center">Sub Contact</th> -->
 										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
@@ -520,7 +539,9 @@ function activateStudent(id) {
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
 											<tr>
-												<td class="small align-middle" id="studentId" name="studentId"><span class="ml-1"><c:out value="${student.id}" /></span></td>
+												<td class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent('${student.id}')">
+													<span class="ml-1"><c:out value="${student.id}" /></span>
+												</td>												
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.firstName}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
 												<td class="small align-middle text-center">
@@ -550,10 +571,14 @@ function activateStudent(id) {
 														</c:choose>
 													</span>
 												</td>
-												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<!-- <td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td> -->
+												<td class="small align-middle text-left">
+													<c:out value="${student.contactNo2}" />
+												</td>
+												
 												<td class="small align-middle text-center">
 													<span>
-														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
+														<fmt:parseDate var="studentRegistrationDate" value="${student.password}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
@@ -561,9 +586,10 @@ function activateStudent(id) {
 												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>	
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td>
+												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td> -->
 												<td class="text-center align-middle">
+													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Full Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
