@@ -289,11 +289,6 @@ public class AttendanceController {
 		}
 	}
 
-
-
-
-
-
 	// update existing attendance
 	@PutMapping("/update")
 	@ResponseBody
