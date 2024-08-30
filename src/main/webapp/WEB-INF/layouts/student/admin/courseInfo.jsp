@@ -586,85 +586,69 @@ function associateRegistration(){
 		return true;    
 	});
 
+	// Promise ajax call
 	
-	// 1. Make the AJAX enrolment for class
-	$.ajax({
-		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
-		method: 'POST',
-		data: JSON.stringify(enrolData),
-		contentType: 'application/json',
-		success: function(response) {
-			//debugger;
-			clearInvoiceTable();
+	function associateClazz(studentId, enrolData) {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
+				method: 'POST',
+				data: JSON.stringify(enrolData),
+				contentType: 'application/json',
+				success: function(response) {
+					clearInvoiceTable();
 
-			if(response.length >0){
-				$.each(response, function(index, value){
-					// if extra is NEW, it requires updating enrolment id in basket table
-					if(value.extra != null && value.extra === NEW){
-						// how to add enrolment id to basket table
-						$('#basketTable > tbody > tr').each(function() {
-							var hiddens = $(this).find('.data-type').text();
-							if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
-								var hiddenValues = hiddens.split('|');
-								if(hiddenValues[1]===value.clazzId){
-									// console.log(hiddens + ' - ' + value.clazzId);
-									$(this).find('.enrolId').text(value.id);
-									$(this).find('.invoiceId').text(value.invoiceId);
-									$(this).find('.clazzChoice').prop('disabled', true);		
-								}
+					if(response.length > 0){
+						$.each(response, function(index, value){
+							// if extra is NEW, it requires updating enrolment id in basket table
+							if(value.extra != null && value.extra === NEW){
+								$('#basketTable > tbody > tr').each(function() {
+									var hiddens = $(this).find('.data-type').text();
+									if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
+										var hiddenValues = hiddens.split('|');
+										if(hiddenValues[1] === value.clazzId){
+											$(this).find('.enrolId').text(value.id);
+											$(this).find('.invoiceId').text(value.invoiceId);
+											$(this).find('.clazzChoice').prop('disabled', true);        
+										}
+									}
+								});
+							}
+							let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
+							if(!isFreeOnline){
+								addEnrolmentToInvoiceList(value);
 							}
 						});
+					} else {
+						clearEnrolmentBasket();
+						updateLatestInvoiceId(enrolData.invoiceId);
 					}
-					// debugger
-					// update the invoice table 
-					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-					// console.log('isFreeOnline : ' + isFreeOnline);
-					if(!isFreeOnline){
-						addEnrolmentToInvoiceList(value);
-					}
-				});
-			}else{
-				// clean up enrolments in basket table
-				clearEnrolmentBasket();
-				// simply update balance for invoice table as Enrolment is deleted
-				updateLatestInvoiceId(enrolData.invoiceId);
-			}
-			
+					resolve();
+				},
+				error: function(xhr, status, error) {
+					console.error(error);
+					reject(error);
+				}
+			});
+		});
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-			// nested ajax for book after creating or updating invoice
-			// 2. Make the AJAX for book
+	function associateBook(studentId, bookData) {
+		return new Promise((resolve, reject) => {
 			$.ajax({
 				url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
 				method: 'POST',
 				data: JSON.stringify(bookData),
 				contentType: 'application/json',
 				success: function(response) {
-					// remove books from invoice table
 					removeBookFromInvoiceList();
-					// Handle the response
-					if(response.length >0){
+					if(response.length > 0){
 						$.each(response, function(index, value){
-							// update exsiting BOOK by adding invoiceId & materialId
 							$('#basketTable > tbody > tr').each(function() {
 								var hiddens = $(this).find('.data-type').text();
 								if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
 									var hiddenValues = hiddens.split('|');
-									if(hiddenValues[1]===value.bookId){
-										// console.log(hiddens + ' - ' + value.clazzId);
+									if(hiddenValues[1] === value.bookId){
 										$(this).find('.materialId').text(value.id);
 										$(this).find('.invoiceId').text(value.invoiceId);
 									}
@@ -672,161 +656,54 @@ function associateRegistration(){
 							});
 							addBookToInvoiceList(value);
 						});
-					}else{
-						// simply update balance for invoice table as Book is deleted
-						// if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
-							updateLatestInvoiceId(bookData.invoiceId);
-						// }
+					} else {
+						updateLatestInvoiceId(bookData.invoiceId);
 					}
+					resolve();
 				},
 				error: function(xhr, status, error) {
-					// Handle the error
 					console.error(error);
+					reject(error);
 				}
 			});
+		});
+	}
 
-			
-			// 3. check any payment, if exists, show it to invoice table
+	function associatePayment(studentId) {
+		return new Promise((resolve, reject) => {
 			$.ajax({
 				url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
-					console.log(response);
-					// remove payment from invoice table
+					// console.log(response);
 					removePaymentFromInvoiceList();
-					// Handle the response
-					if(response.length >0){
+					if(response.length > 0){
 						$.each(response, function(index, value){
 							addPaymentToInvoiceList(value);
 						});
 					}
+					resolve();
 				},
 				error: function(xhr, status, error) {
-					// Handle the error
 					console.error(error);
+					reject(error);
 				}
 			});
+		});
+	}
 
-
-			// 4. make sure updating attendance table after updating enrolment
+	// call one by one : associateClazz -> associateBook -> associatePayment
+	associateClazz(studentId, enrolData)
+		.then(() => associateBook(studentId, bookData))
+		.then(() => associatePayment(studentId))
+		.then(() => {
 			retrieveAttendance(studentId);
-*/
-
-
-
-
-
-
-
-			function associateBook(studentId, bookData) {
-				return new Promise((resolve, reject) => {
-					$.ajax({
-						url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
-						method: 'POST',
-						data: JSON.stringify(bookData),
-						contentType: 'application/json',
-						success: function(response) {
-							// remove books from invoice table
-							removeBookFromInvoiceList();
-							// Handle the response
-							if(response.length > 0){
-								$.each(response, function(index, value){
-									// update existing BOOK by adding invoiceId & materialId
-									$('#basketTable > tbody > tr').each(function() {
-										var hiddens = $(this).find('.data-type').text();
-										if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
-											var hiddenValues = hiddens.split('|');
-											if(hiddenValues[1] === value.bookId){
-												$(this).find('.materialId').text(value.id);
-												$(this).find('.invoiceId').text(value.invoiceId);
-											}
-										}
-									});
-									addBookToInvoiceList(value);
-								});
-							} else {
-								// simply update balance for invoice table as Book is deleted
-								updateLatestInvoiceId(bookData.invoiceId);
-							}
-							resolve();
-						},
-						error: function(xhr, status, error) {
-							console.error(error);
-							reject(error);
-						}
-					});
-				});
-			}
-
-			function associatePayment(studentId) {
-				return new Promise((resolve, reject) => {
-					$.ajax({
-						url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
-						method: 'POST',
-						contentType: 'application/json',
-						success: function(response) {
-							console.log(response);
-							// remove outstandings from invoice table
-							removePaymentFromInvoiceList();
-							// Handle the response
-							if(response.length > 0){
-								$.each(response, function(index, value){
-									addPaymentToInvoiceList(value);
-								});
-							}
-							resolve();
-						},
-						error: function(xhr, status, error) {
-							console.error(error);
-							reject(error);
-						}
-					});
-				});
-			}
-
-			// 2. make sure calling associateBook first in order to update proper payment (associatePayment)
-			associateBook(studentId, bookData)
-				.then(() => associatePayment(studentId))
-				.catch(error => {
-					console.error('Error:', error);
-				});
-
-
-			// 3. make sure updating attendance table after updating enrolment
-			retrieveAttendance(studentId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
-			// console.log(response);
-			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
-			$('#success-alert').modal('toggle');
-
-			// update balance
-			
-		},
-		error: function(xhr, status, error) {
-			// Handle the error
-			console.error(error);
-		}
-	});
+			var rowCount = $('#basketTable tbody tr').length;
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
 
 }
 	
