@@ -17,7 +17,26 @@
  
   
 <script>
+// var academicYear;
+// var academicWeek;
+
 $(document).ready(function () {
+
+	// make an AJAX call on page load to get the academic year and week
+	// $.ajax({
+	// 		url : '${pageContext.request.contextPath}/class/academy',
+	// 		method: "GET",
+	// 		success: function(response) {
+	// 			// save the response into the variable
+	// 			academicYear = response[0];
+	// 			academicWeek = response[1];
+	// 			// console.log(response[0]+ ' : ' + response[1]);
+	// 		},
+	// 		error: function(jqXHR, textStatus, errorThrown) {
+	// 			console.log('Error : ' + errorThrown);
+	// 		}
+	// });
+
     $('#studyListTable').DataTable({
     	language: {
     		search: 'Filter:'
@@ -34,23 +53,10 @@ $(document).ready(function () {
         ],
     });
     
-	$("#start").datepicker({
-		dateFormat: 'dd/mm/yy',
-		onClose: function (selectedDate) {
-			$("#end").datepicker("option", "minDate", selectedDate);
-		}
-	});
-	$("#end").datepicker({
-		dateFormat: 'dd/mm/yy',
-		onClose: function (selectedDate) {
-			$("#start").datepicker("option", "maxDate", selectedDate);
-		}
-	});
-
 	// initialise state list when loading
 	listState('#listState');
-	listBranch('#branch');
-	listGrade('#grade');
+	listBranch('#listBranch');
+	listGrade('#listGrade');
 
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
@@ -59,9 +65,9 @@ $(document).ready(function () {
 		$(document).ajaxComplete(function(event, xhr, settings) {
 			// Check if the request URL matches the one in listBranch
 			if (settings.url === '/code/branch') {
-				$("#branch").val(window.branch);
+				$("#listBranch").val(window.branch);
 				// Disable #listBranch and #addBranch
-				$("#branch").prop('disabled', true);
+				$("#listBranch").prop('disabled', true);
 			}
 		});
 	}
@@ -69,7 +75,7 @@ $(document).ready(function () {
 	// send diabled select value via <form>
     document.getElementById("studyList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
-		document.getElementById("branch").disabled = false;
+		document.getElementById("listBranch").disabled = false;
     });
 
 });
@@ -78,28 +84,6 @@ $(document).ready(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function linkToStudent(studentId) {
 	var url = '/studentAdmin?id=' + studentId;  
-	var win = window.open(url, '_blank');
-	win.focus();
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Payment History
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayFullHistory(studentId) {
-	var url = '/invoice/history?studentKeyword=' + studentId;  
-	var win = window.open(url, '_blank');
-	win.focus();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Receipt in another tab
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistoryId, paymentId){
-	var branch = window.branch;
-	if(branch === '0'){
-		branch = '90'; // head office
-	}
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&invoiceHistoryId=' + invoiceHistoryId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
 	var win = window.open(url, '_blank');
 	win.focus();
 }
@@ -128,38 +112,70 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studyList" method="get" action="${pageContext.request.contextPath}/loginCheck/connectedAttend">
+		<form id="studyList" method="get" action="${pageContext.request.contextPath}/onlineCheck/onlineAttend">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-1">
+					<div class="col-md-2">
 						<label for="listState" class="label-form">State</label> 
 						<select class="form-control" id="listState" name="listState" disabled>
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="branch" class="label-form">Branch</label> 
-						<select class="form-control" id="branch" name="branch">
+						<label for="listBranch" class="label-form">Branch</label> 
+						<select class="form-control" id="listBranch" name="listBranch">
 							<option value="0">All Branch</option>
 						</select>
 					</div>
 					<div class="col-md-1">
-						<label for="grade" class="label-form">Grade</label> 
-						<select class="form-control" id="grade" name="grade">
-							<option value="0">All</option>
+						<label for="listGrade" class="label-form">Grade</label> 
+						<select class="form-control" id="listGrade" name="listGrade">
+							<!-- <option value="0">All</option> -->
 						</select>
 					</div>
+
 					<div class="col-md-2">
-						<label for="start" class="label-form">From Date</label>
-						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" required>
+						<label for="listYear" class="label-form">Academic Year</label>
+						<select class="form-control" id="listYear" name="listYear">
+							<%
+								Calendar now = Calendar.getInstance();
+								int currentYear = now.get(Calendar.YEAR);
+								int nextYear = currentYear + 1;
+							%>
+							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+							<%
+								// Adding the last five years
+								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
+							%>
+								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+							<%
+							}
+							%>
+						</select>
 					</div>
-					<div class="col-md-2">
-						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" required>
+					<div class="col-md-1">
+						<label for="listSet" class="label-form">Set</label>
+						<select class="form-control" id="listSet" name="listSet">
+						</select>
+						<script>
+							// Get a reference to the select element
+							var selectElement = document.getElementById("listSet");
+							// Loop to add options from 1 to 50
+							for (var i = 1; i <= 50; i++) {
+								// Create a new option element
+								var option = document.createElement("option");
+								// Set the value and text content for the option
+								option.value = i;
+								option.textContent = i;
+								// Append the option to the select element
+								selectElement.appendChild(option);
+							}
+						</script>
 					</div>
 					<div class="offset-md-3"></div>
 					<div class="col mx-auto">
-						<label class="label-form-white">Search</label> 
+						<label for="listState" class="label-form text-white">0</label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
-					</div>
+					</div>					
 				</div>
 			</div>
 			<div class="form-group">
@@ -172,12 +188,13 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 										<th class="align-middle text-center" style="width: 10%;">Student ID</th>
 										<th class="align-middle text-center" style="width: 10%;">First Name</th>
 										<th class="align-middle text-center" style="width: 10%;">Last Name</th>
-										<th class="align-middle text-center" style="width: 10%;">Grade</th>
+										<th class="align-middle text-center" style="width: 5%;">Grade</th>
 										<th class="align-middle text-center" style="width: 15%;">Main Contact</th>
 										<th class="align-middle text-center" style="width: 15%;">Main Email</th>								
-										<th class="align-middle text-center" style="width: 10%;">Start Date</th>
-										<th class="align-middle text-center" style="width: 5%;">Logins</th>
-										<th class="align-middle text-center" style="width: 5%;">Total</th>
+										<th class="align-middle text-center" style="width: 10%;">Title</th>
+										<th class="align-middle text-center" style="width: 5%;">Set</th>
+										<th class="align-middle text-center" style="width: 5%;">Status</th>
+										<th class="align-middle text-center" style="width: 5%;">Date</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
@@ -217,17 +234,37 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 														</c:choose>
 													</span>
 												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.contactNo1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.email1}" /></span></td>
-												<td class="small align-middle text-center">
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.contactNo}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${login.email}" /></span></td>
+												<td class="small align-middle">
 													<span>
-														<c:out value="${login.startDate}" />
+														<c:out value="${login.onlineName}" />
 													</span>
 												</td>
-												<!-- count -->
-												<td class="small align-middle text-center"><span><c:out value="${login.count}" /></span></td>
-												<!-- total -->
-												<td class="small align-middle text-center"><span><c:out value="${login.total}" /></span></td>
+												<!-- set -->
+												<td class="small align-middle text-center"><span><c:out value="${login.set}" /></span></td>
+												<!-- status -->
+												<td class="small align-middle text-center">
+													<span>
+														<c:choose>
+															<c:when test="${login.status == 0}"></c:when>
+															<c:when test="${login.status == 1}">Processing</c:when>
+															<c:when test="${login.status == 2}">Completed</c:when>
+															<c:otherwise></c:otherwise>
+														</c:choose>
+													</span>
+												</td>
+												<!-- start date -->
+												<td class="small align-middle text-center">
+													<span>
+														<c:if test="${not empty login.startDateTime}">
+															<c:out value="${login.startDateTime}" />
+														</c:if>
+														<c:if test="${empty login.startDateTime}">
+										
+														</c:if>
+													</span>
+												</td>
 											</tr>
 										</c:forEach>
 									</c:when>

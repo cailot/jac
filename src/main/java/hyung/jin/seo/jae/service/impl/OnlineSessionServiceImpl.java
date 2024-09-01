@@ -178,14 +178,14 @@ public class OnlineSessionServiceImpl implements OnlineSessionService {
 	}
 
     @Override
-    public OnlineSessionDTO findSessionByClazzNWeek(Long clazzId, int week) {
-        OnlineSessionDTO dto = null;
+    public List<OnlineSessionDTO> findSessionByClazzNWeek(Long clazzId, int week) {
+		List<OnlineSessionDTO> dtos = new ArrayList<>();
 		try{
-			dto = onlineSessionRepository.getOnlineSessionByClazzNWeek(clazzId, week);
+			dtos = onlineSessionRepository.getOnlineSessionByClazzNWeek(clazzId, week);
 		}catch(Exception e){
 			System.out.println("No OnlineSession found");
 		}
-		return dto;
+		return dtos;
     }
 
 	@Override

@@ -78,4 +78,7 @@ public interface EnrolmentService {
 	// return clazz Id for online session search
 	Long findClazzId4OnlineSession(long studentId, int year, int week);
 
+	// return if student is enrolled in an online class at the week
+	Integer isStudentAttendOnlineClazz(long studentId, long clazzId, int week);
+	
 }

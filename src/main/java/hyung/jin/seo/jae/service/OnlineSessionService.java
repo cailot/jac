@@ -40,7 +40,7 @@ public interface OnlineSessionService {
 	OnlineSession updateOnlineSession(OnlineSession session, Long id);
 
 	// find session by clazz Id & week
-	OnlineSessionDTO findSessionByClazzNWeek(Long clazzId, int week);
+	List<OnlineSessionDTO> findSessionByClazzNWeek(Long clazzId, int week);
 
 	// find session by id
 	OnlineSessionDTO getOnlineSession(Long id);

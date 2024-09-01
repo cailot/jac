@@ -15,5 +15,5 @@ public interface OnlineActivityService {
 	
 	OnlineActivity updateOnlineActivity(OnlineActivity activity, Long id);
 
-	List<OnlineActivityDTO> listStudentStatus(String branch, String grade, int week);
+	List<OnlineActivityDTO> getStudentStatus(Long studentId, int week);
 }
