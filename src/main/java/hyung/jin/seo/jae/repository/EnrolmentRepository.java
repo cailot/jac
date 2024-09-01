@@ -98,4 +98,9 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	+ "WHERE (en.studentId = :studentId) AND (cy.year = :year) AND (:week BETWEEN en.startWeek AND en.endWeek) AND en.old = 0", nativeQuery = true)
 	List<Long> checkEnrolmentTime(@Param("studentId") long studentId, @Param("year") int year, @Param("week") int week);
 
+	// check if student is enrolled in the class at the week
+	@Query(value = "SELECT COUNT(en.id) "
+	+ "FROM Enrolment en "
+	+ "WHERE (en.student.id = ?1) AND (en.clazz.id = ?2) AND (?3 BETWEEN en.startWeek AND en.endWeek)")
+	Integer isExistByStudentIdAndClazzIdAndWeek(long studentId, long clazzId, int week);
 }

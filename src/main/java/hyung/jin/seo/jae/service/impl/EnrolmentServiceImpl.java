@@ -335,4 +335,15 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		return clazzId;
 	}
 
+	@Override
+	public Integer isStudentAttendOnlineClazz(long studentId, long clazzId, int week) {
+		Integer number = 0;
+		try {
+			number = enrolmentRepository.isExistByStudentIdAndClazzIdAndWeek(studentId, clazzId, week);
+		} catch (Exception e) {
+			System.out.println("No student found");
+		}
+		return number;
+	}
+
 }

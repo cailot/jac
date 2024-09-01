@@ -73,10 +73,10 @@ public class OnlineActivityServiceImpl implements OnlineActivityService {
 	}
 
 	@Override
-	public List<OnlineActivityDTO> listStudentStatus(String branch, String grade, int week) {
+	public List<OnlineActivityDTO> getStudentStatus(Long studentId, int week) {
 		List<OnlineActivityDTO> dtos = new ArrayList<>();
 		try{
-			dtos = onlineActivityRepository.findStudentStatus("0", "0", 10);
+			dtos = onlineActivityRepository.getStudentStatus(studentId, week);
 		}catch(Exception e){
 			System.out.println("No student found");
 		}
