@@ -33,6 +33,6 @@ public interface OnlineSessionRepository extends JpaRepository<OnlineSession, Lo
 
     // get Online by clazz Id and week
     @Query("SELECT o FROM OnlineSession o WHERE o.clazz.id = ?1 AND o.week = ?2 AND o.active = true")
-	OnlineSessionDTO getOnlineSessionByClazzNWeek(@Param("clazzId") long clazzId, @Param("week") int week);
+	List<OnlineSessionDTO> getOnlineSessionByClazzNWeek(@Param("clazzId") long clazzId, @Param("week") int week);
 
 }

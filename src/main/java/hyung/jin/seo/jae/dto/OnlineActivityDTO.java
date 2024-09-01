@@ -29,11 +29,17 @@ public class OnlineActivityDTO implements Serializable{
 
 	private String grade;
 
+	private String contactNo;
+
+	private String email;
+
 	private String onlineSessionId;
     
 	private String onlineName;
 
 	private String registerDate;
+
+	private int set;
 
 	private int status;
 
@@ -41,16 +47,19 @@ public class OnlineActivityDTO implements Serializable{
 
 	private String endDateTime;
 
-	public OnlineActivityDTO(long id, long studentId, String firstName, String lastName, String grade, long onlineSessionId, String onlineName, LocalDate registerDate, int status, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+	public OnlineActivityDTO(long id, long studentId, String firstName, String lastName, String grade, String contact, String email, long onlineSessionId, String onlineName, LocalDate registerDate, int set, int status, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		this.id = Long.toString(id);
 		this.studentId = Long.toString(studentId);
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.grade = grade;
+		this.contactNo = contact;
+		this.email = email;
 		this.onlineSessionId = Long.toString(onlineSessionId);
 		this.onlineName = onlineName;
 		this.registerDate = (registerDate!=null) ? registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
-	  	this.status = status;
+	  	this.set = set;
+		this.status = status;
 		this.startDateTime = (startDateTime!=null) ? startDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 		this.endDateTime = (endDateTime!=null) ? endDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
