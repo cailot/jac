@@ -1,8 +1,7 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.dto.OnlineActivityDTO;
+import hyung.jin.seo.jae.dto.OnlineSessionDTO;
 import hyung.jin.seo.jae.model.OnlineActivity;
 import hyung.jin.seo.jae.model.OnlineSession;
 import hyung.jin.seo.jae.model.Student;
@@ -72,15 +72,43 @@ public class OnlineActivityServiceImpl implements OnlineActivityService {
 		return onlineActivityRepository.save(existingActivity);
 	}
 
+	// @Override
+	// public List<OnlineActivityDTO> getStudentStatus(Long studentId, int week) {
+	// 	List<OnlineActivityDTO> dtos = new ArrayList<>();
+	// 	try{
+	// 		dtos = onlineActivityRepository.getStudentStatus(studentId, week);
+	// 	}catch(Exception e){
+	// 		System.out.println("No student found");
+	// 	}
+	// 	return dtos;
+	// }
+
 	@Override
-	public List<OnlineActivityDTO> getStudentStatus(Long studentId, int week) {
-		List<OnlineActivityDTO> dtos = new ArrayList<>();
+	public OnlineActivityDTO getStudentStatus(Long studentId, OnlineSessionDTO session) {
+		OnlineActivityDTO dto = null;
 		try{
-			dtos = onlineActivityRepository.getStudentStatus(studentId, week);
+			dto = onlineActivityRepository.getStudentStatus(studentId, Long.parseLong(session.getId()));
 		}catch(Exception e){
 			System.out.println("No student found");
 		}
-		return dtos;
+		// if dto = null, then create skeleton
+		if(dto == null) {
+			dto = new OnlineActivityDTO();
+			Optional<Student> std = studentRepository.findById(studentId);
+			if(std.isPresent()) {
+				dto.setFirstName(std.get().getFirstName());
+				dto.setLastName(std.get().getLastName());
+				dto.setGrade(std.get().getGrade());
+				dto.setContactNo(std.get().getContactNo1());
+				dto.setEmail(std.get().getEmail1());
+			}
+			dto.setStudentId(Long.toString(studentId));
+			dto.setOnlineSessionId(session.getId());
+			dto.setOnlineName(session.getTitle());
+			dto.setSet(session.getWeek());
+			dto.setStatus(JaeConstants.STATUS_NOTHING);
+		}
+		return dto;
 	}
 		
 }

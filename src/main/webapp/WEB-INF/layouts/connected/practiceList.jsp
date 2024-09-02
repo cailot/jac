@@ -463,9 +463,9 @@ function deletePractice(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#practiceListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>

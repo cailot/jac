@@ -155,7 +155,10 @@ function updateStudentInfo(){
 		padding-bottom: 30px;
 	}
 
-	tr { height: 50px } 
+	#studentListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	} 
 
 </style>
 

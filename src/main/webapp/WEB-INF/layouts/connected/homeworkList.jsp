@@ -248,10 +248,10 @@ function deleteHomework(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#homeworkListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
-	} 
+		height: 45px 	
+	}
 
 </style>
 

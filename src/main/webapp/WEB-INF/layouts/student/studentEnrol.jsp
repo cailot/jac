@@ -447,6 +447,10 @@ function displayFullHistory(studentId) {
 		padding-bottom: 35px;
 	}
 
+	#studentListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
 
 </style>
 
