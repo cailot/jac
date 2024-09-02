@@ -386,10 +386,10 @@ window.showWarning = function(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#userListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
-	} 
+		height: 45px 	
+	}
 
 </style>
 

@@ -387,7 +387,11 @@ function updateSubjects(action) {
 		padding-bottom: 35px;
 	}
 
-	tr { height: 50px } 
+	#courseListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
+
 </style>
 
 <!-- List Body -->

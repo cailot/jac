@@ -1,9 +1,8 @@
 
 package hyung.jin.seo.jae.service;
 
-import java.util.List;
-
 import hyung.jin.seo.jae.dto.OnlineActivityDTO;
+import hyung.jin.seo.jae.dto.OnlineSessionDTO;
 import hyung.jin.seo.jae.model.OnlineActivity;
 
 public interface OnlineActivityService {
@@ -15,5 +14,7 @@ public interface OnlineActivityService {
 	
 	OnlineActivity updateOnlineActivity(OnlineActivity activity, Long id);
 
-	List<OnlineActivityDTO> getStudentStatus(Long studentId, int week);
+	// return OnlineActivityDTO by studentId & sessionId
+	OnlineActivityDTO getStudentStatus(Long studentId, OnlineSessionDTO session);
+
 }

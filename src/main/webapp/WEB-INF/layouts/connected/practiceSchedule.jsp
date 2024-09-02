@@ -378,9 +378,9 @@ function deletePracticeSchedule(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#scheduleListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>

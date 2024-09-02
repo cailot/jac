@@ -106,6 +106,12 @@ function linkToStudent(studentId) {
 		padding-top: 35px;
 		padding-bottom: 35px;
 	}
+
+	#studyListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}  
+
 </style>
 
 
