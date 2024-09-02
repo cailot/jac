@@ -252,7 +252,10 @@ function clearStudentInfo() {
 		padding-bottom: 35px;
 	}
 
-	tr { height: 50px } 
+	#studentInvoiceTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
 
 	tfoot th, tfoot td {
     vertical-align: middle;

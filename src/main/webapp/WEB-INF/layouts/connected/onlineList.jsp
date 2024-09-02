@@ -321,7 +321,7 @@ function deleteOnline(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#onlineListTable tr { 
 		vertical-align: middle;
 		height: 50px 	
 	} 

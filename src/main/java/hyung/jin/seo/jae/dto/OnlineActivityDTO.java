@@ -63,4 +63,5 @@ public class OnlineActivityDTO implements Serializable{
 		this.startDateTime = (startDateTime!=null) ? startDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 		this.endDateTime = (endDateTime!=null) ? endDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
+
 }

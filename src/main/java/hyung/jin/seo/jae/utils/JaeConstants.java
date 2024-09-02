@@ -316,6 +316,8 @@ public interface JaeConstants {
 	//	STATUS
 	//
 	////////////////////////////////////
+	int STATUS_NOTHING = 0;
+
 	int STATUS_PROCESSING = 1;
 
 	int STATUS_COMPLETED = 2;

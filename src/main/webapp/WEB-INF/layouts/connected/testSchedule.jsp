@@ -453,7 +453,7 @@ function deleteTestSchedule(id) {
 
 	#scheduleListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>

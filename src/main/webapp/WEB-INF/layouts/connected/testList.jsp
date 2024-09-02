@@ -465,9 +465,9 @@ function deleteTest(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#testListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>
