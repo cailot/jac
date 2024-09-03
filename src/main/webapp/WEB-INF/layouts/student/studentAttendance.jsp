@@ -565,7 +565,7 @@ function linkToStudent(studentId) {
 													</c:choose>
 												</td>
 												<c:forEach items="${attend.status}" var="status" varStatus="loop">
-													<td class="small text-center align-middle roll" title="${attend.attendDate[loop.index]}">
+													<td class="small text-center align-middle roll" data-toggle="tooltip" title="${attend.attendDate[loop.index]}">
 														<input type="hidden" name="week" value="${attend.week[loop.index]}" />
 														<c:choose>
 															<c:when test="${status eq 'Y'}">
@@ -606,6 +606,7 @@ function linkToStudent(studentId) {
 												</c:forEach>
 												<td class="text-center align-middle">
 													<i class="bi bi-person-check text-primary hand-cursor"
+														data-toggle="tooltip"
 														title="Update attendance" style="font-size: 150%;"
 														onclick="updateAttendanceInfo('${attend.clazzId}', '${attend.studentId}', ${attend.week}, '${attend.clazzId}-${attend.studentId}')"></i>
 												</td>

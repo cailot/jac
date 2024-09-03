@@ -134,6 +134,8 @@
 					</div>
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
+				<!-- OMR -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR</a>
 			</div>
 		</li>
 		</c:if>
