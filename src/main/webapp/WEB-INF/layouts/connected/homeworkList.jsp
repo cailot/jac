@@ -436,12 +436,12 @@ function deleteHomework(id) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="align-middle text-center">
-																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
+																<i class="bi bi-check-circle-fill text-success" data-toggle="tooltip" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="align-middle text-center">
-																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
+																<i class="bi bi-check-circle-fill text-secondary" data-toggle="tooltip" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>

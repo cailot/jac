@@ -125,6 +125,11 @@
 		<put-attribute name="title" value="Assessment List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/assessList.jsp" />
 	</definition>
+	<!--OMR Upload -->
+	<definition name="omrUploadPage" extends="base.definition">
+		<put-attribute name="title" value="OMR Upload" />
+		<put-attribute name="body" value="/WEB-INF/layouts/omr/omrUpload.jsp" />
+	</definition>
 	
 
 
