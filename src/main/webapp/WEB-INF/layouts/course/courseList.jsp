@@ -506,10 +506,10 @@ function updateSubjects(action) {
 												<td class="text-center align-middle">
 													<c:choose>
 														<c:when test="${course.online}">
-															<i class="bi bi-display" title="Online"></i>
+															<i class="bi bi-display" data-toggle="tooltip" title="Online"></i>
 														</c:when>
 														<c:otherwise>
-															<i class="bi bi-person-fill" title="Onsite"></i>
+															<i class="bi bi-person-fill" data-toggle="tooltip" title="Onsite"></i>
 														</c:otherwise>
 													</c:choose>
 												</td>

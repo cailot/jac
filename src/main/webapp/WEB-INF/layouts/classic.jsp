@@ -32,6 +32,11 @@
     }
 </style>
 <script>
+    $(function() {
+        // Enable Bootstrap tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
     var sessionTimeout = 1000*60*30; // 30 mins for demonstration
     var warningTime = 1000*60*25; // Show warning at 25 mins
 
@@ -39,7 +44,7 @@
     var warningTimer;
     var inactivityInterval;
     var alertVisible = false;
-
+  
     function showSessionTimeoutBar() {
         var timeoutBar = document.querySelector('.session-timeout-bar');
         timeoutBar.style.display = 'block';
