@@ -92,6 +92,19 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         nativeQuery = true)
         List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("from") LocalDate from, @Param("to") LocalDate to);
 
+        // retrieve students require renewal by state, branch & grade called from renewList.jsp
+        @Query(value = "SELECT DISTINCT s.id AS studentId, s.firstName, s.lastName, s.grade, s.state, s.branch, " +
+        "p.registerDate, p.method, p.amount, i.id AS invoiceId, p.invoiceHistoryId, p.id AS paymentId " +
+        "FROM Student s " +
+        "LEFT JOIN Enrolment e ON s.id = e.studentId " +
+        "LEFT JOIN Invoice i ON e.invoiceId = i.id " +
+        "LEFT JOIN Payment p ON i.id = p.invoiceId " +
+        "WHERE (:branch = '0' OR s.branch = :branch) " +
+        "AND (:grade = '0' OR s.grade = :grade) " +
+        "AND (p.registerDate BETWEEN :from AND :to)",
+        nativeQuery = true)
+        List<Object[]> listRenewStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("from") LocalDate from, @Param("to") LocalDate to);
+
         // retrieve overdue student by state, branch & grade called from overdueList.jsp
         @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.email1, s.state, s.branch, e.startWeek, e.endWeek, clazz.name) FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +

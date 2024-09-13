@@ -13,6 +13,7 @@ import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.OnlineActivity;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EmailService;
+import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.OnlineActivityService;
 import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.service.StatsService;
@@ -38,11 +39,14 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	// @Autowired
 	// private PdfService pdfService;
 
-	@Autowired
-	private StatsService statsService;
+	// @Autowired
+	// private StatsService statsService;
+
+	// @Autowired
+	// private OnlineActivityService onlineActivityService;
 
 	@Autowired
-	private OnlineActivityService onlineActivityService;
+	private OmrService omrService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JaeApplication.class, args);
@@ -59,8 +63,13 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		List<CycleDTO> cycles = cycleService.allCycles();
 		applicationContext.getBeanFactory().registerSingleton(JaeConstants.ACADEMIC_CYCLES, cycles);
 
+		// create template
+		// omrService.generateTemplate("src/main/resources/static/assets/template/source.txt");
 
+		// recognise image
+		omrService.recogniseImage("src/main/resources/omr/template2.omr", "target/5.png");
 
+		System.out.println("************* Done *************");
 		
 		// List<OnlineActivityDTO> list = onlineActivityService.listStudentStatus("0", "0", 10);
 		// for(OnlineActivityDTO dto: list){

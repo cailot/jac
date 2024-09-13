@@ -121,12 +121,19 @@
             <type>pom</type>
         </dependency>
         <!--OMR -->
-        <!-- <dependency>
+        <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-omr</artifactId>
             <version>24.5</version>
-        </dependency> -->
+        </dependency>
     </dependencies>
+    <!-- Aspose Repository -->
+    <repositories>
+        <repository>
+            <id>aspose-repo</id>
+            <url>https://repository.aspose.com/repo/</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>ROOT</finalName>
