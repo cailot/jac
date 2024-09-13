@@ -106,4 +106,5 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/layout/7.0.4/layout-7.0.4.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/pdfa/7.0.4/pdfa-7.0.4.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/sign/7.0.4/sign-7.0.4.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/aspose/aspose-omr/24.5/aspose-omr-24.5.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
