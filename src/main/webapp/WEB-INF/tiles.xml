@@ -52,6 +52,12 @@
 		<put-attribute name="title" value="Payment List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/course/paymentList.jsp" />
 	</definition>
+	<!--Renew -->
+	<definition name="renewListPage" extends="base.definition">
+		<put-attribute name="title" value="Renewal List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/renewList.jsp" />
+	</definition>
+
 	<!--Overdue -->
 	<definition name="overdueListPage" extends="base.definition">
 		<put-attribute name="title" value="Overdue List" />

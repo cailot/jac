@@ -78,6 +78,7 @@
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
 				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class Status</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class Login</a> -->

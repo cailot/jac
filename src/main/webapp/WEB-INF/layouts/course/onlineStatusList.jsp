@@ -254,7 +254,7 @@ function linkToStudent(studentId) {
 													<span>
 														<c:choose>
 															<c:when test="${login.status == 0}"></c:when>
-															<c:when test="${login.status == 1}">Processing</c:when>
+															<c:when test="${login.status == 1}">Proceeding</c:when>
 															<c:when test="${login.status == 2}">Completed</c:when>
 															<c:otherwise></c:otherwise>
 														</c:choose>

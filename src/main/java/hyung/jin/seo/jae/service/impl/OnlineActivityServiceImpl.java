@@ -41,7 +41,7 @@ public class OnlineActivityServiceImpl implements OnlineActivityService {
 		activity.setOnlineSession(session);
 		LocalDateTime now = LocalDateTime.now();
 		activity.setStartDateTime(now);
-		activity.setStatus(JaeConstants.STATUS_PROCESSING);
+		activity.setStatus(JaeConstants.STATUS_PROCEEDING);
 		onlineActivityRepository.save(activity);
 	}
 

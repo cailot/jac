@@ -90,6 +90,11 @@ public class JaeController {
 		return "paymentListPage";
 	}
 
+	@GetMapping("/renewList")
+	public String renewList(HttpSession session) {
+		return "renewListPage";
+	}
+
 	@GetMapping("/overdueList")
 	public String overdueList(HttpSession session) {
 		return "overdueListPage";
