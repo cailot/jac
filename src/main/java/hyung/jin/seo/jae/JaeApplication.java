@@ -67,9 +67,11 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		// omrService.generateTemplate("src/main/resources/static/assets/template/source.txt");
 
 		// recognise image
-		omrService.recogniseImage("src/main/resources/omr/template2.omr", "target/5.png");
+		omrService.recogniseImage("src/main/resources/omr/template3.omr", "target/5.png");
 
 		System.out.println("************* Done *************");
+
+		System.out.println(cycleService.getDateByWeekAndDay(2024, 17, "1"));
 		
 		// List<OnlineActivityDTO> list = onlineActivityService.listStudentStatus("0", "0", 10);
 		// for(OnlineActivityDTO dto: list){

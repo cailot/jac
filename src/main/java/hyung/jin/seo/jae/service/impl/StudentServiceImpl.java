@@ -304,4 +304,15 @@ public class StudentServiceImpl implements StudentService {
 		return dtos;
 	}
 
+	@Override
+	public List<StudentDTO> listRenewStudent(String branch, String grade, int fromYear, int fromWeek, int toYear, int toWeek) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = studentRepository.listRenewStudent(branch, grade, fromYear, fromWeek, toYear, toWeek);	
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return dtos;
+	}
+
 }

@@ -713,6 +713,21 @@ public class InvoiceController {
 		return "overdueListPage";
 	}
 
+	// renew list for renewList.jsp
+	@GetMapping("/renewList")
+	public String renewStudents(@RequestParam("branch") String branch, 
+									@RequestParam("grade") String grade, 
+									@RequestParam("start") String fromDate,
+									@RequestParam("end") String toDate, Model model){
+		int fromYear = cycleService.academicYear(fromDate);
+		int fromWeek = cycleService.academicWeeks(fromDate);
+		int toYear = cycleService.academicYear(toDate);
+		int toWeek = cycleService.academicWeeks(toDate);
+		List<StudentDTO> dtos = studentService.listRenewStudent(branch, grade, fromYear, fromWeek, toYear, toWeek);
+		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		return "renewListPage";
+	}
+
 	// register new invoice
 	@GetMapping("/last/{studentId}")
 	@ResponseBody

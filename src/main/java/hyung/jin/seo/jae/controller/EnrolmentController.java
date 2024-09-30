@@ -236,7 +236,7 @@ public class EnrolmentController {
 
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
-	public List<EnrolmentDTO> associateClazz1(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
+	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
 		
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		// 1. check new Enrolment or not
@@ -254,8 +254,24 @@ public class EnrolmentController {
 
 		// 3. if new Enrolment, create new Invoice
 		if(isNewEnrolment){
+
+			//////////////////////////////////////////// If parents change mind before payment //////////////////////////////////////////
+			// 3-0. check if existing invoice is active but never paid before.
+			Invoice existingInvo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
+			double owingAmount = 0;
+			if(existingInvo!=null){
+			// double totalAmount = existingInvo.getAmount();
+			double paidAmount = existingInvo.getPaidAmount();
+				// 3-0-1. remove existing enrolments if paid amount is 0 and enrolment not started yet
+				if(paidAmount==0){
+					detachEnrolment(existingInvo);
+				}
+			}
+			//////////////////////////////////////////// If pents change mind before payment //////////////////////////////////////////
+
 			// 3-1. create new Invoice
 			Invoice newInvo = new Invoice();
+			newInvo.setDiscount(owingAmount); // discount from previous invoice
 			newInvo.setStudentId(studentId);
 			invoiceService.addInvoice(newInvo);
 
