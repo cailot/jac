@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.service.impl;
 import org.springframework.stereotype.Service;
 
 import com.aspose.omr.GenerationResult;
+import com.aspose.omr.License;
 import com.aspose.omr.OmrEngine;
 import com.aspose.omr.RecognitionResult;
 import com.aspose.omr.TemplateProcessor;
@@ -14,7 +15,15 @@ public class OmrServiceImpl implements OmrService {
 
 	private OmrEngine engine;
 
+	private License omrLicense;
+
 	public OmrServiceImpl() {
+		omrLicense = new License();
+		try {
+			omrLicense.setLicense("src/main/resources/omr/Aspose.OMR.Java.lic");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		engine = new OmrEngine();
 	}
 
