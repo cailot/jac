@@ -148,6 +148,12 @@ function addStudent() {
 	$('#registerModal').modal('hide');
 	// flush all registered data
 	document.getElementById("studentRegister").reset();		
+	// if staff, set branch to current branch
+	if(!JSON.parse(window.isAdmin)){
+		$("#formBranch").val(window.branch);
+		$("#addBranch").val(window.branch);
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +496,11 @@ function clearStudentForm() {
 	clearAttendanceTable();
 	// clear passwords
 	clearPassword();
+	// if staff, set branch to current branch
+	if(!JSON.parse(window.isAdmin)){
+		$("#formBranch").val(window.branch);
+		$("#addBranch").val(window.branch);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -33,27 +33,6 @@ $(document).ready(function () {
  	        'print'
         ],
 
-		// sum for paid
-		footerCallback: function (row, data, start, end, display) {
-    		var api = this.api();
-    		// Custom function to parse and sum values
-			var parseAndSum = function (data) {
-				var total = 0;
-				for (var i = 0; i < data.length; i++) {
-					var value = parseFloat(data[i].replace(/[^\d.-]/g, ''));
-					if (!isNaN(value)) {
-						total += value;
-					}
-				}
-				return total;
-			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer
-			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toFixed(2) + '</span>');
-		}
-
-
     });
     
 	$("#start").datepicker({
@@ -89,7 +68,7 @@ $(document).ready(function () {
 	}
 
 	// send diabled select value via <form>
-    document.getElementById("paymentList").addEventListener("submit", function() {
+    document.getElementById("renewList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
 		document.getElementById("branch").disabled = false;
     });
@@ -156,7 +135,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="paymentList" method="get" action="${pageContext.request.contextPath}/enrol/renewList">
+		<form id="renewList" method="get" action="${pageContext.request.contextPath}/invoice/renewList">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -201,9 +180,11 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 										<th class="align-middle text-center">First Name</th>
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Method</th>
-										<th class="align-middle text-center" data-orderable="false">Payment Date</th>
-										<th class="align-middle text-center">Amount</th>
+										<th class="align-middle text-center">Class</th>
+										<th class="align-middle text-center">Start Week</th>
+										<th class="align-middle text-center">End Week</th>
+										<th class="align-middle text-center">Contact</th>
+										<th class="align-middle text-center">Email</th>
 										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
 								</thead>
@@ -244,19 +225,12 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 														</c:choose>
 													</span>
 												</td>
-												<!-- paid method -->
-												<td class="small align-middle text-left text-capitalize ml-2"><span><c:out value="${student.relation1}" /></span></td>
-												<!-- paid date -->
-												<td class="small align-middle text-center">
-													<span>
-														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
-													</span>
-												</td>
-												<!-- paid amount -->
-												<td class="small align-middle text-right mr-1">
-													<fmt:formatNumber value="${student.relation2}" pattern="#0.00" />
-												</td>	
+												<!-- class -->
+												<td class="small align-middle text-left text-capitalize ml-2"><span><c:out value="${student.address}" /></span></td>
+												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
+												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>
+												<td class="small align-middle text-left ml-1"><span><c:out value="${student.contactNo1}" /></span></td>
+												<td class="small align-middle text-left ml-1"><span><c:out value="${student.email1}" /></span></td>
 												<td class="text-center align-middle">
 													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-calculator text-primary hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayReceipt('${student.id}', '${student.firstName}', '${student.lastName}', '${student.contactNo1}', '${student.email1}', '${student.contactNo2}')"></i>
@@ -266,13 +240,6 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 									</c:when>
 								</c:choose>
 								</tbody>
-								<tfoot>
-									<tr>
-										<td colspan="6" style="text-align:right;"><strong>Total Amount:</strong></td>
-										<td id="totalAmount" class="text-right">0.00</td>
-										<td></td>
-									</tr>
-								</tfoot>
 							</table>
 						</div>
 					</div>
