@@ -921,7 +921,7 @@ public class InvoiceController {
 					headerDueDate = start;
 				}
 			} catch (ParseException e) {
-				return ResponseEntity.ok("Error - Date parsing error");
+				return ResponseEntity.ok("Error - Date parsing error ");
 			}
 			enrolments.add(enrol);
 		}
