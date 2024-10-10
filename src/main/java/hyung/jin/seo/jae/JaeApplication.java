@@ -67,7 +67,7 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 		// omrService.generateTemplate("src/main/resources/static/assets/template/source.txt");
 
 		// recognise image
-		omrService.recogniseImage("src/main/resources/omr/template3.omr", "target/5.png");
+		// omrService.recogniseImage("src/main/resources/omr/template3.omr", "target/5.png");
 
 		System.out.println("************* Done *************");
 
