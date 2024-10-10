@@ -32,12 +32,16 @@ import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.model.Attendance;
+import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
 import hyung.jin.seo.jae.model.InvoiceHistory;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.AttendanceService;
+import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.EmailService;
@@ -84,6 +88,12 @@ public class InvoiceController {
 	
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private ClazzService clazzService;
+
+	@Autowired
+	private AttendanceService attendanceService;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -379,6 +389,7 @@ public class InvoiceController {
 	@PostMapping("/issue/{studentId}/{branchCode}")
 	@ResponseBody
 	public ResponseEntity<String> issueInvoice(@PathVariable("studentId") Long studentId, @PathVariable("branchCode") String branchCode, @RequestBody(required = false) String info, HttpSession session) {
+		/*
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
 
@@ -445,7 +456,11 @@ public class InvoiceController {
 			pay.setUpto(totalPaid);
 		}
 		session.setAttribute(JaeConstants.PAYMENT_PAYMENTS, payments);		
+		*/
 
+		// set invoice info into session
+		setInvoiceSession(studentId, branchCode, info, session);
+		
 		// 4. return ok
 		return ResponseEntity.ok("Invoice page launched");
 	}
@@ -716,7 +731,8 @@ public class InvoiceController {
 	// renew list for renewList.jsp
 	@GetMapping("/renewList")
 	public String renewStudents(@RequestParam("branch") String branch, 
-									@RequestParam("grade") String grade, 
+									@RequestParam("grade") String grade,
+									@RequestParam("book") String book, 
 									@RequestParam("start") String fromDate,
 									@RequestParam("end") String toDate, Model model){
 		int fromYear = cycleService.academicYear(fromDate);
@@ -726,6 +742,116 @@ public class InvoiceController {
 		List<StudentDTO> dtos = studentService.listRenewStudent(branch, grade, fromYear, fromWeek, toYear, toWeek);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "renewListPage";
+	}
+
+	// renew invoice for student
+	@PostMapping("/renewInvoice/{studentId}/{book}/{branchCode}")
+	@ResponseBody
+	public ResponseEntity<String> renewInvoice(@PathVariable("studentId") Long studentId, @PathVariable("book") int book, @PathVariable("branchCode") String branchCode, HttpSession session){
+		// 1. get Student
+		Student student = studentService.getStudent(studentId);
+
+		// 2. check last active invoice
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);
+		if(invoice == null) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
+
+		// 3. get enrolments by invoice
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoice.getId());
+		if(enrols.size() == 0) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
+
+		// 4. create new invoice
+		Invoice newInvo = new Invoice();
+		newInvo.setStudentId(studentId);
+		invoiceService.addInvoice(newInvo);
+
+		// 5. create InvoiceHistory
+		InvoiceHistory history = new InvoiceHistory();
+		history.setInvoice(newInvo);
+		invoiceHistoryService.addInvoiceHistory(history);
+
+		// 6. create new Enrolment
+		for(EnrolmentDTO data : enrols){
+
+			// 6-1. get Clazz
+			Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
+			
+			// 6-2. update Invoice amount
+			int newStartWeek = data.getEndWeek() + 1;
+			int newEndWeek = newStartWeek + 9;
+			int academicYear = clazzService.getAcademicYear(clazz.getId());
+			int lastAcademicWeek = cycleService.lastAcademicWeek(academicYear);
+			if(newEndWeek > lastAcademicWeek){
+				newEndWeek = lastAcademicWeek;
+			}
+
+			// check discount is % or amount value
+			String discount =StringUtils.defaultString(data.getDiscount(), "0");
+			double discountAmount = 0;
+			if(discount.contains("%")){
+				discountAmount = ((newEndWeek-newStartWeek+1) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
+			}else{
+				discountAmount = Double.parseDouble(discount);
+			}
+			double enrolmentPrice = (((newEndWeek-newStartWeek+1) * data.getPrice()) - discountAmount);
+			// int credit = data.getCredit();
+			newInvo.setAmount(newInvo.getAmount() + enrolmentPrice);
+			newInvo.setCredit(0);
+			newInvo.setDiscount(newInvo.getDiscount() + discountAmount);
+
+			// 6-3. create new Enrolment
+			Enrolment enrolment = new Enrolment();
+			enrolment.setStartWeek(newStartWeek);
+			enrolment.setEndWeek(newEndWeek);
+			enrolment.setCredit(0);
+			enrolment.setDiscount(discount);
+			enrolment.setClazz(clazz);
+			enrolment.setStudent(student);
+			enrolment.setInvoice(newInvo);
+			// add invoice history
+			enrolment.setInvoiceHistory(history);
+				
+			// 6-4. save new Enrolment - Invoice will be automatically updated
+			enrolmentService.addEnrolment(enrolment);
+			data.setExtra(JaeConstants.NEW_ENROLMENT);
+			data.setId(enrolment.getId()+"");
+			data.setInvoiceId(newInvo.getId()+"");
+			// update day to code
+			data.setDay(clazzService.getDay(clazz.getId()));
+			
+				// 3-2-5. put into List<EnrolmentDTO>
+				// dtos.add(data);
+
+			// 6-5. if onlline class, skip attendance; otherwise create attendance
+			if(!data.isOnline()){
+				///////////////// Attendance ////////////////////////
+				// int academicYear = clazzService.getAcademicYear(clazz.getId());
+				String clazzDay = clazzService.getDay(clazz.getId());
+				for(int i = data.getStartWeek(); i <= data.getEndWeek(); i++){
+					Attendance attendance = new Attendance();
+					attendance.setWeek(i+"");
+					attendance.setStudent(student);
+					attendance.setClazz(clazz);
+					attendance.setDay(clazzDay);
+					attendance.setStatus(JaeConstants.ATTEND_OTHER);
+					LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+					attendance.setAttendDate(attendDate);
+					attendanceService.addAttendance(attendance);
+				}
+				//////////////////////////////////////////////////////////
+			}
+		} // end of processing new enrolments
+
+		// update invoice history's amount & paid amount
+		history.setAmount(newInvo.getAmount());
+		history.setPaidAmount(newInvo.getPaidAmount());
+		invoiceHistoryService.updateInvoiceHistory(history, history.getId());
+		//9075 2302 010
+
+		// set invoice info into session
+		setInvoiceSession(studentId, branchCode, null, session);
+
+		// 7. return flag
+		return ResponseEntity.ok(JaeConstants.STATUS_OK);
 	}
 
 	// register new invoice
@@ -740,6 +866,83 @@ public class InvoiceController {
 		boolean fullPaid =  (amount - paidAmount) <= 0;
 		// 3. return info
 		return fullPaid;
+	}
+
+
+
+
+
+
+
+
+
+	private void setInvoiceSession(Long studentId, String branchCode, String info, HttpSession session){
+		// 1. flush session from previous payment
+		JaeUtils.clearSession(session);
+
+		// 2. get latest invoice by student id
+		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);	
+		if(info!=null) invoice.setInfo(info);
+		invoiceService.updateInvoice(invoice, invoice.getId());
+		String lfStr = StringUtils.defaultString(invoice.getInfo()).replace("\n", "<br/>"); 
+		InvoiceDTO newInvo = new InvoiceDTO(invoice);
+		newInvo.setInfo(lfStr);
+		session.setAttribute(JaeConstants.INVOICE_INFO, newInvo);
+
+		// 3. payment note based on branch code
+		BranchDTO branchInfo = codeService.getBranch(branchCode);
+		String note = branchInfo.getInfo().replace("\n", "<br/>"); // note
+		branchInfo.setInfo(note);
+		session.setAttribute(JaeConstants.INVOICE_BRANCH, branchInfo);
+
+		// 4. create MoneyDTO for header
+		MoneyDTO header = new MoneyDTO();
+		List<String> headerGrade = new ArrayList<String>();
+		String headerDueDate = JaeUtils.getToday();
+
+		// 5. bring EnrolmentDTO
+		List<EnrolmentDTO> enrolments = new ArrayList<>();
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoice.getId());
+
+		for(EnrolmentDTO enrol : enrols){
+			// 5-1. if free online course, no need to add to invoice
+			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
+			if(isFreeOnline) continue;
+			
+			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
+			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
+			enrol.setExtra(start + " ~ " + end);
+
+			if(!headerGrade.contains(enrol.getGrade())){
+				headerGrade.add(enrol.getGrade().toUpperCase());
+			}
+			try {
+				if(JaeUtils.isEarlier(start, headerDueDate)){
+					headerDueDate = start;
+				}
+			} catch (ParseException e) {
+				return ResponseEntity.ok("Error - Date parsing error");
+			}
+			enrolments.add(enrol);
+		}
+		header.setRegisterDate(headerDueDate);
+		header.setInfo(String.join(", ", headerGrade));
+		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
+		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
+
+		// 6. bring MaterialDTO
+		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
+		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+		
+		// 7. bring PaymentDTO
+		List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoice.getId());
+		// update upto & total
+		for(PaymentDTO pay : payments){
+			pay.setTotal(invoice.getAmount()); // override total as total amount in invoice
+			double totalPaid = paymentService.getTotalPaidById(Long.parseLong(pay.getId()), invoice.getId());
+			pay.setUpto(totalPaid);
+		}
+		session.setAttribute(JaeConstants.PAYMENT_PAYMENTS, payments);			
 	}
 	
 }

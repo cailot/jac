@@ -19,8 +19,8 @@ public interface InvoiceService {
 	// get last active Invoice by student Id
 	Invoice getLastActiveInvoiceByStudentId(Long studentId);
 
-	// get last Invoice by student Id
-	Invoice getLastInvoiceByStudentId(Long studentId);
+	// // get last Invoice by student Id
+	// Invoice getLastInvoiceByStudentId(Long studentId);
 
 	// get Invoice Id by student Id
 	Long getInvoiceIdByStudentId(Long studentId);

@@ -144,10 +144,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 		return amount;
 	}
 
-	@Override
-	public Invoice getLastInvoiceByStudentId(Long studentId) {
-		return invoiceRepository.findLastInvoiceByStudentId(studentId);
-	}
+	// @Override
+	// public Invoice getLastInvoiceByStudentId(Long studentId) {
+	// 	return invoiceRepository.findLastInvoiceByStudentId(studentId);
+	// }
 
 	@Override
 	public boolean isFullPaidInvoice(Long id) {

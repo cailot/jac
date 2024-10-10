@@ -84,25 +84,42 @@ function linkToStudent(studentId) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Payment History
+//		Display Renewal Invoice
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayFullHistory(studentId) {
-	var url = '/invoice/history?studentKeyword=' + studentId;  
-	var win = window.open(url, '_blank');
-	win.focus();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Display Receipt in another tab
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistoryId, paymentId){
+function displayRenewal(studentId, firstName, lastName) {
+	
 	var branch = window.branch;
+	// branch code number...
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
-	var url = '/invoice/receiptInfo?studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&invoiceId=' + invoiceId + '&invoiceHistoryId=' + invoiceHistoryId + '&paymentId=' + paymentId + '&branchCode=' + branch;  
-	var win = window.open(url, '_blank');
-	win.focus();
+
+	console.log('Branch : ' + branch, 'Student ID : ' + studentId);
+	$.ajax({
+		url : '${pageContext.request.contextPath}/invoice/issue/' + studentId + '/' + branch,
+		type : 'POST',
+		contentType : 'application/json',
+		success : function(response) {
+			// show invoice in another tab
+			// var invoiceId = $('#hiddenInvoiceId').val();
+			var branch = window.branch;
+			if(branch === '0'){
+				branch = '90'; // head office
+			}	
+			//var url = '/invoice?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
+			var url = '/invoice?invoiceId=' + 11301558003 + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;	
+			var win = window.open(url, '_blank');
+			win.focus();
+
+
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+
+
+
 }
 
 </script>
@@ -128,6 +145,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 		vertical-align: middle;
 		height: 45px 	
 	} 
+
 
 </style>
 
@@ -155,6 +173,17 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<option value="0">All</option>
 						</select>
 					</div>
+					<div class="col-md-1">
+						<label for="book" class="label-form">Book</label> 
+						<select class="form-control" id="book" name="book">
+							<option value="0">No Book</option>
+							<option value="1">Vol. 1</option>
+							<option value="2">Vol. 2</option>
+							<option value="3">Vol. 3</option>
+							<option value="4">Vol. 4</option>
+							<option value="5">Vol. 5</option>
+						</select>
+					</div>
 					<div class="col-md-2">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" required>
@@ -162,7 +191,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 					<div class="col-md-2">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" required>
 					</div>
-					<div class="offset-md-3"></div>
+					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -176,16 +205,16 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<table id="renewListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">ID</th>
-										<th class="align-middle text-center">First Name</th>
-										<th class="align-middle text-center">Last Name</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Class</th>
-										<th class="align-middle text-center">Start Week</th>
-										<th class="align-middle text-center">End Week</th>
-										<th class="align-middle text-center">Contact</th>
-										<th class="align-middle text-center">Email</th>
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" style="width: 10%">ID</th>
+										<th class="align-middle text-center" style="width: 15%">First Name</th>
+										<th class="align-middle text-center" style="width: 15%">Last Name</th>
+										<th class="align-middle text-center" style="width: 5%">Grade</th>
+										<th class="align-middle text-center" style="width: 20%">Class</th>
+										<th class="align-middle text-center" style="width: 5%">Start</th>
+										<th class="align-middle text-center" style="width: 5%">End</th>
+										<th class="align-middle text-center" style="width: 10%">Contact</th>
+										<th class="align-middle text-center" style="width: 10%">Email</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
@@ -232,8 +261,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 												<td class="small align-middle text-left ml-1"><span><c:out value="${student.contactNo1}" /></span></td>
 												<td class="small align-middle text-left ml-1"><span><c:out value="${student.email1}" /></span></td>
 												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-calculator text-primary hand-cursor" data-toggle="tooltip" title="Receipt" onclick="displayReceipt('${student.id}', '${student.firstName}', '${student.lastName}', '${student.contactNo1}', '${student.email1}', '${student.contactNo2}')"></i>
+													<i class="bi bi-arrow-repeat text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Renew Invoice" onclick="displayRenewal('${student.id}', '${student.firstName}','${student.lastName}')"></i>&nbsp;
 												</td>
 											</tr>
 										</c:forEach>
