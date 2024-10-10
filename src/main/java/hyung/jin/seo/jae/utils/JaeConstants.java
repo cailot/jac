@@ -321,4 +321,10 @@ public interface JaeConstants {
 	int STATUS_PROCEEDING = 1;
 
 	int STATUS_COMPLETED = 2;
+
+	String STATUS_OK = "OK";
+
+	String STATUS_ERROR = "ERROR";
+
+	String STATUS_EMPTY = "EMPTY";
 }

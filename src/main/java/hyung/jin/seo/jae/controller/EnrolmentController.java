@@ -181,7 +181,7 @@ public class EnrolmentController {
 		List<MaterialDTO> dtos = new ArrayList<>();
 		
 		// 1. get Invoice
-		Invoice existingInvo = invoiceService.getLastInvoiceByStudentId(studentId);
+		Invoice existingInvo = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		InvoiceHistory existingInvoHistory = invoiceHistoryService.getLastInvoiceHistory(existingInvo.getId());
 		
 		// 2. remove existing Materials
@@ -265,6 +265,14 @@ public class EnrolmentController {
 				// 3-0-1. remove existing enrolments if paid amount is 0 and enrolment not started yet
 				if(paidAmount==0){
 					detachEnrolment(existingInvo);
+				}else if(paidAmount>0 && paidAmount<existingInvo.getAmount()){
+					// if partial paid in previous invoice, can't change until full payment completes
+					return dtos;
+					// 3-0-2. calculate owing amount
+					// owingAmount = existingInvo.getAmount() - paidAmount;
+					// // 3-0-3. remove existing enrolments
+					// detachEnrolment(existingInvo);
+
 				}
 			}
 			//////////////////////////////////////////// If pents change mind before payment //////////////////////////////////////////
