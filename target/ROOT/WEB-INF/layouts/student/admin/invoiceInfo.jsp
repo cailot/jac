@@ -34,7 +34,7 @@ function addEnrolmentToInvoiceList(data) {
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
 
-    row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>'));
+    row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>'));
     // row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
 	row.append($('<td class="smaller-table-font">').text(data.name));
     row.append($('<td class="smaller-table-font text-center">').text(data.year));
@@ -64,7 +64,7 @@ function addEnrolmentToInvoiceList(data) {
 
 	row.append($('<td class="smaller-table-font paid-date text-center">').text(data.paymentDate));
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
-	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'\')"></i>'));
+	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'\')"></i>'));
 		
 		
 	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
@@ -93,7 +93,7 @@ function addPaymentToInvoiceList(data) {
 	// console.log('addPaymentToInvoiceList >>>> ' + data.JSON);
 	// debugger;
 	var newPayment = $('<tr>');
-	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" title="payment"></i></td>'));
+	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" data-toggle="tooltip" title="payment"></i></td>'));
 	newPayment.append($('<td class="smaller-table-font">').text('Paid'));
 	newPayment.append($('<td>')); // year
 	newPayment.append($('<td>')); // day
@@ -115,7 +115,7 @@ function addPaymentToInvoiceList(data) {
 	newPayment.append($('<td class="hidden-column payment-match">').text(PAYMENT + '|' + data.id));
 
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
-	isNotBlank(data.info) ? newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'\')"></i>'));		
+	isNotBlank(data.info) ? newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'\')"></i>'));		
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
 		if ($(this).find('.payment-match').text() === newPayment.find('.payment-match').text()) {
@@ -134,7 +134,7 @@ function addBookToInvoiceList(data) {
 	// console.log(data);
 	// $('#hiddenInvoiceId').val(data.invoiceId);
 	var row = $('<tr>');
-	row.append($('<td class="text-center"><i class="bi bi-book" title="book"></i></td>')); // item
+	row.append($('<td class="text-center"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font">').text(data.name)); // description
 	row.append($('<td>')); // year
 	row.append($('<td>')); // day
@@ -152,7 +152,7 @@ function addBookToInvoiceList(data) {
 	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId)); 
 						
 	// if data.info is not empty, then display filled icon, otherwise display empty icon	
-	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
+	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
 		if ($(this).find('.book-match').text() === row.find('.book-match').text()) {
@@ -574,19 +574,15 @@ function addInformation(){
 			$('#invoiceListTable > tbody > tr').each(function() {
 					if(dataType === ENROLMENT){
 						if ($(this).find('.enrolment-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'\')"></i>');		
+							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(ENROLMENT, ' + dataId + ', \'\')"></i>');		
 						}
-					// }else if(dataType === OUTSTANDING){
-					// 	if ($(this).find('.outstanding-match').text() === (dataType + '|' + dataId)) {
-					// 		(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(OUTSTANDING, ' + dataId + ', \'\')"></i>');
-					// 	}
 					}else if(dataType === BOOK){
 						if ($(this).find('.material-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
+							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
 						}
 					}else if(dataType === PAYMENT){
 						if ($(this).find('.payment-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'\')"></i>');
+							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'\')"></i>');
 						}
 					}
 				}

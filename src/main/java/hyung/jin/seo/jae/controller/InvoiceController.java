@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -289,6 +290,12 @@ public class InvoiceController {
 		// 7. create payment
 		Payment payment = formData.convertToPayment();
 		payment.setTotal(totalAmount);
+		String paymentRegisterDate = formData.getRegisterDate();
+		if(StringUtils.isBlank(paymentRegisterDate)){
+			paymentRegisterDate = JaeUtils.getToday();
+		}
+		// convert to LocalDate
+		payment.setRegisterDate(LocalDate.parse(paymentRegisterDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		Payment paid = paymentService.addPayment(payment);	
 		
 		// 8. update Invoice
@@ -744,7 +751,7 @@ public class InvoiceController {
 		return "renewListPage";
 	}
 
-	// renew invoice for student
+	// renew invoice for student, return renewed invoice id
 	@PostMapping("/renewInvoice/{studentId}/{book}/{branchCode}")
 	@ResponseBody
 	public ResponseEntity<String> renewInvoice(@PathVariable("studentId") Long studentId, @PathVariable("book") int book, @PathVariable("branchCode") String branchCode, HttpSession session){
@@ -754,22 +761,36 @@ public class InvoiceController {
 		// 2. check last active invoice
 		Invoice invoice = invoiceService.getLastActiveInvoiceByStudentId(studentId);
 		if(invoice == null) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
+		
+		// 3. check full paid or not; if not, return
+		double invoiceAmount = invoice.getAmount();
+		double invoicePaidAmount = invoice.getPaidAmount();
+		// String invoiceDiscount =StringUtils.defaultString(invoice.getDiscount()+"", "0");
+		// double invoiceDiscountAmount = 0;
+		// if(invoiceDiscount.contains("%")){
+		// 	invoiceDiscountAmount = invoiceAmount * (Double.parseDouble(invoiceDiscount.replace("%", ""))/100);
+		// }else{
+		// 	invoiceDiscountAmount = Double.parseDouble(invoiceDiscount);
+		// }
+		//boolean fullPaid =  (invoiceAmount - (invoicePaidAmount + invoiceDiscountAmount)) <= 0;
+		boolean fullPaid =  (invoiceAmount - invoicePaidAmount) <= 0;
+		if(!fullPaid) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
 
-		// 3. get enrolments by invoice
+		// 4. get enrolments by invoice
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoice.getId());
 		if(enrols.size() == 0) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
 
-		// 4. create new invoice
+		// 5. create new invoice
 		Invoice newInvo = new Invoice();
 		newInvo.setStudentId(studentId);
 		invoiceService.addInvoice(newInvo);
 
-		// 5. create InvoiceHistory
+		// 6. create InvoiceHistory
 		InvoiceHistory history = new InvoiceHistory();
 		history.setInvoice(newInvo);
 		invoiceHistoryService.addInvoiceHistory(history);
 
-		// 6. create new Enrolment
+		// 7. create new Enrolment
 		for(EnrolmentDTO data : enrols){
 
 			// 6-1. get Clazz
@@ -777,7 +798,8 @@ public class InvoiceController {
 			
 			// 6-2. update Invoice amount
 			int newStartWeek = data.getEndWeek() + 1;
-			int newEndWeek = newStartWeek + 9;
+			// int newEndWeek = newStartWeek + 9;
+			int newEndWeek = newStartWeek + (data.getEndWeek() - data.getStartWeek()); // same period as previous enrolment
 			int academicYear = clazzService.getAcademicYear(clazz.getId());
 			int lastAcademicWeek = cycleService.lastAcademicWeek(academicYear);
 			if(newEndWeek > lastAcademicWeek){
@@ -796,7 +818,9 @@ public class InvoiceController {
 			// int credit = data.getCredit();
 			newInvo.setAmount(newInvo.getAmount() + enrolmentPrice);
 			newInvo.setCredit(0);
-			newInvo.setDiscount(newInvo.getDiscount() + discountAmount);
+
+			// if discount is 100%, it means online class so skip adding discount
+			if(!StringUtils.equalsIgnoreCase(JaeConstants.DISCOUNT_FREE, discount)) newInvo.setDiscount(newInvo.getDiscount() + discountAmount);
 
 			// 6-3. create new Enrolment
 			Enrolment enrolment = new Enrolment();
@@ -818,15 +842,12 @@ public class InvoiceController {
 			// update day to code
 			data.setDay(clazzService.getDay(clazz.getId()));
 			
-				// 3-2-5. put into List<EnrolmentDTO>
-				// dtos.add(data);
-
 			// 6-5. if onlline class, skip attendance; otherwise create attendance
 			if(!data.isOnline()){
 				///////////////// Attendance ////////////////////////
 				// int academicYear = clazzService.getAcademicYear(clazz.getId());
 				String clazzDay = clazzService.getDay(clazz.getId());
-				for(int i = data.getStartWeek(); i <= data.getEndWeek(); i++){
+				for(int i = newStartWeek; i <= newEndWeek; i++){
 					Attendance attendance = new Attendance();
 					attendance.setWeek(i+"");
 					attendance.setStudent(student);
@@ -845,13 +866,14 @@ public class InvoiceController {
 		history.setAmount(newInvo.getAmount());
 		history.setPaidAmount(newInvo.getPaidAmount());
 		invoiceHistoryService.updateInvoiceHistory(history, history.getId());
-		//9075 2302 010
+		//Min 9075 2302 010
 
 		// set invoice info into session
 		setInvoiceSession(studentId, branchCode, null, session);
 
 		// 7. return flag
-		return ResponseEntity.ok(JaeConstants.STATUS_OK);
+		return ResponseEntity.ok(newInvo.getId()+"");
+
 	}
 
 	// register new invoice
@@ -875,7 +897,7 @@ public class InvoiceController {
 
 
 
-
+	// set invoice info into session
 	private void setInvoiceSession(Long studentId, String branchCode, String info, HttpSession session){
 		// 1. flush session from previous payment
 		JaeUtils.clearSession(session);
@@ -918,10 +940,10 @@ public class InvoiceController {
 			}
 			try {
 				if(JaeUtils.isEarlier(start, headerDueDate)){
-					headerDueDate = start;
+					headerDueDate = start; 
 				}
 			} catch (ParseException e) {
-				return ResponseEntity.ok("Error - Date parsing error ");
+				//return ResponseEntity.ok("Error - Date parsing error ");
 			}
 			enrolments.add(enrol);
 		}

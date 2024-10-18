@@ -244,23 +244,33 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		return enrolmentIds;
 	}
 
-	// @Override
-	// public List<Long> findEnrolmentByInvoiceId(Long invoiceId) {
-	// 	List<Long> enrolmentIds = new ArrayList<>();
-	// 	try {
-	// 		enrolmentIds = enrolmentRepository.findEnrolmentIdByInvoiceId(invoiceId);
-	// 	} catch (Exception e) {
-	// 		System.out.println("No enrolment found");
-	// 	}
-	// 	return enrolmentIds;
-	// }
-
 	@Override
 	public Long findLatestInvoiceIdByStudent(Long studentId) {
-		// return enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
 		Long invoiceId = 0L;
 		try {
 			invoiceId = enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+		} catch (Exception e) {
+			System.out.println("No invoice found");
+		}
+		return invoiceId;
+	}
+
+	@Override
+	public Long find2ndLatestInvoiceIdByStudent(Long studentId) {
+		Long invoiceId = 0L;
+		try {
+			invoiceId = enrolmentRepository.findSecondLatestInvoiceIdByStudentId(studentId);
+		} catch (Exception e) {
+			System.out.println("No invoice found");
+		}
+		return invoiceId;
+	}
+
+	@Override
+	public Long find3rdLatestInvoiceIdByStudent(Long studentId) {
+		Long invoiceId = 0L;
+		try {
+			invoiceId = enrolmentRepository.findThirdLatestInvoiceIdByStudentId(studentId);
 		} catch (Exception e) {
 			System.out.println("No invoice found");
 		}

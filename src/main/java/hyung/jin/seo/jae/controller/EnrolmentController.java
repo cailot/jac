@@ -76,11 +76,36 @@ public class EnrolmentController {
 	@GetMapping("/search/student/{id}")
 	@ResponseBody
 	public List searchEnrolmentByStudent(@PathVariable Long id) {
-		List dtos = new ArrayList(); 
 		// get lastest invoice id
  		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
 
-		// boolean isInvoiceAbsent = ((invoiceIds==null) || (invoiceIds.size()==0));
+		return fetchEnrolment(id, invoiceId);
+	}
+
+	@GetMapping("/search/student1/{id}")
+	@ResponseBody
+	public List searchEnrolmentByStudent1(@PathVariable Long id) {
+		List dtos = new ArrayList();
+		// get 3 lastest invoice id
+ 		Long firstId = enrolmentService.findLatestInvoiceIdByStudent(id);
+		Long secondId = enrolmentService.find2ndLatestInvoiceIdByStudent(id);
+		Long thirdId = enrolmentService.find3rdLatestInvoiceIdByStudent(id);
+
+		// add 3 enrolments
+		if(firstId!=null) dtos.add(fetchEnrolment(id, firstId));
+		if(secondId!=null) dtos.add(fetchEnrolment(id, secondId));
+		if(thirdId!=null) dtos.add(fetchEnrolment(id, thirdId));
+
+		// return dtos mixed by enrolments
+		return dtos;
+	}
+
+
+
+	// fetch enrolment by student id and invoice id
+	private List fetchEnrolment(Long id, Long invoiceId) {
+		List dtos = new ArrayList(); 
+		
 		boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
 		
 		if(isInvoiceAbsent) return dtos; // return empty list if no invoice
@@ -124,6 +149,20 @@ public class EnrolmentController {
 		// 5. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// count records number in database
 	@GetMapping("/count")
@@ -406,7 +445,7 @@ public class EnrolmentController {
 				data.setInvoiceId(existingInvo.getId()+"");
 				// update day to code
 				data.setDay(clazzService.getDay(clazz.getId()));
-				// 3-3-5. put into List<EnrolmentDT)>
+				// 3-3-5. put into List<EnrolmentDTO>
 				dtos.add(data);
 					
 				// 3-3-6. if onlline class, skip attendance; otherwise create attendance	

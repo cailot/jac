@@ -386,10 +386,10 @@ window.showWarning = function(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#userListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
-	} 
+		height: 45px 	
+	}
 
 </style>
 
@@ -540,12 +540,12 @@ window.showWarning = function(id) {
 													<c:choose>
 														<c:when test="${active == 0}">
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-success" title="Enabled"></i>
+																<i class="bi bi-check-circle-fill text-success" data-toggle="tooltip" title="Enabled"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-secondary" title="Disabled"></i>
+																<i class="bi bi-check-circle-fill text-secondary" data-toggle="tooltip" title="Disabled"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>

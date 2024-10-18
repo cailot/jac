@@ -120,7 +120,7 @@ function listCourses(grade) {
 				//console.log(cleaned);
 				var row = $('<tr class="d-flex">');
 				row.append($('<td>').addClass('hidden-column').text(value.id));
-				row.append($('<td class="col-1"><i class="bi bi-mortarboard" title="class"></i></td>'));
+				row.append($('<td class="col-1"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>'));
 				var subjectsString = '';
 				if(value.subjects != null && value.subjects.length > 0){	
 					subjectsString = value.subjects.map(function(subject) {
@@ -128,7 +128,7 @@ function listCourses(grade) {
 					}).join(', ');
 				}
 				row.append($('<td class="smaller-table-font course-title col-10" style="padding-left: 20px;">').html(value.name + ' - ' + value.description + '  [' + subjectsString + ']'));
-				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ","  + grade + ")''>").html('<a href="javascript:void(0)" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addClassToBasket(" + cleaned + ","  + grade + ")''>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Add Class"><i class="bi bi-plus-circle"></i></a>'));
 				$('#courseTable > tbody').append(row);
 			});
 		},
@@ -159,7 +159,7 @@ function listBooks(grade) {
 				//console.log(cleaned);
 				var row = $('<tr class="d-flex">');
 				row.append($('<td>').addClass('hidden-column').text(value.id));
-				row.append($('<td class="col-1"><i class="bi bi-book" title="book"></i></td>'));
+				row.append($('<td class="col-1"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>'));
 				row.append($('<td class="smaller-table-font col-5">').text(value.name));
 				// Assuming value.subjects is an array of objects with a 'name' property
 				var subjectsString = '';
@@ -170,7 +170,7 @@ function listBooks(grade) {
 				}
 				row.append($('<td class="small align-middle smaller-table-font col-4">').text(subjectsString));				
 				row.append($('<td class="smaller-table-font col-1 text-right pr-1">').text(Number(value.price).toFixed(2)));
-				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned +  ")''>").html('<a href="javascript:void(0)" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
+				row.append($("<td class='col-1' onclick='addBookToBasket(" + cleaned +  ")''>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Add Book"><i class="bi bi-plus-circle"></i></a>'));
 				$('#bookTable > tbody').append(row);
 			});
 		},
@@ -245,7 +245,7 @@ $.ajax({
 		});
 
 		row.append(hiddenColumn);
-		row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+		row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
 		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
 		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
@@ -382,7 +382,7 @@ $.ajax({
 		row.append(priceCell);
 
 		row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(((weeksCell.text() * priceCell.text())).toFixed(2))); // amount					
-		row.append($('<td>').html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>'));
+		row.append($('<td>').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete class"><i class="bi bi-trash"></i></a>'));
 		row.append($('<td class="hidden-column enrolId">').text('')); // enrolId
 		row.append($('<td class="hidden-column invoiceId">').text('')); // invoiceId
 		row.append($('<td class="hidden-column online">').text(false)); // online			
@@ -423,7 +423,7 @@ $.ajax({
 									}
 									var row = $('<tr class="d-flex" data-pair-id=' + gradePair + '>');
 									row.append($('<td>').addClass('hidden-column data-type').text(CLASS +'|' + clazzId));
-									row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+									row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
 									row.append($('<td class="smaller-table-font name">').text(clazzName)); // name
 									row.append($('<td class="smaller-table-font day">').text('All')); // day
 									row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
@@ -475,7 +475,7 @@ function addBookToBasket(value, index){
 	}
 	var row = $('<tr class="d-flex">');
 	row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
-	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" title="book"></i></td>')); // item
+	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font name" style="width: 36%;">').text(value.name)); // name
 	row.append($('<td style="width: 7%;">'));
 	row.append($('<td style="width: 6%;">'));
@@ -486,7 +486,7 @@ function addBookToBasket(value, index){
 	row.append($('<td style="width: 8%;">')); // price
 	// row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
 	row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(Number(value.price).toFixed(2)));
-	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
+	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
 	row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
 	row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
@@ -586,85 +586,69 @@ function associateRegistration(){
 		return true;    
 	});
 
+	// Promise ajax call
 	
-	// 1. Make the AJAX enrolment for class
-	$.ajax({
-		url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
-		method: 'POST',
-		data: JSON.stringify(enrolData),
-		contentType: 'application/json',
-		success: function(response) {
-			//debugger;
-			clearInvoiceTable();
+	function associateClazz(studentId, enrolData) {
+		return new Promise((resolve, reject) => {
+			$.ajax({
+				url: '${pageContext.request.contextPath}/enrolment/associateClazz/' + studentId,
+				method: 'POST',
+				data: JSON.stringify(enrolData),
+				contentType: 'application/json',
+				success: function(response) {
+					clearInvoiceTable();
 
-			if(response.length >0){
-				$.each(response, function(index, value){
-					// if extra is NEW, it requires updating enrolment id in basket table
-					if(value.extra != null && value.extra === NEW){
-						// how to add enrolment id to basket table
-						$('#basketTable > tbody > tr').each(function() {
-							var hiddens = $(this).find('.data-type').text();
-							if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
-								var hiddenValues = hiddens.split('|');
-								if(hiddenValues[1]===value.clazzId){
-									// console.log(hiddens + ' - ' + value.clazzId);
-									$(this).find('.enrolId').text(value.id);
-									$(this).find('.invoiceId').text(value.invoiceId);
-									$(this).find('.clazzChoice').prop('disabled', true);		
-								}
+					if(response.length > 0){
+						$.each(response, function(index, value){
+							// if extra is NEW, it requires updating enrolment id in basket table
+							if(value.extra != null && value.extra === NEW){
+								$('#basketTable > tbody > tr').each(function() {
+									var hiddens = $(this).find('.data-type').text();
+									if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
+										var hiddenValues = hiddens.split('|');
+										if(hiddenValues[1] === value.clazzId){
+											$(this).find('.enrolId').text(value.id);
+											$(this).find('.invoiceId').text(value.invoiceId);
+											$(this).find('.clazzChoice').prop('disabled', true);        
+										}
+									}
+								});
+							}
+							let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
+							if(!isFreeOnline){
+								addEnrolmentToInvoiceList(value);
 							}
 						});
+					} else {
+						clearEnrolmentBasket();
+						updateLatestInvoiceId(enrolData.invoiceId);
 					}
-					// debugger
-					// update the invoice table 
-					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-					// console.log('isFreeOnline : ' + isFreeOnline);
-					if(!isFreeOnline){
-						addEnrolmentToInvoiceList(value);
-					}
-				});
-			}else{
-				// clean up enrolments in basket table
-				clearEnrolmentBasket();
-				// simply update balance for invoice table as Enrolment is deleted
-				updateLatestInvoiceId(enrolData.invoiceId);
-			}
-			
+					resolve();
+				},
+				error: function(xhr, status, error) {
+					console.error(error);
+					reject(error);
+				}
+			});
+		});
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-			// nested ajax for book after creating or updating invoice
-			// 2. Make the AJAX for book
+	function associateBook(studentId, bookData) {
+		return new Promise((resolve, reject) => {
 			$.ajax({
 				url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
 				method: 'POST',
 				data: JSON.stringify(bookData),
 				contentType: 'application/json',
 				success: function(response) {
-					// remove books from invoice table
 					removeBookFromInvoiceList();
-					// Handle the response
-					if(response.length >0){
+					if(response.length > 0){
 						$.each(response, function(index, value){
-							// update exsiting BOOK by adding invoiceId & materialId
 							$('#basketTable > tbody > tr').each(function() {
 								var hiddens = $(this).find('.data-type').text();
 								if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
 									var hiddenValues = hiddens.split('|');
-									if(hiddenValues[1]===value.bookId){
-										// console.log(hiddens + ' - ' + value.clazzId);
+									if(hiddenValues[1] === value.bookId){
 										$(this).find('.materialId').text(value.id);
 										$(this).find('.invoiceId').text(value.invoiceId);
 									}
@@ -672,161 +656,54 @@ function associateRegistration(){
 							});
 							addBookToInvoiceList(value);
 						});
-					}else{
-						// simply update balance for invoice table as Book is deleted
-						// if(enrolData.invoiceId != null && enrolData.invoiceId != ''){
-							updateLatestInvoiceId(bookData.invoiceId);
-						// }
+					} else {
+						updateLatestInvoiceId(bookData.invoiceId);
 					}
+					resolve();
 				},
 				error: function(xhr, status, error) {
-					// Handle the error
 					console.error(error);
+					reject(error);
 				}
 			});
+		});
+	}
 
-			
-			// 3. check any payment, if exists, show it to invoice table
+	function associatePayment(studentId) {
+		return new Promise((resolve, reject) => {
 			$.ajax({
 				url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
-					console.log(response);
-					// remove payment from invoice table
+					// console.log(response);
 					removePaymentFromInvoiceList();
-					// Handle the response
-					if(response.length >0){
+					if(response.length > 0){
 						$.each(response, function(index, value){
 							addPaymentToInvoiceList(value);
 						});
 					}
+					resolve();
 				},
 				error: function(xhr, status, error) {
-					// Handle the error
 					console.error(error);
+					reject(error);
 				}
 			});
+		});
+	}
 
-
-			// 4. make sure updating attendance table after updating enrolment
+	// call one by one : associateClazz -> associateBook -> associatePayment
+	associateClazz(studentId, enrolData)
+		.then(() => associateBook(studentId, bookData))
+		.then(() => associatePayment(studentId))
+		.then(() => {
 			retrieveAttendance(studentId);
-*/
-
-
-
-
-
-
-
-			function associateBook(studentId, bookData) {
-				return new Promise((resolve, reject) => {
-					$.ajax({
-						url: '${pageContext.request.contextPath}/enrolment/associateBook/' + studentId,
-						method: 'POST',
-						data: JSON.stringify(bookData),
-						contentType: 'application/json',
-						success: function(response) {
-							// remove books from invoice table
-							removeBookFromInvoiceList();
-							// Handle the response
-							if(response.length > 0){
-								$.each(response, function(index, value){
-									// update existing BOOK by adding invoiceId & materialId
-									$('#basketTable > tbody > tr').each(function() {
-										var hiddens = $(this).find('.data-type').text();
-										if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
-											var hiddenValues = hiddens.split('|');
-											if(hiddenValues[1] === value.bookId){
-												$(this).find('.materialId').text(value.id);
-												$(this).find('.invoiceId').text(value.invoiceId);
-											}
-										}
-									});
-									addBookToInvoiceList(value);
-								});
-							} else {
-								// simply update balance for invoice table as Book is deleted
-								updateLatestInvoiceId(bookData.invoiceId);
-							}
-							resolve();
-						},
-						error: function(xhr, status, error) {
-							console.error(error);
-							reject(error);
-						}
-					});
-				});
-			}
-
-			function associatePayment(studentId) {
-				return new Promise((resolve, reject) => {
-					$.ajax({
-						url: '${pageContext.request.contextPath}/enrolment/associatePayment/' + studentId,
-						method: 'POST',
-						contentType: 'application/json',
-						success: function(response) {
-							console.log(response);
-							// remove outstandings from invoice table
-							removePaymentFromInvoiceList();
-							// Handle the response
-							if(response.length > 0){
-								$.each(response, function(index, value){
-									addPaymentToInvoiceList(value);
-								});
-							}
-							resolve();
-						},
-						error: function(xhr, status, error) {
-							console.error(error);
-							reject(error);
-						}
-					});
-				});
-			}
-
-			// 2. make sure calling associateBook first in order to update proper payment (associatePayment)
-			associateBook(studentId, bookData)
-				.then(() => associatePayment(studentId))
-				.catch(error => {
-					console.error('Error:', error);
-				});
-
-
-			// 3. make sure updating attendance table after updating enrolment
-			retrieveAttendance(studentId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
-			// console.log(response);
-			$('#success-alert .modal-body').html('ID : <b>' + studentId + '</b> enrolment saved successfully');
-			$('#success-alert').modal('toggle');
-
-			// update balance
-			
-		},
-		error: function(xhr, status, error) {
-			// Handle the error
-			console.error(error);
-		}
-	});
+			var rowCount = $('#basketTable tbody tr').length;
+		})
+		.catch(error => {
+			console.error('Error:', error);
+		});
 
 }
 	
@@ -848,9 +725,9 @@ function retrieveEnrolment(studentId){
 					var row = $('<tr class="d-flex" data-pair-id=' + value.grade + '>');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
 					if(value.extra === OVERDUE){
-						row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" title="Overdue"></i></td>')); // item
+						row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" data-toggle="tooltip" title="Overdue"></i></td>')); // item
 					}else{
-						row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
+						row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
 					}
 					//row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 					row.append($('<td class="smaller-table-font name">').text(value.name)); // name
@@ -1000,7 +877,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalEnrolPrice.toFixed(2))); // amount				
 					
 					let freeOnline = value.online && value.discount === DISCOUNT_FREE;	
-					var deleteIcon =(freeOnline) ? $("<td>") : $("<td>").html('<a href="javascript:void(0)" title="Delete class"><i class="bi bi-trash"></i></a>');
+					var deleteIcon =(freeOnline) ? $("<td>") : $("<td>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete class"><i class="bi bi-trash"></i></a>');
 					row.append(deleteIcon);
 					
 					row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
@@ -1022,7 +899,7 @@ function retrieveEnrolment(studentId){
 					// update my lecture table
 					var row = $('<tr class="d-flex">');
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.bookId)); // 0
-					row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" title="book"></i></td>')); // item
+					row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 					row.append($('<td class="smaller-table-font" style="width: 36%;">').text(value.name)); // name
 					row.append($('<td style="width: 7%;">'));
 					row.append($('<td style="width: 6%;">'));
@@ -1032,7 +909,7 @@ function retrieveEnrolment(studentId){
 					row.append($('<td style="width: 7%;">'));
 					row.append($('<td style="width: 8%;">')); // price
 					row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(value.price.toFixed(2)));
-					row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
+					row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 					row.append($('<td class="hidden-column grade">').text(value.grade));
 					row.append($('<td class="hidden-column materialId">').text(value.id)); 
 					row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); 
@@ -1258,17 +1135,17 @@ function removeAllInBasket(){
 								<thead>
 									<tr class="d-flex">
 										<th class="hidden-column"></th>
-										<th class="smaller-table-font text-center" style="padding-left: 0.25rem;" title="Type of Purchased Item">Item</th>
-										<th class="smaller-table-font text-center" title="Name of Purchased Item">Name</th>
-										<th class="smaller-table-font text-center" title="Class Schedule Day">Day</th>
-										<th class="smaller-table-font text-center" title="Class Year">Year</th>
-										<th class="smaller-table-font text-center" title="Class Start Week">Start</th>
-										<th class="smaller-table-font text-center" title="Class End Week">End</th>
-										<th class="smaller-table-font text-center" title="Class Total Weeks">Wks</th>
-										<th class="smaller-table-font text-center" title="Credit">CR</th>
-										<th class="smaller-table-font text-center" title="Discount">DC</th>
-										<th class="smaller-table-font text-center" title="Purchased Item Unit Price">Price</th>
-										<th class="smaller-table-font text-center" title="PUrchased Item Total Price">Amount</th>
+										<th class="smaller-table-font text-center" style="padding-left: 0.25rem;" data-toggle="tooltip" title="Type of Purchased Item">Item</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Name of Purchased Item">Name</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Class Schedule Day">Day</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Class Year">Year</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Class Start Week">Start</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Class End Week">End</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Class Total Weeks">Wks</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Credit">CR</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Discount">DC</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="Purchased Item Unit Price">Price</th>
+										<th class="smaller-table-font text-center" data-toggle="tooltip" title="PUrchased Item Total Price">Amount</th>
 										<th class="smaller-table-font text-center hidden-column"></th>
 									</tr>
 								</thead>

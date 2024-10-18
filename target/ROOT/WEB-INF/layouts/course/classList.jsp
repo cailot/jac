@@ -387,7 +387,7 @@ function deleteClass(id) {
 
 	#classListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>

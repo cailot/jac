@@ -148,6 +148,12 @@ function addStudent() {
 	$('#registerModal').modal('hide');
 	// flush all registered data
 	document.getElementById("studentRegister").reset();		
+	// if staff, set branch to current branch
+	if(!JSON.parse(window.isAdmin)){
+		$("#formBranch").val(window.branch);
+		$("#addBranch").val(window.branch);
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -490,6 +496,11 @@ function clearStudentForm() {
 	clearAttendanceTable();
 	// clear passwords
 	clearPassword();
+	// if staff, set branch to current branch
+	if(!JSON.parse(window.isAdmin)){
+		$("#formBranch").val(window.branch);
+		$("#addBranch").val(window.branch);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -589,24 +600,25 @@ function searchStudentById(id){
 			<div class="col-md-8">
 				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
 			</div>
-			<div class="col-md-4 d-flex justify-content-center align-items-center" title="Search Student by Id/Name">
+			<div class="col-md-4 d-flex justify-content-center align-items-center" data-toggle="tooltip" title="Search Student by Id/Name">
 				<button type="button" class="btn btn-block btn-primary" onclick="searchStudent()"><i class="bi bi-search"></i></button>
 			</div>
 		</div>
+
 		<div class="form-row mt-3">
-			<div class="col mx-auto" title="Register New Student">
+			<div class="col mx-auto"  data-toggle="tooltip"  title="Register New Student">
 				<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerModal"><i class="bi bi-plus-circle"></i></button>
 			</div>
-			<div class="col mx-auto" title="Update Student Information">
+			<div class="col mx-auto" data-toggle="tooltip" title="Update Student Information">
 				<button type="button" class="btn btn-block btn-success" onclick="updateStudentInfo()"><i class="bi bi-pencil-square"></i></button>
 			</div>
-			<div class="col mx-auto" title="Reset Student Password">
+			<div class="col mx-auto" data-toggle="tooltip" title="Reset Student Password">
 				<button type="button" class="btn btn-block btn-warning" data-toggle="modal" data-target="#passwordModal" onclick="clearPassword()"><i class="bi bi-key-fill"></i></button>
 			</div>
-			<div class="col mx-auto" title="Inactivate Student">
+			<div class="col mx-auto" data-toggle="tooltip" title="Inactivate Student">
 				<button type="button" class="btn btn-block btn-danger" data-toggle="modal" data-target="#deactivateModal"><i class="bi bi-pause"></i></button>
 			</div>
-			<div class="col mx-auto" title="Clear Student Information">
+			<div class="col mx-auto" data-toggle="tooltip" title="Clear Student Information">
 				<button type="button" class="btn btn-block btn-secondary" onclick="clearStudentForm()"><i class="bi bi-eraser"></i></button>
 			</div>
 		</div>
