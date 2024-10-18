@@ -70,7 +70,7 @@ function retrieveAttendance(studentId) {
 					var row = $("<tr class='d-flex'>");
 					row.append($('<td>').addClass('hidden-column').addClass('data-type').text(ATTENDANCE + '|' + id));
 					row.append($('<td class="small text-center" style="width: 35%;">').text(gradeName(value.clazzGrade) + '-' + value.week));
-					var dayDropdown = $('<select class="small text-center dayChoice" style="width: 100%; border: none;" title="' + value.attendDate + '">');
+					var dayDropdown = $('<select class="small text-center dayChoice" style="width: 100%; border: none;" data-toggle="tooltip" title="' + value.attendDate + '">');
 					// Loop through the daysOfWeek array
 					for (var i = 0; i < daysOfWeek.length; i++) {
 						var option = $("<option value='" + i + "'>").text(daysOfWeek[i]);
@@ -87,16 +87,16 @@ function retrieveAttendance(studentId) {
 						// update status-select column with <i class="bi bi-check-circle text-success" title="Attended"></i>
 						var row = $(this).closest('tr'); // Get the closest <tr> element
 						var statusSelect = row.find('.status-select');		
-						statusSelect.html('<i class="bi bi-check-circle text-success" title="Attended"></i>');								
+						statusSelect.html('<i class="bi bi-check-circle text-success" data-toggle="tooltip" title="Attended"></i>');								
 					});
 					row.append($('<td class="day-select" style="width: 50%;">').append(dayDropdown));
 					var status = '';	
 					if(value.status === 'Y'){
-						status = '<i class="bi bi-check-circle text-success" title="Attended"></i>';
+						status = '<i class="bi bi-check-circle text-success" data-toggle="tooltip" title="Attended"></i>';
 					}else if(value.status === 'N'){
-						status = '<i class="bi bi-x-circle text-danger" title="Absent"></i>';
+						status = '<i class="bi bi-x-circle text-danger" data-toggle="tooltip" title="Absent"></i>';
 					}else if(value.status === 'P'){
-						status = '<i class="bi bi-pause-circle text-warning" title="Pause"></i>';
+						status = '<i class="bi bi-pause-circle text-warning" data-toggle="tooltip" title="Pause"></i>';
 					}	
 					row.append($('<td class="small text-center status-select" style="width: 15%;">').html(status));
 			

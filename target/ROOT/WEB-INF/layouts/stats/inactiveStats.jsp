@@ -23,8 +23,6 @@ $(document).ready(function () {
 	var statDiv = document.getElementById("stats");
 	statDiv.style.display = 'none';
 
-
-
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -677,22 +675,6 @@ function export2Excel(){
     overflow: visible;
 }
 
-.header:hover::before {
-    content: attr(title); /* Display the full content as a tooltip */
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px;
-    border-radius: 3px;
-    z-index: 999;
-    white-space: normal;
-    max-width: 200px; /* Adjust as needed */
-    word-wrap: break-word;
-    top: calc(100% + 5px);
-    left: 50%;
-    transform: translateX(-50%);
-}
-
 .graphBox {
 	position: relative;
 	width: 100%;
@@ -786,31 +768,31 @@ function export2Excel(){
 			</div>
 			<thead class="table-primary">
 				<tr>
-					<th class="header" title="" code="0"></th>
-					<th class="header" title="Box Hill" code="12">Box Hill</th>
-					<th class="header" title="Braybrook" code="13">Braybrook</th>
-					<th class="header" title="Chadstone" code="14">Chadstone</th>
-					<th class="header" title="Crandbourne" code="15">Crandbourne</th>
-					<th class="header" title="Epping" code="16">Epping</th>
-					<th class="header" title="Glen Waverley" code="17">Glen Waverley</th>
-					<th class="header" title="Narre Warren" code="18">Narre Warren</th>
-					<th class="header" title="Mitcham" code="19">Mitcham</th>
-					<th class="header" title="Preston" code="20">Preston</th>
-					<th class="header" title="Richmond" code="21">Richmond</th>
-					<th class="header" title="Springvale" code="22">Springvale</th>
-					<th class="header" title="St.Albans" code="23">St.Albans</th>
-					<th class="header" title="Werribee" code="24">Werribee</th>
-					<th class="header" title="Balwyn" code="25">Balwyn</th>
-					<th class="header" title="Rowville" code="26">Rowville</th>
-					<th class="header" title="Caroline Springs" code="27">Caroline Springs</th>
-					<th class="header" title="Bayswater" code="28">Bayswater</th>
-					<th class="header" title="Point Cook" code="29">Point Cook</th>
-					<th class="header" title="Craigieburn" code="30">Craigieburn</th>
-					<th class="header" title="Mernda" code="31">Mernda</th>
-					<th class="header" title="Melton" code="32">Melton</th>
-					<th class="header" title="Glenroy" code="33">Glenroy</th>
-					<th class="header" title="Pakenham" code="34">Pakenham</th>
-					<th class="header" title="Total" code="100">Total</th>
+					<th class="header" data-toggle="tooltip" title="" code="0"></th>
+					<th class="header" data-toggle="tooltip" title="Box Hill" code="12">Box Hill</th>
+					<th class="header" data-toggle="tooltip" title="Braybrook" code="13">Braybrook</th>
+					<th class="header" data-toggle="tooltip" title="Chadstone" code="14">Chadstone</th>
+					<th class="header" data-toggle="tooltip" title="Crandbourne" code="15">Crandbourne</th>
+					<th class="header" data-toggle="tooltip" title="Epping" code="16">Epping</th>
+					<th class="header" data-toggle="tooltip" title="Glen Waverley" code="17">Glen Waverley</th>
+					<th class="header" data-toggle="tooltip" title="Narre Warren" code="18">Narre Warren</th>
+					<th class="header" data-toggle="tooltip" title="Mitcham" code="19">Mitcham</th>
+					<th class="header" data-toggle="tooltip" title="Preston" code="20">Preston</th>
+					<th class="header" data-toggle="tooltip" title="Richmond" code="21">Richmond</th>
+					<th class="header" data-toggle="tooltip" title="Springvale" code="22">Springvale</th>
+					<th class="header" data-toggle="tooltip" title="St.Albans" code="23">St.Albans</th>
+					<th class="header" data-toggle="tooltip" title="Werribee" code="24">Werribee</th>
+					<th class="header" data-toggle="tooltip" title="Balwyn" code="25">Balwyn</th>
+					<th class="header" data-toggle="tooltip" title="Rowville" code="26">Rowville</th>
+					<th class="header" data-toggle="tooltip" title="Caroline Springs" code="27">Caroline Springs</th>
+					<th class="header" data-toggle="tooltip" title="Bayswater" code="28">Bayswater</th>
+					<th class="header" data-toggle="tooltip" title="Point Cook" code="29">Point Cook</th>
+					<th class="header" data-toggle="tooltip" title="Craigieburn" code="30">Craigieburn</th>
+					<th class="header" data-toggle="tooltip" title="Mernda" code="31">Mernda</th>
+					<th class="header" data-toggle="tooltip" title="Melton" code="32">Melton</th>
+					<th class="header" data-toggle="tooltip" title="Glenroy" code="33">Glenroy</th>
+					<th class="header" data-toggle="tooltip" title="Pakenham" code="34">Pakenham</th>
+					<th class="header" data-toggle="tooltip" title="Total" code="100">Total</th>
 				</tr>
 			</thead>
 			<tbody>

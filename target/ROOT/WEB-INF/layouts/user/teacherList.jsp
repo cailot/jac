@@ -581,10 +581,10 @@ function clearPassword() {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#teacherListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
-	} 
+		height: 45px 	
+	}
 
 </style>
 

@@ -110,6 +110,11 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 		padding-top: 35px;
 		padding-bottom: 35px;
 	}
+
+	#overdueListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
 </style>
 
 

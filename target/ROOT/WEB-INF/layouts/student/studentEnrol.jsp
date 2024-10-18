@@ -447,6 +447,10 @@ function displayFullHistory(studentId) {
 		padding-bottom: 35px;
 	}
 
+	#studentListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
 
 </style>
 
@@ -524,9 +528,9 @@ function displayFullHistory(studentId) {
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
 										<th class="align-middle text-center">Class</th>
-										<th class="align-middle text-center" data-orderable="false">Enrolment Date</th>
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
+										<th class="align-middle text-center" data-orderable="false">Enrolment Date</th>
 										<th class="align-middle text-center">Main Email</th>
 										<th class="align-middle text-center">Main Contact</th>
 										<!-- <th class="align-middle text-center">Sub Email</th>
@@ -576,14 +580,14 @@ function displayFullHistory(studentId) {
 													<c:out value="${student.contactNo2}" />
 												</td>
 												
+												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
+												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>
 												<td class="small align-middle text-center">
 													<span>
 														<fmt:parseDate var="studentRegistrationDate" value="${student.password}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
-												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
-												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>	
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
 												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>

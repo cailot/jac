@@ -208,7 +208,7 @@ function addInformation(){
 			// update memo <td> in invoiceListTable 
 			$('#studentInvoiceTable > tbody > tr').each(function() {
 				if ($(this).find('.payment-id').text() === dataId) {
-					(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'\')"></i>');		
+					(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + dataId + ', \'\')"></i>');		
 				}
 			});
 		},
@@ -252,7 +252,10 @@ function clearStudentInfo() {
 		padding-bottom: 35px;
 	}
 
-	tr { height: 50px } 
+	#studentInvoiceTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	}
 
 	tfoot th, tfoot td {
     vertical-align: middle;
@@ -401,10 +404,10 @@ function clearStudentInfo() {
 													<!--check ${payment.info} is empty or not -->
 													<c:choose>
 														<c:when test="${not empty info}">
-															<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+															<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
 														</c:when>
 														<c:otherwise>
-															<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="Note" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
+															<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
 														</c:otherwise>
 													</c:choose>
 												</td>																						

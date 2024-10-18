@@ -1,7 +1,5 @@
 package hyung.jin.seo.jae.model;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +39,7 @@ public class Payment {
     @Column(columnDefinition = "DECIMAL(10,2)")
     private double total;
     
-    @CreationTimestamp
+    // @CreationTimestamp
     private LocalDate registerDate;
 	
 }

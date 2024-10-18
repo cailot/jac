@@ -18,12 +18,12 @@ public class OmrServiceImpl implements OmrService {
 	private License omrLicense;
 
 	public OmrServiceImpl() {
-		omrLicense = new License();
-		try {
-			omrLicense.setLicense("src/main/resources/omr/Aspose.OMR.Java.lic");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// omrLicense = new License();
+		// try {
+		// 	omrLicense.setLicense("src/main/resources/omr/Aspose.OMR.Java.lic");
+		// } catch (Exception e) {
+		// 	e.printStackTrace();
+		// }
 		engine = new OmrEngine();
 	}
 

@@ -78,6 +78,23 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	@Query(value = "SELECT MAX(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId", nativeQuery = true)
 	Long findLatestInvoiceIdByStudentId(@Param("studentId") long studentId);
 
+	// return second latest invoice id by student id
+	@Query(value = "SELECT MAX(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId AND e.invoiceId < (SELECT MAX(e2.invoiceId) FROM Enrolment e2 WHERE e2.studentId = :studentId)", nativeQuery = true)
+	Long findSecondLatestInvoiceIdByStudentId(@Param("studentId") long studentId);
+
+
+	// return third latest invoice id by student id
+	@Query(value = "SELECT MAX(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId AND e.invoiceId < (SELECT MAX(e2.invoiceId) FROM Enrolment e2 WHERE e2.studentId = :studentId AND e2.invoiceId < (SELECT MAX(e3.invoiceId) FROM Enrolment e3 WHERE e3.studentId = :studentId))", nativeQuery = true)
+	Long findThirdLatestInvoiceIdByStudentId(@Param("studentId") long studentId);
+
+
+
+
+
+
+
+
+
 	// return all invoice id by student id
 	@Query(value = "SELECT DISTINCT(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId ORDER BY e.invoiceId DESC", nativeQuery = true)
 	List<Long> findInvoiceIdByStudentId(@Param("studentId") long studentId);
