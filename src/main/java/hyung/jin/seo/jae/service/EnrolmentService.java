@@ -69,6 +69,12 @@ public interface EnrolmentService {
 	// find latest invoice id by student id
 	Long findLatestInvoiceIdByStudent(Long studentId);
 
+	// find 2nd latest invoice id by student id
+	Long find2ndLatestInvoiceIdByStudent(Long studentId);
+
+	// find 3rd latest invoice id by student id
+	Long find3rdLatestInvoiceIdByStudent(Long studentId);
+
 	// find all invoice id by student id
 	List<Long> findInvoiceIdByStudent(Long studentId);
 

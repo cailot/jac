@@ -122,6 +122,12 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 		padding-top: 35px;
 		padding-bottom: 35px;
 	}
+
+	#studyListTable tr { 
+		vertical-align: middle;
+		height: 45px 	
+	} 
+
 </style>
 
 

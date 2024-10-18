@@ -378,9 +378,9 @@ function deletePracticeSchedule(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#scheduleListTable tr { 
 		vertical-align: middle;
-		height: 50px 	
+		height: 45px 	
 	} 
 
 </style>
@@ -504,12 +504,12 @@ function deletePracticeSchedule(id) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-success" title="Activated"></i>
+																<i class="bi bi-check-circle-fill text-success" data-toggle="tooltip" title="Activated"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-secondary" title="Deactivated"></i>
+																<i class="bi bi-check-circle-fill text-secondary" data-toggle="tooltip" title="Deactivated"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>

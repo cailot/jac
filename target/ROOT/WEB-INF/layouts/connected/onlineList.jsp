@@ -321,7 +321,7 @@ function deleteOnline(id) {
 		padding-bottom: 35px;
 	}
 
-	tr { 
+	#onlineListTable tr { 
 		vertical-align: middle;
 		height: 50px 	
 	} 
@@ -500,12 +500,12 @@ function deleteOnline(id) {
 													<c:choose>
 														<c:when test="${active == true}">
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-success"></i>
+																<i class="bi bi-check-circle-fill text-success" data-toggle="tooltip" title="Active"></i>
 															</td>
 														</c:when>
 														<c:otherwise>
 															<td class="text-center align-middle">
-																<i class="bi bi-check-circle-fill text-secondary"></i>
+																<i class="bi bi-check-circle-fill text-secondary" data-toggle="tooltip" title="Inactive"></i>
 															</td>
 														</c:otherwise>
 													</c:choose>

@@ -1,0 +1,6 @@
+?text=Hello, World!
+	font_style=bold
+	font_size=24
+
+#How are you doing today?
+	() Pretty good, thanks! () I won't respond until I see my lawyer.

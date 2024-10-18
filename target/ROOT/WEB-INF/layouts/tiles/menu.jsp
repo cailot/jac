@@ -78,9 +78,20 @@
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a> -->
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class Status</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class Login</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class Status</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class Login</a> -->
+				<!-- Jac Study submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Jac Study Check
+					</a>
+					<div class="dropdown-menu" aria-labelledby="Practice">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class</a>
+					</div>
+				</div>
 			</div>
 		</li>
 		<!-- User -->
@@ -124,6 +135,8 @@
 					</div>
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
+				<!-- OMR -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR</a>
 			</div>
 		</li>
 		</c:if>
@@ -150,7 +163,6 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Payment Student</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Overdue Student</a> -->
 			</div>
 		</li>
 		</c:if>

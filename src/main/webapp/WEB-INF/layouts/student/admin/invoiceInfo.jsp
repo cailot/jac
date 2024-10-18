@@ -29,7 +29,7 @@ function addEnrolmentToInvoiceList(data) {
 		// console.log('online');
 		return;
 	}
-	var row = $('<tr>');
+	var row = $('<tr class="row_odd">');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
@@ -625,6 +625,9 @@ function addInformation(){
 	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
 
+	.row_odd{ background-color: #ffff00; }
+	.row_even{ background-color: #00ff40; }
+
 </style>
 <!-- Main Body -->
 <div class="modal-body" style="padding-left: 0rem; padding-right: 0rem;">
@@ -661,7 +664,7 @@ function addInformation(){
 			<div class="form-row">
 				<div class="col-md-12">
 					<div class="table-wrap">
-						<table id="invoiceListTable" class="table table-striped table-bordered"><thead class="table-primary">
+						<table id="invoiceListTable" class="table table-bordered"><thead class="table-primary">
 								<tr>
 									<th class="smaller-table-font text-center">Item</th>
 									<th class="smaller-table-font text-center">Description</th>

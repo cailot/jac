@@ -45,8 +45,8 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	// @Autowired
 	// private OnlineActivityService onlineActivityService;
 
-	@Autowired
-	private OmrService omrService;
+	// @Autowired
+	// private OmrService omrService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(JaeApplication.class, args);
