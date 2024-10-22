@@ -22,14 +22,19 @@ $(document).ready(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addEnrolmentToInvoiceList(data) {
+function addEnrolmentToInvoiceList(data, cnt) {
 	// debugger;
 	//  console.log(data);
 	if((data.online)&&(data.discount === DISCOUNT_FREE)){
 		// console.log('online');
 		return;
 	}
-	var row = $('<tr class="row_odd">');
+	
+	// check cnt is odd number or even number
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var row = $('<tr class="'+ rowClass +'">');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
@@ -82,17 +87,24 @@ function addEnrolmentToInvoiceList(data) {
 	
 	// add new row at first row
 	$('#invoiceListTable > tbody').prepend(row);
-    // update latest invoice id and balance
+    // $('#invoiceListTable > tbody').append(row);
+    
+	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Payment to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addPaymentToInvoiceList(data) {
-	// console.log('addPaymentToInvoiceList >>>> ' + data.JSON);
+function addPaymentToInvoiceList(data, cnt) {
+	// console.log('addPaymentToInvoiceList >>>> ' + data.id);
 	// debugger;
-	var newPayment = $('<tr>');
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var newPayment = $('<tr class="'+ rowClass +'">');
+	
+	// var newPayment = $('<tr>');
 	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" data-toggle="tooltip" title="payment"></i></td>'));
 	newPayment.append($('<td class="smaller-table-font">').text('Paid'));
 	newPayment.append($('<td>')); // year
@@ -123,6 +135,8 @@ function addPaymentToInvoiceList(data) {
 		}
 	});
 	$('#invoiceListTable > tbody').prepend(newPayment);
+	// $('#invoiceListTable > tbody').append(newPayment);
+	
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -130,10 +144,16 @@ function addPaymentToInvoiceList(data) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Book to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addBookToInvoiceList(data) {
+function addBookToInvoiceList(data, cnt) {
 	// console.log(data);
 	// $('#hiddenInvoiceId').val(data.invoiceId);
-	var row = $('<tr>');
+
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var row = $('<tr class="'+ rowClass +'">');
+	
+	// var row = $('<tr>');
 	row.append($('<td class="text-center"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font">').text(data.name)); // description
 	row.append($('<td>')); // year
@@ -160,7 +180,8 @@ function addBookToInvoiceList(data) {
 		}
 	});
 
-	$('#invoiceListTable > tbody').append(row);
+	// $('#invoiceListTable > tbody').append(row);
+	$('#invoiceListTable > tbody').prepend(row);	
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -216,10 +237,12 @@ function removePaymentFromInvoiceList() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Lastest Invoice Id
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateLatestInvoiceId(invoiceId){
+function updateLatestInvoiceId1(invoiceId){
 	// debugger;
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+
+	console.log('updateLatestInvoiceId : ' + invoiceId + ' - ' + hiddenInvoiceId);
 
 	if (typeof invoiceId === "undefined") {
     	// if invoiceId is undefined, use hiddenInvoiceId
@@ -266,6 +289,18 @@ function updateLatestInvoiceId(invoiceId){
 			});	
 		}
 	}
+}
+
+
+function updateLatestInvoiceId(invoiceId){
+	// get the value of hidden invoiceId
+	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+	console.log('updateLatestInvoiceId hiddenInvoiceId : ' + hiddenInvoiceId + ' - invoiceId : ' + invoiceId);
+    // invoiceId is defined then compare invoiceId with hiddenInvoiceId
+	if(invoiceId >= hiddenInvoiceId){
+		// update invoiceId to hiddenInvoiceId
+		$("#hiddenInvoiceId").val(invoiceId);
+	}	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,7 +419,7 @@ function makePayment(){
 					// It is an EnrolmentDTO object
 					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
 					if(!isFreeOnline){
-						addEnrolmentToInvoiceList(value);
+						addEnrolmentToInvoiceList(value, 0);
 					}
 				// }else if (value.hasOwnProperty('remaining')) {
 				// 	// It is an OutstandingDTO object, extract paymentId
@@ -402,7 +437,7 @@ function makePayment(){
 					addPaymentToInvoiceList(value);
 				}else{
 					// It is a BookDTO object
-					addBookToInvoiceList(value);
+					addBookToInvoiceList(value, 0);
 				}
 			});
 			// reset payment dialogue info
@@ -625,8 +660,8 @@ function addInformation(){
 	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
 
-	.row_odd{ background-color: #ffff00; }
-	.row_even{ background-color: #00ff40; }
+	.row_odd{ background-color: #e6f2ff; }
+	.row_even{ background-color: #ccccff; }
 
 </style>
 <!-- Main Body -->

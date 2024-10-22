@@ -73,16 +73,16 @@ public class EnrolmentController {
 	@Autowired
 	private CycleService cycleService;
 
+	// @GetMapping("/search/student/{id}")
+	// @ResponseBody
+	// public List searchEnrolmentByStudent(@PathVariable Long id) {
+	// 	// get lastest invoice id
+ 	// 	Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
+
+	// 	return fetchEnrolment(id, invoiceId);
+	// }
+
 	@GetMapping("/search/student/{id}")
-	@ResponseBody
-	public List searchEnrolmentByStudent(@PathVariable Long id) {
-		// get lastest invoice id
- 		Long invoiceId = enrolmentService.findLatestInvoiceIdByStudent(id);
-
-		return fetchEnrolment(id, invoiceId);
-	}
-
-	@GetMapping("/search/student1/{id}")
 	@ResponseBody
 	public List searchEnrolmentByStudent1(@PathVariable Long id) {
 		List dtos = new ArrayList();
