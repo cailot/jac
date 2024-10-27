@@ -458,8 +458,15 @@ function makePayment(){
 			// reset payment dialogue info
 			document.getElementById('makePayment').reset();
 			$('#paymentModal').modal('toggle');
+			
 			// update invoice table balance
-			updateInvoiceTableBalance();	
+			// updateInvoiceTableBalance();	
+			
+			// update invoice & basket tables
+			clearInvoiceTable();
+			clearEnrolmentBasket();
+			retrieveEnrolment(studentId);
+			
 			// display receipt
 			displayReceiptInNewTab(lastPaymentId);
 		},
