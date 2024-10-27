@@ -237,61 +237,59 @@ function removePaymentFromInvoiceList() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Lastest Invoice Id
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateLatestInvoiceId1(invoiceId){
-	// debugger;
-	// get the value of hidden invoiceId
-	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+// function updateLatestInvoiceId1(invoiceId){
+// 	// debugger;
+// 	// get the value of hidden invoiceId
+// 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
 
-	console.log('updateLatestInvoiceId : ' + invoiceId + ' - ' + hiddenInvoiceId);
+// 	console.log('updateLatestInvoiceId : ' + invoiceId + ' - ' + hiddenInvoiceId);
 
-	if (typeof invoiceId === "undefined") {
-    	// if invoiceId is undefined, use hiddenInvoiceId
-    	$.ajax({
-			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
-			method: 'GET',
-			success: function(response) {
-				//debugger;
-				$("#rxAmount").text(response.toFixed(2));
-				if(parseFloat(response) > 0){
-					$('#paymentBtn').prop('disabled', false);
-				}else{
-					$('#paymentBtn').prop('disabled', true);
-				}
-			},
-			error: function(xhr, status, error) {
-				// Handle the error
-				console.error(error);
-				$("#rxAmount").text(0);
-			}
-		});	
-  	} else {
-    	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
-		if(invoiceId >= hiddenInvoiceId){
-			// update invoiceId to hiddenInvoiceId
-			$("#hiddenInvoiceId").val(invoiceId);
-			$.ajax({
-				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
-				method: 'GET',
-				success: function(response) {
-					//debugger;
-					$("#rxAmount").text(response.toFixed(2));
-					if(parseFloat(response) > 0){
-						$('#paymentBtn').prop('disabled', false);
-					}else{
-						$('#paymentBtn').prop('disabled', true);
-					}
-				},
-				error: function(xhr, status, error) {
-					// Handle the error
-					console.error(error);
-					$("#rxAmount").text(0);
-				}
-			});	
-		}
-	}
-}
-
-
+// 	if (typeof invoiceId === "undefined") {
+//     	// if invoiceId is undefined, use hiddenInvoiceId
+//     	$.ajax({
+// 			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
+// 			method: 'GET',
+// 			success: function(response) {
+// 				//debugger;
+// 				$("#rxAmount").text(response.toFixed(2));
+// 				if(parseFloat(response) > 0){
+// 					$('#paymentBtn').prop('disabled', false);
+// 				}else{
+// 					$('#paymentBtn').prop('disabled', true);
+// 				}
+// 			},
+// 			error: function(xhr, status, error) {
+// 				// Handle the error
+// 				console.error(error);
+// 				$("#rxAmount").text(0);
+// 			}
+// 		});	
+//   	} else {
+//     	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
+// 		if(invoiceId >= hiddenInvoiceId){
+// 			// update invoiceId to hiddenInvoiceId
+// 			$("#hiddenInvoiceId").val(invoiceId);
+// 			$.ajax({
+// 				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
+// 				method: 'GET',
+// 				success: function(response) {
+// 					//debugger;
+// 					$("#rxAmount").text(response.toFixed(2));
+// 					if(parseFloat(response) > 0){
+// 						$('#paymentBtn').prop('disabled', false);
+// 					}else{
+// 						$('#paymentBtn').prop('disabled', true);
+// 					}
+// 				},
+// 				error: function(xhr, status, error) {
+// 					// Handle the error
+// 					console.error(error);
+// 					$("#rxAmount").text(0);
+// 				}
+// 			});	
+// 		}
+// 	}
+// }
 function updateLatestInvoiceId(invoiceId){
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
@@ -302,6 +300,31 @@ function updateLatestInvoiceId(invoiceId){
 		$("#hiddenInvoiceId").val(invoiceId);
 	}	
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Balance in invoiceListTable
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateInvoiceTableBalance() {
+	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+	$.ajax({
+		url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
+		method: 'GET',
+		success: function(response) {
+			$("#rxAmount").text(response.toFixed(2));
+			if(parseFloat(response) > 0){
+				$('#paymentBtn').prop('disabled', false);
+			}else{
+				$('#paymentBtn').prop('disabled', true);
+			}
+		},
+		error: function(xhr, status, error) {
+				// Handle the error
+				console.error(error);
+				$("#rxAmount").text(0);
+		}
+	});		
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clean invoiceTable
@@ -322,7 +345,6 @@ function displayPayment(){
     var rxAmount = $("#rxAmount").text();
 	$("#payRxAmount").val(parseFloat(rxAmount).toFixed(2));
 	$("#payAmount").val($("#payRxAmount").val());
-	// $("#payAmount").val($("#payRxAmount").val().toFixed(2));
 
 	// payAmount
     $("#payAmount").on('input', function(){
@@ -421,13 +443,6 @@ function makePayment(){
 					if(!isFreeOnline){
 						addEnrolmentToInvoiceList(value, 0);
 					}
-				// }else if (value.hasOwnProperty('remaining')) {
-				// 	// It is an OutstandingDTO object, extract paymentId
-				// 	var temp = value.paymentId;
-				// 	if(temp > lastPaymentId){
-				// 		lastPaymentId = temp;
-				// 	}
-				// 	addOutstandingToInvoiceList(value);
 				}else if (value.hasOwnProperty('method')) { // payment
 					// It is an PaymentDTO object, extract paymentId
 					var temp = value.id;
@@ -442,7 +457,9 @@ function makePayment(){
 			});
 			// reset payment dialogue info
 			document.getElementById('makePayment').reset();
-			$('#paymentModal').modal('toggle');	
+			$('#paymentModal').modal('toggle');
+			// update invoice table balance
+			updateInvoiceTableBalance();	
 			// display receipt
 			displayReceiptInNewTab(lastPaymentId);
 		},
@@ -660,8 +677,8 @@ function addInformation(){
 	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
 
-	.row_odd{ background-color: #e6f2ff; }
-	.row_even{ background-color: #ccccff; }
+	.row_odd{ background-color: rgba(0,0,0,0.07); }
+	.row_even{ background-color: white; }
 
 </style>
 <!-- Main Body -->
