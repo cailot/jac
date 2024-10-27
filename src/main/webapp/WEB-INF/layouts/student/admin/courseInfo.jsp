@@ -596,7 +596,9 @@ function associateRegistration(){
 				data: JSON.stringify(enrolData),
 				contentType: 'application/json',
 				success: function(response) {
+					// clear invoice table
 					clearInvoiceTable();
+					// clear enrolment table
 					clearEnrolmentBasket();
 					// if(response.length > 0){
 					// 	// $.each(response, function(index, value){
