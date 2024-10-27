@@ -505,6 +505,7 @@ function addBookToBasket(value, index){
 //      Associate registration with Student 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function associateRegistration(){
+	// debugger
 	// get id from 'formId'
 	const studentId = $('#formId').val();
 	// if id is null, show alert and return
@@ -596,32 +597,32 @@ function associateRegistration(){
 				contentType: 'application/json',
 				success: function(response) {
 					clearInvoiceTable();
-
-					if(response.length > 0){
-						$.each(response, function(index, value){
-							// if extra is NEW, it requires updating enrolment id in basket table
-							if(value.extra != null && value.extra === NEW){
-								$('#basketTable > tbody > tr').each(function() {
-									var hiddens = $(this).find('.data-type').text();
-									if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
-										var hiddenValues = hiddens.split('|');
-										if(hiddenValues[1] === value.clazzId){
-											$(this).find('.enrolId').text(value.id);
-											$(this).find('.invoiceId').text(value.invoiceId);
-											$(this).find('.clazzChoice').prop('disabled', true);        
-										}
-									}
-								});
-							}
-							let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-							if(!isFreeOnline){
-								addEnrolmentToInvoiceList(value, 0);
-							}
-						});
-					} else {
-						clearEnrolmentBasket();
-						updateLatestInvoiceId(enrolData.invoiceId);
-					}
+					clearEnrolmentBasket();
+					// if(response.length > 0){
+					// 	// $.each(response, function(index, value){
+					// 	// 	// if extra is NEW, it requires updating enrolment id in basket table
+					// 	// 	if(value.extra != null && value.extra === NEW){
+					// 	// 		$('#basketTable > tbody > tr').each(function() {
+					// 	// 			var hiddens = $(this).find('.data-type').text();
+					// 	// 			if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
+					// 	// 				var hiddenValues = hiddens.split('|');
+					// 	// 				if(hiddenValues[1] === value.clazzId){
+					// 	// 					$(this).find('.enrolId').text(value.id);
+					// 	// 					$(this).find('.invoiceId').text(value.invoiceId);
+					// 	// 					$(this).find('.clazzChoice').prop('disabled', true);        
+					// 	// 				}
+					// 	// 			}
+					// 	// 		});
+					// 	// 	}
+					// 	// 	// let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
+					// 	// 	// if(!isFreeOnline){
+					// 	// 	// 	// addEnrolmentToInvoiceList(value, 0);
+					// 	// 	// }
+					// 	// });
+					// } else {
+					// 	// clearEnrolmentBasket();
+					// 	updateLatestInvoiceId(enrolData.invoiceId);
+					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -640,24 +641,24 @@ function associateRegistration(){
 				data: JSON.stringify(bookData),
 				contentType: 'application/json',
 				success: function(response) {
-					removeBookFromInvoiceList();
-					if(response.length > 0){
-						$.each(response, function(index, value){
-							$('#basketTable > tbody > tr').each(function() {
-								var hiddens = $(this).find('.data-type').text();
-								if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
-									var hiddenValues = hiddens.split('|');
-									if(hiddenValues[1] === value.bookId){
-										$(this).find('.materialId').text(value.id);
-										$(this).find('.invoiceId').text(value.invoiceId);
-									}
-								}
-							});
-							addBookToInvoiceList(value, 0);
-						});
-					} else {
-						updateLatestInvoiceId(bookData.invoiceId);
-					}
+					// removeBookFromInvoiceList();
+					// if(response.length > 0){
+					// 	// $.each(response, function(index, value){
+					// 	// 	$('#basketTable > tbody > tr').each(function() {
+					// 	// 		var hiddens = $(this).find('.data-type').text();
+					// 	// 		if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
+					// 	// 			var hiddenValues = hiddens.split('|');
+					// 	// 			if(hiddenValues[1] === value.bookId){
+					// 	// 				$(this).find('.materialId').text(value.id);
+					// 	// 				$(this).find('.invoiceId').text(value.invoiceId);
+					// 	// 			}
+					// 	// 		}
+					// 	// 	});
+					// 	// 	// addBookToInvoiceList(value, 0);
+					// 	// });
+					// } else {
+					// 	updateLatestInvoiceId(bookData.invoiceId);
+					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -676,12 +677,12 @@ function associateRegistration(){
 				contentType: 'application/json',
 				success: function(response) {
 					// console.log(response);
-					removePaymentFromInvoiceList();
-					if(response.length > 0){
-						$.each(response, function(index, value){
-							addPaymentToInvoiceList(value, 0);
-						});
-					}
+					// removePaymentFromInvoiceList();
+					// if(response.length > 0){
+					// 	$.each(response, function(index, value){
+					// 		addPaymentToInvoiceList(value, 0);
+					// 	});
+					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -697,6 +698,7 @@ function associateRegistration(){
 		.then(() => associateBook(studentId, bookData))
 		.then(() => associatePayment(studentId))
 		.then(() => {
+			retrieveEnrolment(studentId);
 			retrieveAttendance(studentId);
 			var rowCount = $('#basketTable tbody tr').length;
 		})
@@ -705,7 +707,7 @@ function associateRegistration(){
 		});
 
 }
-	
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Retrieve Enroloment & Update Invoice Table
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1123,8 +1125,6 @@ function removeAllInBasket(){
 			}else{
 				// clean up enrolments in basket table
 				clearEnrolmentBasket();
-				// clean up invoice table
-				clearInvoiceTable();
 			}
 		},
 		error: function(xhr, status, error) {
@@ -1210,7 +1210,7 @@ function removeAllInBasket(){
 						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-primary btn-sm" data-toggle="modal" onclick="associateRegistration()">Enrolment</button>
 					</div>
 					<div class="col-md-2">
-						<button id="applyEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Start New</button>
+						<button id="startNewEnrolmentBtn" type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal" onclick="removeAllInBasket()">Start New</button>
 					</div>
 				</div>
 			</div>
