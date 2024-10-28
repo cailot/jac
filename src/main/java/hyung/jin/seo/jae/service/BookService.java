@@ -38,4 +38,7 @@ public interface BookService {
 
 	// delete Book
 	void deleteBook(Long id);
+
+	// get Book Id by grade and order
+	long getBookIdByGradeNOrder(int grade, int rowNum);
 }

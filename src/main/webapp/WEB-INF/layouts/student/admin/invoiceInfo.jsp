@@ -387,6 +387,7 @@ function displayInvoiceInNewTab(){
 //		Display Receipt in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayReceiptInNewTab(paymentId){
+	// debugger
   var invoiceId = $('#hiddenInvoiceId').val();
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
@@ -459,16 +460,14 @@ function makePayment(){
 			document.getElementById('makePayment').reset();
 			$('#paymentModal').modal('toggle');
 			
-			// update invoice table balance
-			// updateInvoiceTableBalance();	
+			// display receipt
+			displayReceiptInNewTab(lastPaymentId);
 			
 			// update invoice & basket tables
 			clearInvoiceTable();
 			clearEnrolmentBasket();
 			retrieveEnrolment(studentId);
-			
-			// display receipt
-			displayReceiptInNewTab(lastPaymentId);
+
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
