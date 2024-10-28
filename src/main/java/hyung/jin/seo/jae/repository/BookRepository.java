@@ -33,4 +33,7 @@ public interface BookRepository extends JpaRepository<Book, Long>{
 	@Query("SELECT b.price FROM Book b WHERE b.id = ?1")
 	double getPrice(Long bookId);
 	
+	@Query(value = "SELECT id FROM (SELECT id, grade, ROW_NUMBER() OVER (PARTITION BY grade ORDER BY id) AS row_num FROM Book) AS ordered_books WHERE grade = :grade AND row_num = :rowNum", nativeQuery = true)
+	long getBookIdByGradeNOrder(int grade, int rowNum);
+
 }

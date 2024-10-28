@@ -34,6 +34,7 @@ import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Attendance;
+import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
@@ -42,6 +43,7 @@ import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.AttendanceService;
+import hyung.jin.seo.jae.service.BookService;
 import hyung.jin.seo.jae.service.ClazzService;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CycleService;
@@ -95,6 +97,9 @@ public class InvoiceController {
 
 	@Autowired
 	private AttendanceService attendanceService;
+
+	@Autowired
+	private BookService bookService;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -790,9 +795,13 @@ public class InvoiceController {
 		history.setInvoice(newInvo);
 		invoiceHistoryService.addInvoiceHistory(history);
 
+		String grade = "";
 		// 7. create new Enrolment
 		for(EnrolmentDTO data : enrols){
 
+			// 6-0. get grade
+			grade = data.getGrade();
+			
 			// 6-1. get Clazz
 			Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
 			
@@ -861,6 +870,29 @@ public class InvoiceController {
 				//////////////////////////////////////////////////////////
 			}
 		} // end of processing new enrolments
+
+		// 8. create new Material if book is not 0
+		if(book > 0){
+			// 8-1. get book Id 
+			long bookId = bookService.getBookIdByGradeNOrder(Integer.parseInt(StringUtils.defaultString(grade, "0")), book);
+			// 8-2. get Book
+			Book bookInfo = bookService.getBook(bookId);
+			// 8-3. update Invoice amount
+			newInvo.setAmount(newInvo.getAmount() + bookInfo.getPrice());
+			// 8-3. create Material
+			Material material = new Material();
+			material.setBook(bookInfo);
+			material.setInvoice(newInvo);
+			material.setInvoiceHistory(history);
+			// 8-4. save Material
+			materialService.addMaterial(material);
+		}	
+
+
+
+
+
+
 
 		// update invoice history's amount & paid amount
 		history.setAmount(newInvo.getAmount());
