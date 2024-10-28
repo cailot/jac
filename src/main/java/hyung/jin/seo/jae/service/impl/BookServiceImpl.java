@@ -206,5 +206,16 @@ public class BookServiceImpl implements BookService {
 		// 3. delete class
 		bookRepository.deleteById(id);
 	}
+
+	@Override
+	public long getBookIdByGradeNOrder(int grade, int rowNum) {
+		long bookId = 0;
+		try{
+			bookId = bookRepository.getBookIdByGradeNOrder(grade, rowNum);
+		}catch(Exception e){
+			System.out.println("No book found");
+		}
+		return bookId;		
+	}
 	
 }
