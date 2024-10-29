@@ -87,14 +87,6 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	@Query(value = "SELECT MAX(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId AND e.invoiceId < (SELECT MAX(e2.invoiceId) FROM Enrolment e2 WHERE e2.studentId = :studentId AND e2.invoiceId < (SELECT MAX(e3.invoiceId) FROM Enrolment e3 WHERE e3.studentId = :studentId))", nativeQuery = true)
 	Long findThirdLatestInvoiceIdByStudentId(@Param("studentId") long studentId);
 
-
-
-
-
-
-
-
-
 	// return all invoice id by student id
 	@Query(value = "SELECT DISTINCT(e.invoiceId) FROM Enrolment e WHERE e.studentId = :studentId ORDER BY e.invoiceId DESC", nativeQuery = true)
 	List<Long> findInvoiceIdByStudentId(@Param("studentId") long studentId);
@@ -120,4 +112,9 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	+ "FROM Enrolment en "
 	+ "WHERE (en.student.id = ?1) AND (en.clazz.id = ?2) AND (?3 BETWEEN en.startWeek AND en.endWeek)")
 	Integer isExistByStudentIdAndClazzIdAndWeek(long studentId, long clazzId, int week);
+
+	// bring start week and end week by latest invoice (invoice id and highest invoice history id)
+	@Query("SELECT e.startWeek, e.endWeek FROM Enrolment e WHERE e.invoice.id = :invoiceId AND e.clazz.id = :clazzId AND e.discount <> '100%' "
+	+ "AND e.invoiceHistory.id = (SELECT MAX(subE.invoiceHistory.id) FROM Enrolment subE WHERE subE.invoice.id = :invoiceId)")
+	List<Object[]> findStartAndEndWeeksByLastInvoice(@Param("invoiceId") long invoiceId, @Param("clazzId") long clazzId);
 }

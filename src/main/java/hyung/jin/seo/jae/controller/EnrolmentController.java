@@ -485,7 +485,6 @@ public class EnrolmentController {
 	///////////////////////////////////////////////////////
 	private void detachEnrolment(Invoice invoice){
 		// 1. get registered enrolment by invoice id
-		// List<Enrolment> enrols = enrolmentService.getEnrolmentByInvoice(invoice.getId());
 		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoice.getId());
 
 		// 2. archive enrolments by updating old = true
@@ -520,14 +519,27 @@ public class EnrolmentController {
 			// 6. update attendance
 			// if online class, skip attendance; otherwise remove attandance
 			if(!enrol.isOnline()){
+				
 				long studentId = Long.parseLong(StringUtils.defaultIfBlank(enrol.getStudentId(), "0"));
 				long clazzId = Long.parseLong(StringUtils.defaultIfBlank(enrol.getClazzId(), "0"));
+				
+				// get start/end week
+				List<Integer> weeks = enrolmentService.findStartEndWeekByInvoiceNClazz(invoice.getId(), clazzId);
+				int startWeek = weeks.get(0);
+				int endWeek = weeks.get(1);
+			
+				// get attandance by student and clazz	
 				List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
 				for(AttendanceDTO attendance : attandances){
 					// check attendDate is later than today
 					LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 					LocalDate today = LocalDate.now();
-					if(attendDate.isAfter(today)){
+					// if(attendDate.isAfter(today)){
+					int week = Integer.parseInt(attendance.getWeek());
+					// delete attendance 
+					// 1. if attendDate is later than today 
+					// 2. week is within start/end week
+					if(attendDate.isAfter(today) && week >= startWeek && week <= endWeek){				
 						// delete attendance
 						long attendId = Long.parseLong(attendance.getId());
 						attendanceService.deleteAttendance(attendId);

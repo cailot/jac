@@ -86,5 +86,8 @@ public interface EnrolmentService {
 
 	// return if student is enrolled in an online class at the week
 	Integer isStudentAttendOnlineClazz(long studentId, long clazzId, int week);
+
+	// return start/end week by invoice & clazz
+	List<Integer> findStartEndWeekByInvoiceNClazz(long invoiceId, long clazzId);
 	
 }
