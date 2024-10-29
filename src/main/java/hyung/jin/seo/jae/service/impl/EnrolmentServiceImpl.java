@@ -356,4 +356,21 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		return number;
 	}
 
+	@Override
+	public List<Integer> findStartEndWeekByInvoiceNClazz(long invoiceId, long clazzId) {
+		List<Integer> interval = new ArrayList<>();
+		int start = 0;
+		int end = 0;
+		List<Object[]> weeks = enrolmentRepository.findStartAndEndWeeksByLastInvoice(invoiceId, clazzId);
+		for (Object[] week : weeks) {
+			Integer startWeek = (Integer) week[0];
+			start = startWeek;
+			Integer endWeek = (Integer) week[1];
+			end = endWeek;
+		}
+		interval.add(start);
+		interval.add(end);
+		return interval;
+	}
+
 }
