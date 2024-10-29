@@ -770,14 +770,6 @@ public class InvoiceController {
 		// 3. check full paid or not; if not, return
 		double invoiceAmount = invoice.getAmount();
 		double invoicePaidAmount = invoice.getPaidAmount();
-		// String invoiceDiscount =StringUtils.defaultString(invoice.getDiscount()+"", "0");
-		// double invoiceDiscountAmount = 0;
-		// if(invoiceDiscount.contains("%")){
-		// 	invoiceDiscountAmount = invoiceAmount * (Double.parseDouble(invoiceDiscount.replace("%", ""))/100);
-		// }else{
-		// 	invoiceDiscountAmount = Double.parseDouble(invoiceDiscount);
-		// }
-		//boolean fullPaid =  (invoiceAmount - (invoicePaidAmount + invoiceDiscountAmount)) <= 0;
 		boolean fullPaid =  (invoiceAmount - invoicePaidAmount) <= 0;
 		if(!fullPaid) return ResponseEntity.ok(JaeConstants.STATUS_EMPTY);
 
@@ -799,51 +791,51 @@ public class InvoiceController {
 		// 7. create new Enrolment
 		for(EnrolmentDTO data : enrols){
 
-			// 6-0. get grade
+			// 7-0. get grade
 			grade = data.getGrade();
 			
-			// 6-1. get Clazz
+			// 7-1. get Clazz
 			Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
 			
-			// 6-2. update Invoice amount
+			// 7-2. update Invoice amount
 			int newStartWeek = data.getEndWeek() + 1;
 			// int newEndWeek = newStartWeek + 9;
-			int newEndWeek = newStartWeek + (data.getEndWeek() - data.getStartWeek()); // same period as previous enrolment
+			int newEndWeek = newStartWeek + (data.getEndWeek() - data.getStartWeek() - data.getCredit()); // same period as previous enrolment
 			int academicYear = clazzService.getAcademicYear(clazz.getId());
 			int lastAcademicWeek = cycleService.lastAcademicWeek(academicYear);
 			if(newEndWeek > lastAcademicWeek){
 				newEndWeek = lastAcademicWeek;
 			}
 
-			// check discount is % or amount value
+			// no discount for renew
 			String discount =StringUtils.defaultString(data.getDiscount(), "0");
+			boolean isFreeOnline = data.isOnline() && StringUtils.equalsIgnoreCase(JaeConstants.DISCOUNT_FREE, discount);
 			double discountAmount = 0;
-			if(discount.contains("%")){
-				discountAmount = ((newEndWeek-newStartWeek+1) * data.getPrice()) * (Double.parseDouble(discount.replace("%", ""))/100);
-			}else{
-				discountAmount = Double.parseDouble(discount);
+			if(isFreeOnline){ // if free online class, discount is 100%
+				discountAmount = ((newEndWeek-newStartWeek+1) * data.getPrice());
 			}
-			double enrolmentPrice = (((newEndWeek-newStartWeek+1) * data.getPrice()) - discountAmount);
-			// int credit = data.getCredit();
+			double enrolmentPrice = (((newEndWeek-newStartWeek+1) * data.getPrice()) - discountAmount);	
+			
 			newInvo.setAmount(newInvo.getAmount() + enrolmentPrice);
 			newInvo.setCredit(0);
 
-			// if discount is 100%, it means online class so skip adding discount
-			if(!StringUtils.equalsIgnoreCase(JaeConstants.DISCOUNT_FREE, discount)) newInvo.setDiscount(newInvo.getDiscount() + discountAmount);
-
-			// 6-3. create new Enrolment
+			// 7-3. create new Enrolment
 			Enrolment enrolment = new Enrolment();
 			enrolment.setStartWeek(newStartWeek);
 			enrolment.setEndWeek(newEndWeek);
 			enrolment.setCredit(0);
-			enrolment.setDiscount(discount);
+			if(isFreeOnline){
+				enrolment.setDiscount(JaeConstants.DISCOUNT_FREE);
+			}else{
+				enrolment.setDiscount("0");
+			} 
 			enrolment.setClazz(clazz);
 			enrolment.setStudent(student);
 			enrolment.setInvoice(newInvo);
 			// add invoice history
 			enrolment.setInvoiceHistory(history);
 				
-			// 6-4. save new Enrolment - Invoice will be automatically updated
+			// 7-4. save new Enrolment - Invoice will be automatically updated
 			enrolmentService.addEnrolment(enrolment);
 			data.setExtra(JaeConstants.NEW_ENROLMENT);
 			data.setId(enrolment.getId()+"");
@@ -851,7 +843,7 @@ public class InvoiceController {
 			// update day to code
 			data.setDay(clazzService.getDay(clazz.getId()));
 			
-			// 6-5. if onlline class, skip attendance; otherwise create attendance
+			// 7-5. if onlline class, skip attendance; otherwise create attendance
 			if(!data.isOnline()){
 				///////////////// Attendance ////////////////////////
 				// int academicYear = clazzService.getAcademicYear(clazz.getId());
@@ -888,22 +880,16 @@ public class InvoiceController {
 			materialService.addMaterial(material);
 		}	
 
-
-
-
-
-
-
-		// update invoice history's amount & paid amount
+		// 9. update invoice history's amount & paid amount
 		history.setAmount(newInvo.getAmount());
 		history.setPaidAmount(newInvo.getPaidAmount());
 		invoiceHistoryService.updateInvoiceHistory(history, history.getId());
 		//Min 9075 2302 010
 
-		// set invoice info into session
+		// 10. set invoice info into session
 		setInvoiceSession(studentId, branchCode, null, session);
 
-		// 7. return flag
+		// 11. return flag
 		return ResponseEntity.ok(newInvo.getId()+"");
 
 	}
