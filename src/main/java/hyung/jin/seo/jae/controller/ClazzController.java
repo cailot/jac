@@ -122,13 +122,7 @@ public class ClazzController {
 	// bring all classes in database
 	@GetMapping("/listCourse")
 	public String listCourses(@RequestParam(value = "listYear", required = true) int year, @RequestParam(value = "listGrade", required = false) String grade, Model model) {
-		List<CourseDTO> dtos = null;
-		// if grade has some value
-		// if ((StringUtils.isNotBlank(grade)) && !(JaeConstants.ALL.equalsIgnoreCase(grade))) {
-		dtos = courseService.findByGradeNYear(grade, year);
-		// } else { // if grade has no value, simply bring all
-			// dtos = courseService.allCourses();
-		// }
+		List<CourseDTO> dtos = courseService.findByGradeNYear(grade, year);
 		model.addAttribute(JaeConstants.COURSE_LIST, dtos);
 		return "courseListPage";
 	}

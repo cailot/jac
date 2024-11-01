@@ -451,9 +451,7 @@ function displayFullHistory(studentId) {
 		vertical-align: middle;
 		height: 45px 	
 	}
-
 </style>
-
 
 <!-- List Body -->
 <div class="row container-fluid m-5">
@@ -478,34 +476,15 @@ function displayFullHistory(studentId) {
 							<option value="0">All</option>
 						</select>
 					</div>
-					<div class="col-md-1">
-						<label for="listYear" class="label-form">Academic Year</label> 
-						<select class="form-control" id="listYear" name="listYear">
-							<%
-								Calendar now = Calendar.getInstance();
-								int currentYear = now.get(Calendar.YEAR);
-							%>
-							<!-- <option value="All">All</option> -->
-							<option value="<%= currentYear %>"><%= currentYear %>/<%= (currentYear%100)+1 %></option>
-							<%
-								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
-							%>
-								<option value="<%= i %>"><%= i %>/<%= (i%100)+1 %></option>
-							<%
-							}
-							%>
-						</select>
-					</div>
 					<div class="col-md-2">
-						<label for="listActive" class="label-form">Activated</label> 
+						<label for="listActive" class="label-form">Student Condition</label> 
 						<select class="form-control" id="listActive" name="listActive">
-							<!-- <option value="All">All Students</option> -->
-							<option value="Current">Current Students</option>
-							<option value="Stopped">Stopped Students</option>
+							<option value="0">All Students</option>
+							<option value="1">Current Students</option>
+							<!-- <option value="Stopped">Stopped Students</option> -->
 						</select>
 					</div>
-					<div class="offset-md-2"></div>
+					<div class="offset-md-3"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
