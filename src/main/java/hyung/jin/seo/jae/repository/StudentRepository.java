@@ -187,9 +187,49 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")
 	List<StudentDTO> listInactiveStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year);
 
+        // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, " +
+        "s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
+        "FROM Student s " +
+        "JOIN Enrolment e ON s.id = e.student.id " +
+        "WHERE e.id = (" +
+        "    SELECT MAX(en.id) FROM Enrolment en " +
+        "    WHERE en.student.id = s.id " +
+        "    AND en.old = false " +
+        "    AND en.discount != '100%' " +
+        "    AND (:week = 0 OR :week BETWEEN en.startWeek AND en.endWeek) " +
+        "    AND en.clazz.id IN (" +
+        "        SELECT cla.id FROM Clazz cla WHERE cla.course.cycle.id IN (" +
+        "            SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year" +
+        "        )" +
+        "    )" +
+        ") " +
+        "AND (:state = '0' OR s.state = :state) " +
+        "AND (:branch = '0' OR s.branch = :branch) " +
+        "AND (:grade = '0' OR s.grade = :grade)")
+        List<StudentDTO> listEnroledStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year, @Param("week") int week);
+
+        // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, " +
+        "MAX(e.clazz.name), s.email1, s.email2, s.state, s.branch, " +
+        "s.registerDate, s.endDate, MAX(e.registerDate), s.active, " +
+        "MAX(e.startWeek), MAX(e.endWeek)) " +
+        "FROM Student s " +
+        "JOIN Enrolment e ON s.id = e.student.id " +
+        "WHERE (:state = '0' OR s.state = :state) " +
+        "AND (:branch = '0' OR s.branch = :branch) " +
+        "AND (:grade = '0' OR s.grade = :grade) " +
+        "AND e.old = false " +
+        "AND e.discount != '100%' " +
+        "GROUP BY s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.active")
+        List<StudentDTO> listAllStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade);
+
 	// retrieve active student by state, branch & grade called from studentList.jsp
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (?1 = '0' OR s.state = ?1) AND (?2 = '0' OR s.branch = ?2) AND (?3 = '0' OR s.grade = ?3) AND s.active = 0")
 	List<StudentDTO> listActiveStudent(String state, String branch, String grade);
+        
 
 	// retrieve inactive student by state, branch & grade called from studentList.jsp
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (?1 = '0' OR s.state = ?1) AND (?2 = '0' OR s.branch = ?2) AND (?3 = '0' OR s.grade = ?3) AND s.active = 1")
