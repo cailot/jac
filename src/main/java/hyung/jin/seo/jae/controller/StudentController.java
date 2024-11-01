@@ -1,9 +1,9 @@
 package hyung.jin.seo.jae.controller;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
-import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("student")
@@ -33,6 +34,9 @@ public class StudentController {
 
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private CycleService cycleService;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -115,11 +119,17 @@ public class StudentController {
 		studentService.updatePassword(id, pwd);
 	}
 
-	// search student list with state, branch, grade, start date or active
+	// search student list with state, branch, grade, active
 	@GetMapping("/list")
-	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listYear", required=false) String year, @RequestParam(value="listActive", required=false) String active, Model model) {
-		// return only active enrolled (enrolment.active = true) current/stopped students
-		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, year, active);
+	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
+		int year = 0;
+		int week = 0;
+		if(!StringUtils.equals(active, JaeConstants.ALL_STUDENT)){ // if current studnet list
+			// get current year and week
+			year = cycleService.academicYear();
+			week = cycleService.academicWeeks();
+		}
+		List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, active, year, week);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "studentEnrolPage";
 	}

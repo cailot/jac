@@ -2,7 +2,6 @@ package hyung.jin.seo.jae.service;
 
 import java.util.List;
 
-import hyung.jin.seo.jae.dto.LoginActivityDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 
@@ -19,6 +18,9 @@ public interface StudentService {
 	
 	// bring student list base on the condition
 	List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active);
+	
+	// bring student list base on the condition
+	List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, String active, int year, int week);
 	
 	// search student list base on keyword where id, firstName or lastName
 	List<StudentDTO> searchByKeyword(String keyword, String state, String branch);

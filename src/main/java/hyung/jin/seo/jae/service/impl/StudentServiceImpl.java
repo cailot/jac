@@ -64,22 +64,6 @@ public class StudentServiceImpl implements StudentService {
 		// studentRepository.findAllByEndDateIsNotNull();
 		return students;
 	}
-
-
-
-	@Override
-	public List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active) {		
-		int yearParam = Integer.parseInt(year);
-		List<StudentDTO> dtos = null;
-		switch(active){
-			case JaeConstants.CURRENT:
-				dtos = studentRepository.listActiveStudent(state, branch, grade, yearParam);
-				break;
-			case JaeConstants.STOPPED:
-				dtos = studentRepository.listInactiveStudent(state, branch, grade, yearParam);
-		}
-		return dtos;
-	}
 	
 	@Override
 	public List<StudentDTO> searchByKeyword(String keyword, String state, String branch) {
@@ -274,6 +258,35 @@ public class StudentServiceImpl implements StudentService {
 		}
 		return affectedRow;
 	}
+
+
+	@Override
+	public List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active) {		
+		int yearParam = Integer.parseInt(year);
+		List<StudentDTO> dtos = null;
+		switch(active){
+			case JaeConstants.CURRENT:
+				dtos = studentRepository.listActiveStudent(state, branch, grade, yearParam);
+				break;
+			case JaeConstants.STOPPED:
+				dtos = studentRepository.listInactiveStudent(state, branch, grade, yearParam);
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, String active, int year, int week) {
+		List<StudentDTO> dtos = null;
+		switch(active){
+			case JaeConstants.ALL_STUDENT :
+				dtos = studentRepository.listAllStudent(state, branch, grade);
+				break;
+			default :
+				dtos = studentRepository.listEnroledStudent(state, branch, grade, year, week);
+		}
+		return dtos;
+	}
+
 
 	@Override
 	public List<StudentDTO> listPaymentStudent(String branch, String grade, String from, String to) {
