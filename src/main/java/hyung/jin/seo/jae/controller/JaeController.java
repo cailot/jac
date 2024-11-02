@@ -125,9 +125,14 @@ public class JaeController {
 		return "cyclePage";
 	}
 
-	@GetMapping("/branch")
-	public String branchList(HttpSession session) {
-		return "branchPage";
+	@GetMapping("/branchManage")
+	public String branchManageList(HttpSession session) {
+		return "branchManagePage";
+	}
+
+	@GetMapping("/branchStats")
+	public String branchStatsList(HttpSession session) {
+		return "branchStatsPage";
 	}
 
 	@GetMapping("/userList")

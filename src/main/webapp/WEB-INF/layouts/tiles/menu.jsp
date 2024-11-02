@@ -145,13 +145,19 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Setting</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/branch">Branch Management</a>
-				<c:if test="${isAdmin}">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
-				</c:if>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchManage">Branch Management</a>
+				<c:choose>
+					<c:when test="${isAdmin}">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
+					</c:when>
+					<c:otherwise>
+						<!-- Content for branch -->
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</li>
 		<c:if test="${isAdmin}">
