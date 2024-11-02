@@ -2,6 +2,8 @@ package hyung.jin.seo.jae.utils;
 
 public interface JaeConstants {
 
+	String ALL = "All";
+
 	String ALL_STUDENT = "0";
 	
 	String CURRENT = "Current";

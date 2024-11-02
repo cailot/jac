@@ -183,7 +183,7 @@ public class StudentDTO implements Serializable{
 		this.contactNo2 = (obj[11]!=null) ? String.valueOf(obj[11]) : "0";
     }
 
-	// this constructor is specially designed to cover overdueList.jsp
+	// this constructor is specially designed to cover renewList.jsp
 	public StudentDTO(Long id, String firstName, String lastName, String grade, String contactNo1, String email1, String state, String branch, Integer startWeek, Integer endWeek, String clazz) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
@@ -191,6 +191,23 @@ public class StudentDTO implements Serializable{
         this.grade = (grade!=null) ? grade : "";
 		this.gender = (gender!=null) ? gender : "";
         this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
+        this.email1 = (email1!=null) ? email1 : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+		this.startWeek = startWeek;
+		this.endWeek = endWeek;
+		this.address = (clazz!=null) ? clazz : "";
+    }
+	
+	// this constructor is specially designed to cover overdueList.jsp
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String contactNo1, double overdueAmount, String email1, String state, String branch, Integer startWeek, Integer endWeek, String clazz) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.gender = (gender!=null) ? gender : "";
+        this.contactNo1 = (contactNo1 !=null ) ? contactNo1 : "";
+		this.contactNo2 = overdueAmount+ "";
         this.email1 = (email1!=null) ? email1 : "";
 		this.state = (state!=null) ? state : "";
         this.branch = (branch!=null) ? branch : "";
