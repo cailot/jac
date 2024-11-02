@@ -549,18 +549,18 @@ function updatePassword() {
 					<td id="address" class="left-cell" colspan="5" style="vertical-align: middle;"></td>
 				</tr>
 				<tr height="80px">
-					<td class="left-cell text-primary" style="vertical-align: middle;"><b>ABN</b></td>
-					<td id="abn" class="left-cell" style="vertical-align: middle;"></td>
-					<td class="text-center text-primary" style="vertical-align: middle;"><b>Brank</b></td>
-					<td id="bank" class="left-cell" style="vertical-align: middle;"></td>
-					<td class="text-center text-primary" style="vertical-align: middle;"><b>BSB</b></td>
-					<td id="bsb" class="left-cell" style="vertical-align: middle;"></td>
+					<td class="left-cell text-primary" style="vertical-align: middle; width: 15%;"><b>ABN</b></td>
+					<td id="abn" class="left-cell" style="vertical-align: middle; width: 25%;"></td>
+					<td class="text-center text-primary" style="vertical-align: middle; width: 15%;"><b>Brank</b></td>
+					<td id="bank" class="left-cell" style="vertical-align: middle; width: 15%;"></td>
+					<td class="text-center text-primary" style="vertical-align: middle; width: 15%;"><b>BSB</b></td>
+					<td id="bsb" class="left-cell" style="vertical-align: middle; width: 15%;"></td>
 				</tr>
 				<tr height="80px">
-					<td class="left-cell text-primary" colspan="1" style="vertical-align: middle;"><b>Account #</b></td>
-					<td id="accountNumber" colspan="2" class="text-center" style="vertical-align: middle;"></td>
-					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Account Name</b></td>
-					<td id="accountName" colspan="2" class="left-cell" style="vertical-align: middle;"></td>
+					<td class="left-cell text-primary" colspan="1" style="vertical-align: middle; width: 20%;"><b>Account #</b></td>
+					<td id="accountNumber" colspan="2" class="text-center" style="vertical-align: middle; width: 20%;"></td>
+					<td class="left-cell text-primary" style="vertical-align: middle; width: 20%;"><b>Account Name</b></td>
+					<td id="accountName" colspan="2" class="left-cell" style="vertical-align: middle; width: 40%;"></td>
 				</tr>
 				<tr height="80px">
 					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Information</b></td>

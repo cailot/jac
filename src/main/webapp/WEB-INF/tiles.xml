@@ -144,10 +144,10 @@
 		<put-attribute name="title" value="Academic Cycle" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/cycle.jsp" />
 	</definition>
-	<!--Branch -->
-	<definition name="branchPage" extends="base.definition">
+	<!--Branch Management -->
+	<definition name="branchManagePage" extends="base.definition">
 		<put-attribute name="title" value="Branch List" />
-		<put-attribute name="body" value="/WEB-INF/layouts/setting/branch.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/branchManage.jsp" />
 	</definition>
 	<!--Batch -->
 	<definition name="batchPage" extends="base.definition">
@@ -163,6 +163,11 @@
 	<definition name="migrationPage" extends="base.definition">
 		<put-attribute name="title" value="Student Data Migration" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/migration.jsp" />
+	</definition>
+	<!-- Branch Stats -->
+	<definition name="branchStatsPage" extends="base.definition">
+		<put-attribute name="title" value="Branch Statistics" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/branchStats.jsp" />
 	</definition>
 
 	
