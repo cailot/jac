@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +33,19 @@ public class StatsServiceImpl implements StatsService {
 		}
 		return dtos;
 	}
+
+	@Override
+	public List<StatsDTO> getActiveStats(String from, String to, String branch) {
+		List<Object[]> objects = studentRepository.getActiveStudentStats(from, to, branch);
+		// convert result to StatsDTO
+		List<StatsDTO> dtos = new ArrayList<>();
+		for(Object[] object : objects){
+			StatsDTO dto = new StatsDTO(object);
+			dtos.add(dto);
+		}
+		return dtos;
+	}
+
 
 	@Override
 	public List<StatsDTO> getInactiveStats(String from, String to) {
@@ -116,4 +127,5 @@ public class StatsServiceImpl implements StatsService {
 		}
 		return dtos;
 	}
+
 }

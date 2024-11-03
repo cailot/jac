@@ -41,6 +41,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 
 
         ///////////////////////////////////////////// Student Stats Start /////////////////////////////////////////////
+         
+        @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student WHERE ((registerDate <= :toDate AND active = 0) OR (endDate >= :fromDate AND registerDate <= :toDate AND active = 1)) AND branch = :branch GROUP BY state, branch, grade", nativeQuery = true)
+        List<Object[]> getActiveStudentStats(@Param("fromDate") String fromDate, @Param("toDate") String toDate, @Param("branch") String branch); 
 
         @Query(value = "SELECT state, branch, grade, COUNT(*) AS figures FROM Student WHERE (registerDate <= :toDate AND active = 0) OR (endDate >= :fromDate AND registerDate <= :toDate AND active = 1) GROUP BY state, branch, grade", nativeQuery = true)
         List<Object[]> getActiveStudentStats(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
