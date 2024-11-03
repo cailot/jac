@@ -38,12 +38,17 @@ function searchStats() {
 		$('#warning-alert').modal('toggle');
 		return;
 	}
+
+	var branch = window.branch;
+	// console.log('Branch : ' + branch);
+
 	$.ajax({
-		url: '${pageContext.request.contextPath}/stats/activeSearch',
+		url: '${pageContext.request.contextPath}/stats/branchActive',
 		type: 'POST',
 		data: {
 			fromDate: start,
-			toDate: end
+			toDate: end,
+			branch: branch
 		},
 		success: function (items) {
 			var table = document.getElementById('regStatTable');
@@ -53,9 +58,13 @@ function searchStats() {
 			// initialise tbody
 			addRows();		
 			$.each(items, function (index, item) {
-				// console.log(item);
+				console.log('ITEM ==> ' + item);
 				 // get branch value for x axis
 				 var branchCode = item.branch;
+				// Ensure we only process the specific branch
+				// if (branchCode !== branch) {
+				// 	return;
+                // }
 				// Find the th element with the corresponding code
 				var th = $('#regStatTable th[code="' + branchCode + '"]');
 				if (th.length > 0) {
@@ -296,7 +305,7 @@ function extractData() {
 	}
 
 	tableData = data; 
-	// console.log(tableData);
+	console.log(tableData);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -343,6 +352,7 @@ function addRows(){
 		tbody.appendChild(row);
 		// Add additional cells to the row using the generateTableCells function
 		row.innerHTML += generateTableCells(23);
+		// row.innerHTML += generateTableCells(2);
 	});
 }
 
@@ -360,7 +370,7 @@ function updateChart(){
 	new Chart(bar, {
 	  type: 'bar',
 	  data: {
-		labels: ['Box Hill', 'Braybrook', 'Chadstone', 'Cranbourne', 'Epping', 'Glen Waverley', 'Narre Warren', 'Micham', 'Preston', 'Richmond', 'Springvale', 'St.Albans', 'Werribee', 'Balwyn', 'Rowville', 'Caroline Springs', 'Bayswater', 'Point Cook', 'Craigieburn', 'Mernda', 'Melton', 'Glenroy', 'Pakenham'],
+		labels: ['Box Hill'],
 		datasets: [
 		 {
 		  label: 'P2',

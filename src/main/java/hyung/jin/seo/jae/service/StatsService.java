@@ -10,6 +10,9 @@ public interface StatsService {
 	// search active student stats
 	List<StatsDTO> getActiveStats(String from, String to);
 
+	// search active branch student stats
+	List<StatsDTO> getActiveStats(String from, String to, String branch);
+
 	// search inactive student stats
 	List<StatsDTO> getInactiveStats(String from, String to);
 
