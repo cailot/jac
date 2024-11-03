@@ -22,7 +22,30 @@ public class StatisticController {
 	@Autowired
 	private StatsService statsService;
 
-	// search registration
+	// search branchf active students
+	@PostMapping("/branchActive")
+	@ResponseBody
+	public List<StatsDTO> searchActiveStats(@RequestParam String fromDate, @RequestParam String toDate, @RequestParam String branch) {
+		// 1. get convert date format
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		// 2. get Stats
+		List<StatsDTO> dtos = statsService.getActiveStats(start, end, branch);
+		// 3. return dtos
+		return dtos;
+	}
+	
+	// search active
 	@PostMapping("/activeSearch")
 	@ResponseBody
 	public List<StatsDTO> searchActiveStats(@RequestParam String fromDate, @RequestParam String toDate) {
