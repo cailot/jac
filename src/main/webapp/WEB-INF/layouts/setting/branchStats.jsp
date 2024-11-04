@@ -3,27 +3,40 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <script>
-
-var tableData =[];	
+var branch = window.branch;
+var branchName = '';
+	
+var tableData = '';	
 $(document).ready(function () {
 
-	$("#fromDate").datepicker({
-		dateFormat: 'dd/mm/yy',
-		onClose: function (selectedDate) {
-			$("#toDate").datepicker("option", "minDate", selectedDate);
+    $("#fromDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        onClose: function (selectedDate) {
+            $("#toDate").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#toDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        onClose: function (selectedDate) {
+            $("#fromDate").datepicker("option", "maxDate", selectedDate);
+        }
+    });
+
+    var statDiv = document.getElementById("stats");
+    statDiv.style.display = 'none';
+
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/code/getBranchByCode/' + branch,
+		type: 'GET',
+		success: function (data) {
+			// console.log(data);
+			branchName = data.name;
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
 		}
 	});
-	$("#toDate").datepicker({
-		dateFormat: 'dd/mm/yy',
-		onClose: function (selectedDate) {
-			$("#fromDate").datepicker("option", "maxDate", selectedDate);
-		}
-	});
-
-	var statDiv = document.getElementById("stats");
-	statDiv.style.display = 'none';
-
-
 
 });
 
@@ -38,76 +51,82 @@ function searchStats() {
 		$('#warning-alert').modal('toggle');
 		return;
 	}
-
-	var branch = window.branch;
-	// console.log('Branch : ' + branch);
-
 	$.ajax({
-		url: '${pageContext.request.contextPath}/stats/branchActive',
-		type: 'POST',
-		data: {
-			fromDate: start,
-			toDate: end,
-			branch: branch
-		},
-		success: function (items) {
-			var table = document.getElementById('regStatTable');
-			// flush tbody
-			var tbody = document.querySelector('#regStatTable tbody');
-			tbody.innerHTML = "";
-			// initialise tbody
-			addRows();		
-			$.each(items, function (index, item) {
-				console.log('ITEM ==> ' + item);
-				 // get branch value for x axis
-				 var branchCode = item.branch;
-				// Ensure we only process the specific branch
-				// if (branchCode !== branch) {
-				// 	return;
-                // }
-				// Find the th element with the corresponding code
-				var th = $('#regStatTable th[code="' + branchCode + '"]');
-				if (th.length > 0) {
-					// Get the column index of the cell
-					var cellIndex = th.index();
-					// Get the row index (assuming it's stored in item.grade)
-					var rowIndex = item.grade;
-					// Get the corresponding cell in the table body
-					var cell = $('#regStatTable tbody tr:nth-child(' + rowIndex + ') td:nth-child(' + (cellIndex+1) + ')');
-					// Update the cell content
-					cell.text(item.count);
-					cell.addClass('text-primary');
-					// Add branch and grade as attributes to the cell
-					cell.attr('branch', branchCode);
-					cell.attr('grade', rowIndex);
-					 // Add click event to call studentList function
-					cell.click(function() {
-						studentList(branchCode, rowIndex);
-					});
-					// Change cursor to hand pointer on hover
-    				cell.css('cursor', 'pointer');
-    
-				} else {
-					console.error('No th element found with code ' + branchCode);
-				}
+        url: '${pageContext.request.contextPath}/stats/branchActive',
+        type: 'POST',
+        data: {
+            fromDate: start,
+            toDate: end,
+            branch: branch
+        },
+        success: function (items) {
+			// Sort the items array by grade
+			items.sort(function(a, b) {
+				return a.grade - b.grade;
 			});
-			// calculate totals
-			populateTotals();
-			// extract data for chartJs
-			extractData();
-			// update chart
-			updateChart();
-		},
-		error: function (xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
-	
-	var statDiv = document.getElementById("stats");
-	statDiv.style.display = 'block';
-	var instDiv = document.getElementById("instruction");
-	instDiv.style.display = 'none'
+
+            var table = document.getElementById('regStatTable');
+            // flush tbody
+            var tbody = document.querySelector('#regStatTable tbody');
+            tbody.innerHTML = "";
+            // initialise tbody
+            addRows();		
+            $.each(items, function (index, item) {
+                // Find the th element with the corresponding grade
+                var th = $('#regStatTable th[grade="' + item.grade + '"]');
+                if (th.length > 0) {
+                    // Get the column index of the cell
+                    var cellIndex = th.index();
+                    // Get the corresponding cell in the table body
+                    var cell = $('#regStatTable tbody tr:nth-child(1) td:nth-child(' + (cellIndex+1) + ')');                   
+					// Update the cell content
+                    cell.text(item.count);
+                    cell.addClass('text-primary');
+                    // Add branch and grade as attributes to the cell
+                    cell.attr('branch', branch);
+                    cell.attr('grade', item.grade);
+                     // Add click event to call studentList function
+                    cell.click(function() {
+                        studentList(branch, item.grade);
+                    });
+                    // Change cursor to hand pointer on hover
+                    cell.css('cursor', 'pointer');
+    
+                } else {
+                    console.error('No th element found with code ' + branch);
+                }
+            });
+
+
+			// Calculate the total for the row
+			var row = $('#regStatTable tbody tr:nth-child(1)');
+            var totalCell = row.find('td:last');
+            var total = 0;
+            row.find('td').each(function() {
+                var cellValue = Number($(this).text());
+                if (!isNaN(cellValue)) {
+                    total += cellValue;
+                }
+            });
+            totalCell.text(total);
+            totalCell.addClass('text-primary font-weight-bold');
+        
+            // extract data for chartJs
+            extractData();
+            // update chart
+            updateChart();
+        },
+        error: function (xhr, status, error) {
+            console.log('Error : ' + error);
+        }
+    });
+    
+    var statDiv = document.getElementById("stats");
+    statDiv.style.display = 'block';
+    var instDiv = document.getElementById("instruction");
+    instDiv.style.display = 'none'
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Bring up Students	
@@ -192,168 +211,96 @@ function generateTableCells(numCells) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Populate Total	
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function populateTotals(){
-	// Assuming you have a table with id 'regStatTable'
-	var table = document.getElementById('regStatTable');
-	// Create an array to store the sum of each column
-	var columnSums = Array(table.rows[0].cells.length).fill(0);
-	// Iterate over each row in the table, starting from the second row
-	for (var i = 1; i < table.rows.length; i++) {
-		var row = table.rows[i];
-		var rowSum = 0;
-		// Iterate over each cell in the row
-		for (var j = 0; j < row.cells.length; j++) { // j=0 is the first column
-			var cell = row.cells[j];
-			// Check if the cell's content can be converted to a number
-			var cellValue = Number(cell.textContent);
-			if (!isNaN(cellValue)) {
-				// Add the cell's numeric value to the row sum and the column sum
-				rowSum += cellValue;
-				columnSums[j] += cellValue;
-			}
-		}
-		// Create a new cell at the end of the row for the row sum
-		var sumCell = row.insertCell(-1);
-		sumCell.textContent = rowSum;
-		sumCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold');
-	}
-	// Create a new row at the bottom of the table
-	var newRow = table.insertRow(-1);
-	// Create a new cell in the new row for each column
-	for (var j = 0; j < columnSums.length; j++) {
-		var newCell = newRow.insertCell(-1);
-		// Set the cell's text to the column sum, or 'Total' for the first column
-		newCell.textContent = j === 0 ? 'Total' : columnSums[j];
-		// Set the cell's text to bold and blue
-		newCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold');
-		// newCell.style.fontWeight = 'bold';
-		// newCell.style.color = 'blue';
-	}
-	// Iterate over each row in the table, starting from the second row
-	var lastRow = table.rows[table.rows.length-1];
-	var lastRowSum = 0;
-	// Iterate over each cell in the row
-	for (var j = 0; j < lastRow.cells.length; j++) { // j=0 is the first column
-		var cell = lastRow.cells[j];
-		// Check if the cell's content can be converted to a number
-		var cellValue = Number(cell.textContent);
-		if (!isNaN(cellValue)) {
-			// Add the cell's numeric value to the row sum and the column sum
-			lastRowSum += cellValue;
-		}
-	}
-	//get first cell
-	var firstCell = lastRow.cells[0];
-	firstCell.classList.add("header");
-	firstCell.style.color = 'black';
-	// get last cell
-	var sumCell = lastRow.cells[lastRow.cells.length-1];
-	sumCell.textContent = lastRowSum;
-	// sumCell.style.fontWeight = 'bold';
-	// sumCell.style.color = 'red';
-	sumCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold', 'text-primary');
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Extract Year Data	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function extractData() {
 	var table = document.getElementById('regStatTable');
 	var data = {
-		p2Row: [],
-		p3Row: [],
-		p4Row: [],
-		p5Row: [],
-		p6Row: [],
-		s7Row: [],
-		s8Row: [],
-		s9Row: [],
-		s10Row: [],
-		s10eRow: [],
-		tt6Row: [],
-		tt8Row: [],
-		tt8eRow: [],
-		srw4Row: [],
-		srw5Row: [],
-		srw6Row: [],
-		srw7Row: [],
-		srw8Row: [],
-		jmssRow: [],
-		vceRow: []
+		p2Row: 0,
+		p3Row: 0,
+		p4Row: 0,
+		p5Row: 0,
+		p6Row: 0,
+		s7Row: 0,
+		s8Row: 0,
+		s9Row: 0,
+		s10Row: 0,
+		s10eRow: 0,
+		tt6Row: 0,
+		tt8Row: 0,
+		tt8eRow: 0,
+		srw4Row: 0,
+		srw5Row: 0,
+		srw6Row: 0,
+		srw7Row: 0,
+		srw8Row: 0,
+		jmssRow: 0,
+		vceRow: 0
 	};
-
+	
+	// Map grade attributes to data object properties
+	var gradeMap = {
+		1: 'p2Row',
+		2: 'p3Row',
+		3: 'p4Row',
+		4: 'p5Row',
+		5: 'p6Row',
+		6: 's7Row',
+		7: 's8Row',
+		8: 's9Row',
+		9: 's10Row',
+		10: 's10eRow',
+		11: 'tt6Row',
+		12: 'tt8Row',
+		13: 'tt8eRow',
+		14: 'srw4Row',
+		15: 'srw5Row',
+		16: 'srw6Row',
+		17: 'srw7Row',
+		18: 'srw8Row',
+		19: 'jmssRow',
+		20: 'vceRow'
+	};
+	
 	// Iterate over each row in the table, starting from the second row
-	for (var i = 1; i < table.rows.length; i++) {
-		var row = table.rows[i];
+	var row = table.rows[1];
 
-		// Check if the row's id is in the data object
-		if (data.hasOwnProperty(row.id)) {
-			// Iterate over each cell in the row, except the last one
-			for (var j = 0; j < row.cells.length - 1; j++) {
-				var cell = row.cells[j];
-
-				// Check if the cell's content can be converted to a number
-				var cellValue = Number(cell.textContent);
-				if (!isNaN(cellValue)) {
-					// Add the cell's numeric value to the corresponding array in the data object
-					data[row.id].push(cellValue);
-				}
+	// Iterate over each cell in the row
+	for (var i = 0; i < row.cells.length; i++) {
+		var cell = row.cells[i];
+		// Check if the cell has the 'grade' attribute
+		if (cell.hasAttribute('grade')) {
+			// Get the grade attribute value
+			var grade = cell.getAttribute('grade');
+			// Check if the cell's content can be converted to a number
+			var cellValue = Number(cell.textContent);
+			if (!isNaN(cellValue) && gradeMap[grade]) {
+				// Add the cell's numeric value to the corresponding property in the data object
+				data[gradeMap[grade]] += cellValue;
 			}
 		}
 	}
-
-	tableData = data; 
-	console.log(tableData);
+    tableData = data;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add <tr> to table	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function addRows(){
-	// Define the rows dat
-	var rowsData = [
-		{ id: 'p2Row', text: 'P2' },
-		{ id: 'p3Row', text: 'P3' },
-		{ id: 'p4Row', text: 'P4' },
-		{ id: 'p5Row', text: 'P5' },
-		{ id: 'p6Row', text: 'P6' },
-		{ id: 's7Row', text: 'S7' },
-		{ id: 's8Row', text: 'S8' },
-		{ id: 's9Row', text: 'S9' },
-		{ id: 's10Row', text: 'S10' },
-		{ id: 's10eRow', text: 'S10E' },
-		{ id: 'tt6Row', text: 'tt6' },
-		{ id: 'tt8Row', text: 'tt8' },
-		{ id: 'tt8eRow', text: 'tt8e' },
-		{ id: 'srw4Row', text: 'SRW4' },
-		{ id: 'srw5Row', text: 'SRW5' },
-		{ id: 'srw6Row', text: 'SRW6' },
-		{ id: 'srw7Row', text: 'SRW7' },
-		{ id: 'srw8Row', text: 'SRW8' },
-		{ id: 'jmssRow', text: 'JMSS' },
-		{ id: 'vceRow', text: 'VCE' }
-	];
-	// Get the tbody element
-	var tbody = document.querySelector('tbody');
-	// Iterate over the rows data
-	rowsData.forEach(function(rowData) {
-		// Create a new row and cell
-		var row = document.createElement('tr');
-		var cell = document.createElement('td');
-		// Set the row's id and the cell's text
-		row.id = rowData.id;
-		cell.textContent = rowData.text.toUpperCase();
-		cell.className = 'small align-middle text-center header font-weight-bold';
-		// Add the cell to the row
-		row.appendChild(cell);
-		// Add the row to the tbody
-		tbody.appendChild(row);
-		// Add additional cells to the row using the generateTableCells function
-		row.innerHTML += generateTableCells(23);
-		// row.innerHTML += generateTableCells(2);
-	});
+    // Get the tbody element
+    var tbody = document.querySelector('tbody');
+    // Create a new row and cell
+	var row = document.createElement('tr');
+	var cell = document.createElement('td');
+	// Set the row's id and the cell's text
+	cell.textContent = branchName;
+	cell.className = 'small align-middle text-center header font-weight-bold';
+	// Add the cell to the row
+	row.appendChild(cell);
+	// Add the row to the tbody
+	tbody.appendChild(row);
+	// Add additional cells to the row using the generateTableCells function
+	row.innerHTML += generateTableCells(21); // Only one cell for the specific branch
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,11 +317,11 @@ function updateChart(){
 	new Chart(bar, {
 	  type: 'bar',
 	  data: {
-		labels: ['Box Hill'],
+		labels: [branchName],
 		datasets: [
 		 {
 		  label: 'P2',
-		  data: tableData.p2Row, 
+		  data: [tableData.p2Row], 
 		  backgroundColor: [
 			'#89cce2'
 		],
@@ -382,7 +329,7 @@ function updateChart(){
 		},
 		{
 		  label: 'P3',
-		  data: tableData.p3Row,  
+		  data: [tableData.p3Row],  
 		  backgroundColor: [
 			'#71c2dc'
 		 ],
@@ -390,7 +337,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'P4',
-		  data: tableData.p4Row,  
+		  data: [tableData.p4Row],  
 		  backgroundColor: [
 			'#5ab8d6'
 		 ],
@@ -398,7 +345,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'P5',
-		  data: tableData.p5Row,  
+		  data: [tableData.p5Row],  
 		  backgroundColor: [
 			'#42add1'
 		 ],
@@ -406,7 +353,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'P6',
-		  data: tableData.p6Row,  
+		  data: [tableData.p6Row],  
 		  backgroundColor: [
 			'#2ba3cb'
 		 ],
@@ -414,7 +361,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'S7',
-		  data: tableData.s7Row,  
+		  data: [tableData.s7Row],  
 		  backgroundColor: [
 			'#e57771'
 		 ],
@@ -422,7 +369,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'S8',
-		  data: tableData.s8Row,  
+		  data: [tableData.s8Row],  
 		  backgroundColor: [
 			'#e16059'
 		 ],
@@ -430,7 +377,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'S9',
-		  data: tableData.s9Row,  
+		  data: [tableData.s9Row],  
 		  backgroundColor: [
 			'#dd4941'
 		 ],
@@ -438,7 +385,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'S10',
-		  data: tableData.s10Row,  
+		  data: [tableData.s10Row],  
 		  backgroundColor: [
 			'#d8332a'
 		 ],
@@ -446,7 +393,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'S10E',
-		  data: tableData.s10eRow,  
+		  data: [tableData.s10eRow],  
 		  backgroundColor: [
 			'#d41c12'
 		 ],
@@ -454,7 +401,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'TT6',
-		  data: tableData.tt6Row,  
+		  data: [tableData.tt6Row],  
 		  backgroundColor: [
 			'#fff700'
 		 ],
@@ -462,7 +409,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'TT8',
-		  data: tableData.tt8Row,  
+		  data: [tableData.tt8Row],  
 		  backgroundColor: [
 			'#aaff00'
 		 ],
@@ -470,7 +417,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'TT8E',
-		  data: tableData.tt8eRow,  
+		  data: [tableData.tt8eRow],  
 		  backgroundColor: [
 			'#00ff88'
 		 ],
@@ -478,7 +425,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'SRW4',
-		  data: tableData.srw4Row,  
+		  data: [tableData.srw4Row],  
 		  backgroundColor: [
 			'#00b30a'
 		 ],
@@ -486,7 +433,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'SRW5',
-		  data: tableData.srw5Row,  
+		  data: [tableData.srw5Row],  
 		  backgroundColor: [
 			'#009908'
 		 ],
@@ -494,7 +441,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'SRW6',
-		  data: tableData.srw6Row,  
+		  data: [tableData.srw6Row],  
 		  backgroundColor: [
 			'#008007'
 		 ],
@@ -502,7 +449,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'SRW7',
-		  data: tableData.srw7Row,  
+		  data: [tableData.srw7Row],  
 		  backgroundColor: [
 			'#006606'
 		 ],
@@ -510,7 +457,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'SRW8',
-		  data: tableData.srw8Row,  
+		  data: [tableData.srw8Row],  
 		  backgroundColor: [
 			'#004c04'
 		 ],
@@ -518,7 +465,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'JMSS',
-		  data: tableData.jmssRow,  
+		  data: [tableData.jmssRow],  
 		  backgroundColor: [
 			'#ff99fb'
 		 ],
@@ -526,7 +473,7 @@ function updateChart(){
 		 },
 		 {
 		  label: 'VCE',
-		  data: tableData.vceRow,  
+		  data: [tableData.vceRow],  
 		  backgroundColor: [
 			'#ff66fa'
 		 ],
@@ -773,103 +720,100 @@ function export2Excel(){
 				<input type="checkbox" class="dataCheckbox" onclick="toggleLegend(this)" checked value="19"><span class="mr-2 ml-1" style="color : #ff66fa;">VCE</span>
 			</div>
 			<canvas id="barChart"></canvas>
-		</div>
-	</div>
-	<!-- table -->
-	<div class="col-md-12">
-		<div class="mt-3 mb-3 mr-5 text-right">
-			<button id="exportToExcel" class="btn btn-primary" onclick="export2Excel()">Export to Excel</button>
-		</div>
-		<table id="regStatTable" class="table table-bordered">
-			<thead class="table-primary">
-				<tr>
-					<th class="header" data-toggle="tooltip" title="" code="0"></th>
-					<th class="header" data-toggle="tooltip" title="Box Hill" code="12">Box Hill</th>
-					<th class="header" data-toggle="tooltip" title="Braybrook" code="13">Braybrook</th>
-					<th class="header" data-toggle="tooltip" title="Chadstone" code="14">Chadstone</th>
-					<th class="header" data-toggle="tooltip" title="Crandbourne" code="15">Crandbourne</th>
-					<th class="header" data-toggle="tooltip" title="Epping" code="16">Epping</th>
-					<th class="header" data-toggle="tooltip" title="Glen Waverley" code="17">Glen Waverley</th>
-					<th class="header" data-toggle="tooltip" title="Narre Warren" code="18">Narre Warren</th>
-					<th class="header" data-toggle="tooltip" title="Mitcham" code="19">Mitcham</th>
-					<th class="header" data-toggle="tooltip" title="Preston" code="20">Preston</th>
-					<th class="header" data-toggle="tooltip" title="Richmond" code="21">Richmond</th>
-					<th class="header" data-toggle="tooltip" title="Springvale" code="22">Springvale</th>
-					<th class="header" data-toggle="tooltip" title="St.Albans" code="23">St.Albans</th>
-					<th class="header" data-toggle="tooltip" title="Werribee" code="24">Werribee</th>
-					<th class="header" data-toggle="tooltip" title="Balwyn" code="25">Balwyn</th>
-					<th class="header" data-toggle="tooltip" title="Rowville" code="26">Rowville</th>
-					<th class="header" data-toggle="tooltip" title="Caroline Springs" code="27">Caroline Springs</th>
-					<th class="header" data-toggle="tooltip" title="Bayswater" code="28">Bayswater</th>
-					<th class="header" data-toggle="tooltip" title="Point Cook" code="29">Point Cook</th>
-					<th class="header" data-toggle="tooltip" title="Craigieburn" code="30">Craigieburn</th>
-					<th class="header" data-toggle="tooltip" title="Mernda" code="31">Mernda</th>
-					<th class="header" data-toggle="tooltip" title="Melton" code="32">Melton</th>
-					<th class="header" data-toggle="tooltip" title="Glenroy" code="33">Glenroy</th>
-					<th class="header" data-toggle="tooltip" title="Pakenham" code="34">Pakenham</th>
-					<th class="header" data-toggle="tooltip" title="Total" code="100">Total</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
+        </div>
+    </div>
+    <!-- table -->
+    <div class="col-md-12">
+        <!-- <div class="mt-3 mb-3 mr-5 text-right">
+            <button id="exportToExcel" class="btn btn-primary" onclick="export2Excel()">Export to Excel</button>
+        </div> -->
+        <table id="regStatTable" class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th class="header" data-toggle="tooltip" grade="0"></th>
+                    <th class="header" data-toggle="tooltip" grade="1">P2</th>
+                    <th class="header" data-toggle="tooltip" grade="2">P3</th>
+                    <th class="header" data-toggle="tooltip" grade="3">P4</th>
+                    <th class="header" data-toggle="tooltip" grade="4">P5</th>
+                    <th class="header" data-toggle="tooltip" grade="5">P6</th>
+                    <th class="header" data-toggle="tooltip" grade="6">S7</th>
+                    <th class="header" data-toggle="tooltip" grade="7">S8</th>
+                    <th class="header" data-toggle="tooltip" grade="8">S9</th>
+                    <th class="header" data-toggle="tooltip" grade="9">S10</th>
+                    <th class="header" data-toggle="tooltip" grade="10">S10E</th>
+                    <th class="header" data-toggle="tooltip" grade="11">TT6</th>
+                    <th class="header" data-toggle="tooltip" grade="12">TT8</th>
+                    <th class="header" data-toggle="tooltip" grade="13">TT8E</th>
+                    <th class="header" data-toggle="tooltip" grade="14">SRW4</th>
+                    <th class="header" data-toggle="tooltip" grade="15">SRW5</th>
+                    <th class="header" data-toggle="tooltip" grade="16">SRW6</th>
+                    <th class="header" data-toggle="tooltip" grade="17">SRW7</th>
+                    <th class="header" data-toggle="tooltip" grade="18">SRW8</th>
+                    <th class="header" data-toggle="tooltip" grade="19">JMSS</th>
+                    <th class="header" data-toggle="tooltip" grade="20">VCE</th>
+                    <th class="header" data-toggle="tooltip" grade="100">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
-	
+    
 <!-- Warning Alert -->
 <div id="warning-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="alert alert-block alert-warning alert-dialog-display">
+            <i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+    </div>
 </div>
 
 <!-- Search Result Dialog -->
 <div class="modal fade" id="studentListResult">
-	<div class="modal-dialog modal-xl modal-dialog-centered">
-	  <div class="modal-content">
-		<div class="modal-header bg-primary text-white">
-		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
-		  <button type="button" class="close" data-dismiss="modal">
-			<span>&times;</span>
-		  </button>
-		</div>
-		<div class="modal-body table-wrap">
-		  <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
-			<thead class="thead-light">
-			  <tr>
-				<th data-field="id">ID</th>
-				<th data-field="firstname">First Name</th>
-				<th data-field="lastname">Last Name</th>
-				<th data-field="grade">Grade</th>
-				<th data-field="grade">Gender</th>
-				<th data-field="startdate">Start Date</th>
-				<th data-field="enddate">End Date</th>
-				<th data-field="email">Main Email</th>
-				<th data-field="contact1">Main Contact</th>
-			  </tr>
-			</thead>
-			<tbody>
-			</tbody>
-		  </table>
-		</div>
-		<div class="modal-footer">
-		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		</div>
-	  </div>
-	</div>
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body table-wrap">
+          <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
+            <thead class="thead-light">
+              <tr>
+                <th data-field="id">ID</th>
+                <th data-field="firstname">First Name</th>
+                <th data-field="lastname">Last Name</th>
+                <th data-field="grade">Grade</th>
+                <th data-field="grade">Gender</th>
+                <th data-field="startdate">Start Date</th>
+                <th data-field="enddate">End Date</th>
+                <th data-field="email">Main Email</th>
+                <th data-field="contact1">Main Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
 </div>
   
 <style>
-	.table-wrap {
-	  overflow-x: auto;
-	}
-	#studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-	.form-group{
-		margin-bottom: 30px;
-	}
+    .table-wrap {
+      overflow-x: auto;
+    }
+    #studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .form-group{
+        margin-bottom: 30px;
+    }
 </style>
 
 
