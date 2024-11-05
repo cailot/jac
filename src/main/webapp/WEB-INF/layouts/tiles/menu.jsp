@@ -54,7 +54,6 @@
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
@@ -78,6 +77,7 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
