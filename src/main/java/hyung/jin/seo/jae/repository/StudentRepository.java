@@ -225,10 +225,13 @@ List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int w
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (?1 = '0' OR s.state = ?1) AND (?2 = '0' OR s.branch = ?2) AND (?3 = '0' OR s.grade = ?3) AND s.active = 0")
 	List<StudentDTO> listActiveStudent(String state, String branch, String grade);
         
-
 	// retrieve inactive student by state, branch & grade called from studentList.jsp
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (?1 = '0' OR s.state = ?1) AND (?2 = '0' OR s.branch = ?2) AND (?3 = '0' OR s.grade = ?3) AND s.active = 1")
 	List<StudentDTO> listInactiveStudent(String state, String branch, String grade);
+
+        // retrieve inactive student by state, branch & grade called from studentList.jsp
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.password, s.active) FROM Student s WHERE (?1 = '0' OR s.state = ?1) AND (?2 = '0' OR s.branch = ?2) AND (?3 = '0' OR s.grade = ?3)")
+	List<StudentDTO> listStudent(String state, String branch, String grade);
 
         @Modifying
         @Query(value = "UPDATE Student s SET s.active = 1, s.endDate = CURDATE() WHERE s.id NOT IN (SELECT DISTINCT e.studentId FROM Enrolment e WHERE e.registerDate >= DATE_SUB(CURDATE(), INTERVAL ?1 DAY))", nativeQuery = true)
