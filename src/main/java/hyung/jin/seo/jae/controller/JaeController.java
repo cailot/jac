@@ -49,7 +49,7 @@ public class JaeController {
 	}
 
 	@GetMapping("/studentEnrol")
-	public String studentList(HttpSession session) {
+	public String studentEnrol(HttpSession session) {
 		return "studentEnrolPage";
 	}
 
@@ -63,6 +63,11 @@ public class JaeController {
 	@GetMapping("/studentAttendance")
 	public String studentAttendance(HttpSession session) {
 		return "studentAttendancePage";
+	}
+
+	@GetMapping("/studentList")
+	public String studentList(HttpSession session) {
+		return "studentListPage";
 	}
 
 	@GetMapping("/studentGrade")

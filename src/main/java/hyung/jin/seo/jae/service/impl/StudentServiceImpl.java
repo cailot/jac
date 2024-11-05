@@ -14,14 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hyung.jin.seo.jae.dto.LoginActivityDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.repository.StudentRepository;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
-import lombok.extern.java.Log;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -322,6 +320,26 @@ public class StudentServiceImpl implements StudentService {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
 			dtos = studentRepository.listRenewStudent(branch, grade, fromYear, fromWeek, toYear, toWeek);	
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<StudentDTO> listStudents(String state, String branch, String grade, String active) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			switch (active) {
+				case JaeConstants.CURRENT_STUDENT:
+					dtos = studentRepository.listActiveStudent(state, branch, grade);					
+					break;
+				case JaeConstants.STOPPED_STUDENT:
+					dtos = studentRepository.listInactiveStudent(state, branch, grade);
+					break;
+				default: // all student
+					dtos = studentRepository.listStudent(state, branch, grade);			
+			}
 		}catch(Exception e){
 			System.out.println("No student found");
 		}

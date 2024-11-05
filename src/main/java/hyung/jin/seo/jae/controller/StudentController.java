@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +120,15 @@ public class StudentController {
 		studentService.updatePassword(id, pwd);
 	}
 
-	// search student list with state, branch, grade, active
+	// search all student list with state, branch, grade, active
+	@GetMapping("/all")
+	public String allStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
+		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, active);
+		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		return "studentEnrolPage";
+	}
+
+	// search enrolment student list with state, branch, grade, active
 	@GetMapping("/list")
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
 		int year = 0;
