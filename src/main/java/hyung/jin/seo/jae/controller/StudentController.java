@@ -125,20 +125,33 @@ public class StudentController {
 	public String allStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
 		List<StudentDTO> dtos = studentService.listStudents(state, branch, grade, active);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
-		return "studentEnrolPage";
+		return "studentListPage";
 	}
 
 	// search enrolment student list with state, branch, grade, active
+	// @GetMapping("/list")
+	// public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
+	// 	int year = 0;
+	// 	int week = 0;
+	// 	if(!StringUtils.equals(active, JaeConstants.ALL_STUDENT)){ // if current studnet list
+	// 		// get current year and week
+	// 		year = cycleService.academicYear();
+	// 		week = cycleService.academicWeeks();
+	// 	}
+	// 	List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, active, year, week);
+	// 	model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+	// 	return "studentEnrolPage";
+	// }
 	@GetMapping("/list")
-	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, @RequestParam(value="listActive", required=false) String active, Model model) {
-		int year = 0;
-		int week = 0;
-		if(!StringUtils.equals(active, JaeConstants.ALL_STUDENT)){ // if current studnet list
-			// get current year and week
-			year = cycleService.academicYear();
-			week = cycleService.academicWeeks();
-		}
-		List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, active, year, week);
+	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, Model model) {
+		int year = cycleService.academicYear();;
+		int week = cycleService.academicWeeks();
+		// if(!StringUtils.equals(active, JaeConstants.ALL_STUDENT)){ // if current studnet list
+		// 	// get current year and week
+		// 	year = cycleService.academicYear();
+		// 	week = cycleService.academicWeeks();
+		// }
+		List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, year, week);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "studentEnrolPage";
 	}

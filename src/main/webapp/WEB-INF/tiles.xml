@@ -16,7 +16,7 @@
 	</definition>
 	<definition name="studentEnrolPage" extends="base.definition">
 		<put-attribute name="title" value="Student Enrolment" />
-		<put-attribute name="body" value="/WEB-INF/layouts/student/studentEnrol.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/course/studentEnrol.jsp" />
 	</definition>
 	<definition name="studentInvoicePage" extends="base.definition">
 		<put-attribute name="title" value="Student Payment History" />

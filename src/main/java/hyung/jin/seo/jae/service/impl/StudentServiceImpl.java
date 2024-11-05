@@ -273,14 +273,12 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, String active, int year, int week) {
-		List<StudentDTO> dtos = null;
-		switch(active){
-			case JaeConstants.ALL_STUDENT :
-				dtos = studentRepository.listAllStudent(state, branch, grade);
-				break;
-			default :
-				dtos = studentRepository.listEnroledStudent(state, branch, grade, year, week);
+	public List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week) {
+		List<StudentDTO> dtos = new ArrayList<>();
+		try{
+			dtos = studentRepository.listEnroledStudent(state, branch, grade, year, week);
+		}catch(Exception e){
+			System.out.println("No student found");
 		}
 		return dtos;
 	}

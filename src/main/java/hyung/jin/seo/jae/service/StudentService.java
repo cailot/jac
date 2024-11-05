@@ -23,7 +23,7 @@ public interface StudentService {
 	List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active);
 	
 	// bring student list base on the condition
-	List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, String active, int year, int week);
+	List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week);
 	
 	// search student list base on keyword where id, firstName or lastName
 	List<StudentDTO> searchByKeyword(String keyword, String state, String branch);

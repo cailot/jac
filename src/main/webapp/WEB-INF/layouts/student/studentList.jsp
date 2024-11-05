@@ -502,19 +502,18 @@ function displayFullHistory(studentId) {
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
 									<tr>
-										<th class="align-middle text-center">ID</th>
-										<th class="align-middle text-center">First Name</th>
-										<th class="align-middle text-center">Last Name</th>
-										<th class="align-middle text-center">Grade</th>
-										<th class="align-middle text-center">Class</th>
-										<th class="align-middle text-center">Start</th>
-										<th class="align-middle text-center">End</th>
-										<th class="align-middle text-center" data-orderable="false">Enrolment Date</th>
-										<th class="align-middle text-center">Main Email</th>
-										<th class="align-middle text-center">Main Contact</th>
+										<th class="align-middle text-center" style="width: 10%">ID</th>
+										<th class="align-middle text-center" style="width: 10%">First Name</th>
+										<th class="align-middle text-center" style="width: 10%">Last Name</th>
+										<th class="align-middle text-center" style="width: 5%">Grade</th>
+										<th class="align-middle text-center" style="width: 5%">Gender</th>
+										<th class="align-middle text-center" style="width: 10%">Contact</th>
+										<th class="align-middle text-center" style="width: 10%">Email</th>
+										<th class="align-middle text-center" style="width: 10%">Relation</th>
+										<th class="align-middle text-center" style="width: 20%">Address</th>
 										<!-- <th class="align-middle text-center">Sub Email</th>
 										<th class="align-middle text-center">Sub Contact</th> -->
-										<th class="align-middle text-center" data-orderable="false">Action</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
@@ -554,23 +553,24 @@ function displayFullHistory(studentId) {
 														</c:choose>
 													</span>
 												</td>
-												<!-- <td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td> -->
-												<td class="small align-middle text-left">
-													<c:out value="${student.contactNo2}" />
+												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
+													<c:out value="${student.contactNo1}" />
 												</td>
-												
-												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
-												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"">
+													<c:out value="${student.email1}" />
+												</td>
 												<td class="small align-middle text-center">
-													<span>
-														<fmt:parseDate var="studentRegistrationDate" value="${student.password}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
-													</span>
-												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
-												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td> -->
+													<c:out value="${student.relation1}" />
+													<c:choose>
+														<c:when test="${student.relation1 == 'mother'}">Mother</c:when>
+														<c:when test="${student.relation1 == 'father'}">Father</c:when>
+														<c:when test="${student.relation1 == 'sibling'}">Sibling</c:when>
+														<c:when test="${student.relation1 == 'other'}">Other</c:when>
+														<c:otherwise></c:otherwise>
+													</c:choose>
+												</td>	
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.address}" /></span></td>
 												<td class="text-center align-middle">
 													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
