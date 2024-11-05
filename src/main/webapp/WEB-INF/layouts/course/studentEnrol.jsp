@@ -476,15 +476,14 @@ function displayFullHistory(studentId) {
 							<option value="0">All</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<!-- <div class="col-md-2">
 						<label for="listActive" class="label-form">Student Condition</label> 
 						<select class="form-control" id="listActive" name="listActive">
 							<option value="0">All Students</option>
 							<option value="1">Current Students</option>
-							<!-- <option value="Stopped">Stopped Students</option> -->
 						</select>
-					</div>
-					<div class="offset-md-4"></div>
+					</div> -->
+					<div class="offset-md-6"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
