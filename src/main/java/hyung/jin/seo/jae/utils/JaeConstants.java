@@ -2,10 +2,14 @@ package hyung.jin.seo.jae.utils;
 
 public interface JaeConstants {
 
-	String ALL = "All";
-
 	String ALL_STUDENT = "0";
 	
+	String CURRENT_STUDENT = "1";
+	
+	String STOPPED_STUDENT = "2";
+
+	String ALL = "All";
+
 	String CURRENT = "Current";
 	
 	String STOPPED = "Stopped";

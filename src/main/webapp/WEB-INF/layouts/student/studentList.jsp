@@ -456,7 +456,7 @@ function displayFullHistory(studentId) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/list">
+		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/all">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -481,10 +481,10 @@ function displayFullHistory(studentId) {
 						<select class="form-control" id="listActive" name="listActive">
 							<option value="0">All Students</option>
 							<option value="1">Current Students</option>
-							<!-- <option value="Stopped">Stopped Students</option> -->
+							<option value="2">Stopped Students</option>
 						</select>
 					</div>
-					<div class="offset-md-4"></div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>

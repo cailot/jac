@@ -17,6 +17,9 @@ public interface StudentService {
 	List<Student> stoppedStudents();
 	
 	// bring student list base on the condition
+	List<StudentDTO> listStudents(String state, String branch, String grade, String active);
+	
+	// bring student list base on the condition
 	List<StudentDTO> listStudents(String state, String branch, String grade, String year, String active);
 	
 	// bring student list base on the condition

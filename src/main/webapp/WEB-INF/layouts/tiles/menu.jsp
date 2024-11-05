@@ -57,6 +57,7 @@
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
 			</div>
 		</li>
 		<!-- Class -->

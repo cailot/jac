@@ -15,7 +15,7 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/studentAdmin.jsp" />
 	</definition>
 	<definition name="studentEnrolPage" extends="base.definition">
-		<put-attribute name="title" value="Student List" />
+		<put-attribute name="title" value="Student Enrolment" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentEnrol.jsp" />
 	</definition>
 	<definition name="studentInvoicePage" extends="base.definition">
@@ -25,6 +25,10 @@
 	<definition name="studentAttendancePage" extends="base.definition">
 		<put-attribute name="title" value="Student Attendance" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentAttendance.jsp" />
+	</definition>
+	<definition name="studentListPage" extends="base.definition">
+		<put-attribute name="title" value="Student List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/student/studentList.jsp" />
 	</definition>
 
 	<!--Course -->
