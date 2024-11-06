@@ -5,7 +5,7 @@
 
 <script>
 const ATTENDANCE = 'attendance';
-const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Saturday', 'Sunday', 'Sunday'];
+const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'SAT Morning', 'SAT Afternoon', 'SUN Morning', 'SUN Afternoon'];
 					
 
 $(document).ready(function() {

@@ -176,6 +176,16 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<option value="0">All</option>
 						</select>
 					</div>
+					<div class="col-md-1">
+						<label for="grade" class="label-form">Payment</label> 
+						<select class="form-control" id="payment" name="payment">
+							<option value="0">All</option>
+							<option value="cash">Cash</option>
+							<option value="bank">Bank</option>
+							<option value="card">Card</option>
+							<option value="cheque">Cheque</option>
+						</select>
+					</div>
 					<div class="col-md-2">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" required>
@@ -183,7 +193,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 					<div class="col-md-2">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" required>
 					</div>
-					<div class="offset-md-3"></div>
+					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
