@@ -60,6 +60,9 @@ public interface StudentService {
 	// list payment students in paymentList.jsp
 	List<StudentDTO> listPaymentStudent(String branch, String grade, String from, String to);
 
+	// list payment students in paymentList.jsp
+	List<StudentDTO> listPaymentStudent(String branch, String grade, String payment, String from, String to);
+
 	// list overdue students in overdueList.jsp
 	List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week);
 

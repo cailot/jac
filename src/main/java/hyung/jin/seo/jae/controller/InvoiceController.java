@@ -709,8 +709,10 @@ public class InvoiceController {
 	@GetMapping("/paymentList")
 	public String paymentStudents(@RequestParam("branch") String branch, 
 									@RequestParam("grade") String grade,
+									@RequestParam("payment") String payment, 
 									@RequestParam("start") String fromDate,
-									@RequestParam("end") String toDate, Model model
+									@RequestParam("end") String toDate, 
+									Model model
 									) {
 		String start = null;
 		try {
@@ -724,7 +726,8 @@ public class InvoiceController {
 		} catch (ParseException e){
 			end = "2099-12-31";
 		}
-		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, start, end);
+		// List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, start, end);
+		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, payment, start, end);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "paymentListPage";
 	}
