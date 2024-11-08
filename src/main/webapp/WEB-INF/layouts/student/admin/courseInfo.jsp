@@ -796,19 +796,54 @@ function updateInvoiceTableWithTop(value, rowCount){
 
 	if (value.hasOwnProperty('extra')) {
 
-		// update my lecture table
 		var row = $('<tr class="d-flex" data-pair-id=' + value.grade + '>');
-		row.append($('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId));
-		if(value.extra === OVERDUE){
+		// Common part for both online and offline classes
+		var dataTypeCell = $('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId);
+		row.append(dataTypeCell);
+		if (value.extra === OVERDUE) {
 			row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" data-toggle="tooltip" title="Overdue"></i></td>')); // item
-		}else{
+		} else {
 			row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
 		}
-		//row.append($('<td class="text-center"><i class="bi bi-mortarboard" title="class"></i></td>')); // item
 		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
-		row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
+		// get associated class list if not online
+		if(value.online == false){
+			$.ajax({
+				url: '${pageContext.request.contextPath}/class/associatedClass',
+				type: 'GET',
+				data: {
+				clazzId: value.clazzId,
+				year: value.year,
+				state : state,
+				branch : branch	
+				},
+				success: function(data) {
+					console.log(data);
+					// Create a dropdown list for days
+					var dropdown = $('<select>').addClass('clazzChoice');
+					$.each(data, function(index, classItem) {
+						var option = $('<option>').text(dayName(classItem.day)).val(classItem.id).data('price', classItem.price);
+						if (classItem.id === value.clazzId) {
+							option.attr('selected', 'selected');
+						}
+						dropdown.append(option);
+					});
+					// Add event listener to update text based on selected option
+					dropdown.on('change', function() {
+						var selectedOptionValue = $(this).val();
+						dataTypeCell.text(CLASS + '|' + selectedOptionValue);
+					});
+					// Insert the dropdown list just after the class name
+					row.find('.name').after($('<td class="smaller-table-font day">').append(dropdown)); // day
+				},
+				error : function(xhr, status, error) {
+					console.log('Error : ' + error);
+				}
+			});
+		}else{ // online class
+			row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
+		}
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-
 		var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(value.startWeek); // start week;
 		startWeekCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
