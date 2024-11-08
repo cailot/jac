@@ -307,4 +307,15 @@ public class ClazzServiceImpl implements ClazzService {
 		clazzRepository.deleteById(id);
 	}
 
+	@Override
+	public List<ClazzDTO> getClazzByClazzNCycleNStateNBranch(Long id, int year, String state, String branch) {
+		List<ClazzDTO> dtos = new ArrayList<>();
+		try{
+			dtos = clazzRepository.getClassesByClazzYearStateBranch(id, year, JaeConstants.VICTORIA_CODE, branch);
+		}catch (Exception e){
+			System.out.println("No class found");
+		}
+		return dtos;
+	}
+
 }
