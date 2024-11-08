@@ -293,7 +293,7 @@ function removePaymentFromInvoiceList() {
 function updateLatestInvoiceId(invoiceId){
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
-	console.log('updateLatestInvoiceId hiddenInvoiceId : ' + hiddenInvoiceId + ' - invoiceId : ' + invoiceId);
+	// console.log('updateLatestInvoiceId hiddenInvoiceId : ' + hiddenInvoiceId + ' - invoiceId : ' + invoiceId);
     // invoiceId is defined then compare invoiceId with hiddenInvoiceId
 	if(invoiceId >= hiddenInvoiceId){
 		// update invoiceId to hiddenInvoiceId

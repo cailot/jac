@@ -30,6 +30,20 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = ?4 AND c.active=true")
 	List<ClazzDTO> findClassForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch);
 
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = ?4 AND c.active=true")
+	List<ClazzDTO> findClassForClazzNCycleNStateNBranch(Long clazzId, int year, String state, String branch);
+
+	// display clazzs for registered basket
+	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) " +
+		   "FROM Clazz c " +
+		   "WHERE c.course.id = (SELECT c2.course.id FROM Clazz c2 WHERE c2.id = ?1) " +
+		   "AND c.course.cycle.year = ?2 " +
+		   "AND c.state = ?3 " +
+		   "AND c.branch = ?4 " +
+		   "AND c.active = true")
+	List<ClazzDTO> getClassesByClazzYearStateBranch(Long clazzId, int year, String state, String branch);
+
+	// list online classes
 	@Query("SELECT new hyung.jin.seo.jae.dto.ClazzDTO(c.id, c.state, c.branch, c.course.price, c.day, c.name, c.startDate, c.active, c.course.id, c.course.grade, c.course.online, c.course.description, c.course.cycle.year) FROM Clazz c WHERE c.course.id = ?1 AND c.course.cycle.year = ?2 AND c.state = ?3 AND c.branch = '90' AND c.course.online = true")
 	List<ClazzDTO> findOnlineClassForCourseIdNCycleNState(Long id, int year, String state);
 

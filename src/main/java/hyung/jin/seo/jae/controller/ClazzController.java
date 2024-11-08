@@ -195,9 +195,16 @@ public class ClazzController {
 	// search classes by id & year & state & branch
 	@GetMapping("/onlineClassByCourse")
 	@ResponseBody
-	List<ClazzDTO> getOnlineClassByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year,
-			@RequestParam("state") String state) {
+	List<ClazzDTO> getOnlineClassByGrade(@RequestParam("courseId") Long courseId, @RequestParam("year") int year, @RequestParam("state") String state) {
 		List<ClazzDTO> dtos = clazzService.findOnlineClazzForCourseIdNCycleNState(courseId, year, state);
+		return dtos;
+	}
+
+	// get associated classes
+	@GetMapping("/associatedClass")
+	@ResponseBody
+	List<ClazzDTO> getAssociatedClasses(@RequestParam("clazzId") Long clazzId, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
+		List<ClazzDTO> dtos = clazzService.getClazzByClazzNCycleNStateNBranch(clazzId, year, state, branch);
 		return dtos;
 	}
 	
@@ -205,7 +212,7 @@ public class ClazzController {
 	@GetMapping("/get/class/{id}")
 	@ResponseBody
 	public ClazzDTO getClass(@PathVariable("id") Long id) {
-		Clazz clazz = clazzService.getClazz(id);
+		Clazz clazz = clazzService.getClazz(id); 
 		ClazzDTO dto = new ClazzDTO(clazz);
 		return dto;
 	}
