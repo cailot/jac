@@ -900,7 +900,7 @@ function updateInvoiceTableWithTop(value, rowCount){
 		});
 		row.append(weeksCell);
 
-		var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onsiteCredit').text(value.credit); // credit;				
+		var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true" id="onsiteCredit">').addClass('credit onsiteCredit').text(value.credit); // credit;				
 		var previousCredit = parseInt(creditCell.text());
 		creditCell.on('input', function() {
 			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
