@@ -173,6 +173,11 @@
 		<put-attribute name="title" value="Branch Statistics" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/branchStats.jsp" />
 	</definition>
+	<!-- Branch Email -->
+	<definition name="branchEmailPage" extends="base.definition">
+		<put-attribute name="title" value="Email Announcement" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/branchEmail.jsp" />
+	</definition>
 
 	
 

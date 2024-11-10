@@ -233,6 +233,40 @@ function headerBranch(tableElementId) {
 	});
 }
 
+// get branch name
+function  branchName(value){
+	var branchText = '';
+	switch(value) {
+		case '12': branchText = 'Box Hill'; break;
+		case '13': branchText = 'Braybrook'; break;
+		case '14': branchText = 'Chadstone'; break;
+		case '15': branchText = 'Cranbourne'; break;
+		case '16': branchText = 'Epping'; break;
+		case '17': branchText = 'Glen Waverley'; break;
+		case '18': branchText = 'Narre Warren'; break;
+		case '19': branchText = 'Mitcham'; break;
+		case '20': branchText = 'Preston'; break;
+		case '21': branchText = 'Richmond'; break;
+		case '22': branchText = 'Springvale'; break;
+		case '23': branchText = 'St. Albans'; break;
+		case '24': branchText = 'Werribee'; break;
+		case '25': branchText = 'Balwyn'; break;
+		case '26': branchText = 'Rowville'; break;
+		case '27': branchText = 'Caroline Springs'; break;
+		case '28': branchText = 'Bayswater'; break;
+		case '29': branchText = 'Point Cook'; break;
+		case '30': branchText = 'Craigieburn'; break;
+		case '31': branchText = 'Mernda'; break;
+		case '32': branchText = 'Melton'; break;
+		case '33': branchText = 'Genroy'; break;
+		case '34': branchText = 'Pakenham'; break;
+		case '90': branchText = 'JAC Head Office Vic'; break;
+		case '99': branchText = 'Testing'; break;
+		default: branchText = 'All Branch'; 
+	}
+	return branchText;
+}
+
 // get grade name
 function  gradeName(value){
 	var gradeText = '';
@@ -256,7 +290,8 @@ function  gradeName(value){
 		case '17': gradeText = 'SRW7'; break;
 		case '18': gradeText = 'SRW8'; break;
 		case '19': gradeText = 'JMSS'; break;
-		case '20': gradeText = 'VCE'; 
+		case '20': gradeText = 'VCE'; break;
+		default: gradeText = 'All'; 
 	}
 	return gradeText;
 }
