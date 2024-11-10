@@ -140,6 +140,11 @@ public class JaeController {
 		return "branchStatsPage";
 	}
 
+	@GetMapping("/branchEmail")
+	public String branchEmail(HttpSession session) {
+		return "branchEmailPage";
+	}
+
 	@GetMapping("/userList")
 	public String user(HttpSession session) {
 		return "userListPage";

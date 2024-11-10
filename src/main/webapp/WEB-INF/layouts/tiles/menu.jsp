@@ -159,6 +159,7 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
 					</c:otherwise>
 				</c:choose>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>
 			</div>
 		</li>
 		<c:if test="${isAdmin}">
