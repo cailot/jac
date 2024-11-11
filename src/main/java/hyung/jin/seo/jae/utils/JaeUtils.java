@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,8 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 
 public class JaeUtils {
 	
-	public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-	public static SimpleDateFormat displayFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	public static final SimpleDateFormat displayFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+
+  
 	
 	// convert date format from yyyy-MM-dd to dd/MM/yyyy, for example 2023-04-22 to 22/04/2023
 	public static String convertToddMMyyyyFormat(String date) throws ParseException {
@@ -215,5 +220,12 @@ public class JaeUtils {
         }
 	}
 
+	// validate email format
+	public static boolean isValidEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            return false;
+        }
+        return EMAIL_PATTERN.matcher(email).matches();
+    }
 	
 }

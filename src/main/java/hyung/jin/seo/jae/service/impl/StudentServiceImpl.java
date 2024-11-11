@@ -362,4 +362,22 @@ public class StudentServiceImpl implements StudentService {
 		return dtos;
 	}
 
+	@Override
+	public List<String> getBranchReceipents(String state, String branch, String grade) {
+		List<String> emails = new ArrayList<>();
+		try{
+			List<String> dtos = studentRepository.findValidEmailsByBranch(state, branch, grade);
+			// check email validity
+			for(int i=0; i<dtos.size(); i++){
+				String email = dtos.get(i);
+				if(StringUtils.isNotBlank(email) && JaeUtils.isValidEmail(email.trim())){
+					emails.add(email.trim());
+				}
+			}
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return emails;
+	}
+
 }
