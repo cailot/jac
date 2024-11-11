@@ -14,10 +14,20 @@
 <script src="${pageContext.request.contextPath}/js/vfs_fonts.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
- 
+ <!-- Quill CSS -->
+<link href="${pageContext.request.contextPath}/css/quill-1.3.7.css" rel="stylesheet">
+<!-- Quill JS -->
+<script src="${pageContext.request.contextPath}/js/quill-1.3.7.min.js"></script>
   
 <script>
-$(document).ready(function () {
+	var quill;
+
+	$(document).ready(function () {
+	// Initialize Quill editor for email body
+	quill = new Quill('#emailBody', {
+		theme: 'snow'
+	});
+
     $('#emailListTable').DataTable({
     	language: {
     		search: 'Filter:'
@@ -37,14 +47,8 @@ $(document).ready(function () {
     
 	// initialise state list when loading
 	listState('#listState');
-	listState('#addState');
-	listState('#editState');
 	listBranch('#listBranch');
-	listBranch('#addBranch');
-	listBranch('#editBranch');
 	listGrade('#listGrade');
-	listGrade('#addGrade');
-	listGrade('#editGrade');
 
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
@@ -66,330 +70,73 @@ $(document).ready(function () {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Student
+//		Confirm Email Form	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function addStudent() {
+function confirmAndSendEmail() {
+    var branch = $('#listBranch').val(); // Assuming you have a select element with id 'listBranch'
+    var grade = $('#listGrade').val(); // Assuming you have a select element with id 'listGrade'
 
-	// lastName, email, password validation
-	var last = document.getElementById('addLastName');
-	if(last.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter last name');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			last.focus();
-		});
-		return false;
-	}
-	var email = document.getElementById('addEmail1');
-	if(email.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-	if(!regex.test(email.value)){
-		$('#validation-alert .modal-body').text(
-		'Please enter valid main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-
-	// Get from form data
-	var std = {
-		firstName : $("#addFirstName").val(),
-		lastName : $("#addLastName").val(),
-		email1 : $("#addEmail1").val(),
-		email2 : $("#addEmail2").val(),
-		relation1 : $("#addRelation1").val(),
-		relation2 : $("#addRelation2").val(),
-		contactNo1 : $("#addContact1").val(),
-		contactNo2 : $("#addContact2").val(),
-		memo : $("#addMemo").val(),
-		state : $("#addState").val(),
-		branch : $("#addBranch").val(),
-		grade : $("#addGrade").val(),
-		gender : $("#addGender").val(),
-		password : $("#addPassword").val(),
-		enrolmentDate : $("#addEnrolment").val()
-	}
-	// Send AJAX to server
-	$.ajax({
-        url : '${pageContext.request.contextPath}/student/register',
-        type : 'POST',
-        dataType : 'json',
-        data : JSON.stringify(std),
-        contentType : 'application/json',
-        success : function() {
-			// Display the success alert
-            $('#success-alert .modal-body').text(
-                    'New Student is registered successfully.');
-            $('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-        },
-        error : function(xhr, status, error) {
-            console.log('Error : ' + error);
-        }
+	var confirmationMessage = '<h5>Are you sure you want to send this email to ? <br><br>Branch : <span class="text-primary font-weight-bold">' + branchName(branch) + '</span><br>Grade : <span class="text-primary font-weight-bold">' + gradeName(grade) + '</span><br><br>Once you send email, it can not be reverted.</h5>';
+    $('#confirmationMessage').html(confirmationMessage);
+	$('#confirmationModal').modal({
+        backdrop: 'static',
+        keyboard: false
     });
-	$('#registerNoticeModal').modal('hide');
-	// flush all registered data
-	document.getElementById("studentRegister").reset();
+    $('#confirmationModal').modal('show');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Student
+//		Send Email	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateStudentInfo(){
+function sendEmail() {
 
-	// lastName, email validation
-	var last = document.getElementById('editLastName');
-	if(last.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter last name');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			last.focus();
-		});
-		return false;
-	}
-	var email = document.getElementById('editEmail1');
-	if(email.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-	if(!regex.test(email.value)){
-		$('#validation-alert .modal-body').text(
-		'Please enter valid main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-	
-	// get from formData
-	var std = {
-		id : $('#editId').val(),
-		firstName : $("#editFirstName").val(),
-		lastName : $("#editLastName").val(),
-		email1 : $("#editEmail1").val(),
-		email2 : $("#editEmail2").val(),
-		address : $("#editAddress").val(),
-		contactNo1 : $("#editContact1").val(),
-		contactNo2 : $("#editContact2").val(),
-		relation1 : $("#editRelation1").val(),
-		relation2 : $("#editRelation2").val(),
-		memo : $("#editMemo").val(),
-		state : $("#editState").val(),
-		branch : $("#editBranch").val(),
-		grade : $("#editGrade").val(),
-		gender : $("#editGender").val(),
-		registerDate : $("#editRegisterDate").val()
+	var subject = $('#emailSubject').val();
+    // var body = $('#emailBody').val();
+	var body = quill.root.innerHTML; // Get the content from Quill editor
+
+	console.log('Subject:', subject);
+	console.log('Body:', body);
+
+	if ((subject == '') || (body == '')) {
+		$('#warning-alert .modal-body').text('Please fill in Subject & Message');
+		$('#warning-alert').modal('toggle');
+		return;
 	}
 
-	var user = window.username;
-		
-	// send query to controller
+    // Perform your email sending logic here
 	$.ajax({
-		url : '${pageContext.request.contextPath}/student/update',
-		type : 'PUT',
-		dataType : 'json',
-		data : JSON.stringify({student: std, user: user}),
-		contentType : 'application/json',
-		success : function(value) {
-			// Display success alert
-			$('#success-alert .modal-body').html('ID : <b>' + std.id + '</b> is updated successfully.');
-			$('#success-alert').modal('show');
-			// fetch data again
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
+		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
+		type : 'GET',
+		data : {
+			state : window.state,
+			branch : window.branch,
+			grade : $('#listGrade').val(),
+			subject : subject,
+			body : body
+		},
+		success : function(data) {
+			console.log('search - ' + data);
 			
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
 		}
 	});
-	
-	$('#editStudentModal').modal('hide');
-	// flush all registered data
-	document.getElementById("studentEdit").reset();
+
+    // Close the modals after sending the email
+	clearEmailForm();
+    $('#confirmationModal').modal('hide');
+    $('#registerNoticeModal').modal('hide');
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Retrieve Student by User's click	
+//		Clear All Email Form	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function retrieveStudentInfo(std) {
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/get/' + std,
-		type : 'GET',
-		success : function(student) {
-			$('#editStudentModal').modal('show');
-			// Update display info
-			// console.log(student);
-			$("#editId").val(student.id);
-			$("#editFirstName").val(student.firstName);
-			$("#editLastName").val(student.lastName);
-			$("#editEmail1").val(student.email1);
-			$("#editEmail2").val(student.email2);
-			$("#editRelation1").val(student.relation1);
-			$("#editRelation2").val(student.relation2);
-			$("#editAddress").val(student.address);
-			$("#editContact1").val(student.contactNo1);
-			$("#editContact2").val(student.contactNo2);
-			$("#editMemo").val(student.memo);
-			$("#editState").val(student.state);
-			$("#editBranch").val(student.branch);
-			$("#editGrade").val(student.grade);
-			$("#editGender").val(student.gender);
-			// Set date value
-			var date = new Date(student.registerDate); // Replace with your date value
-			$("#editRegisterDate").datepicker('setDate', date);
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			Update password
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function updatePassword() {
-	var id = $("#pwdId").val();
-	var newPwd = $("#newPwd").val();
-	var confirmPwd = $("#confirmPwd").val();
-	//warn if Id is empty
-	if (id == '') {
-		$('#warning-alert .modal-body').text('Please search student record before password reset');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
-	// warn if newPwd or confirmPwd is empty
-	if (newPwd == '' || confirmPwd == '') {
-		$('#warning-alert .modal-body').text('Please enter new password and confirm password');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
-	//warn if newPwd is not same as confirmPwd
-	if(newPwd != confirmPwd){
-		$('#warning-alert .modal-body').text('New password and confirm password are not the same');
-		$('#warning-alert').modal('toggle');
-		return;
-	}
-	// send query to controller
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/updatePassword/' + id + '/' + confirmPwd,
-		type : 'PUT',
-		success : function(data) {
-			console.log(data);
-			$('#success-alert .modal-body').html('<b>Password</b> is now updated');
-			$('#success-alert').modal('toggle');
-			// clear fields
-			clearPassword();
-			// close modal
-			$('#passwordModal').modal('toggle');
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-		
-	}); 
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			Show password dialogue
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function showPasswordModal(id) {
-	clearPassword();
-	$("#pwdId").val(id);
-	$('#passwordModal').modal('show');
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 			Clear password fields
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function clearPassword() {
-	$("pwdId").val('');
-	$("#newPwd").val('');
-	$("#confirmPwd").val('');
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Inactivate Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function inactiveStudent(id) {
-    // Show the warning modal
-    $('#deactivateModal').modal('show');
-    // Attach the click event handler to the "I agree" button
-    $('#agreeInactive').one('click', function() {
-        inactivateStudent(id);
-        $('#deactivateModal').modal('hide');
-    });
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		De-activate Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function inactivateStudent(id) {
-	$.ajax({
-		url : '${pageContext.request.contextPath}/student/inactivate/' + id,
-		type : 'PUT',
-		success : function(data) {
-			// clear existing form
-			$('#success-alert .modal-body').html('ID : <b>' + id + '</b> is now suspended');
-			$('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	}); 
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		De-activate Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function activateStudent(id) {
-	if(confirm("Are you sure you want to re-activate this student?")){
-		// send query to controller
-		$.ajax({
-			url : '${pageContext.request.contextPath}/student/activate/' + id,
-			type : 'PUT',
-			success : function(data) {
-				// clear existing form
-				$('#success-alert .modal-body').text(
-						'ID : ' + id + ' is now re-activated');
-				$('#success-alert').modal('show');
-				$('#success-alert').on('hidden.bs.modal', function(e) {
-					location.reload();
-				});
-			},
-			error : function(xhr, status, error) {
-				console.log('Error : ' + error);
-			}
-		}); 
-	}else{
-		return;
-	}
+function clearEmailForm() {
+	// clear email form
+	document.getElementById("emailForm").reset();
+	// clear Quill editor
+	quill.setText('');
 }
 
 </script>
@@ -420,34 +167,32 @@ function activateStudent(id) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<!-- <form id="studentList" method="get" action="${pageContext.request.contextPath}/student/list"> -->
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-1">
-						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState" disabled>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listBranch" class="label-form">Branch</label> 
-						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="0">All Branch</option>
-						</select>
-					</div>
-					<div class="col-md-1">
-						<label for="listGrade" class="label-form">Grade</label> 
-						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="0">All</option>
-						</select>
-					</div>
-					<div class="offset-md-6"></div>
-					<div class="col mx-auto">
-						<label class="label-form-white">Search</label> 
-						<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerNoticeModal"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;&nbsp;Create Notice</button>
-						<!-- <button type="submit" class="btn btn-success btn-block" onclick="addStudent()"> <i class="bi bi-plus"></i>&nbsp;Create Notice</button> -->
-					</div>
+		<div class="form-group">
+			<div class="form-row">
+				<div class="col-md-1">
+					<label for="listState" class="label-form">State</label> 
+					<select class="form-control" id="listState" name="listState" disabled>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="listBranch" class="label-form">Branch</label> 
+					<select class="form-control" id="listBranch" name="listBranch">
+						<option value="0">All Branch</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<label for="listGrade" class="label-form">Grade</label> 
+					<select class="form-control" id="listGrade" name="listGrade">
+						<option value="0">All</option>
+					</select>
+				</div>
+				<div class="offset-md-6"></div>
+				<div class="col mx-auto">
+					<label class="label-form-white">Search</label> 
+					<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerNoticeModal"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;&nbsp;Create Notice</button>
 				</div>
 			</div>
+		</div>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
@@ -542,46 +287,42 @@ function activateStudent(id) {
 </div>
 
 <!-- Email Writing Modal -->
-<div class="modal fade" id="registerNoticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">	
-	<div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="emailModalLabel"><i class="bi bi-envelope text-dark"></i>Write Email</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form id="emailForm">
-					<div class="form-group">
-						<label for="emailRecipient" class="label-form">Recipient</label>
-						<input type="email" class="form-control" id="emailRecipient" name="emailRecipient" placeholder="Enter recipient email" required>
-					</div>
-					<div class="form-group">
-						<label for="emailSubject" class="label-form">Subject</label>
-						<input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
-					</div>
-					<div class="form-group">
-						<label for="emailBody" class="label-form">Body</label>
-						<textarea class="form-control" id="emailBody" name="emailBody" rows="10" placeholder="Enter email body" required></textarea>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" onclick="confirmAndSendEmail()">Send Email</button>
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
+<div class="modal fade" id="registerNoticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">    
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content jae-border-primary">
+            <div class="modal-header bg-primary text-white">
+                <h3 class="modal-title" id="emailModalLabel"><i class="bi bi-envelope"></i>&nbsp;&nbsp;&nbsp;Write Email</h3>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="emailForm">
+                    <div class="form-group">
+                        <label for="emailSubject" class="label-form h6 font-weight-bold">Subject</label>
+                        <input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emailBody" class="label-form h6 font-weight-bold">Body</label>
+                        <!-- Replace textarea with div for Quill -->
+                        <div id="emailBody" name="emailBody" style="height: 300px;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="confirmAndSendEmail()"><i class="bi bi-send"></i>&nbsp;Send Email</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="clearEmailForm()"><i class="bi bi-x-circle"></i>&nbsp;Close</button>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content jae-border-warning">
             <div class="modal-header bg-warning">
-                <h4 class="modal-title text-white" id="confirmationModalLabel"><i class="bi bi-send text-dark"></i>&nbsp;&nbsp;Confirm Email Sending</h5>
+                <h4 class="modal-title text-white" id="confirmationModalLabel"><i class="bi bi-send text-dark"></i>&nbsp;&nbsp;Confirm Email Sending</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -593,42 +334,11 @@ function activateStudent(id) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" onclick="sendEmail()"><i class="bi bi-check-circle"></i>&nbsp;Confirm</button>
-            	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-function confirmAndSendEmail() {
-    var branch = $('#listBranch').val(); // Assuming you have a select element with id 'listBranch'
-    var grade = $('#listGrade').val(); // Assuming you have a select element with id 'listGrade'
-
-	var confirmationMessage = '<h5>Are you sure you want to send this email to ? <br><br>Branch : <span class="text-primary font-weight-bold">' + branchName(branch) + '</span><br>Grade : <span class="text-primary font-weight-bold">' + gradeName(grade) + '</span><br><br>Once you send email, it can not be reverted.</h5>';
-    $('#confirmationMessage').html(confirmationMessage);
-	$('#confirmationModal').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
-    $('#confirmationModal').modal('show');
-}
-
-function sendEmail() {
-    var recipient = $('#emailRecipient').val();
-    var subject = $('#emailSubject').val();
-    var body = $('#emailBody').val();
-
-    // Perform your email sending logic here
-    console.log('Sending email to:', recipient);
-    console.log('Subject:', subject);
-    console.log('Body:', body);
-
-    // Close the modals after sending the email
-    $('#confirmationModal').modal('hide');
-    $('#registerNoticeModal').modal('hide');
-}
-</script>
-
 
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editStudentModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">

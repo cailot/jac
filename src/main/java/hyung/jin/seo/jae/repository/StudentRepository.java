@@ -249,6 +249,11 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 
         @Modifying
         @Query(value = "UPDATE Student s SET s.active = 1, s.endDate = CURDATE() WHERE s.id NOT IN (SELECT DISTINCT e.studentId FROM Enrolment e WHERE e.registerDate >= DATE_SUB(CURDATE(), INTERVAL ?1 DAY))", nativeQuery = true)
-        int updateInactiveStudent(int days);    
-
+        int updateInactiveStudent(int days);  
+        
+        // get email list for student (email1 & email2)
+        @Query(value = "SELECT DISTINCT s.email1 FROM Student s WHERE (:state = '0' OR s.state = :state) AND (:branch = '0' OR s.branch = :branch) AND (:grade = '0' OR s.grade = :grade) AND s.email1 != NULL AND s.active = true " +
+                       "UNION " +
+                       "SELECT DISTINCT s.email2 FROM Student s WHERE (:state = '0' OR s.state = :state) AND (:branch = '0' OR s.branch = :branch) AND AND (:grade = '0' OR s.grade = :grade) AND s.email2 != NULL AND s.active = true", nativeQuery = true)
+        List<String> findValidEmailsByBranch(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade);
 }
