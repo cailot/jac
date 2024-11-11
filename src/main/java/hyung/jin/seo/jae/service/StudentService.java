@@ -69,4 +69,7 @@ public interface StudentService {
 	// list renew students in renewList.jsp
 	List<StudentDTO> listRenewStudent(String branch, String grade, int fromYear, int fromWeek, int toYear, int toWeek);
 
+	// get branch receipents
+	List<String> getBranchReceipents(String state, String branch, String grade);
+
 }
