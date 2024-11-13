@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.MaterialDTO;
-import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.repository.MaterialRepository;
 import hyung.jin.seo.jae.service.MaterialService;

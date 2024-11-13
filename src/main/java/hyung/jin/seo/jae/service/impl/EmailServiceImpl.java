@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -12,7 +13,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import hyung.jin.seo.jae.dto.NoticeEmailDTO;
+import hyung.jin.seo.jae.model.NoticeEmail;
+import hyung.jin.seo.jae.repository.NoticeEmailRepository;
 import hyung.jin.seo.jae.service.EmailService;
 
 @Service
@@ -20,10 +25,10 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
 	JavaMailSender mailSender;
-	
-	// @Autowired
-	// private ResourceLoader resourceLoader;
 
+	@Autowired
+	NoticeEmailRepository noticeEmailRepository;
+	
 	@Override
 	public void sendEmail(String from, String to, String subject, String body) {
 		MimeMessage message = mailSender.createMimeMessage();
@@ -84,6 +89,38 @@ public class EmailServiceImpl implements EmailService {
         };
 
         mailSender.send(preparator);
+	}
+
+
+	@Override
+	public List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade) {
+		List<NoticeEmailDTO> dtos = new ArrayList<>();
+		try{
+			dtos = noticeEmailRepository.findEmails(state, sender, grade);
+		}catch(Exception e){
+			System.out.println("No Email Found");
+		}
+		return dtos;
+	}
+
+
+	@Override
+	@Transactional
+	public void saveNoticeEmail(NoticeEmail email) {
+		noticeEmailRepository.save(email);
+	}
+
+
+	@Override
+	public NoticeEmailDTO getNoticeEmail(Long id) {
+		NoticeEmailDTO dto = null;
+		try{
+			NoticeEmail email = noticeEmailRepository.findById(id).get();
+			dto = new NoticeEmailDTO(email);
+		}catch(Exception e){
+			System.out.println("No Email Found");
+		}
+		return dto;
 	}
 
 }
