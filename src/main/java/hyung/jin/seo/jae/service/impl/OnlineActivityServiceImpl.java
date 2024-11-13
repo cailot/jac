@@ -3,10 +3,9 @@ package hyung.jin.seo.jae.service.impl;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.OnlineActivityDTO;
 import hyung.jin.seo.jae.dto.OnlineSessionDTO;

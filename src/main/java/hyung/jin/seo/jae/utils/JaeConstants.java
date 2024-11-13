@@ -127,6 +127,8 @@ public interface JaeConstants {
 
 	String LOGIN_LIST = "LoginList";
 
+	String EMAIL_LIST = "EmailList";
+
 	String VSSE = "VSSE";
 
 	String ACADEMIC_CYCLES = "academicCycles";
