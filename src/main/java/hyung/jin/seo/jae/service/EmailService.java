@@ -19,6 +19,9 @@ public interface EmailService {
 	// bring email from database
 	List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade);
 
+	// bring email from database
+	List<NoticeEmailDTO> getNoticeEmails(String state, String branch, String sender, String grade);
+
 	// save email to database
 	void saveNoticeEmail(NoticeEmail email);
 

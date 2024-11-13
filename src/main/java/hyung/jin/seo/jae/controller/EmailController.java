@@ -68,9 +68,10 @@ public class EmailController {
 	// email list for branchEmail.jsp
 	@GetMapping("/emailList")
 	public String renewStudents(@RequestParam("listState") String state,
-								@RequestParam("sender") String sender, 
+								@RequestParam("listBranch") String branch,
+								@RequestParam("listSender") String sender, 
 								@RequestParam("listGrade") String grade, Model model){
-		List<NoticeEmailDTO> dtos = emailService.getNoticeEmails(state, sender, grade);
+		List<NoticeEmailDTO> dtos = emailService.getNoticeEmails(state, branch, sender, grade);
 		model.addAttribute(JaeConstants.EMAIL_LIST, dtos);
 		return "branchEmailPage";
 	}
