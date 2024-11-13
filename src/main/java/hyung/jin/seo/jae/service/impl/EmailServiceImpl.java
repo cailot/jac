@@ -103,6 +103,17 @@ public class EmailServiceImpl implements EmailService {
 		return dtos;
 	}
 
+	@Override
+	public List<NoticeEmailDTO> getNoticeEmails(String state, String branch, String sender, String grade) {
+		List<NoticeEmailDTO> dtos = new ArrayList<>();
+		try{
+			dtos = noticeEmailRepository.findEmails(state, branch, sender, grade);
+		}catch(Exception e){
+			System.out.println("No Email Found");
+		}
+		return dtos;
+	}
+
 
 	@Override
 	@Transactional

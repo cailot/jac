@@ -77,13 +77,13 @@ $(document).ready(function () {
 	if (JSON.parse(window.isAdmin)) {
 		$('#adminFields').show();
 		$('#adminFieldsEdit').show();
-		$('#sender').val(HEAD_OFFICE);
+		$('#listSender').val(HEAD_OFFICE);
 	} else {
 		$('#staffFields').show();
 		$('#staffFieldsEdit').show();
 		$('#addBranch').val(window.branch);
 		$('#editBranch').val(window.branch);
-		$('#sender').val(window.branch);
+		$('#listSender').val(window.branch);
 	}
 
 	// Enable listState & listBranch before form submission
@@ -325,7 +325,7 @@ function retrieveEmailInfo(id) {
 						<option value="0">All</option>
 					</select>
 				</div>
-				<input type="hidden" id="sender" name="sender"/>
+				<input type="hidden" id="listSender" name="listSender"/>
 				<div class="offset-md-5"></div>
 				<div class="col mx-auto">
 					<label class="label-form"><span style="color: white;">0</span></label>
