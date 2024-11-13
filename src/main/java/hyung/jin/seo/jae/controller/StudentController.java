@@ -1,10 +1,8 @@
 package hyung.jin.seo.jae.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.StudentDTO;
-import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.StudentService;
