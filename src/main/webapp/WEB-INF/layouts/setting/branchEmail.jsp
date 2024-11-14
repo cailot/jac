@@ -18,7 +18,7 @@
 <link href="${pageContext.request.contextPath}/css/quill-1.3.7.css" rel="stylesheet">
 <!-- Quill JS -->
 <script src="${pageContext.request.contextPath}/js/quill-1.3.7.min.js"></script>
-  
+
 <script>
 const HEAD_OFFICE = 90;
 var quill;
@@ -53,9 +53,9 @@ $(document).ready(function () {
 	// initialise state list when loading
 	listState('#listState');
 	listBranch('#listBranch');
+	listGrade('#listGrade');
 	listBranch('#addBranch');
 	listBranch('#editBranch');
-	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
@@ -75,12 +75,76 @@ $(document).ready(function () {
 
 	// Show different fields based on user role
 	if (JSON.parse(window.isAdmin)) {
-		$('#adminFields').show();
-		$('#adminFieldsEdit').show();
+		$('#dynamicAdd').html(`
+            <div class="row" id="adminFields">
+				<div class="col-md-8">
+					<label for="emailSubject" class="label-form h6 font-weight-bold">Subject</label>
+					<input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
+				</div>
+				<div class="col-md-2">
+					<label for="addBranch" class="label-form h6 font-weight-bold">Branch</label>
+					<select class="form-control" id="addBranch" name="addBranch">
+						<option value="0">All Branch</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="addGrade" class="label-form h6 font-weight-bold">Grade</label>
+					<select class="form-control" id="addGrade" name="addGrade">
+						<option value="0">All Grade</option>
+					</select>
+				</div>
+			</div>`);
+		$('#dynamicEdit').html(`
+			<div class="row" id="adminFieldsEdit">
+				<div class="col-md-8">
+					<label for="editSubject" class="label-form h6 font-weight-bold">Subject</label>
+					<input type="text" class="form-control" id="editSubject" name="editSubject" placeholder="Enter email subject" required>
+				</div>
+				<div class="col-md-2">
+					<label for="editBranch" class="label-form h6 font-weight-bold">Branch</label>
+					<select class="form-control" id="editBranch" name="editBranch">
+						<option value="0">All Branch</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="editGrade" class="label-form h6 font-weight-bold">Grade</label>
+					<select class="form-control" id="editGrade" name="editGrade">
+						<option value="0">All Grade</option>
+					</select>
+				</div>
+			</div>`);
 		$('#listSender').val(HEAD_OFFICE);
 	} else {
-		$('#staffFields').show();
-		$('#staffFieldsEdit').show();
+		$('#dynamicAdd').html(`
+           <div class="row" id="staffFields">
+				<div class="col-md-10">
+					<label for="emailSubject" class="label-form h6 font-weight-bold">Subject</label>
+					<input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
+				</div>
+				<input type="hidden" id="addBranch" name="addBranch"/>
+				<div class="col-md-2">
+					<label for="addGrade" class="label-form h6 font-weight-bold">Grade</label>
+					<select class="form-control" id="addGrade" name="addGrade">
+						<option value="0">All Grade</option>
+					</select>
+				</div>
+			</div>
+        `);
+		$('#dynamicEdit').html(`
+           <div class="row" id="staffFieldsEdit">
+				<div class="col-md-10">
+					<label for="editSubject" class="label-form h6 font-weight-bold">Subject</label>
+					<input type="text" class="form-control" id="editSubject" name="editSubject" placeholder="Enter email subject" required>
+				</div>
+				<input type="hidden" id="editBranch" name="editBranch"/>
+				<div class="col-md-2">
+					<label for="editGrade" class="label-form h6 font-weight-bold">Grade</label>
+					<select class="form-control" id="editGrade" name="editGrade">
+						<option value="0">All Grade</option>
+					</select>
+				</div>
+			</div>
+        `);
 		$('#addBranch').val(window.branch);
 		$('#editBranch').val(window.branch);
 		$('#listSender').val(window.branch);
@@ -405,39 +469,8 @@ function retrieveEmailInfo(id) {
             </div>
             <div class="modal-body">
                 <form id="emailForm">
-                    <div class="form-group">                        
-						<div class="row" id="adminFields" style="display: none;">
-							<div class="col-md-8">
-								<label for="emailSubject" class="label-form h6 font-weight-bold">Subject</label>
-								<input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
-							</div>
-							<div class="col-md-2">
-								<label for="addBranch" class="label-form h6 font-weight-bold">Branch</label>
-								<select class="form-control" id="addBranch" name="addBranch">
-									<option value="0">All Branch</option>
-								</select>
-							</div>
-							<div class="col-md-2">
-								<label for="addGrade" class="label-form h6 font-weight-bold">Grade</label>
-								<select class="form-control" id="addGrade" name="addGrade">
-									<option value="0">All Grade</option>
-								</select>
-							</div>
-						</div>
-						<div class="row" id="staffFields" style="display: none;">
-							<div class="col-md-10">
-								<label for="emailSubject" class="label-form h6 font-weight-bold">Subject</label>
-								<input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
-							</div>
-							<input type="hidden" id="addBranch" name="addBranch"/>
-							<div class="col-md-2">
-								<label for="addGrade" class="label-form h6 font-weight-bold">Grade</label>
-								<select class="form-control" id="addGrade" name="addGrade">
-									<option value="0">All Grade</option>
-								</select>
-							</div>
-						</div>
-                        
+                    <div class="form-group">
+						<div id="dynamicAdd"></div>
                     </div>
                     <div class="form-group">
                         <label for="emailBody" class="label-form h6 font-weight-bold">Body</label>
@@ -488,39 +521,7 @@ function retrieveEmailInfo(id) {
             <div class="modal-body">
 				<form id="emailEdit">
                     <div class="form-group">
-
-						<div class="row" id="adminFieldsEdit" style="display: none;">
-							<div class="col-md-8">
-                                <label for="editSubject" class="label-form h6 font-weight-bold">Subject</label>
-                                <input type="text" class="form-control" id="editSubject" name="editSubject" placeholder="Enter email subject" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="editBranch" class="label-form h6 font-weight-bold">Branch</label>
-                                <select class="form-control" id="editBranch" name="editBranch">
-                                    <option value="0">All Branch</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="editGrade" class="label-form h6 font-weight-bold">Grade</label>
-                                <select class="form-control" id="editGrade" name="editGrade">
-                                    <option value="0">All Grade</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row" id="staffFieldsEdit" style="display: none;">
-							<div class="col-md-10">
-                                <label for="editSubject" class="label-form h6 font-weight-bold">Subject</label>
-                                <input type="text" class="form-control" id="editSubject" name="editSubject" placeholder="Enter email subject" required>
-                            </div>
-                            <input type="hidden" id="editBranch" name="editBranch"/>
-                            <div class="col-md-2">
-                                <label for="editGrade" class="label-form h6 font-weight-bold">Grade</label>
-                                <select class="form-control" id="editGrade" name="editGrade">
-                                    <option value="0">All Grade</option>
-                                </select>
-                            </div>
-                        </div>
-
+						<div id="dynamicEdit"></div>
                     </div>
                     <div class="form-group">
                         <label for="editBody" class="label-form h6 font-weight-bold">Body</label>
