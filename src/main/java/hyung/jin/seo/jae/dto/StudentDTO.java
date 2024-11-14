@@ -150,6 +150,21 @@ public class StudentDTO implements Serializable{
 		this.contactNo1 = (contactNo1!=null) ? contactNo1 : "";
     }
 
+	// simple dto for all students list
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String gender, String state, String branch, LocalDate registerDate, String email1, String contactNo1, String address, int active) {
+    	this.id = String.valueOf(id);
+        this.firstName = (firstName !=null ) ? firstName : "";
+        this.lastName = (lastName !=null ) ? lastName : "";
+		this.gender = (gender!=null) ? gender : "";
+        this.grade = (grade!=null) ? grade : "";
+		this.state = (state!=null) ? state : "";
+        this.branch = (branch!=null) ? branch : "";
+        this.registerDate = (registerDate!=null) ? registerDate.toString() : "";
+		this.email1 = (email1!=null) ? email1 : "";
+		this.contactNo1 = (contactNo1!=null) ? contactNo1 : "";
+		this.address = (address!=null) ? address : "";
+		this.active = active;
+    }
     
 	// this constructor is specially designed to cover paymentList.jsp 
 	public StudentDTO(Long id, String firstName, String lastName, String grade, String state, String branch, LocalDate registerDate, String method, Double amount, Long invoiceId, Long paymentId) {

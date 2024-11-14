@@ -273,6 +273,24 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public List<StudentDTO> listAllStudents(String state, String branch, String grade, String day, String active) {		
+
+		LocalDate weekDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		List<StudentDTO> dtos = null;
+		switch(active){
+			case JaeConstants.CURRENT_STUDENT:
+				dtos = studentRepository.listAllActiveStudentByStateNBranchNGradeNDate(state, branch, grade, weekDate);
+				break;
+			case JaeConstants.STOPPED_STUDENT:
+				dtos = studentRepository.listAllInactiveStudentByStateNBranchNGradeNDate(state, branch, grade, weekDate);
+				break;
+			default:
+				dtos = studentRepository.listAllStudentByStateNBranchNGrade(state, branch, grade);
+		}
+		return dtos;
+	}
+
+	@Override
 	public List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{

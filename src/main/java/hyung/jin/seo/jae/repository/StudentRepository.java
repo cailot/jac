@@ -256,4 +256,38 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                        "UNION " +
                        "SELECT DISTINCT s.email2 FROM Student s WHERE (:state = '0' OR s.state = :state) AND (:branch = '0' OR s.branch = :branch) AND (:grade = '0' OR s.grade = :grade) AND s.email2 IS NOT NULL AND s.active = true", nativeQuery = true)
         List<String> findValidEmailsByBranch(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade);
+
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// Student List by State, Branch, Grade, Active, Date - studentList.jsp 
+        // get all active student list 
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+               "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, s.registerDate, s.email1, s.contactNo1, s.address, s.active) " +
+               "FROM Student s " +
+               "WHERE (:state = '0' OR s.state = :state) " +
+               "AND (:branch = '0' OR s.branch = :branch) " +
+               "AND (:grade = '0' OR s.grade = :grade)")
+        List<StudentDTO> listAllStudentByStateNBranchNGrade(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade);
+
+        // get all active student list 
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+               "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, s.registerDate, s.email1, s.contactNo1, s.address, s.active) " +
+               "FROM Student s " +
+               "WHERE (:state = '0' OR s.state = :state) " +
+               "AND (:branch = '0' OR s.branch = :branch) " +
+               "AND (:grade = '0' OR s.grade = :grade) " +
+               "AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate))")
+        List<StudentDTO> listAllActiveStudentByStateNBranchNGradeNDate(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("weekDate") LocalDate weekDate);
+
+        // get all in-active student list 
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+               "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, s.registerDate, s.email1, s.contactNo1, s.address, s.active) " +
+               "FROM Student s " +
+               "WHERE (:state = '0' OR s.state = :state) " +
+               "AND (:branch = '0' OR s.branch = :branch) " +
+               "AND (:grade = '0' OR s.grade = :grade) " +
+               "AND (s.active = 1 AND s.endDate < :weekDate)")
+        List<StudentDTO> listAllInactiveStudentByStateNBranchNGradeNDate(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("weekDate") LocalDate weekDate);
+        /// Student List by State, Branch, Grade, Active, Date - studentList.jsp
+        /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

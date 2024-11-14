@@ -83,85 +83,7 @@ $(document).ready(function () {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Register Student
-////////////////////////////////////////////////////////////////////////////////////////////////////
-function addStudent() {
-
-	// lastName, email, password validation
-	var last = document.getElementById('addLastName');
-	if(last.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter last name');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			last.focus();
-		});
-		return false;
-	}
-	var email = document.getElementById('addEmail1');
-	if(email.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-	let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
-	if(!regex.test(email.value)){
-		$('#validation-alert .modal-body').text(
-		'Please enter valid main email');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			email.focus();
-		});
-		return false;
-	}
-
-	// Get from form data
-	var std = {
-		firstName : $("#addFirstName").val(),
-		lastName : $("#addLastName").val(),
-		email1 : $("#addEmail1").val(),
-		email2 : $("#addEmail2").val(),
-		relation1 : $("#addRelation1").val(),
-		relation2 : $("#addRelation2").val(),
-		contactNo1 : $("#addContact1").val(),
-		contactNo2 : $("#addContact2").val(),
-		memo : $("#addMemo").val(),
-		state : $("#addState").val(),
-		branch : $("#addBranch").val(),
-		grade : $("#addGrade").val(),
-		gender : $("#addGender").val(),
-		password : $("#addPassword").val(),
-		enrolmentDate : $("#addEnrolment").val()
-	}
-	// Send AJAX to server
-	$.ajax({
-        url : '${pageContext.request.contextPath}/student/register',
-        type : 'POST',
-        dataType : 'json',
-        data : JSON.stringify(std),
-        contentType : 'application/json',
-        success : function() {
-			// Display the success alert
-            $('#success-alert .modal-body').text(
-                    'New Student is registered successfully.');
-            $('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
-        },
-        error : function(xhr, status, error) {
-            console.log('Error : ' + error);
-        }
-    });
-	$('#registerStudentModal').modal('hide');
-	// flush all registered data
-	document.getElementById("studentRegister").reset();
-}
-
+//		Update Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -476,6 +398,53 @@ function displayFullHistory(studentId) {
 							<option value="0">All</option>
 						</select>
 					</div>
+					
+					
+					<div class="col-md-2">
+						<label for="listYear" class="label-form">Academic Year</label> 
+						<select class="form-control" id="listYear" name="listYear">
+							<%
+								Calendar now = Calendar.getInstance();
+								int currentYear = now.get(Calendar.YEAR);
+							%>
+							<option value="<%= currentYear %>"><%= (currentYear%100) %>/<%= (currentYear%100)+1 %> Academic Year</option>
+							<%
+								// Adding the last five years
+								for (int i = currentYear - 1; i >= currentYear - 4; i--) {
+							%>
+								<option value="<%= i %>"><%= (i%100) %>/<%= (i%100)+1 %> Academic Year</option>
+							<%
+							}
+							%>
+						</select>
+					</div>
+					
+					<div class="col-md-1">
+						<label for="listWeek" class="label-form">Week</label>
+						<select class="form-control" id="listWeek" name="listWeek">
+						</select>
+						<script>
+							// Get a reference to the select element
+							var selectElement = document.getElementById("listWeek");
+							// Create a new option element for 'All'
+							var allOption = document.createElement("option");
+							// Set the value and text content for the 'All' option
+							// allOption.value = "0";
+							// allOption.textContent = "All";
+							// Append the 'All' option to the select element
+							// selectElement.appendChild(allOption);
+							// Loop to add options from 1 to 49
+							for (var i = 1; i <= 50; i++) {
+								// Create a new option element
+								var option = document.createElement("option");
+								// Set the value and text content for the option
+								option.value = i;
+								option.textContent = i;
+								// Append the option to the select element
+								selectElement.appendChild(option);
+							}
+						</script>
+					</div>
 					<div class="col-md-2">
 						<label for="listActive" class="label-form">Student Condition</label> 
 						<select class="form-control" id="listActive" name="listActive">
@@ -484,15 +453,11 @@ function displayFullHistory(studentId) {
 							<option value="2">Stopped Students</option>
 						</select>
 					</div>
-					<div class="offset-md-5"></div>
+					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
-					<!-- <div class="col mx-auto">
-						<label class="label-form-white">Registration</label> 
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerStudentModal"><i class="bi bi-plus"></i>&nbsp;Registration</button>
-					</div> -->
 				</div>
 			</div>
 			<div class="form-group">
@@ -509,10 +474,7 @@ function displayFullHistory(studentId) {
 										<th class="align-middle text-center" style="width: 5%">Gender</th>
 										<th class="align-middle text-center" style="width: 10%">Contact</th>
 										<th class="align-middle text-center" style="width: 10%">Email</th>
-										<th class="align-middle text-center" style="width: 10%">Relation</th>
-										<th class="align-middle text-center" style="width: 20%">Address</th>
-										<!-- <th class="align-middle text-center">Sub Email</th>
-										<th class="align-middle text-center">Sub Contact</th> -->
+										<th class="align-middle text-center" style="width: 30%">Address</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
@@ -560,23 +522,13 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"">
 													<c:out value="${student.email1}" />
 												</td>
-												<td class="small align-middle text-center">
-													<c:out value="${student.relation1}" />
-													<c:choose>
-														<c:when test="${student.relation1 == 'mother'}">Mother</c:when>
-														<c:when test="${student.relation1 == 'father'}">Father</c:when>
-														<c:when test="${student.relation1 == 'sibling'}">Sibling</c:when>
-														<c:when test="${student.relation1 == 'other'}">Other</c:when>
-														<c:otherwise></c:otherwise>
-													</c:choose>
-												</td>	
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.address}" /></span></td>
 												<td class="text-center align-middle">
 													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
 													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
 				 									<c:choose>
-														<c:when test="${empty student.endDate}">
+														<c:when test="${student.active == 0}">
 															<i class="bi bi-pause-circle text-danger hand-cursor" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
 														</c:when>
 														<c:otherwise>
@@ -595,128 +547,6 @@ function displayFullHistory(studentId) {
 				</div>
 			</div>
 		</form>
-	</div>
-</div>
-
-<!-- Register Form Dialogue -->
-<div class="modal fade" id="registerStudentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content jae-border-info">
-			<div class="modal-body">
-				<section class="fieldset rounded border-info">
-					<header class="text-info font-weight-bold">Student Registration</header>
-					<form id="studentRegister">
-						<div class="form-row mt-3">
-							<div class="col-md-4">
-								<label for="addState" class="label-form">State</label> 
-								<select class="form-control" id="addState" name="addState" disabled>
-								</select>
-							</div>
-							<div class="col-md-5">
-								<label for="addBranch" class="label-form">Branch</label> 
-								<select class="form-control" id="addBranch" name="addBranch">
-								</select>
-							</div>
-							<div class="col-md-3">
-								<label for="addRegisterDate" class="label-form">Registration</label> 
-								<input type="text" class="form-control datepicker" id="addRegisterDate" name="addRegisterDate" placeholder="Select Date" required>
-							</div>
-							<script>
-								var today = new Date();
-								var day = today.getDate();
-								var month = today.getMonth() + 1; // Note: January is 0
-								var year = today.getFullYear();
-								var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-								document.getElementById('addRegisterDate').value = formattedDate;
-							</script>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-5">
-								<label for="addFirstName" class="label-form">First Name:</label> <input type="text" class="form-control" id="addFirstName" name="addFirstName">
-							</div>
-							<div class="col-md-4">
-								<label for="addLastName" class="label-form">Last Name:</label> <input type="text" class="form-control" id="addLastName" name="addLastName">
-							</div>
-							<div class="col-md-3">
-								<label for="addGrade" class="label-form">Grade</label> <select class="form-control" id="addGrade" name="addGrade">
-								</select>
-							</div>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-3">
-								<label for="addGender" class="label-form">Gender</label> <select class="form-control" id="addGender" name="addGender">
-									<option value="male">Male</option>
-									<option value="female">Female</option>
-								</select>
-							</div>
-							<div class="col-md-9">
-								<label for="addAddress" class="label-form">Address</label> <input type="text" class="form-control" id="addAddress" name="addAddress">
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="addContact1" name="addContact1" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="addRelation1" name="addRelation1">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="addEmail1" name="addEmail1" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="addContact2" name="addContact2" placeholder="Contact No">
-									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="addRelation2" name="addRelation2">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="addEmail2" name="addEmail2" placeholder="Email">
-									</div>
-								</div>
-								</section>
-							</div>
-						</div>
-						<div class="form-row mt-3">
-							<div class="col-md-12">
-								<label for="addMemo" class="label-form">Memo</label>
-								<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>
-							</div>
-						</div>
-					</form>
-					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-info" onclick="addStudent()">Register</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					</div>	
-				</section>
-			</div>
-		</div>
 	</div>
 </div>
 
