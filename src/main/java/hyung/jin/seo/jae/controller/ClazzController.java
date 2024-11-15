@@ -204,7 +204,7 @@ public class ClazzController {
 	@GetMapping("/associatedClass")
 	@ResponseBody
 	List<ClazzDTO> getAssociatedClasses(@RequestParam("clazzId") Long clazzId, @RequestParam("year") int year, @RequestParam("state") String state, @RequestParam("branch") String branch) {
-		List<ClazzDTO> dtos = clazzService.getClazzByClazzNCycleNStateNBranch(clazzId, year, state, branch);
+		List<ClazzDTO> dtos = clazzService.getClazzByClazzNYearNStateNBranch(clazzId, year, state, branch);
 		return dtos;
 	}
 	
