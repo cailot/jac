@@ -308,7 +308,7 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> getClazzByClazzNCycleNStateNBranch(Long id, int year, String state, String branch) {
+	public List<ClazzDTO> getClazzByClazzNYearNStateNBranch(Long id, int year, String state, String branch) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		try{
 			dtos = clazzRepository.getClassesByClazzYearStateBranch(id, year, JaeConstants.VICTORIA_CODE, branch);
