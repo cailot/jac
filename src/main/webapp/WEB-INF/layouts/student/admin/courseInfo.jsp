@@ -191,6 +191,8 @@ var branch = $('#formBranch').val();
 let grade = value.grade;	  
 let year = value.year;	
 let isOnline = value.online;
+console.log('Grade: ' + grade + ', Year' + year + ',isOnline : ' + isOnline +' ,branch : ' + branch + ' ,coureId : ' + value.id);
+
 $.ajax({
 	url: isOnline ? '${pageContext.request.contextPath}/class/onlineClassByCourse' : '${pageContext.request.contextPath}/class/classesByCourse',
 	type: 'GET',
@@ -198,10 +200,10 @@ $.ajax({
 	  courseId: value.id,
 	  year: year,
 	  state : state,
-	  branch : branch	
+	  branch : isOnline ? 90 : branch	
 	},
 	success: function(data) {
-		//console.log(data);
+		console.log(data);
 		// console.log(value);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
@@ -782,13 +784,6 @@ function retrieveEnrolment(studentId){
 	});
 }
 
-
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // 	Update Invoice Table with lastest EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -815,7 +810,8 @@ function updateInvoiceTableWithTop(value, rowCount){
 				clazzId: value.clazzId,
 				year: value.year,
 				state : state,
-				branch : branch	
+				branch: $('#formBranch').val()
+				//branch : branch	
 				},
 				success: function(data) {
 					console.log(data);
@@ -1085,7 +1081,7 @@ function isSameRowExisting(dataType, id) {
 			var hiddenValues = exist.split('|');
 			//console.log(hiddenValues[1]);
 			if(hiddenValues[0] === dataType && hiddenValues[1] === id){
-				isExist = true;retrieveEnrolment
+				isExist = true;
 			}
 		}
 	});

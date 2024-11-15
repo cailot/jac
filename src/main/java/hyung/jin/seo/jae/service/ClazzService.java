@@ -43,7 +43,7 @@ public interface ClazzService {
 	List<ClazzDTO> findClazzForCourseIdNCycleNStateNBranch(Long id, int year, String state, String branch);
 
 	// list class for clazzId & year & state & branch
-	List<ClazzDTO> getClazzByClazzNCycleNStateNBranch(Long id, int year, String state, String branch);
+	List<ClazzDTO> getClazzByClazzNYearNStateNBranch(Long id, int year, String state, String branch);
 
 	// list online class for courseId & year & state
 	List<ClazzDTO> findOnlineClazzForCourseIdNCycleNState(Long id, int year, String state);

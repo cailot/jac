@@ -285,7 +285,7 @@ public class StudentServiceImpl implements StudentService {
 				dtos = studentRepository.listAllInactiveStudentByStateNBranchNGradeNDate(state, branch, grade, weekDate);
 				break;
 			default:
-				dtos = studentRepository.listAllStudentByStateNBranchNGrade(state, branch, grade);
+				dtos = studentRepository.listAllStudentByStateNBranchNGrade(state, branch, grade, weekDate);
 		}
 		return dtos;
 	}
