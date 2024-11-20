@@ -112,8 +112,18 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Jac Study</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>				
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>
+				<!-- Homework submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="homeworkDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Homework
+					</a>
+					<div class="dropdown-menu" aria-labelledby="homeworkDropdown">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">List</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkSchedule">Schedule</a>
+					</div>
+				</div>
+				
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
 				<!-- Practice submenu -->
 				<div class="dropdown-submenu">

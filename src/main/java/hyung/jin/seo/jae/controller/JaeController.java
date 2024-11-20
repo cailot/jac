@@ -115,11 +115,6 @@ public class JaeController {
 		return "connectedAttendListPage";
 	}
 
-	@GetMapping("/onlineList")
-	public String onlineList(HttpSession session) {
-		return "onlineListPage";
-	}
-
 	@GetMapping("/gradeList")
 	public String gradeList(HttpSession session) {
 		return "gradeListPage";
@@ -174,6 +169,11 @@ public class JaeController {
 	// CONNECTED CLASS
 	/////////////////////////////////////////////////
 
+	@GetMapping("/onlineList")
+	public String onlineList(HttpSession session) {
+		return "onlineListPage";
+	}
+
 	@GetMapping("/homeworkList")
 	public String homework(HttpSession session) {
 		return "homeworkListPage";
@@ -194,6 +194,11 @@ public class JaeController {
 		return "testListPage";
 	}
 
+	@GetMapping("/homeworkSchedule")
+	public String homeworkSchedule(HttpSession session) {
+		return "homeworkSchedulePage";
+	}
+
 	@GetMapping("/practiceSchedule")
 	public String practiceSchedule(HttpSession session) {
 		return "practiceSchedulePage";
@@ -203,7 +208,6 @@ public class JaeController {
 	public String testSchedule(HttpSession session) {
 		return "testSchedulePage";
 	}
-
 
 	@GetMapping("/assessList")
 	public String assess(HttpSession session) {

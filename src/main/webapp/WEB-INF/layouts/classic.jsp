@@ -14,6 +14,7 @@
 <script src="${pageContext.request.contextPath}/js/jquery-ui-1.13.2.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap-4.3.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle-4.5.3.min.js"></script>	
+
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/>
 <!-- Google Icons -->

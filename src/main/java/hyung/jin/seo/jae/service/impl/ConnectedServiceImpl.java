@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.HomeworkScheduleDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
@@ -26,6 +27,7 @@ import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.model.HomeworkSchedule;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeSchedule;
@@ -37,6 +39,7 @@ import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.repository.ExtraworkRepository;
 import hyung.jin.seo.jae.repository.HomeworkRepository;
+import hyung.jin.seo.jae.repository.HomeworkScheduleRepository;
 import hyung.jin.seo.jae.repository.PracticeAnswerRepository;
 import hyung.jin.seo.jae.repository.PracticeRepository;
 import hyung.jin.seo.jae.repository.PracticeScheduleRepository;
@@ -80,6 +83,9 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Autowired
 	private TestScheduleRepository testScheduleRepository;
 
+	@Autowired
+	private HomeworkScheduleRepository homeworkScheduleRepository;
+
 	@Override
 	public List<Homework> allHomeworks() {
 		List<Homework> dtos = new ArrayList<>();
@@ -120,6 +126,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 			dtos = testRepository.findAll();
 		}catch(Exception e){
 			System.out.println("No Test found");
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<HomeworkSchedule> allHomeworkSchedules() {
+		List<HomeworkSchedule> dtos = new ArrayList<>();
+		try{
+			dtos = homeworkScheduleRepository.findAll();
+		}catch(Exception e){
+			System.out.println("No Homework Schedule found");
 		}
 		return dtos;
 	}
@@ -203,6 +220,13 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public HomeworkSchedule getHomeworkSchedule(Long id) {
+		Optional<HomeworkSchedule> schedule = homeworkScheduleRepository.findById(id);
+		if(!schedule.isPresent()) return null;
+		return schedule.get();
+	}
+
+	@Override
 	public PracticeSchedule getPracticeSchedule(Long id) {
 		Optional<PracticeSchedule> test = practiceScheduleRepository.findById(id);
 		if(!test.isPresent()) return null;
@@ -283,6 +307,14 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@SuppressAjWarnings("null")
 	@Override
 	@Transactional
+	public HomeworkSchedule addHomeworkSchedule(HomeworkSchedule schedule) {
+		HomeworkSchedule home = homeworkScheduleRepository.save(schedule);
+		return home;
+	}
+
+	@SuppressAjWarnings("null")
+	@Override
+	@Transactional
 	public PracticeSchedule addPracticeSchedule(PracticeSchedule ps) {
 		PracticeSchedule schedule = practiceScheduleRepository.save(ps);
 		return schedule;
@@ -315,8 +347,8 @@ public class ConnectedServiceImpl implements ConnectedService {
         // }
 		int newWeek = newWork.getWeek();
 		existing.setWeek(newWeek);
-		int newYear = newWork.getYear();
-		existing.setYear(newYear);
+		// int newYear = newWork.getYear();
+		// existing.setYear(newYear);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
         // update the existing record
@@ -462,6 +494,32 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
+	public HomeworkSchedule updateHomeworkSchedule(HomeworkSchedule schedule, Long id) {
+		HomeworkSchedule existing = homeworkScheduleRepository.findById(id).get();
+		// update info
+		LocalDateTime newFrom = schedule.getFromDatetime();
+		existing.setFromDatetime(newFrom);
+		LocalDateTime newTo = schedule.getToDatetime();
+		existing.setToDatetime(newTo);
+		boolean newActive = schedule.isActive();
+		existing.setActive(newActive);
+		String newInfo = schedule.getInfo();
+		existing.setInfo(newInfo);
+		int newSubjectDisplay = schedule.getSubjectDisplay();
+		existing.setSubjectDisplay(newSubjectDisplay);
+		int newAnswerDisplay = schedule.getAnswerDisplay();
+		existing.setAnswerDisplay(newAnswerDisplay);
+		String newGrade = schedule.getGrade();
+		existing.setGrade(newGrade);
+		String newSubject = schedule.getSubject();
+		existing.setSubject(newSubject);
+		// update the existing record
+		HomeworkSchedule updated = homeworkScheduleRepository.save(existing);
+		return updated;
+	}
+
+	@Override
+	@Transactional
 	public PracticeSchedule updatePracticeSchedule(PracticeSchedule newWork, Long id) {
 		// search by getId
 		PracticeSchedule existing = practiceScheduleRepository.findById(id).get();
@@ -584,6 +642,16 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
+	public void deleteHomeworkSchedule(Long id) {
+		try{
+			homeworkScheduleRepository.deleteById(id);
+		}catch(Exception e){
+			System.out.println("Nothing to delete");
+		}
+	}
+
+	@Override
+	@Transactional
 	public void deletePracticeSchedule(Long id) {
 		PracticeSchedule practiceSchedule = practiceScheduleRepository.findById(id).orElse(null);
 		if (practiceSchedule != null) {
@@ -618,10 +686,10 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 
 	@Override
-	public HomeworkDTO getHomeworkInfo(int subject, int year, int week) {
+	public HomeworkDTO getHomeworkInfo(long subject, int week) {
 		HomeworkDTO dto = null;
 		try{
-			dto = homeworkRepository.findHomework(subject, year, week);
+			dto = homeworkRepository.findHomework((int)subject, week);
 		}catch(Exception e){
 			System.out.println("No Homework found");
 		}
@@ -657,10 +725,10 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public List<HomeworkDTO> listHomework(int subject, String grade, int year, int week) {
+	public List<HomeworkDTO> listHomework(long subject, String grade, int week) {
 		List<HomeworkDTO> dtos = new ArrayList<>();
 		try{
-			dtos = homeworkRepository.filterHomeworkBySubjectNGradeNYearNWeek(subject, grade, year, week);
+			dtos = homeworkRepository.filterHomeworkBySubjectNGradeNYearNWeek((int)subject, grade, week);
 		}catch(Exception e){
 			System.out.println("No Homework found");
 		}
@@ -697,6 +765,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}catch(Exception e){
 			System.out.println("No Test found");
 		}
+		return dtos;
+	}
+
+	@Override
+	public List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime now, String grade, String subject) {
+		List<HomeworkScheduleDTO> dtos = new ArrayList<>();
+		// try{
+		// 	dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
+		// }catch(Exception e){
+		// 	System.out.println("No Practice Schedule found");
+		// }
 		return dtos;
 	}
 

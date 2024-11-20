@@ -91,9 +91,6 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/user/teacherList.jsp" />
 	</definition>
 
-
-
-
 	<!-- Connected Class -->
 	<!--Online Class -->
 	<definition name="onlineListPage" extends="base.definition">
@@ -104,6 +101,11 @@
 	<definition name="homeworkListPage" extends="base.definition">
 		<put-attribute name="title" value="Homework List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/connected/homeworkList.jsp" />
+	</definition>
+	<!--Homework Schedule -->
+	<definition name="homeworkSchedulePage" extends="base.definition">
+		<put-attribute name="title" value="Homework Schedule" />
+		<put-attribute name="body" value="/WEB-INF/layouts/connected/homeworkSchedule.jsp" />
 	</definition>
 	<!--Extrawork -->
 	<definition name="extraworkListPage" extends="base.definition">
@@ -141,8 +143,6 @@
 		<put-attribute name="body" value="/WEB-INF/layouts/omr/omrUpload.jsp" />
 	</definition>
 	
-
-
 	<!--Academic Cycle -->
 	<definition name="cyclePage" extends="base.definition">
 		<put-attribute name="title" value="Academic Cycle" />

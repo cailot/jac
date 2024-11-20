@@ -16,6 +16,7 @@ import hyung.jin.seo.jae.service.EmailService;
 import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.OnlineActivityService;
 import hyung.jin.seo.jae.service.PdfService;
+import hyung.jin.seo.jae.service.PropertiesService;
 import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import java.util.List;
@@ -33,6 +34,9 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	@Autowired
 	private CycleService cycleService;
 
+	@Autowired
+	private PropertiesService propertiesService;
+	
 	// @Autowired
 	// private EmailService emailService;
 
@@ -71,7 +75,11 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 
 		System.out.println("************* Done *************");
 
-		System.out.println(cycleService.getDateByWeekAndDay(2024, 17, "1"));
+		System.out.println(propertiesService.getHomeworkNormal());
+
+		System.out.println(propertiesService.getHomeworkShort());
+
+		// System.out.println(cycleService.getDateByWeekAndDay(2024, 17, "1"));
 		
 		// List<OnlineActivityDTO> list = onlineActivityService.listStudentStatus("0", "0", 10);
 		// for(OnlineActivityDTO dto: list){
