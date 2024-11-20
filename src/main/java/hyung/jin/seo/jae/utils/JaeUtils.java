@@ -227,5 +227,24 @@ public class JaeUtils {
         }
         return EMAIL_PATTERN.matcher(email).matches();
     }
-	
+
+	// return String array by delimiting string with comma
+	public static String[] splitString(String value) {
+		String[] parts = value.split(",");
+		return parts;
+	}
+
+	// return String by joining string array with comma
+	public static String joinString(String[] values) {
+		if(values == null || values.length == 0)
+		{ 
+			return "";
+		}else if(values.length == 1) {
+			return values[0];
+		}else{
+			String joined = String.join(",", values);
+			return joined;
+		}
+	}
+
 }

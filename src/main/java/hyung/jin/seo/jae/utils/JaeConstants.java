@@ -121,6 +121,8 @@ public interface JaeConstants {
 
 	String TEST_LIST = "TestList";
 
+	String HOMEWORK_SCHEDULE_LIST = "HomeworkScheduleList";
+
 	String PRACTICE_SCHEDULE_LIST = "PracticeScheduleList";
 
 	String TEST_SCHEDULE_LIST = "TestScheduleList";
@@ -335,4 +337,14 @@ public interface JaeConstants {
 	String STATUS_ERROR = "ERROR";
 
 	String STATUS_EMPTY = "EMPTY";
+
+	////////////////////////////////////
+	//
+	//	CONNECTED CLASS SETTING
+	//
+	////////////////////////////////////
+	// String HOMEWORK_NORMAL = "connected.homework.normal.week";
+
+	// String HOMEWORK_SHORT = "connected.homework.short.week";
+
 }

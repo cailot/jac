@@ -47,8 +47,8 @@ public class Homework {
     @Column(length = 2, nullable = true)
     private Integer week;
 
-    @Column(length = 4, nullable = true)
-    private Integer year;
+    // @Column(length = 4, nullable = true)
+    // private Integer year;
 
     @Column(length = 50, nullable = true)
     private String info;

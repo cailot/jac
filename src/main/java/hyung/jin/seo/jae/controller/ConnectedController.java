@@ -1,6 +1,5 @@
 package hyung.jin.seo.jae.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,17 +29,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.HomeworkScheduleDTO;
 import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
-import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.model.HomeworkSchedule;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeSchedule;
@@ -54,7 +54,6 @@ import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.utils.JaeConstants;
-import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("connected")
@@ -188,6 +187,17 @@ public class ConnectedController {
 		schedule = connectedService.addTestSchedule(schedule);
 		TestScheduleDTO dto = new TestScheduleDTO(schedule);
 		// return dto
+		return dto;
+	}
+
+	// register homework schedule
+	@PostMapping("/addHomeworkSchedule")
+	@ResponseBody
+	public HomeworkScheduleDTO registerHomeworkSchedule(@RequestBody HomeworkScheduleDTO formData) {
+		System.out.println("formData : " + formData);
+		HomeworkSchedule schedule = formData.convertToHomeworkSchedule();
+		schedule = connectedService.addHomeworkSchedule(schedule);
+		HomeworkScheduleDTO dto = new HomeworkScheduleDTO(schedule);
 		return dto;
 	}
 
@@ -382,8 +392,8 @@ public class ConnectedController {
 	// search homework by subject, year & week
 	@GetMapping("/homework/{subject}/{year}/{week}")
 	@ResponseBody
-	public HomeworkDTO searchHomework(@PathVariable int subject, @PathVariable int year, @PathVariable int week) {
-		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, year, week);
+	public HomeworkDTO searchHomework(@PathVariable int subject, @PathVariable int week) {
+		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, week);
 		return dto;
 	}
 
@@ -392,15 +402,13 @@ public class ConnectedController {
 	public String listHomeworks(
 			@RequestParam(value = "listSubject", required = false) String subject,
 			@RequestParam(value = "listGrade", required = false) String grade,
-			@RequestParam(value = "listYear", required = false) String year,
 			@RequestParam(value = "listWeek", required = false) String week, 
 			Model model) {
 		List<HomeworkDTO> dtos = new ArrayList();
 		String filteredSubject = StringUtils.defaultString(subject, "0");
-		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
-		String filteredYear = StringUtils.defaultString(year, "0");
+		String filteredGrade = StringUtils.defaultString(grade, "0");
 		String filteredWeek = StringUtils.defaultString(week, "0");
-		dtos = connectedService.listHomework(Integer.parseInt(filteredSubject), filteredGrade, Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek));		
+		dtos = connectedService.listHomework(Integer.parseInt(filteredSubject), filteredGrade, Integer.parseInt(filteredWeek));		
 		model.addAttribute(JaeConstants.HOMEWORK_LIST, dtos);
 		return "homeworkListPage";
 	}
@@ -445,6 +453,18 @@ public class ConnectedController {
 		dtos = connectedService.listTest(Integer.parseInt(filteredType), filteredGrade, Integer.parseInt(filteredVolume));		
 		model.addAttribute(JaeConstants.TEST_LIST, dtos);
 		return "testListPage";
+	}
+
+	@GetMapping("/filterHomeworkSchedule")
+	public String listHomeworkchedules(
+			@RequestParam(value = "listYear", required = false) int listYear,
+			Model model) {
+		List<HomeworkScheduleDTO> dtos = new ArrayList();
+		// String filteredYear = StringUtils.defaultString(listYear, "0");
+		// String filteredWeek = StringUtils.defaultString(listWeek, "0");
+		// dtos = connectedService.listPracticeSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		model.addAttribute(JaeConstants.HOMEWORK_SCHEDULE_LIST, dtos);
+		return "homeworkSchedulePage";
 	}
 
 	@GetMapping("/filterPracticeSchedule")

@@ -34,9 +34,9 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
-	listSubject('#listSubject');
-	listSubject('#addSubject');
-	listSubject('#editSubject');
+	// listSubject('#listSubject');
+	// listSubject('#addSubject');
+	// listSubject('#editSubject');
 
 });
 
@@ -49,13 +49,11 @@ function addHomework() {
 	var homework = {
 		subject : $("#addSubject").val(),
 		grade: $("#addGrade").val(),
-		year: $("#addYear").val(),
 		week: $("#addWeek").val(),
 		info : $("#addInfo").val(),
 		videoPath : $("#addVideoPath").val(),
 		pdfPath : $("#addPdfPath").val()
 	}
-	// console.log(homework);
 
 	// Send AJAX to server
 	$.ajax({
@@ -100,7 +98,6 @@ function retrieveHomeworkInfo(id) {
 			$("#editId").val(homework.id);
 			$("#editSubject").val(homework.subject);
 			$("#editGrade").val(homework.grade);
-			$("#editYear").val(homework.year);			
 			$("#editWeek").val(homework.week);
 			$("#editInfo").val(homework.info);
 			$("#editVideoPath").val(homework.videoPath);
@@ -141,7 +138,6 @@ function updateHomeworkInfo() {
 		id: workId,
 		subject : $("#editSubject").val(),
 		grade: $("#editGrade").val(),
-		year: $("#editYear").val(),
 		week: $("#editWeek").val(),
 		info: $("#editInfo").val(),
 		videoPath: $("#editVideoPath").val(),
@@ -265,37 +261,21 @@ function deleteHomework(id) {
 						<label for="listSubject" class="label-form">Subject</label>
 						<select class="form-control" id="listSubject" name="listSubject">
 							<option value="0">All</option>
+							<option value="1">English</option>
+							<option value="2">Mathematics</option>
+							<option value="4">Writing</option>
+							<option value="12">Short Answer</option>
+							<option value="13">Short Answer TT</option>
 						</select>
 					</div>
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listYear" class="label-form">Academic Year</label>
-						<select class="form-control" id="listYear" name="listYear">
-							<%
-								Calendar now = Calendar.getInstance();
-								int currentYear = now.get(Calendar.YEAR);
-								int nextYear = currentYear + 1;
-							%>
 							<option value="0">All</option>
-							<!-- <option value="<%= nextYear %>">Academic Year <%= (nextYear%100) %>/<%= (nextYear%100)+1 %></option> -->
-							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
-							<%
-								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
-							%>
-								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-							<%
-							}
-							%>
 						</select>
 					</div>
 					<div class="col-md-1">
-						<label for="listWeek" class="label-form">Week</label>
+						<label for="listWeek" class="label-form">Set</label>
 						<select class="form-control" id="listWeek" name="listWeek">
 						</select>
 						<script>
@@ -326,7 +306,7 @@ function deleteHomework(id) {
 							}
 						</script>
 					</div>
-					<div class="offset-md-3"></div>
+					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -346,10 +326,10 @@ function deleteHomework(id) {
 									<tr>
 										<th class="text-center align-middle" style="width: 10%">Subject</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
-										<th class="text-center align-middle" style="width: 10%">Academic Year</th>
+										<!-- <th class="text-center align-middle" style="width: 10%">Academic Year</th> -->
 										<th class="text-center align-middle" style="width: 5%">Week</th>
-										<th class="text-center align-middle" style="width: 22.5%">Video Path</th>
-										<th class="text-center align-middle" style="width: 22.5%">Document Path</th>
+										<th class="text-center align-middle" style="width: 27.5%">Video Path</th>
+										<th class="text-center align-middle" style="width: 27.5%">Document Path</th>
 										<th class="text-center align-middle" style="width: 10%">Information</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
@@ -365,15 +345,7 @@ function deleteHomework(id) {
 															<c:choose>
 																<c:when test="${homework.subject == '1'}">English</c:when>
 																<c:when test="${homework.subject == '2'}">Maths</c:when>
-																<c:when test="${homework.subject == '3'}">General Ability</c:when>
 																<c:when test="${homework.subject == '4'}">Writing</c:when>
-																<c:when test="${homework.subject == '5'}">Science</c:when>
-																<c:when test="${homework.subject == '6'}">All</c:when>
-																<c:when test="${homework.subject == '7'}">One Subject</c:when>
-																<c:when test="${homework.subject == '8'}">Two Subjects</c:when>
-																<c:when test="${homework.subject == '9'}">Three Subjects</c:when>
-																<c:when test="${homework.subject == '10'}">Verbal Reasoning</c:when>
-																<c:when test="${homework.subject == '11'}">Numeric Reasoning</c:when>
 																<c:when test="${homework.subject == '12'}">Short Answer</c:when>
 																<c:when test="${homework.subject == '13'}">Short Answer TT</c:when>
 																<c:otherwise></c:otherwise>
@@ -405,11 +377,6 @@ function deleteHomework(id) {
 																<c:when test="${homework.grade == '20'}">VCE</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
-														</span>
-													</td>
-													<td class="small align-middle">
-														<span>
-															Year <c:out value="${homework.year}" />/<c:out value="${homework.year+1}" />
 														</span>
 													</td>
 													<td class="small align-middle text-center">
@@ -475,9 +442,14 @@ function deleteHomework(id) {
 					<form id="homeworkRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-3">
+								<div class="col-md-7">
 									<label for="addSubject" class="label-form">Subject</label>
 									<select class="form-control" id="addSubject" name="addSubject">
+										<option value="1">English</option>
+										<option value="2">Mathematics</option>
+										<option value="4">Writing</option>
+										<option value="12">Short Answer</option>
+										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
@@ -485,26 +457,8 @@ function deleteHomework(id) {
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-4">
-									<label for="addYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="addYear" name="addYear">
-										<%
-											Calendar addNow = Calendar.getInstance();
-											int addCurrentYear = addNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= addCurrentYear %>">Year <%= (addCurrentYear%100) %>/<%= (addCurrentYear%100)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
 								<div class="col-md-2">
-									<label for="addWeek" class="label-form">Week</label>
+									<label for="addWeek" class="label-form">Set</label>
 									<select class="form-control" id="addWeek" name="addWeek">
 									</select>
 									<script>
@@ -569,9 +523,14 @@ function deleteHomework(id) {
 					<form id="homeworkEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-3">
+								<div class="col-md-7">
 									<label for="editSubject" class="label-form">Subject</label>
 									<select class="form-control" id="editSubject" name="editSubject" disabled>
+										<option value="1">English</option>
+										<option value="2">Mathematics</option>
+										<option value="4">Writing</option>
+										<option value="12">Short Answer</option>
+										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
@@ -579,26 +538,8 @@ function deleteHomework(id) {
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
-								<div class="col-md-4">
-									<label for="editYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="editYear" name="editYear">
-										<%
-											Calendar editNow = Calendar.getInstance();
-											int editCurrentYear = editNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= editCurrentYear %>">Year <%= (editCurrentYear%100) %>/<%= (editCurrentYear%100)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
 								<div class="col-md-2">
-									<label for="editWeek" class="label-form">Week</label>
+									<label for="editWeek" class="label-form">Set</label>
 									<select class="form-control" id="editWeek" name="editWeek">
 									</select>
 									<script>
