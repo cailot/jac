@@ -36,10 +36,21 @@ $(document).ready(function () {
         $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
     });
 
+	$('#editGradeAll').on('change', function() {
+        var isChecked = $(this).is(':checked');
+        $('#editGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
+    });
+
     $('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
         var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
         var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
         $('#addGradeAll').prop('checked', allChecked);
+    });
+
+	$('#editGradeCheckbox input[type="checkbox"]').on('change', function() {
+        var checkboxes = $('#editGradeCheckbox input[type="checkbox"]');
+        var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+        $('#editGradeAll').prop('checked', allChecked);
     });
 
 	$('#addSubjectAll').on('change', function() {
@@ -47,10 +58,21 @@ $(document).ready(function () {
         $('#addSubjectCheckbox input[type="checkbox"]').prop('checked', isChecked);
     });
 
+	$('#editSubjectAll').on('change', function() {
+        var isChecked = $(this).is(':checked');
+        $('#editSubjectCheckbox input[type="checkbox"]').prop('checked', isChecked);
+    });
+
     $('#addSubjectCheckbox input[type="checkbox"]').on('change', function() {
         var checkboxes = $('#addSubjectCheckbox input[type="checkbox"]');
         var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
         $('#addSubjectAll').prop('checked', allChecked);
+    });
+
+	$('#editSubjectCheckbox input[type="checkbox"]').on('change', function() {
+        var checkboxes = $('#editSubjectCheckbox input[type="checkbox"]');
+        var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+        $('#editSubjectAll').prop('checked', allChecked);
     });
 
 });
@@ -216,66 +238,76 @@ function registerSchedule() {
 function retrieveScheduleInfo(id) {
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPracticeSchedule/' + id,
+		url: '${pageContext.request.contextPath}/connected/getHomeworkSchedule/' + id,
 		type: 'GET',
 		success: function (scheduleItem) {
-			console.log(scheduleItem);
-			$("#editId").val(scheduleItem.id);
-			$("#editYear").val(scheduleItem.year);
-			$("#editWeek").val(scheduleItem.week);
-			$("#editInfo").val(scheduleItem.info);
-			$("#editActive").val(scheduleItem.active);
-			if (scheduleItem.active == true) {
-				$("#editActiveCheckbox").prop('checked', true);
-			} else {
-				$("#editActiveCheckbox").prop('checked', false);
-			}
-			// clear all rows on editScheduleTable
-			$("#editScheduleTable").find("tr:gt(0)").remove();	
-			// append Practice Info into table
-			var practices = scheduleItem.practices;
-			$.each(practices, function (index, value) {
-				// Get the values from the select elements
-				var gradeSelect = document.getElementById("editGradeSearch");
-				var grade = gradeSelect.options[value.grade].text;
-				// Get a reference to the table
-				var table = document.getElementById("editScheduleTable");
-				// Create a new row
-				var row = $("<tr>");
-				// Create the cells for the row
-				var cell1 = $("<td>").text(value.name);
-				var cell2 = $("<td>").text(grade);
-				var cell3 = $("<td>").text(value.volume);
-
-				// cell4
-				var binIcon = $('<i class="bi bi-trash h5"></i>');
-				var binIconLink = $("<a>")
-					.attr("href", "javascript:void(0)")
-					.attr("title", "Delete Practice")
-					.click(function () {
-						row.remove();
+			// console.log('Schedule Item:', scheduleItem); // Log the scheduleItem to check the response
+            // Ensure the scheduleItem has the expected structure and fields
+            if (scheduleItem) {
+                $("#editId").val(scheduleItem.id);
+				 // Convert 'from' and 'to' to the format expected by datetime-local input
+				var fromDateTime = convertToDateTimeLocal(scheduleItem.from);
+                var toDateTime = convertToDateTimeLocal(scheduleItem.to);
+                $("#editFrom").val(fromDateTime);
+                $("#editTo").val(toDateTime);
+                $("#editInfo").val(scheduleItem.info);
+                $("#editActive").val(scheduleItem.active);
+                if (scheduleItem.active == true) {
+                    $("#editActiveCheckbox").prop('checked', true);
+                } else {
+                    $("#editActiveCheckbox").prop('checked', false);
+                }
+				// Check the corresponding grade checkboxes
+				$('#editGradeCheckbox input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first
+				if(scheduleItem.grade.includes('0')) {
+					$('#editGradeAll').prop('checked', true);
+					$('#editGradeCheckbox input[type="checkbox"]').prop('checked', true);
+				}else{
+					scheduleItem.grade.forEach(function(grade) {
+						$('#editGradeCheckbox input[type="checkbox"][value="' + grade + '"]').prop('checked', true);
 					});
-				binIconLink.append(binIcon);
-				var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+				}
+				// Check the corresponding subject checkboxes
+				$('#editSubjectCheckbox input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first
+				if(scheduleItem.subject.includes('0')) {
+					$('#editSubjectAll').prop('checked', true);
+					$('#editSubjectCheckbox input[type="checkbox"]').prop('checked', true);
+				}else{
+					scheduleItem.subject.forEach(function(subject) {
+						$('#editSubjectCheckbox input[type="checkbox"][value="' + subject + '"]').prop('checked', true);
+					});
+				}
+				$("#editSubjectDisplay").val(scheduleItem.subjectDisplay);
+				$("#editAnswerDisplay").val(scheduleItem.answerDisplay);
+				// Show the modal
+				$('#editScheduleModal').modal('show');
+            } else {
+                console.log('No schedule item found.');
+            }
 
-				// hidden td for practiceId
-				var td = $("<td>").css("display", "none").addClass("practiceId").text(value.id);
 
-				// Append cells to the row
-				row.append(cell1, cell2, cell3, cell4, td);
-
-				// Append the row to the table
-				$("#editScheduleTable").append(row);
-			});
-			// display available set to be ready to select
-			// getPracticeByTypeNGrade('edit');
-			$('#editScheduleModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
 		}
 
 	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Convert date time string to date time local format
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function convertToDateTimeLocal(dateTimeStr) {
+    // Assuming the input format is 'dd/MM/yyyy, HH:mm'
+    var parts = dateTimeStr.split(', ');
+    var dateParts = parts[0].split('/');
+    var timeParts = parts[1].split(':');
+    var year = dateParts[2];
+    var month = dateParts[1].padStart(2, '0');
+    var day = dateParts[0].padStart(2, '0');
+    var hours = timeParts[0].padStart(2, '0');
+    var minutes = timeParts[1].padStart(2, '0');
+    return year+'-'+month+'-'+day+'T'+hours+':'+minutes;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,29 +323,65 @@ function updateEditActiveValue(checkbox) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Practice Schedule
+//		Update Homework Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
+
+	// Collect the values of the selected grade checkboxes
+	var selectedGrades = [];
+    var allGradesChecked = $('#editGradeCheckbox input[name="grades"]').length === $('#editGradeCheckbox input[name="grades"]:checked').length;
+    if (allGradesChecked) {
+        selectedGrades.push('0');
+    } else {
+        $('#editGradeCheckbox input[name="grades"]:checked').each(function() {
+            selectedGrades.push($(this).val());
+        });
+    }
+	// check if no grade is selected
+	if(selectedGrades.length == 0){
+		$('#validation-alert .modal-body').text('Please select grade');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			$('#editGrade').focus();
+		});
+		return false;
+	}
+    // Collect the values of the selected subject checkboxes
+    var selectedSubjects = [];
+    var allSubjectsChecked = $('#editSubjectCheckbox input[name="subjects"]').length === $('#editSubjectCheckbox input[name="subjects"]:checked').length;
+    if (allSubjectsChecked) {
+        selectedSubjects.push('0');
+    } else {
+        $('#editSubjectCheckbox input[name="subjects"]:checked').each(function() {
+            selectedSubjects.push($(this).val());
+        });
+    }
+	// check if no subject is selected
+	if(selectedSubjects.length == 0){
+		$('#validation-alert .modal-body').text('Please select subject');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			$('#editSubject').focus();
+		});
+		return false;
+	}
+
 	// get from formData
-	var practiceDtos = [];
-	$('#editScheduleTable tr').each(function () {
-		var practiceId = $(this).find('.practiceId').text();
-		if (practiceId != '') {
-			practiceDtos.push({id : practiceId});
-		}
-	});
 	var scheduleItem = {
 		id: $("#editId").val(),
-		year: $("#editYear").val(),
-		week: $("#editWeek").val(),
+		from: $("#editFrom").val(),
+		to: $("#editTo").val(),
+		grade: selectedGrades,
+		subject: selectedSubjects,
+		subjectDisplay: $("#editSubjectDisplay").val(),
+		answerDisplay: $("#editAnswerDisplay").val(),
 		info: $("#editInfo").val(),
-		active: $("#editActive").val(),
-		practices: practiceDtos
+		active: $("#editActive").val()
 	}
 
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/updatePracticeSchedule',
+		url: '${pageContext.request.contextPath}/connected/updateHomeworkSchedule',
 		type: 'PUT',
 		dataType: 'json',
 		data: JSON.stringify(scheduleItem),
@@ -345,14 +413,6 @@ function clearForm(elementId) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Clear Table
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function clearTable(action) {
-	var table = document.getElementById(action + "ScheduleTable");
-	table.getElementsByTagName('tbody')[0].innerHTML = "";
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update hidden value according to edit activive checkbox
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function updateEditActiveValue(checkbox) {
@@ -365,28 +425,28 @@ function updateEditActiveValue(checkbox) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before deleting PracticeSchedule
+//		Confirm before deleting Homework Schedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmDelete(practiceId) {
+function confirmDelete(scheduleId) {
     // Show the warning modal
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
     $('#agreeConfirmation').one('click', function() {
-        deletePracticeSchedule(practiceId);
+        deleteHomeworkSchedule(scheduleId);
         $('#deleteConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete PracticeSchedule
+//		Delete Homework Schedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function deletePracticeSchedule(id) {
+function deleteHomeworkSchedule(id) {
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/deletePracticeSchedule/' + id,
+		url: '${pageContext.request.contextPath}/connected/deleteHomeworkSchedule/' + id,
 		type: 'DELETE',
 		success: function (result) {
-			$('#success-alert .modal-body').text('Practice Schedule deleted successfully');
+			$('#success-alert .modal-body').text('Homework Schedule deleted successfully');
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -468,40 +528,58 @@ function deletePracticeSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle" style="width: 20%">Academic Year</th>
-										<th class="text-center align-middle" style="width: 20%">Start</th>
-										<th class="text-center align-middle" style="width: 20%">End</th>
-										<th class="text-center align-middle" style="width: 20%">Grade</th>
+										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End</th>
+										<th class="text-center align-middle" style="width: 15%">Grade</th>
 										<th class="text-center align-middle" style="width: 20%">Subject</th>
-										<th class="text-center align-middle" style="width: 20%">Display</th>										
-										<th class="text-center align-middle" style="width: 40%">Information</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Activated</th>
+										<th class="text-center align-middle" style="width: 15%">Display</th>										
+										<th class="text-center align-middle" style="width: 15%">Information</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
 									<c:choose>
-										<c:when test="${PracticeScheduleList != null}">
+										<c:when test="${HomeworkScheduleList != null}">
 											<c:forEach items="${HomeworkScheduleList}" var="scheduleItem">
 												<tr>
 													<td class="small align-middle">
 														<span>
-															Academic Year <c:out value="${scheduleItem.year}" />/<c:out value="${scheduleItem.year+1}" />
+															<c:out value="${scheduleItem.from}" />
 														</span>
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:choose>
-																<c:when test="${scheduleItem.week == 10}">End of Volume 1 (10)</c:when>
-																<c:when test="${scheduleItem.week == 20}">End of Volume 2 (20)</c:when>
-																<c:when test="${scheduleItem.week == 30}">End of Volume 3 (30)</c:when>
-																<c:when test="${scheduleItem.week == 40}">End of Volume 4 (40)</c:when>
-																<c:when test="${scheduleItem.week >= 49}">End of Volume 5 (50)</c:when>
-																<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
-															</c:choose>
+															<c:out value="${scheduleItem.to}" />
 														</span>
 													</td>
-													<td class="small align-middle text-truncate" style="min-width: 300px;">
+													<td class="small align-middle">
+														<span>
+															<c:forEach var="grade" items="${scheduleItem.grade}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(gradeName('${grade}'));
+																</script>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>
+													<td class="small align-middle text-truncate">
+														<span>
+															<c:forEach var="subject" items="${scheduleItem.subject}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(subjectName('${subject}'));
+																</script>	
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															Subject : <c:out value="${scheduleItem.subjectDisplay}" />,  Answer : <c:out value="${scheduleItem.answerDisplay}" />
+														</span>
+													</td>
+													<td class="small align-middle text-truncate" style="min-width: 50px;">
 														<span>
 															<c:out value="${scheduleItem.info}" />
 														</span>
@@ -520,10 +598,10 @@ function deletePracticeSchedule(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit Practice Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit Homework Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
 														</i>
 														&nbsp;&nbsp;
-														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete Practice Schedule" onclick="confirmDelete('${scheduleItem.id}')">
+														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete Homework Schedule" onclick="confirmDelete('${scheduleItem.id}')">
 														</i>
 													</td>
 												</tr>
@@ -682,7 +760,7 @@ function deletePracticeSchedule(id) {
 												</div>
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="12" id="addSA" name="subjects">
-													<label class="form-check-label" for="adSA">
+													<label class="form-check-label" for="addSA">
 														Short Answer
 													</label>
 												</div>
@@ -741,66 +819,29 @@ function deletePracticeSchedule(id) {
 	</div>
 </div>
 
+
+
+
+
+
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Practice Schedule Edit</header>
+					<header class="text-primary font-weight-bold">Homework Schedule Edit</header>
 					<form id="scheduleEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-7">
-									<label for="editYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="editYear" name="editYear">
-										<%
-											Calendar editNow = Calendar.getInstance();
-											int editCurrentYear = editNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= editCurrentYear %>">Academic Year <%= (editCurrentYear) %>/<%= (editCurrentYear)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
-										<%
-										}
-										%>
-									</select>
+								<div class="col-md-6">
+									<label for="editFrom" class="label-form">From</label>
+									<input type="datetime-local" class="form-control datepicker" id="editFrom" name="editFrom" placeholder="From" required>
 								</div>
-								<div class="col-md-5">
-									<label for="editWeek" class="label-form">Set</label>
-									<select class="form-control" id="editWeek" name="editWeek">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editWeek");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										//   option.textContent = i;
-										  if (i === 10) {
-											option.textContent = 'Volume 1 (' + i + ')';
-										  }else if (i === 20) {
-											option.textContent = 'Volume 2 (' + i + ')';
-										  } else if (i === 30) {
-											option.textContent = 'Volume 3 (' + i + ')';
-										  } else if (i === 40) {
-											option.textContent = 'Volume 4 (' + i + ')';
-										  } else if ((i === 49) || (i === 50)) {
-											option.textContent = 'Volume 5 (' + i + ')';
-										  } else {
-												option.textContent = i;
-										  }
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
+								<div class="col-md-6">
+									<label for="editTo" class="label-form">To</label> 
+									<input type="datetime-local" class="form-control datepicker" id="editTo" name="editTo" placeholder="To" required>
+								</div>			
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
@@ -819,44 +860,179 @@ function deletePracticeSchedule(id) {
 								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="type" style="width: 70%;">Practice</th>
-											<th data-field="grade" style="width: 10%;">Grade</th>
-											<th data-field="set" style="width: 10%;">Set</th>
-											<th data-field="action" style="width: 10%;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
-							</div>
-						</div>
+
+
+
+
+
+
+
+
+
+
+
+
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
-									<div class="col-md-7">
-										<label for="editPracticeTypeSearch" class="label-form">Practice</label>
-										<select class="form-control" id="editPracticeTypeSearch" name="editPracticeTypeSearch">
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="editGradeSearch" class="label-form">Grade</label>
-										<select class="form-control" id="editGradeSearch" name="editGradeSearch">
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="editSetSearch" class="label-form">Set</label>
-										<select class="form-control" id="editSetSearch" name="editSetSearch">
-										</select>
-									</div>
-									<div class="col-md-1 d-flex flex-column justify-content-center">
-										<label class="label-form text-white">Add</label>
-										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addPractice('edit')"><i class="bi bi-plus"></i></button>
-									</div>
+									
+									<div class="col-md-3">										
+										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="editGrade" name="editGrade">
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" id="editGradeAll" name="editGradeAll">
+												<label class="form-check-label" for="editGradeAll">
+													All/None
+												</label>
+											</div>
+											<div id="editGradeCheckbox">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
+													<label class="form-check-label" for="editP2">
+														P2
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="editP3" name="grades">
+													<label class="form-check-label" for="editP3">
+														P3
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="editP4" name="grades">
+													<label class="form-check-label" for="editP4">
+														P4
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="editP5" name="grades">
+													<label class="form-check-label" for="editP5">
+														P5
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="editP6" name="grades">
+													<label class="form-check-label" for="editP6">
+														P6
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="editS7" name="grades">
+													<label class="form-check-label" for="editS7">
+														S7
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="editS8" name="grades">
+													<label class="form-check-label" for="editS8">
+														S8
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="editS9" name="grades">
+													<label class="form-check-label" for="editS9">
+														S9
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="editS10" name="grades">
+													<label class="form-check-label" for="editS10">
+														S10
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
+													<label class="form-check-label" for="editTT6">
+														TT6
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
+													<label class="form-check-label" for="editTT8">
+														TT8
+													</label>
+												</div>
+
+											</div>
+										</div>
+									</div>	
+
+									<div class="col-md-5">										
+										<label for="editSubject" class="label-form h6 badge badge-success">Subject</label>
+										<div id="editSubject" name="editSubject">
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" id="editSubjectAll" name="editSubjectAll">
+												<label class="form-check-label" for="editSubjectAll">
+													All/None
+												</label>
+											</div>
+											<div id="editSubjectCheckbox">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="editEng" name="subjects">
+													<label class="form-check-label" for="editEng">
+														English
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="editMath" name="subjects">
+													<label class="form-check-label" for="editMath">
+														Mathematics
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="editWriting" name="subjects">
+													<label class="form-check-label" for="editWriting">
+														Writing
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="editSA" name="subjects">
+													<label class="form-check-label" for="adSA">
+														Short Answer
+													</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="13" id="editSATT" name="subjects">
+													<label class="form-check-label" for="editSATT">
+														Short Answer (TT)
+													</label>
+												</div>
+											</div>
+										</div>
+									</div>	
+
+									<div class="col-md-4">										
+										<label for="editSubject" class="label-form h6 badge badge-success">Display</label>
+										<div id="editDisplay" name="editDisplay">
+											<div>
+												<label for="editSubjectDisplay" class="label-form mt-2">Subject</label> 
+												<select class="form-control" id="editSubjectDisplay" name="editSubjectDisplay">
+													<%
+													for (int j = 3; j <= 10; j++) {
+													%>
+													<option value="<%= j %>"><%= j %> Sets</option>
+													<%
+													}
+													%>
+												</select>
+											</div>
+
+											<div>
+												<label for="editAnswerDisplay" class="label-form mt-3">Answer</label> 
+												<select class="form-control" id="editAnswerDisplay" name="editAnswerDisplay">
+													<%
+													for (int k = 2; k <= 10; k++) {
+													%>
+													<option value="<%= k %>"><%= k %> Sets</option>
+													<%
+													}
+													%>
+												</select>	
+											</div>
+										</div>
+									</div>	
+		
+
 								</div>
 							</div>
 						</div>
@@ -864,7 +1040,7 @@ function deletePracticeSchedule(id) {
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-primary" onclick="updateScheduleInfo()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleEdit'); clearTable('edit')" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleEdit')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>
@@ -968,11 +1144,11 @@ function deletePracticeSchedule(id) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Practice Schedule Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Homework Schedule Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to delete Practice Schedule ?</p>	
+                <p> Are you sure to delete Homework Schedule ?</p>	
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>

@@ -11,6 +11,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.format.DateTimeFormatter;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -41,7 +44,7 @@ public class HomeworkScheduleDTO implements Serializable {
 
 	private String registerDate;
 
-	private int year;
+	// private int year;
 
 	
 	public HomeworkScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String subject, int subjectDisplay, int answerDisplay, String info, boolean active, LocalDate registerDate){
@@ -57,24 +60,11 @@ public class HomeworkScheduleDTO implements Serializable {
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
-	public HomeworkScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String subject, int subjectDisplay, int answerDisplay, String info, boolean active, LocalDate registerDate, int year){
-		this.id = String.valueOf(id);
-		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
-		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
-		this.grade = JaeUtils.splitString(grade);
-		this.subject = JaeUtils.splitString(subject);
-		this.subjectDisplay = subjectDisplay;
-		this.answerDisplay = answerDisplay;
-		this.info = info;
-		this.active = active;
-		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		this.year = year;
-	}
-
 	public HomeworkSchedule convertToHomeworkSchedule() {
     	HomeworkSchedule schedule = new HomeworkSchedule();
+		if(StringUtils.isNotBlank(id)) schedule.setId(Long.parseLong(this.id));
 		schedule.setFromDatetime(LocalDateTime.parse(this.from, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-		schedule.setToDatetime(LocalDateTime.parse(this.from, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		schedule.setToDatetime(LocalDateTime.parse(this.to, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		schedule.setActive(this.active);
 		schedule.setInfo(this.info);
 		schedule.setSubjectDisplay(this.subjectDisplay);

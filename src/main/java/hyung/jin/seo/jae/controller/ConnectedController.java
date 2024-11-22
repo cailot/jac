@@ -1,5 +1,8 @@
 package hyung.jin.seo.jae.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.dto.ExtraworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.HomeworkScheduleDTO;
@@ -53,6 +57,7 @@ import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
+import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
@@ -66,6 +71,9 @@ public class ConnectedController {
 
 	@Autowired
 	private CodeService codeService;
+
+	@Autowired
+	private CycleService cycleService;
 	
 	// register homework
 	@PostMapping("/addHomework")
@@ -269,30 +277,47 @@ public class ConnectedController {
 		}
 	}
 
-	// update existing practice schedule
-	@PutMapping("/updatePracticeSchedule")
+	// update existing homework schedule
+	@PutMapping("/updateHomeworkSchedule")
 	@ResponseBody
-	public ResponseEntity<String> updatePracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
+	public ResponseEntity<String> updateHomeworkSchedule(@RequestBody HomeworkScheduleDTO formData) {
 		try{
-			// 1. create barebone PracticeSchedule
-			PracticeSchedule work = formData.convertToPracticeSchedule();
-			// 2. update associated Practices
-			List<PracticeDTO> practices = formData.getPractices();
-			for(PracticeDTO practice : practices){
-				// 2.1 get Practice
-				Practice prac = connectedService.getPractice(Long.parseLong(practice.getId()));
-				// 2.2 update Practice
-				work.addPractice(prac);
-			}
-			// 3. update PracticeSchedule
-			work = connectedService.updatePracticeSchedule(work, Long.parseLong(formData.getId()));
+			// 1. create barebone HomeworkSchedule
+			HomeworkSchedule schedule = formData.convertToHomeworkSchedule();
+			// 2. update HomeworkSchedule
+			schedule = connectedService.updateHomeworkSchedule(schedule, Long.parseLong(formData.getId()));
 			// 4.return flag
-			return ResponseEntity.ok("\"Practice Schedule updated successfully\"");
+			return ResponseEntity.ok("\"Homework Schedule updated successfully\"");
 		}catch(Exception e){
-			String message = "Error updating Practice Schedule : " + e.getMessage();
+			String message = "Error updating Homework Schedule : " + e.getMessage();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
+
+		// update existing practice schedule
+		@PutMapping("/updatePracticeSchedule")
+		@ResponseBody
+		public ResponseEntity<String> updatePracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
+			try{
+				// 1. create barebone PracticeSchedule
+				PracticeSchedule work = formData.convertToPracticeSchedule();
+				// 2. update associated Practices
+				List<PracticeDTO> practices = formData.getPractices();
+				for(PracticeDTO practice : practices){
+					// 2.1 get Practice
+					Practice prac = connectedService.getPractice(Long.parseLong(practice.getId()));
+					// 2.2 update Practice
+					work.addPractice(prac);
+				}
+				// 3. update PracticeSchedule
+				work = connectedService.updatePracticeSchedule(work, Long.parseLong(formData.getId()));
+				// 4.return flag
+				return ResponseEntity.ok("\"Practice Schedule updated successfully\"");
+			}catch(Exception e){
+				String message = "Error updating Practice Schedule : " + e.getMessage();
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+			}
+		}
 
 	// update existing test schedule
 	@PutMapping("/updateTestSchedule")
@@ -352,6 +377,15 @@ public class ConnectedController {
 	public TestDTO getTest(@PathVariable Long id) {
 		Test work = connectedService.getTest(id);
 		TestDTO dto = new TestDTO(work);
+		return dto;
+	}
+
+	// get homework schedule
+	@GetMapping("/getHomeworkSchedule/{id}")
+	@ResponseBody
+	public HomeworkScheduleDTO getHomeworkSchedule(@PathVariable Long id) {
+		HomeworkSchedule work = connectedService.getHomeworkSchedule(id);
+		HomeworkScheduleDTO dto = new HomeworkScheduleDTO(work);
 		return dto;
 	}
 
@@ -455,17 +489,47 @@ public class ConnectedController {
 		return "testListPage";
 	}
 
+
+
+
+
+
+
+
+
+
 	@GetMapping("/filterHomeworkSchedule")
 	public String listHomeworkchedules(
 			@RequestParam(value = "listYear", required = false) int listYear,
 			Model model) {
-		List<HomeworkScheduleDTO> dtos = new ArrayList();
-		// String filteredYear = StringUtils.defaultString(listYear, "0");
-		// String filteredWeek = StringUtils.defaultString(listWeek, "0");
-		// dtos = connectedService.listPracticeSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		LocalDateTime startTime = JaeConstants.START_TIME;
+		LocalDateTime endTime = JaeConstants.END_TIME;
+		// if listYear != 0, check Cycle's first day and last day
+		if(listYear != 0){
+			CycleDTO cycle = cycleService.listCycles(listYear);
+			String start = cycle.getStartDate();
+			String end = cycle.getEndDate();
+			LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_LOCAL_DATE);
+        	startTime = startDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+			LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_LOCAL_DATE);
+        	endTime = endDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+		}
+		List<HomeworkScheduleDTO> dtos = new ArrayList<>();
+		dtos = connectedService.listHomeworkSchedule(startTime, endTime); 		
 		model.addAttribute(JaeConstants.HOMEWORK_SCHEDULE_LIST, dtos);
 		return "homeworkSchedulePage";
 	}
+
+
+
+
+
+
+
+
+
+
+
 
 	@GetMapping("/filterPracticeSchedule")
 	public String listPracticeSchedules(
@@ -641,6 +705,14 @@ public class ConnectedController {
         Long id = Long.parseLong(StringUtils.defaultString(extraId, "0"));
 		connectedService.deleteExtrawork(id);
 		return ResponseEntity.ok("\"Extra Work deleted successfully\"");
+    }
+
+	@DeleteMapping(value = "/deleteHomeworkSchedule/{scheduleId}")
+	@ResponseBody
+    public ResponseEntity<String> removeHomeworkSchedule(@PathVariable String scheduleId) {
+        Long id = Long.parseLong(StringUtils.defaultString(scheduleId, "0"));
+		connectedService.deleteHomeworkSchedule(id);
+		return ResponseEntity.ok("\"Homework Schedule deleted successfully\"");
     }
 
 	@DeleteMapping(value = "/deletePracticeSchedule/{practiceScheduleId}")

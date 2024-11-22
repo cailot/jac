@@ -436,14 +436,14 @@ public class CycleServiceImpl implements CycleService {
 	}
 
 	@Override
-	public List<CycleDTO> listCycles(int year) {
-		List<CycleDTO> dtos = new ArrayList<>();
+	public CycleDTO listCycles(int year) {
+		CycleDTO dto = null;
 		try{
-			dtos = cycleRepository.findCycleForYear(year);
+			dto = cycleRepository.findCycleForYear(year);
 		}catch(Exception e){
 			System.out.println("No cycle found");
 		}
-		return dtos;	
+		return dto;	
 	}
 
 	@Override
