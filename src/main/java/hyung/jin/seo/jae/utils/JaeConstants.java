@@ -1,5 +1,7 @@
 package hyung.jin.seo.jae.utils;
 
+import java.time.LocalDateTime;
+
 public interface JaeConstants {
 
 	String ALL_STUDENT = "0";
@@ -346,5 +348,9 @@ public interface JaeConstants {
 	// String HOMEWORK_NORMAL = "connected.homework.normal.week";
 
 	// String HOMEWORK_SHORT = "connected.homework.short.week";
+
+	LocalDateTime START_TIME = LocalDateTime.of(1900, 1, 1, 0, 0, 0);
+	
+	LocalDateTime END_TIME = LocalDateTime.of(2100, 1, 1, 23, 59, 59);
 
 }

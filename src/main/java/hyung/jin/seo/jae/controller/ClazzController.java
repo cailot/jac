@@ -107,10 +107,11 @@ public class ClazzController {
 	// bring all classes in database
 	@GetMapping("/listCycle")
 	public String listCycle(@RequestParam(value = "listYear", required = true) String year, Model model) {
-		List<CycleDTO> dtos = null;
+		List<CycleDTO> dtos = new ArrayList<>();
 		if(StringUtils.isNotEmpty(year) && !("0".equalsIgnoreCase(year))) {
 			int yearParam = Integer.parseInt(year);
-			dtos = cycleService.listCycles(yearParam);
+			CycleDTO cycle = cycleService.listCycles(yearParam);
+			dtos.add(cycle);
 		}else{
 			// if condition is 'All', bring all
 			dtos = cycleService.allCycles();

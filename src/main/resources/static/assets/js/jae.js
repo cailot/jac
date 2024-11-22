@@ -332,6 +332,23 @@ function dayCode(value){
 	return day;
 }
 
+// get subject name
+function  subjectName(value){
+	var subjectText = '';
+	switch(value) {
+		case '1': subjectText = 'English'; break;
+		case '2': subjectText = 'Maths'; break;
+		case '3': subjectText = 'English'; break;
+		case '4': subjectText = 'Writing'; break;
+		case '5': subjectText = 'Science'; break;
+		case '12': subjectText = 'Short Answer'; break;
+		case '13': subjectText = 'Short Answer TT'; break;
+		default: subjectText = 'All'; 
+	}
+	return subjectText;
+}
+
+
 // get the context path dynamically
 function getContextPath(){
 	var contextPath = window.location.pathname.split('/')[1];

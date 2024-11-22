@@ -768,14 +768,24 @@ public class ConnectedServiceImpl implements ConnectedService {
 		return dtos;
 	}
 
+	// @Override
+	// public List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime now, String grade, String subject) {
+	// 	List<HomeworkScheduleDTO> dtos = new ArrayList<>();
+	// 	// try{
+	// 	// 	dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
+	// 	// }catch(Exception e){
+	// 	// 	System.out.println("No Practice Schedule found");
+	// 	// }
+	// 	return dtos;
+	// }
 	@Override
-	public List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime now, String grade, String subject) {
+	public List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime from, LocalDateTime to) {
 		List<HomeworkScheduleDTO> dtos = new ArrayList<>();
-		// try{
-		// 	dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
-		// }catch(Exception e){
-		// 	System.out.println("No Practice Schedule found");
-		// }
+		try{
+			dtos = homeworkScheduleRepository.filterHomeworkScheduleByYear(from, to);
+		}catch(Exception e){
+			System.out.println("No Homework Schedule found");
+		}
 		return dtos;
 	}
 
