@@ -247,9 +247,7 @@ public interface ConnectedService {
 	List<HomeworkSchedule> allHomeworkSchedules();
 
 	// list Homework Schedule
-	// List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime now, String grade, String subject);
 	List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime from, LocalDateTime to);
-
 
 	// retrieve Homework Schedule by Id
 	HomeworkSchedule getHomeworkSchedule(Long id);
