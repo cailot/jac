@@ -333,7 +333,7 @@ function dayCode(value){
 }
 
 // get subject name
-function  subjectName(value){
+function subjectName(value){
 	var subjectText = '';
 	switch(value) {
 		case '1': subjectText = 'English'; break;
@@ -347,7 +347,6 @@ function  subjectName(value){
 	}
 	return subjectText;
 }
-
 
 // get the context path dynamically
 function getContextPath(){

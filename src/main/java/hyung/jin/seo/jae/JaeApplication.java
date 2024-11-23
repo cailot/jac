@@ -75,9 +75,9 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 
 		System.out.println("************* Done *************");
 
-		System.out.println(propertiesService.getHomeworkNormal());
+		System.out.println(propertiesService.getSubjectCardCount());
 
-		System.out.println(propertiesService.getHomeworkShort());
+		System.out.println(propertiesService.getAnswerCardCount());
 
 		// System.out.println(cycleService.getDateByWeekAndDay(2024, 17, "1"));
 		

@@ -14,15 +14,15 @@ public class PropertiesController {
 	private PropertiesService propertiesService;
 
 	// get Homework Normal value
-	@GetMapping("/homeworkNormal")
-	public String getHomeworkNormal(){
-		return propertiesService.getHomeworkNormal();
+	@GetMapping("/homeworkSubject")
+	public int getHomeworkNormal(){
+		return propertiesService.getSubjectCardCount();
     }
 
 	// get Homework Short value
-	@GetMapping("/homeworkShort")
-	public String getHomeworkShort(){
-		return propertiesService.getHomeworkShort();
+	@GetMapping("/homeworkAnswer")
+	public int getHomeworkShort(){
+		return propertiesService.getAnswerCardCount();
     }
 	
 }

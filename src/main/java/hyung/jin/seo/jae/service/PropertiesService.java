@@ -2,9 +2,9 @@ package hyung.jin.seo.jae.service;
 
 public interface PropertiesService {
 
-	// get Homework Normal value
-	public String getHomeworkNormal();
+	// get Homework subject card count
+	public int getSubjectCardCount();
 
-	// get Homework Short value
-	public String getHomeworkShort();
+	// get Homework answer card value
+	public int getAnswerCardCount();
 }
