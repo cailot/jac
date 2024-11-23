@@ -7,24 +7,20 @@ import hyung.jin.seo.jae.service.PropertiesService;
 @Service
 public class PropertiesServiceImpl implements PropertiesService {
 
-	// load properties from application.properties - Spring Expression Language (SpEL)
-	// @Value("#{T(hyung.jin.seo.jae.utils.JaeConstants).HOMEWORK_NORMAL}")
-	// private String homeworkNormal;
+	@Value("${connected.homework.subject.count}")
+	private String subjectCard;
 
-	@Value("${connected.homework.normal.week}")
-	private String homeworkNormal;
-
-	@Value("${connected.homework.short.week}")
-	private String homeworkShort;;
+	@Value("${connected.homework.answer.count}")
+	private String answerCard;
 
 	@Override
-	public String getHomeworkNormal() {
-		return homeworkNormal;
+	public int getSubjectCardCount() {
+		return subjectCard!=null ? Integer.parseInt(subjectCard) : 0;
 	}
 
 	@Override
-	public String getHomeworkShort() {
-		return homeworkShort;
+	public int getAnswerCardCount() {
+		return answerCard!=null ? Integer.parseInt(answerCard) : 0;
 	}
 
 }
