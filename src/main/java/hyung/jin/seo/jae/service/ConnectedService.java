@@ -51,7 +51,7 @@ public interface ConnectedService {
 	void deleteHomework(Long id);
 
 	// get Homework by subject & week
-	HomeworkDTO getHomeworkInfo(long subject, int week);
+	// HomeworkDTO getHomeworkInfo(long subject, int week);
 
 	// list Homework by subject, grade & week
 	List<HomeworkDTO> listHomework(long subject, String grade, int week);

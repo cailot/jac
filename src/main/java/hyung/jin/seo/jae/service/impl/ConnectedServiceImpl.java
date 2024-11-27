@@ -685,16 +685,16 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 
-	@Override
-	public HomeworkDTO getHomeworkInfo(long subject, int week) {
-		HomeworkDTO dto = null;
-		try{
-			dto = homeworkRepository.findHomework((int)subject, week);
-		}catch(Exception e){
-			System.out.println("No Homework found");
-		}
-		return dto;
-	}
+	// @Override
+	// public HomeworkDTO getHomeworkInfo(long subject, int week) {
+	// 	HomeworkDTO dto = null;
+	// 	try{
+	// 		dto = homeworkRepository.findHomework((int)subject, week);
+	// 	}catch(Exception e){
+	// 		System.out.println("No Homework found");
+	// 	}
+	// 	return dto;
+	// }
 
 	@Override
 	public ExtraworkDTO getExtraworkInfo(int subject, int year, int week) {

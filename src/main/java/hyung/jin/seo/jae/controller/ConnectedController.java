@@ -424,12 +424,12 @@ public class ConnectedController {
 	}
 
 	// search homework by subject, year & week
-	@GetMapping("/homework/{subject}/{year}/{week}")
-	@ResponseBody
-	public HomeworkDTO searchHomework(@PathVariable int subject, @PathVariable int week) {
-		HomeworkDTO dto = connectedService.getHomeworkInfo(subject, week);
-		return dto;
-	}
+	// @GetMapping("/homework/{subject}/{year}/{week}")
+	// @ResponseBody
+	// public HomeworkDTO searchHomework(@PathVariable int subject, @PathVariable int week) {
+	// 	HomeworkDTO dto = connectedService.getHomeworkInfo(subject, week);
+	// 	return dto;
+	// }
 
 	// bring homework in database
 	@GetMapping("/filterHomework")
