@@ -378,7 +378,7 @@ function deleteOnline(id) {
 							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
 							<%
 								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 5; i--) {
+								for (int i = currentYear - 1; i >= currentYear - 3; i--) {
 							%>
 								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
 							<%

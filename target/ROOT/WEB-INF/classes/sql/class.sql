@@ -2,30 +2,30 @@
 -- P2
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','P2 THU',CURDATE(),CURDATE(),'1',1);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','P2 SATAM',CURDATE(),CURDATE(),'1',1);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',2);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',2);
 -- P3
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','P3 THU',CURDATE(),CURDATE(),'1',3);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','P3 FRI',CURDATE(),CURDATE(),'1',3);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','P3 SATPM',CURDATE(),CURDATE(),'1',3);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',4);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',4);
 -- P4
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','P4 SATPM',CURDATE(),CURDATE(),'1',5);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','P4 THU',CURDATE(),CURDATE(),'1',5);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','P4 FRI',CURDATE(),CURDATE(),'1',5);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','P4 SATAM',CURDATE(),CURDATE(),'1',5);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',6);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',6);
 -- P5
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','P5 SATAM',CURDATE(),CURDATE(),'1',7);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','P5 THU',CURDATE(),CURDATE(),'1',7);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','P5 FRI',CURDATE(),CURDATE(),'1',7);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','P5 SATPM',CURDATE(),CURDATE(),'1',7);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',8);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',8);
 -- P6
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','P6 SATPM',CURDATE(),CURDATE(),'1',9);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','P6 THU',CURDATE(),CURDATE(),'1',9);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','P6 FRI',CURDATE(),CURDATE(),'1',9);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','P6 SATAM',CURDATE(),CURDATE(),'1',9);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',10);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',10);
 -- S7
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','S7 THU',CURDATE(),CURDATE(),'1',11);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S7 FRI',CURDATE(),CURDATE(),'1',11);
@@ -39,7 +39,7 @@ INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S7 FRI 1',CURDATE(),CURDATE(),'1',13);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','S7 SATAM 1',CURDATE(),CURDATE(),'1',13);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','S7 SATPM 1',CURDATE(),CURDATE(),'1',13);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',14);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',14);
 -- S8
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','S8 THU',CURDATE(),CURDATE(),'1',15);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S8 FRI',CURDATE(),CURDATE(),'1',15);
@@ -53,7 +53,7 @@ INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S8 FRI 1',CURDATE(),CURDATE(),'1',17);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','S8 SATAM 1',CURDATE(),CURDATE(),'1',17);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','S8 SATPM 1',CURDATE(),CURDATE(),'1',17);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',18);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',18);
 -- S9
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','S9 THU',CURDATE(),CURDATE(),'1',19);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S9 FRI',CURDATE(),CURDATE(),'1',19);
@@ -67,7 +67,7 @@ INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S9 FRI 1',CURDATE(),CURDATE(),'1',21);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','S9 SATAM 1',CURDATE(),CURDATE(),'1',21);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','S9 SATPM 1',CURDATE(),CURDATE(),'1',21);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',22);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',22);
 -- S10
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','S10 THU',CURDATE(),CURDATE(),'1',23);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S10 FRI',CURDATE(),CURDATE(),'1',23);
@@ -81,7 +81,7 @@ INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S10 FRI 1',CURDATE(),CURDATE(),'1',25);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','S10 SATAM 1',CURDATE(),CURDATE(),'1',25);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','S10 SATPM 1',CURDATE(),CURDATE(),'1',25);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',26);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',26);
 -- S10E
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','S10E FRI',CURDATE(),CURDATE(),'1',27);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','S10E SATPM 1',CURDATE(),CURDATE(),'1',27);
@@ -90,15 +90,15 @@ INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','TT6 FRI',CURDATE(),CURDATE(),'1',28);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','TT6 SATAM',CURDATE(),CURDATE(),'1',28);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','TT6 SATPM',CURDATE(),CURDATE(),'1',28);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',29);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',29);
 -- TT8
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','4','TT8 THU',CURDATE(),CURDATE(),'1',30);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','5','TT8 FRI',CURDATE(),CURDATE(),'1',30);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','TT8 SATAM',CURDATE(),CURDATE(),'1',30);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','TT8 SATPM',CURDATE(),CURDATE(),'1',30);
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',31);
+--INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',31);
 -- JMSS
-INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',39);
+-- INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','0','E-learning',CURDATE(),CURDATE(),'1',39);
 -- VCE
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','6','VCE SATAM 3',CURDATE(),CURDATE(),'1',40);
 INSERT INTO jac.Class (active, branch, day, name, registerDate, startDate, state, courseId) VALUES (true,'13','7','VCE SATPM 3',CURDATE(),CURDATE(),'1',40);

@@ -279,7 +279,7 @@ window.showWarning = function(id) {
 							<table id="cycleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle" style="width: 10%">Year</th>
+										<th class="text-center align-middle" style="width: 10%">Start Year</th>
 										<th class="text-center align-middle" style="width: 40%">Description</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start Date</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End Date</th>

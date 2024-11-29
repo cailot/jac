@@ -764,12 +764,6 @@ function deleteHomeworkSchedule(id) {
 														Short Answer
 													</label>
 												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="13" id="addSATT" name="subjects">
-													<label class="form-check-label" for="addSATT">
-														Short Answer (TT)
-													</label>
-												</div>
 											</div>
 										</div>
 									</div>	
@@ -991,12 +985,12 @@ function deleteHomeworkSchedule(id) {
 														Short Answer
 													</label>
 												</div>
-												<div class="form-check">
+												<!-- <div class="form-check">
 													<input class="form-check-input" type="checkbox" value="13" id="editSATT" name="subjects">
 													<label class="form-check-label" for="editSATT">
 														Short Answer (TT)
 													</label>
-												</div>
+												</div> -->
 											</div>
 										</div>
 									</div>	

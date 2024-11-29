@@ -162,6 +162,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 										<th class="align-middle text-center">Class</th>
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
+										<th class="align-middle text-center">Overdue</th>
 										<th class="align-middle text-center">Email</th>
 										<th class="align-middle text-center">Phone</th>
 										<th class="align-middle text-center" data-orderable="false">Action</th>
@@ -216,6 +217,12 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 												<td class="small align-middle text-center">
 													<span>
 														<c:out value="${student.endWeek}" />
+													</span>
+												</td>
+												<!-- overdue amount -->
+												<td class="small align-middle text-right pr-3">
+													<span>
+														<fmt:formatNumber value="${student.contactNo2}" type="number" minFractionDigits="2" maxFractionDigits="2" />
 													</span>
 												</td>
 												<!-- email -->

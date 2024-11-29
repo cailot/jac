@@ -265,7 +265,6 @@ function deleteHomework(id) {
 							<option value="2">Mathematics</option>
 							<option value="4">Writing</option>
 							<option value="12">Short Answer</option>
-							<option value="13">Short Answer TT</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -347,7 +346,6 @@ function deleteHomework(id) {
 																<c:when test="${homework.subject == '2'}">Maths</c:when>
 																<c:when test="${homework.subject == '4'}">Writing</c:when>
 																<c:when test="${homework.subject == '12'}">Short Answer</c:when>
-																<c:when test="${homework.subject == '13'}">Short Answer TT</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -449,7 +447,6 @@ function deleteHomework(id) {
 										<option value="2">Mathematics</option>
 										<option value="4">Writing</option>
 										<option value="12">Short Answer</option>
-										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
@@ -530,7 +527,6 @@ function deleteHomework(id) {
 										<option value="2">Mathematics</option>
 										<option value="4">Writing</option>
 										<option value="12">Short Answer</option>
-										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
