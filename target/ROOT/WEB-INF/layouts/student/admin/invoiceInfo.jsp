@@ -22,14 +22,19 @@ $(document).ready(
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addEnrolmentToInvoiceList(data) {
+function addEnrolmentToInvoiceList(data, cnt) {
 	// debugger;
 	//  console.log(data);
 	if((data.online)&&(data.discount === DISCOUNT_FREE)){
 		// console.log('online');
 		return;
 	}
-	var row = $('<tr>');
+	
+	// check cnt is odd number or even number
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var row = $('<tr class="'+ rowClass +'">');
 	// display the row in red if the amount is not fully paid 
 	var needPay = (data.amount - data.paid > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
@@ -82,17 +87,24 @@ function addEnrolmentToInvoiceList(data) {
 	
 	// add new row at first row
 	$('#invoiceListTable > tbody').prepend(row);
-    // update latest invoice id and balance
+    // $('#invoiceListTable > tbody').append(row);
+    
+	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Payment to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addPaymentToInvoiceList(data) {
-	// console.log('addPaymentToInvoiceList >>>> ' + data.JSON);
+function addPaymentToInvoiceList(data, cnt) {
+	// console.log('addPaymentToInvoiceList >>>> ' + data.id);
 	// debugger;
-	var newPayment = $('<tr>');
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var newPayment = $('<tr class="'+ rowClass +'">');
+	
+	// var newPayment = $('<tr>');
 	newPayment.append($('<td class="text-center"><i class="bi bi-currency-dollar" data-toggle="tooltip" title="payment"></i></td>'));
 	newPayment.append($('<td class="smaller-table-font">').text('Paid'));
 	newPayment.append($('<td>')); // year
@@ -123,6 +135,8 @@ function addPaymentToInvoiceList(data) {
 		}
 	});
 	$('#invoiceListTable > tbody').prepend(newPayment);
+	// $('#invoiceListTable > tbody').append(newPayment);
+	
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -130,10 +144,16 @@ function addPaymentToInvoiceList(data) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Book to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function addBookToInvoiceList(data) {
+function addBookToInvoiceList(data, cnt) {
 	// console.log(data);
 	// $('#hiddenInvoiceId').val(data.invoiceId);
-	var row = $('<tr>');
+
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var row = $('<tr class="'+ rowClass +'">');
+	
+	// var row = $('<tr>');
 	row.append($('<td class="text-center"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 	row.append($('<td class="smaller-table-font">').text(data.name)); // description
 	row.append($('<td>')); // year
@@ -160,7 +180,8 @@ function addBookToInvoiceList(data) {
 		}
 	});
 
-	$('#invoiceListTable > tbody').append(row);
+	// $('#invoiceListTable > tbody').append(row);
+	$('#invoiceListTable > tbody').prepend(row);	
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
 }
@@ -216,57 +237,94 @@ function removePaymentFromInvoiceList() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Lastest Invoice Id
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+// function updateLatestInvoiceId1(invoiceId){
+// 	// debugger;
+// 	// get the value of hidden invoiceId
+// 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+
+// 	console.log('updateLatestInvoiceId : ' + invoiceId + ' - ' + hiddenInvoiceId);
+
+// 	if (typeof invoiceId === "undefined") {
+//     	// if invoiceId is undefined, use hiddenInvoiceId
+//     	$.ajax({
+// 			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
+// 			method: 'GET',
+// 			success: function(response) {
+// 				//debugger;
+// 				$("#rxAmount").text(response.toFixed(2));
+// 				if(parseFloat(response) > 0){
+// 					$('#paymentBtn').prop('disabled', false);
+// 				}else{
+// 					$('#paymentBtn').prop('disabled', true);
+// 				}
+// 			},
+// 			error: function(xhr, status, error) {
+// 				// Handle the error
+// 				console.error(error);
+// 				$("#rxAmount").text(0);
+// 			}
+// 		});	
+//   	} else {
+//     	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
+// 		if(invoiceId >= hiddenInvoiceId){
+// 			// update invoiceId to hiddenInvoiceId
+// 			$("#hiddenInvoiceId").val(invoiceId);
+// 			$.ajax({
+// 				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
+// 				method: 'GET',
+// 				success: function(response) {
+// 					//debugger;
+// 					$("#rxAmount").text(response.toFixed(2));
+// 					if(parseFloat(response) > 0){
+// 						$('#paymentBtn').prop('disabled', false);
+// 					}else{
+// 						$('#paymentBtn').prop('disabled', true);
+// 					}
+// 				},
+// 				error: function(xhr, status, error) {
+// 					// Handle the error
+// 					console.error(error);
+// 					$("#rxAmount").text(0);
+// 				}
+// 			});	
+// 		}
+// 	}
+// }
 function updateLatestInvoiceId(invoiceId){
-	// debugger;
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+	// console.log('updateLatestInvoiceId hiddenInvoiceId : ' + hiddenInvoiceId + ' - invoiceId : ' + invoiceId);
+    // invoiceId is defined then compare invoiceId with hiddenInvoiceId
+	if(invoiceId >= hiddenInvoiceId){
+		// update invoiceId to hiddenInvoiceId
+		$("#hiddenInvoiceId").val(invoiceId);
+	}	
+}
 
-	if (typeof invoiceId === "undefined") {
-    	// if invoiceId is undefined, use hiddenInvoiceId
-    	$.ajax({
-			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
-			method: 'GET',
-			success: function(response) {
-				//debugger;
-				$("#rxAmount").text(response.toFixed(2));
-				if(parseFloat(response) > 0){
-					$('#paymentBtn').prop('disabled', false);
-				}else{
-					$('#paymentBtn').prop('disabled', true);
-				}
-			},
-			error: function(xhr, status, error) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Balance in invoiceListTable
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateInvoiceTableBalance() {
+	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
+	$.ajax({
+		url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
+		method: 'GET',
+		success: function(response) {
+			$("#rxAmount").text(response.toFixed(2));
+			if(parseFloat(response) > 0){
+				$('#paymentBtn').prop('disabled', false);
+			}else{
+				$('#paymentBtn').prop('disabled', true);
+			}
+		},
+		error: function(xhr, status, error) {
 				// Handle the error
 				console.error(error);
 				$("#rxAmount").text(0);
-			}
-		});	
-  	} else {
-    	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
-		if(invoiceId >= hiddenInvoiceId){
-			// update invoiceId to hiddenInvoiceId
-			$("#hiddenInvoiceId").val(invoiceId);
-			$.ajax({
-				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
-				method: 'GET',
-				success: function(response) {
-					//debugger;
-					$("#rxAmount").text(response.toFixed(2));
-					if(parseFloat(response) > 0){
-						$('#paymentBtn').prop('disabled', false);
-					}else{
-						$('#paymentBtn').prop('disabled', true);
-					}
-				},
-				error: function(xhr, status, error) {
-					// Handle the error
-					console.error(error);
-					$("#rxAmount").text(0);
-				}
-			});	
 		}
-	}
+	});		
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clean invoiceTable
@@ -287,7 +345,6 @@ function displayPayment(){
     var rxAmount = $("#rxAmount").text();
 	$("#payRxAmount").val(parseFloat(rxAmount).toFixed(2));
 	$("#payAmount").val($("#payRxAmount").val());
-	// $("#payAmount").val($("#payRxAmount").val().toFixed(2));
 
 	// payAmount
     $("#payAmount").on('input', function(){
@@ -330,6 +387,7 @@ function displayInvoiceInNewTab(){
 //		Display Receipt in another tab
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayReceiptInNewTab(paymentId){
+	// debugger
   var invoiceId = $('#hiddenInvoiceId').val();
   var studentId = $('#formId').val();
   var firstName = $('#formFirstName').val();
@@ -384,15 +442,8 @@ function makePayment(){
 					// It is an EnrolmentDTO object
 					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
 					if(!isFreeOnline){
-						addEnrolmentToInvoiceList(value);
+						addEnrolmentToInvoiceList(value, 0);
 					}
-				// }else if (value.hasOwnProperty('remaining')) {
-				// 	// It is an OutstandingDTO object, extract paymentId
-				// 	var temp = value.paymentId;
-				// 	if(temp > lastPaymentId){
-				// 		lastPaymentId = temp;
-				// 	}
-				// 	addOutstandingToInvoiceList(value);
 				}else if (value.hasOwnProperty('method')) { // payment
 					// It is an PaymentDTO object, extract paymentId
 					var temp = value.id;
@@ -402,14 +453,21 @@ function makePayment(){
 					addPaymentToInvoiceList(value);
 				}else{
 					// It is a BookDTO object
-					addBookToInvoiceList(value);
+					addBookToInvoiceList(value, 0);
 				}
 			});
 			// reset payment dialogue info
 			document.getElementById('makePayment').reset();
-			$('#paymentModal').modal('toggle');	
+			$('#paymentModal').modal('toggle');
+			
 			// display receipt
 			displayReceiptInNewTab(lastPaymentId);
+			
+			// update invoice & basket tables
+			clearInvoiceTable();
+			clearEnrolmentBasket();
+			retrieveEnrolment(studentId);
+
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -625,6 +683,9 @@ function addInformation(){
 	#invoiceListTable td:nth-child(12) { width: 10%; } /* date */
 	#invoiceListTable td:nth-child(13) { width: 3%; } /*note*/
 
+	.row_odd{ background-color: rgba(0,0,0,0.07); }
+	.row_even{ background-color: white; }
+
 </style>
 <!-- Main Body -->
 <div class="modal-body" style="padding-left: 0rem; padding-right: 0rem;">
@@ -661,7 +722,7 @@ function addInformation(){
 			<div class="form-row">
 				<div class="col-md-12">
 					<div class="table-wrap">
-						<table id="invoiceListTable" class="table table-striped table-bordered"><thead class="table-primary">
+						<table id="invoiceListTable" class="table table-bordered"><thead class="table-primary">
 								<tr>
 									<th class="smaller-table-font text-center">Item</th>
 									<th class="smaller-table-font text-center">Description</th>

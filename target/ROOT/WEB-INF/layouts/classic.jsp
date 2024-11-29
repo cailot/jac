@@ -14,6 +14,7 @@
 <script src="${pageContext.request.contextPath}/js/jquery-ui-1.13.2.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap-4.3.1.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle-4.5.3.min.js"></script>	
+
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/>
 <!-- Google Icons -->
@@ -110,7 +111,7 @@
         <footer class="mt-auto">
             <div class="row" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.2.1</span></div>
+                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.0</span></div>
             </div>
         </footer>	
     </div>

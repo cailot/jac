@@ -342,7 +342,7 @@ function subjectName(value){
 		case '4': subjectText = 'Writing'; break;
 		case '5': subjectText = 'Science'; break;
 		case '12': subjectText = 'Short Answer'; break;
-		case '13': subjectText = 'Short Answer TT'; break;
+//		case '13': subjectText = 'Short Answer TT'; break;
 		default: subjectText = 'All'; 
 	}
 	return subjectText;
