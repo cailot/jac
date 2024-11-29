@@ -17,6 +17,8 @@
  
   
 <script>
+const EMPTY = 'EMPTY';
+
 $(document).ready(function () {
     $('#renewListTable').DataTable({
     	language: {
@@ -86,7 +88,7 @@ function linkToStudent(studentId) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Display Renewal Invoice
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayRenewal(studentId, firstName, lastName) {
+function displayRenewal(studentId, firstName, lastName, book) {
 	
 	var branch = window.branch;
 	// branch code number...
@@ -94,20 +96,28 @@ function displayRenewal(studentId, firstName, lastName) {
 		branch = '90'; // head office
 	}
 
-	console.log('Branch : ' + branch, 'Student ID : ' + studentId);
+	console.log('Branch : ' + branch +  '  Student ID : ' + studentId + '  Book : ' + book);
+	// return;
+
 	$.ajax({
-		url : '${pageContext.request.contextPath}/invoice/issue/' + studentId + '/' + branch,
+		url : '${pageContext.request.contextPath}/invoice/renewInvoice/' + studentId + '/' + book + '/' + branch,
 		type : 'POST',
 		contentType : 'application/json',
 		success : function(response) {
+
+			if(response === EMPTY){
+				$('#warning-alert .modal-body').text('Last invoice is not fully paid.');
+				$('#warning-alert').modal('show');
+				return;
+			}
+
 			// show invoice in another tab
-			// var invoiceId = $('#hiddenInvoiceId').val();
 			var branch = window.branch;
 			if(branch === '0'){
 				branch = '90'; // head office
 			}	
-			//var url = '/invoice?invoiceId=' + invoiceId + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
-			var url = '/invoice?invoiceId=' + 11301558003 + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;	
+			var url = '/invoice?invoiceId=' + response + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
+			// var url = '/invoice?invoiceId=' + 11301558003 + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;	
 			var win = window.open(url, '_blank');
 			win.focus();
 
@@ -117,9 +127,14 @@ function displayRenewal(studentId, firstName, lastName) {
 			console.log('Error : ' + error);
 		}
 	});
+}
 
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Get Selected Book
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getSelectedBook() {
+    var bookSelect = document.getElementById('book');
+    return bookSelect.options[bookSelect.selectedIndex].value;
 }
 
 </script>
@@ -261,7 +276,7 @@ function displayRenewal(studentId, firstName, lastName) {
 												<td class="small align-middle text-left ml-1"><span><c:out value="${student.contactNo1}" /></span></td>
 												<td class="small align-middle text-left ml-1"><span><c:out value="${student.email1}" /></span></td>
 												<td class="text-center align-middle">
-													<i class="bi bi-arrow-repeat text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Renew Invoice" onclick="displayRenewal('${student.id}', '${student.firstName}','${student.lastName}')"></i>&nbsp;
+													<i class="bi bi-arrow-repeat text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Renew Invoice" onclick="displayRenewal('${student.id}', '${student.firstName}','${student.lastName}', getSelectedBook())"></i>&nbsp;
 												</td>
 											</tr>
 										</c:forEach>
@@ -277,3 +292,32 @@ function displayRenewal(studentId, firstName, lastName) {
 	</div>
 </div>
 
+<!-- Success Alert -->
+<div id="success-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-success alert-dialog-display">
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Warning Alert -->
+<div id="warning-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-warning alert-dialog-display">
+			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Error Alert -->
+<div id="error-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-danger alert-dialog-display">
+			<i class="fa fa-times-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>

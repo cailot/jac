@@ -54,9 +54,9 @@
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
 			</div>
 		</li>
 		<!-- Class -->
@@ -77,8 +77,9 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a> -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
 				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class Status</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class Login</a> -->
@@ -111,8 +112,18 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Jac Study</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>				
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">Homework</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>
+				<!-- Homework submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="homeworkDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Homework
+					</a>
+					<div class="dropdown-menu" aria-labelledby="homeworkDropdown">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkList">List</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/homeworkSchedule">Schedule</a>
+					</div>
+				</div>
+				
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/extraworkList">Extra Materials</a>
 				<!-- Practice submenu -->
 				<div class="dropdown-submenu">
@@ -145,13 +156,20 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Setting</span>
 			</a>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/branch">Branch Management</a>
-				<c:if test="${isAdmin}">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
-				</c:if>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchManage">Branch Management</a>
+				<c:choose>
+					<c:when test="${isAdmin}">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
+					</c:when>
+					<c:otherwise>
+						<!-- Content for branch -->
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
+					</c:otherwise>
+				</c:choose>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>
 			</div>
 		</li>
 		<c:if test="${isAdmin}">

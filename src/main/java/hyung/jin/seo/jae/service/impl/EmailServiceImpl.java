@@ -19,6 +19,7 @@ import hyung.jin.seo.jae.dto.NoticeEmailDTO;
 import hyung.jin.seo.jae.model.NoticeEmail;
 import hyung.jin.seo.jae.repository.NoticeEmailRepository;
 import hyung.jin.seo.jae.service.EmailService;
+import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -64,7 +65,7 @@ public class EmailServiceImpl implements EmailService {
 			
 			message.setRecipients(MimeMessage.RecipientType.TO, recipientAddresses);
 			message.setSubject(subject);
-			message.setContent(body, "text/html; charset=utf-8");
+			message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
 			mailSender.send(message);
 			System.out.println("MAIL SENT SUCCESSFULLY");
 	

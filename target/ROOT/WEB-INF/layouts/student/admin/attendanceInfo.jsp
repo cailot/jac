@@ -5,7 +5,7 @@
 
 <script>
 const ATTENDANCE = 'attendance';
-const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Saturday', 'Sunday', 'Sunday'];
+const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'SAT Morning', 'SAT Afternoon', 'SUN Morning', 'SUN Afternoon'];
 					
 
 $(document).ready(function() {
@@ -15,16 +15,6 @@ $(document).ready(function() {
     var scrollHeight = windowHeight * 0.35; // Adjust the percentage as needed
 
 	$.fn.dataTable.moment('DD/MM/YYYY');
-    // $('#attendanceTable').DataTable({
-    //     "scrollY": scrollHeight + "px",
-    //     "scrollCollapse": true,
-	// 	"lengthChange": false,
-	// 	"searching": false,
-	// 	"paging": false,
-	// 	"info": false,
-	// 	"ordering": false,
-	// 	"order": [[ 2, "asc" ]]
-    // });
 	$('#attendanceTable').DataTable({
 		"scrollY": scrollHeight + "px",
 		"scrollCollapse": true,
@@ -43,12 +33,6 @@ $(document).ready(function() {
     	}
 	});
 
-	// Remove the empty row if data is present
-	// $('#attendanceTable').on('draw.dt', function() {
-    //     $('tr.dataTables_empty').remove();
-    // });
-
-    // $('.dataTables_length').addClass('bs-select');
 });
 
 
@@ -158,7 +142,6 @@ function clearAttendanceTable() {
 						<tbody>
 						</tbody>
 					</table> 
-					
 				</div>
 			</div>
 		</div>

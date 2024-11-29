@@ -287,7 +287,7 @@ public interface JaeConstants {
 
 	String BATCH_LIST = "batchList";
 
-		////////////////////////////////////
+	////////////////////////////////////
 	//
 	//	USER ROLE
 	//
@@ -353,4 +353,14 @@ public interface JaeConstants {
 	
 	LocalDateTime END_TIME = LocalDateTime.of(2100, 1, 1, 23, 59, 59);
 
+	////////////////////////////////////
+	// EMAIL
+	////////////////////////////////////
+	String EMAIL_HEADER = "This is an automatically generated email. Please do not reply as this mailbox is not monitored.\n" + 
+				"If you have any questions or need assistance, please contact your branch directly.";
+
+	String EMAIL_HEADER_HTML = "<p>&nbsp;</p>\n" + 
+				"<p class=\"p1\"><strong><span style=\"color: #ff0000;\"><em>This is an automatically generated email. Please do not reply as this mailbox is not monitored.</em></span></strong></p>\n" + 
+				"<p class=\"p1\"><strong><span style=\"color: #ff0000;\"><em>If you have any questions or need assistance, please contact your branch directly.</em></span></strong></p>\n" + 
+				"<p>&nbsp;</p>";
 }
