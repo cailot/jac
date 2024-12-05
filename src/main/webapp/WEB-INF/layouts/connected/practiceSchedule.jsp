@@ -30,6 +30,49 @@ $(document).ready(function () {
 		],
 	});
 
+
+	$('#addGradeAll').on('change', function() {
+        var isChecked = $(this).is(':checked');
+        $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
+    });
+
+
+	$('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
+        var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
+        var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+        $('#addGradeAll').prop('checked', allChecked);
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
 	$('#addPracticeTypeSearch').change(function () {
 		getPracticeByTypeNGrade('add');
@@ -86,12 +129,12 @@ function addPractice(action) {
 	var practiceTypeSelect = document.getElementById(action + "PracticeTypeSearch");
 	var practiceType = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].text;
 
-	var gradeSelect = document.getElementById(action + "GradeSearch");
-	var grade = gradeSelect.options[gradeSelect.selectedIndex].text;
+	// var gradeSelect = document.getElementById(action + "GradeSearch");
+	// var grade = gradeSelect.options[gradeSelect.selectedIndex].text;
 
-	var setSelect = document.getElementById(action + "SetSearch");
+	var setSelect = document.getElementById(action + "Set");
 	var set = setSelect.options[setSelect.selectedIndex].text;
-	var practiceId = document.getElementById(action + "SetSearch").value;
+	var practiceId = document.getElementById(action + "Set").value;
 
 	// Get a reference to the table
 	var table = document.getElementById(action + "ScheduleTable");
@@ -101,7 +144,7 @@ function addPractice(action) {
 
 	// Create the cells for the row
 	var cell1 = $("<td>").text(practiceType);
-	var cell2 = $("<td>").text(grade);
+	// var cell2 = $("<td>").text(grade);
 	var cell3 = $("<td>").text(set);
 
 	// cell4
@@ -119,7 +162,7 @@ function addPractice(action) {
 	var td = $("<td>").css("display", "none").addClass("practiceId").text(practiceId);
 
 	// Append cells to the row
-	row.append(cell1, cell2, cell3, cell4, td);
+	row.append(cell1, cell3, cell4, td);
 
 	// Append the row to the table
 	$("#"+ action +"ScheduleTable").append(row);
@@ -383,6 +426,18 @@ function deletePracticeSchedule(id) {
 		height: 45px 	
 	} 
 
+	.checkbox-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevents wrapping to the next line */
+    gap: 10px; /* Adjusts spacing between checkboxes */
+    justify-content: flex-start; /* Ensures alignment starts from the left */
+}
+.form-check {
+    display: flex;
+    align-items: center; /* Aligns checkboxes and labels vertically */
+    margin-right: 2.8px; /* Adds spacing between checkboxes */
+}
+
 </style>
 
 <!-- List Body -->
@@ -544,57 +599,14 @@ function deletePracticeSchedule(id) {
 					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-7">
-									<label for="addYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="addYear" name="addYear">
-										<%
-											Calendar addNow = Calendar.getInstance();
-											int addCurrentYear = addNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear) %>/<%= (addCurrentYear)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
-										<%
-										}
-										%>
-									</select>
+								<div class="col-md-6">
+									<label for="addFrom" class="label-form">From</label>
+									<input type="datetime-local" class="form-control datepicker" id="addFrom" name="addFrom" placeholder="From" required>
 								</div>
-								<!-- <div class="offset-md-1"></div> -->
-								<div class="col-md-5">
-									<label for="addVolume" class="label-form">Set Schedule</label>
-									<select class="form-control" id="addVolume" name="addVolume">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("addVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  //option.textContent = i;
-										  if (i === 10) {
-											option.textContent = 'Volume 1 (' + i + ')';
-										  }else if (i === 20) {
-											option.textContent = 'Volume 2 (' + i + ')';
-										  } else if (i === 30) {
-											option.textContent = 'Volume 3 (' + i + ')';
-										  } else if (i === 40) {
-											option.textContent = 'Volume 4 (' + i + ')';
-										  } else if ((i === 49) || (i === 50)) {
-											option.textContent = 'Volume 5 (' + i + ')';
-										  } else {
-												option.textContent = i;
-										  }
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
+								<div class="col-md-6">
+									<label for="addTo" class="label-form">To</label> 
+									<input type="datetime-local" class="form-control datepicker" id="addTo" name="addTo" placeholder="To" required>
+								</div>			
 							</div>
 						</div>
 						<div class="form-group">
@@ -606,44 +618,205 @@ function deletePracticeSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="type" style="width: 70%;">Practice</th>
-											<th data-field="grade" style="width: 10%;">Grade</th>
-											<th data-field="set" style="width: 10%;">Set</th>
-											<th data-field="action" style="width: 10%;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+
+									<!-- <div class="col-md-12">
+										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="addGrade" name="addGrade" style="display: flex; flex-wrap: wrap; gap: 15px;">
+											<div id="addGradeCheckbox" class="checkbox-container">											
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
+													<label class="form-check-label" for="addGradeAll">All/None</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
+													<label class="form-check-label" for="addP2">P2</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="addP3" name="grades">
+													<label class="form-check-label" for="addP3">P3</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="addP4" name="grades">
+													<label class="form-check-label" for="addP4">P4</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="addP5" name="grades">
+													<label class="form-check-label" for="addP5">P5</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
+													<label class="form-check-label" for="addP6">P6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="addS7" name="grades">
+													<label class="form-check-label" for="addS7">S7</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="addS8" name="grades">
+													<label class="form-check-label" for="addS8">S8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="addS9" name="grades">
+													<label class="form-check-label" for="addS9">S9</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
+													<label class="form-check-label" for="addS10">S10</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
+													<label class="form-check-label" for="addTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
+													<label class="form-check-label" for="addTT8">TT8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
+													<label class="form-check-label" for="addJMSS">JMSS</label>
+												</div>
+											</div>
+										</div>
+									</div>									 -->
+
+
+
+
+
+									<div class="col-md-12">
+										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="addGrade" name="addGrade">
+											<!-- First Row -->
+											<div id="addGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
+													<label class="form-check-label" for="addGradeAll">All/None</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
+													<label class="form-check-label" for="addP2">P2</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="addP3" name="grades">
+													<label class="form-check-label" for="addP3">P3</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="addP4" name="grades">
+													<label class="form-check-label" for="addP4">P4</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="addP5" name="grades">
+													<label class="form-check-label" for="addP5">P5</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
+													<label class="form-check-label" for="addP6">P6</label>
+												</div>
+											</div>
+											<!-- Second Row -->
+											<div id="addGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="addS7" name="grades">
+													<label class="form-check-label" for="addS7">S7</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="addS8" name="grades">
+													<label class="form-check-label" for="addS8">S8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="addS9" name="grades">
+													<label class="form-check-label" for="addS9">S9</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
+													<label class="form-check-label" for="addS10">S10</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
+													<label class="form-check-label" for="addTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
+													<label class="form-check-label" for="addTT8">TT8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
+													<label class="form-check-label" for="addJMSS">JMSS</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
-									<div class="col-md-7">
-										<label for="addPracticeTypeSearch" class="label-form">Practice</label>
+									<div class="col-md-12">
+										<label for="addGrade" class="label-form h6 badge badge-success">Practice</label>										
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="col-md-8">
+										<label for="addPracticeTypeSearch" class="label-form">Type</label>
 										<select class="form-control" id="addPracticeTypeSearch" name="addPracticeTypeSearch">
 										</select>
 									</div>
-									<div class="col-md-2">
-										<label for="addGradeSearch" class="label-form">Grade</label>
-										<select class="form-control" id="addGradeSearch" name="addGradeSearch">
+									<div class="col-md-3">
+										<label for="addSet" class="label-form">Set</label>
+										<select class="form-control" id="addSet" name="addSet">
 										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="addSetSearch" class="label-form">Set</label>
-										<select class="form-control" id="addSetSearch" name="addSetSearch">
-										</select>
+										<script>
+											var selectElement = document.getElementById("addSet");
+											// Loop to add options from 1 to 50
+											for (var i = 1; i <= 50; i++) {
+												// Create a new option element
+												var option = document.createElement("option");
+												// Set the value and text content for the option
+												option.value = i;
+												option.textContent = i;
+												// Append the option to the select element
+												selectElement.appendChild(option);
+											}
+										</script>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
 										<label class="label-form text-white">Add</label>
 										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addPractice('add')"><i class="bi bi-plus"></i></button>
 									</div>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 75%;">Practice</th>
+											<!-- <th data-field="grade" style="width: 10%;">Grade</th> -->
+											<th data-field="set" style="width: 15%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</form>
@@ -765,8 +938,8 @@ function deletePracticeSchedule(id) {
 										</select>
 									</div>
 									<div class="col-md-2">
-										<label for="editSetSearch" class="label-form">Set</label>
-										<select class="form-control" id="editSetSearch" name="editSetSearch">
+										<label for="editSet" class="label-form">Set</label>
+										<select class="form-control" id="editSet" name="editSet">
 										</select>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">

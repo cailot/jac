@@ -855,17 +855,6 @@ function deleteHomeworkSchedule(id) {
 							</div>
 						</div>
 
-
-
-
-
-
-
-
-
-
-
-
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="form-row">
