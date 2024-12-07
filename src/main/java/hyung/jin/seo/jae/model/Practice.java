@@ -54,4 +54,5 @@ public class Practice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "practiceTypeId", foreignKey = @ForeignKey(name = "FK_Practice_PracticeType"))
     private PracticeType practiceType;
+
 }

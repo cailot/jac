@@ -38,6 +38,9 @@ public class PracticeType implements Serializable{
     
     @Column(length = 50, nullable = true)
     private String name;
+
+	@Column
+	private int practiceGroup;
         
 	@CreationTimestamp
     private LocalDate registerDate;
@@ -55,5 +58,4 @@ public class PracticeType implements Serializable{
 		practices.add(prac);
 	}
 
-
-   }
+}

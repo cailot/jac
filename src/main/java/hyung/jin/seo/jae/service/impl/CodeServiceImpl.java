@@ -404,6 +404,17 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public List<PracticeType> getPracticeTypes(int group) {
+		List<PracticeType> types = new ArrayList<>();
+		try{
+			types = practiceTypeRepository.findByPracticeGroup(group);
+		}catch(Exception e){
+			System.out.println("No ProjectType found");
+		}
+		return types;
+	}
+
+	@Override
 	public TestType getTestType(Long id) {
 		TestType type = null;
 		try{
@@ -468,5 +479,15 @@ public class CodeServiceImpl implements CodeService {
 		return email;
 	}
 
+	@Override
+	public String getPracticeTypeName(Long id) {
+		String name = "";
+		try{
+			name = practiceTypeRepository.getNameById(id);
+		}catch(Exception e){
+			System.out.println("No PracticeType found");
+		}
+		return name;
+	}
 
 }

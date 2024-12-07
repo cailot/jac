@@ -74,9 +74,9 @@ $(document).ready(function () {
 
 
 	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
-	$('#addPracticeTypeSearch').change(function () {
-		getPracticeByTypeNGrade('add');
-	});
+	// $('#addPracticeTypeSearch').change(function () {
+	// 	getPracticeByTypeNGrade('add');
+	// });
 	$('#addGradeSearch').change(function () {
 		getPracticeByTypeNGrade('add');
 	});
@@ -90,11 +90,33 @@ $(document).ready(function () {
 	// initialise state list when loading
 	listGrade('#addGradeSearch');
 	listGrade('#editGradeSearch');
-	listPracticeType('#addPracticeTypeSearch');
-	listPracticeType('#editPracticeTypeSearch');
+	// listPracticeType('#addPracticeTypeSearch');
+	// listPracticeType('#editPracticeTypeSearch');
 
 });
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Populate PracticeType
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function getPracticeByType(group) {
+	// debugger;
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/practice4Schedule/' + type + '/' + grade,
+		method: 'GET',
+		success: function (data) {
+			// clean up existing options
+			$('#'+action+'SetSearch').empty();
+			$.each(data, function (index, value) {
+				// console.log(value.volume);
+				$('#'+action+'SetSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
+			});
+		},
+		error: function (xhr, status, error) {
+			console.error(xhr.responseText);
+		}
+	});
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Populate Practice by type and grade
@@ -127,14 +149,12 @@ function getPracticeByTypeNGrade(action) {
 function addPractice(action) {
 	// Get the values from the select elements
 	var practiceTypeSelect = document.getElementById(action + "PracticeTypeSearch");
-	var practiceType = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].text;
-
-	// var gradeSelect = document.getElementById(action + "GradeSearch");
-	// var grade = gradeSelect.options[gradeSelect.selectedIndex].text;
+	var practiceGroup = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].value;
+	var practiceTypeName = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].text;
 
 	var setSelect = document.getElementById(action + "Set");
 	var set = setSelect.options[setSelect.selectedIndex].text;
-	var practiceId = document.getElementById(action + "Set").value;
+	var practiceTypeWeek = document.getElementById(action + "Set").value;
 
 	// Get a reference to the table
 	var table = document.getElementById(action + "ScheduleTable");
@@ -143,9 +163,8 @@ function addPractice(action) {
 	var row = $("<tr>");
 
 	// Create the cells for the row
-	var cell1 = $("<td>").text(practiceType);
-	// var cell2 = $("<td>").text(grade);
-	var cell3 = $("<td>").text(set);
+	var cell1 = $("<td>").text(practiceTypeName);
+	var cell2 = $("<td>").text(set);
 
 	// cell4
 	var binIcon = $('<i class="bi bi-trash h5"></i>');
@@ -156,13 +175,14 @@ function addPractice(action) {
 			row.remove();
 		});
 	binIconLink.append(binIcon);
-	var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+	var cell3 = $("<td>").addClass('text-center').append(binIconLink);
 
-	// hidden td for practiceId
-	var td = $("<td>").css("display", "none").addClass("practiceId").text(practiceId);
+	// hidden td for practiceTypeWeek
+	var hidden1 = $("<td>").css("display", "none").addClass("practiceTypeWeek").text(practiceTypeWeek);
+	var hidden2 = $("<td>").css("display", "none").addClass("practiceGroup").text(practiceGroup);
 
 	// Append cells to the row
-	row.append(cell1, cell3, cell4, td);
+	row.append(cell1, cell2, cell3, hidden1, hidden2);
 
 	// Append the row to the table
 	$("#"+ action +"ScheduleTable").append(row);
@@ -776,6 +796,11 @@ function deletePracticeSchedule(id) {
 									<div class="col-md-8">
 										<label for="addPracticeTypeSearch" class="label-form">Type</label>
 										<select class="form-control" id="addPracticeTypeSearch" name="addPracticeTypeSearch">
+											<option value="1">Mega Practice</option>
+											<option value="2">Revision Practice</option>
+											<option value="3">Edu Practice</option>
+											<option value="4">Acer Practice</option>
+											<option value="5">NAPLAN Practice</option>
 										</select>
 									</div>
 									<div class="col-md-3">

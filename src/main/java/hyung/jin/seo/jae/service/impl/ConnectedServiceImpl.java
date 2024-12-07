@@ -388,17 +388,11 @@ public class ConnectedServiceImpl implements ConnectedService {
 		Practice existing = practiceRepository.findById(id).get();
         // Update info
         String newPdfPath = StringUtils.defaultString(newWork.getPdfPath());
-        // if(StringUtils.isNotBlank(newPdfPath)){
-        	existing.setPdfPath(newPdfPath);
-        // }
-		String newInfo = StringUtils.defaultString(newWork.getInfo());
-        // if(StringUtils.isNotBlank(newInfo)){
-        	existing.setInfo(newInfo);
-        // }
+    	existing.setPdfPath(newPdfPath);
+    	String newInfo = StringUtils.defaultString(newWork.getInfo());
+    	existing.setInfo(newInfo);
 		int newVolume = newWork.getVolume();
 		existing.setVolume(newVolume);
-		// int newCount = newWork.getQuestionCount();
-		// existing.setQuestionCount(newCount);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
         // update the existing record
