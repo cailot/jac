@@ -354,7 +354,9 @@ public interface JaeConstants {
 	LocalDateTime END_TIME = LocalDateTime.of(2100, 1, 1, 23, 59, 59);
 
 	////////////////////////////////////
-	// EMAIL
+	//
+	// 	EMAIL
+	//
 	////////////////////////////////////
 	String EMAIL_HEADER = "This is an automatically generated email. Please do not reply as this mailbox is not monitored.\n" + 
 				"If you have any questions or need assistance, please contact your branch directly.";
@@ -363,4 +365,30 @@ public interface JaeConstants {
 				"<p class=\"p1\"><strong><span style=\"color: #ff0000;\"><em>This is an automatically generated email. Please do not reply as this mailbox is not monitored.</em></span></strong></p>\n" + 
 				"<p class=\"p1\"><strong><span style=\"color: #ff0000;\"><em>If you have any questions or need assistance, please contact your branch directly.</em></span></strong></p>\n" + 
 				"<p>&nbsp;</p>";
+
+	////////////////////////////////////
+	//
+	//	PRACTICE TYPE
+	//
+	////////////////////////////////////
+	String PRACTICE_TYPE_MEGA = "MEGA";
+	
+	String PRACTICE_TYPE_REVISION = "REVISION";
+	
+	String PRACTICE_TYPE_EDU = "EDU";
+	
+	String PRACTICE_TYPE_ACER = "ACER";
+	
+	String PRACTICE_TYPE_NAPLAN = "NAPLAN";
+
+	int PRACTICE_MEGA = 1;
+	
+	int PRACTICE_REVISION = 2;
+	
+	int PRACTICE_EDU = 3;
+	
+	int PRACTICE_ACER = 4;
+	
+	int PRACTICE_NAPLAN = 5;
+
 }

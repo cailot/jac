@@ -38,6 +38,8 @@ public class PracticeDTO implements Serializable {
 
 	private String name;
 
+	private int practiceGroup;
+
 	
 	public PracticeDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long practiceType, String name, LocalDate registerDate){
 		this.id = String.valueOf(id);
@@ -48,6 +50,19 @@ public class PracticeDTO implements Serializable {
 		this.grade = grade;
 		this.practiceType = practiceType;
 		this.name = name;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+
+	public PracticeDTO(long id, String pdfPath, int volume, boolean active, String info, String grade, long practiceType, String name, int practiceGroup, LocalDate registerDate){
+		this.id = String.valueOf(id);
+		this.pdfPath = pdfPath;
+		this.volume = volume;
+		this.active = active;
+		this.info = info;
+		this.grade = grade;
+		this.practiceType = practiceType;
+		this.name = name;
+		this.practiceGroup = practiceGroup;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 

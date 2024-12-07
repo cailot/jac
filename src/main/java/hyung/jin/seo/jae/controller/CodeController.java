@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.model.Branch;
+import hyung.jin.seo.jae.model.PracticeType;
 import hyung.jin.seo.jae.model.State;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -75,6 +76,13 @@ public class CodeController {
 	@ResponseBody
 	List<SimpleBasketDTO> listPracticeType() {
 		List<SimpleBasketDTO> dtos = codeService.loadPracticeType();
+		return dtos;
+	}
+
+	@GetMapping("/listPracticeType/{id}")
+	@ResponseBody
+	List<PracticeType> listPracticeType(@PathVariable("id") int id) {
+		List<PracticeType> dtos = codeService.getPracticeTypes(id);
 		return dtos;
 	}
 

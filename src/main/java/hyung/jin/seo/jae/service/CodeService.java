@@ -108,6 +108,12 @@ public interface CodeService {
 	// list for initial practice type value
 	List<SimpleBasketDTO> loadPracticeType();
 
+	// list for practice type by group
+	List<PracticeType> getPracticeTypes(int group);
+
+	// get practice type name by id
+	String getPracticeTypeName(Long id);
+
 	// get test type
 	TestType getTestType(Long id);
 
