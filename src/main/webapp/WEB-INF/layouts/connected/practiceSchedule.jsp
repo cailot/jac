@@ -36,7 +36,6 @@ $(document).ready(function () {
         $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
     });
 
-
 	$('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
         var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
         var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
@@ -44,104 +43,18 @@ $(document).ready(function () {
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
-	// $('#addPracticeTypeSearch').change(function () {
-	// 	getPracticeByTypeNGrade('add');
-	// });
-	$('#addGradeSearch').change(function () {
-		getPracticeByTypeNGrade('add');
+	$('#editGradeAll').on('change', function() {
+		var isChecked = $(this).is(':checked');
+		$('#editGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
 	});
-	$('#editPracticeTypeSearch').change(function () {
-		getPracticeByTypeNGrade('edit');
+
+	$('#editGradeCheckbox input[type="checkbox"]').on('change', function() {
+		var checkboxes = $('#editGradeCheckbox input[type="checkbox"]');
+		var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+		$('#editGradeAll').prop('checked', allChecked);
 	});
-	$('#editGradeSearch').change(function () {
-		getPracticeByTypeNGrade('edit');
-	});
-		
-	// initialise state list when loading
-	listGrade('#addGradeSearch');
-	listGrade('#editGradeSearch');
-	// listPracticeType('#addPracticeTypeSearch');
-	// listPracticeType('#editPracticeTypeSearch');
 
 });
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Populate PracticeType
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getPracticeByType(group) {
-	// debugger;
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/practice4Schedule/' + type + '/' + grade,
-		method: 'GET',
-		success: function (data) {
-			// clean up existing options
-			$('#'+action+'SetSearch').empty();
-			$.each(data, function (index, value) {
-				// console.log(value.volume);
-				$('#'+action+'SetSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
-			});
-		},
-		error: function (xhr, status, error) {
-			console.error(xhr.responseText);
-		}
-	});
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Populate Practice by type and grade
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getPracticeByTypeNGrade(action) {
-	// debugger;
-	var type = $('#'+action+'PracticeTypeSearch').val();
-	var grade = $('#'+action+'GradeSearch').val();
-
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/practice4Schedule/' + type + '/' + grade,
-		method: 'GET',
-		success: function (data) {
-			// clean up existing options
-			$('#'+action+'SetSearch').empty();
-			$.each(data, function (index, value) {
-				// console.log(value.volume);
-				$('#'+action+'SetSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
-			});
-		},
-		error: function (xhr, status, error) {
-			console.error(xhr.responseText);
-		}
-	});
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Practice into Table
@@ -149,7 +62,7 @@ function getPracticeByTypeNGrade(action) {
 function addPractice(action) {
 	// Get the values from the select elements
 	var practiceTypeSelect = document.getElementById(action + "PracticeTypeSearch");
-	var practiceGroup = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].value;
+	var practiceTypeGroup = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].value;
 	var practiceTypeName = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].text;
 
 	var setSelect = document.getElementById(action + "Set");
@@ -166,7 +79,7 @@ function addPractice(action) {
 	var cell1 = $("<td>").text(practiceTypeName);
 	var cell2 = $("<td>").text(set);
 
-	// cell4
+	// cell3
 	var binIcon = $('<i class="bi bi-trash h5"></i>');
 	var binIconLink = $("<a>")
 		.attr("href", "javascript:void(0)")
@@ -179,7 +92,7 @@ function addPractice(action) {
 
 	// hidden td for practiceTypeWeek
 	var hidden1 = $("<td>").css("display", "none").addClass("practiceTypeWeek").text(practiceTypeWeek);
-	var hidden2 = $("<td>").css("display", "none").addClass("practiceGroup").text(practiceGroup);
+	var hidden2 = $("<td>").css("display", "none").addClass("practiceTypeGroup").text(practiceTypeGroup);
 
 	// Append cells to the row
 	row.append(cell1, cell2, cell3, hidden1, hidden2);
@@ -193,20 +106,51 @@ function addPractice(action) {
 //		Register Practice Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerSchedule() {
-	// Get practiceIds form addScheduleTable
-	var practiceDtos = [];
+	// Collect the values of the selected grade checkboxes
+	var selectedGrades = [];
+	var allGradesChecked = $('#addGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
+	if (allGradesChecked) {
+		selectedGrades.push('0');
+	} else {
+		$('#addGradeCheckbox input[name="grades"]:checked').each(function() {
+			selectedGrades.push($(this).val());
+		});
+	}
+	// check if no grade is selected
+	if(selectedGrades.length == 0){
+		$('#validation-alert .modal-body').text(
+		'Please select grade');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			$('#addGrade').focus();
+		});
+		return false;
+	}
+
+	// Get practiceTypeGroup & set form addScheduleTable
+	var practiceGroups = [];
+	var weeks = [];
 	$('#addScheduleTable tr').each(function () {
-		var practiceId = $(this).find('.practiceId').text();
-		if (practiceId != '') {
-			practiceDtos.push({id : practiceId});
+		var practiceGroup = $(this).find('.practiceTypeGroup').text();
+		var practiceSet = $(this).find('.practiceTypeWeek').text();
+		console.log(practiceGroup + ' set : ' + practiceSet);
+		if (practiceGroup != '') {
+			//practiceDtos.push({group : practiceGroup, week : practiceSet});
+			practiceGroups.push(practiceGroup);
+			weeks.push(practiceSet);
 		}
 	});
+
 	var schedule = {
-		year: $("#addYear").val(),
-		week: $("#addVolume").val(),
+		from: $("#addFrom").val(),
+		to: $("#addTo").val(),
 		info: $("#addInfo").val(),
-		practices: practiceDtos
+		grade : selectedGrades,
+		practiceGroup: practiceGroups,
+		week: weeks
 	}
+
+	//console.log(schedule);
 	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/connected/addPracticeSchedule',
@@ -232,7 +176,6 @@ function registerSchedule() {
 	document.getElementById("scheduleRegister").reset();
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Practice Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,10 +185,13 @@ function retrieveScheduleInfo(id) {
 		url: '${pageContext.request.contextPath}/connected/getPracticeSchedule/' + id,
 		type: 'GET',
 		success: function (scheduleItem) {
-			console.log(scheduleItem);
+			// console.log(scheduleItem);
 			$("#editId").val(scheduleItem.id);
-			$("#editYear").val(scheduleItem.year);
-			$("#editWeek").val(scheduleItem.week);
+			// Convert 'from' and 'to' to the format expected by datetime-local input
+			var fromDateTime = convertToDateTimeLocal(scheduleItem.from);
+            var toDateTime = convertToDateTimeLocal(scheduleItem.to);
+			$("#editFrom").val(fromDateTime);
+			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
@@ -253,52 +199,107 @@ function retrieveScheduleInfo(id) {
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
+			// Check the corresponding grade checkboxes
+			$('#editGradeCheckbox input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first
+			if(scheduleItem.grade.includes('0')) {
+				$('#editGradeAll').prop('checked', true);
+				$('#editGradeCheckbox input[type="checkbox"]').prop('checked', true);
+			}else{
+				scheduleItem.grade.forEach(function(grade) {
+					$('#editGradeCheckbox input[type="checkbox"][value="' + grade + '"]').prop('checked', true);
+				});
+			}
+
+			// add rows to the table
 			// clear all rows on editScheduleTable
-			$("#editScheduleTable").find("tr:gt(0)").remove();	
-			// append Practice Info into table
-			var practices = scheduleItem.practices;
-			$.each(practices, function (index, value) {
+			$("#editScheduleTable").find("tr:gt(0)").remove();
+			// Handle practiceGroup as String[]
+			var practiceGroups = [];
+			if (typeof scheduleItem.practiceGroup === 'string' && scheduleItem.practiceGroup) {
+				practiceGroups = scheduleItem.practiceGroup.split(',').map(function(item) {
+					return item.trim();
+				});
+			} else if (Array.isArray(scheduleItem.practiceGroup)) {
+				if (scheduleItem.practiceGroup.length === 1 && scheduleItem.practiceGroup[0] === '') {
+					practiceGroups = [];
+				} else {
+					practiceGroups = scheduleItem.practiceGroup;
+				}
+			}
+			// Handle weeks as String[]
+			var weeks = [];
+			if (typeof scheduleItem.week === 'string' && scheduleItem.week) {
+				weeks = scheduleItem.week.split(',').map(function(item) {
+					return item.trim();
+				});
+			} else if (Array.isArray(scheduleItem.week)) {
+				// weeks = scheduleItem.week;
+				if (scheduleItem.week.length === 1 && scheduleItem.week[0] === '') {
+					weeks = [];
+				} else {
+					weeks = scheduleItem.week;
+				}
+			}
+
+			// add rows to the table for practiceGroup and week
+			for (var i = 0; i < weeks.length; i++) {
 				// Get the values from the select elements
-				var gradeSelect = document.getElementById("editGradeSearch");
-				var grade = gradeSelect.options[value.grade].text;
+				var practiceTypeGroup = practiceGroups[i];
+				var practiceTypeWeek = weeks[i];
 				// Get a reference to the table
 				var table = document.getElementById("editScheduleTable");
 				// Create a new row
 				var row = $("<tr>");
 				// Create the cells for the row
-				var cell1 = $("<td>").text(value.name);
-				var cell2 = $("<td>").text(grade);
-				var cell3 = $("<td>").text(value.volume);
+				var cell1 = $("<td>").text(practiceGroupName(practiceTypeGroup));
+				var cell2 = $("<td>").text(practiceTypeWeek);
 
-				// cell4
+				// cell3
 				var binIcon = $('<i class="bi bi-trash h5"></i>');
 				var binIconLink = $("<a>")
 					.attr("href", "javascript:void(0)")
 					.attr("title", "Delete Practice")
-					.click(function () {
-						row.remove();
-					});
+					.click((function(row) {
+						return function() {
+							row.remove();
+						};
+					})(row));
 				binIconLink.append(binIcon);
-				var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+				var cell3 = $("<td>").addClass('text-center').append(binIconLink);
 
-				// hidden td for practiceId
-				var td = $("<td>").css("display", "none").addClass("practiceId").text(value.id);
+				var hidden1 = $("<td>").css("display", "none").addClass("practiceTypeWeek").text(practiceTypeWeek);
+				var hidden2 = $("<td>").css("display", "none").addClass("practiceTypeGroup").text(practiceTypeGroup);
 
 				// Append cells to the row
-				row.append(cell1, cell2, cell3, cell4, td);
+				row.append(cell1, cell2, cell3, hidden1, hidden2);
 
 				// Append the row to the table
 				$("#editScheduleTable").append(row);
-			});
+			}
+			
 			// display available set to be ready to select
-			getPracticeByTypeNGrade('edit');
 			$('#editScheduleModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
 		}
-
 	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Convert date time string to date time local format
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function convertToDateTimeLocal(dateTimeStr) {
+    // Assuming the input format is 'dd/MM/yyyy, HH:mm'
+    var parts = dateTimeStr.split(', ');
+    var dateParts = parts[0].split('/');
+    var timeParts = parts[1].split(':');
+    var year = dateParts[2];
+    var month = dateParts[1].padStart(2, '0');
+    var day = dateParts[0].padStart(2, '0');
+    var hours = timeParts[0].padStart(2, '0');
+    var minutes = timeParts[1].padStart(2, '0');
+    return year+'-'+month+'-'+day+'T'+hours+':'+minutes;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,21 +318,50 @@ function updateEditActiveValue(checkbox) {
 //		Update Practice Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
-	// get from formData
-	var practiceDtos = [];
+	// Collect the values of the selected grade checkboxes
+	var selectedGrades = [];
+	var allGradesChecked = $('#editGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
+	if (allGradesChecked) {
+		selectedGrades.push('0');
+	} else {
+		$('#editGradeCheckbox input[name="grades"]:checked').each(function() {
+			selectedGrades.push($(this).val());
+		});
+	}
+	// check if no grade is selected
+	if(selectedGrades.length == 0){
+		$('#validation-alert .modal-body').text(
+		'Please select grade');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			$('#editGrade').focus();
+		});
+		return false;
+	}
+
+	// Get practiceTypeGroup & set form editScheduleTable
+	var practiceGroups = [];
+	var weeks = [];
 	$('#editScheduleTable tr').each(function () {
-		var practiceId = $(this).find('.practiceId').text();
-		if (practiceId != '') {
-			practiceDtos.push({id : practiceId});
+		var practiceGroup = $(this).find('.practiceTypeGroup').text();
+		var practiceSet = $(this).find('.practiceTypeWeek').text();
+		// console.log(practiceGroup + ' set : ' + practiceSet);
+		if (practiceGroup != '') {
+			//practiceDtos.push({group : practiceGroup, week : practiceSet});
+			practiceGroups.push(practiceGroup);
+			weeks.push(practiceSet);
 		}
 	});
-	var scheduleItem = {
+
+	var schedule = {
 		id: $("#editId").val(),
-		year: $("#editYear").val(),
-		week: $("#editWeek").val(),
+		from: $("#editFrom").val(),
+		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
-		practices: practiceDtos
+		grade : selectedGrades,
+		practiceGroup: practiceGroups,
+		week: weeks
 	}
 
 	// send query to controller
@@ -339,7 +369,7 @@ function updateScheduleInfo() {
 		url: '${pageContext.request.contextPath}/connected/updatePracticeSchedule',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(scheduleItem),
+		data: JSON.stringify(schedule),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -486,42 +516,15 @@ function deletePracticeSchedule(id) {
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="listWeek" class="label-form">Set Schedule</label>
-						<select class="form-control" id="listWeek" name="listWeek">
+						<label for="listPracticeType" class="label-form">Practice Type</label>
+						<select class="form-control" id="listPracticeType" name="listPracticeType">
+							<option value="0">All</option>
+							<option value="1">Mega Practice</option>
+							<option value="2">Revision Practice</option>
+							<option value="3">Edu Practice</option>
+							<option value="4">Acer Practice</option>
+							<option value="5">NAPLAN Practice</option>
 						</select>
-						<script>
-							// Get a reference to the select element
-							var selectElement = document.getElementById("listWeek");
-							// Create a new option element for 'All'
-							var allOption = document.createElement("option");
-							// Set the value and text content for the 'All' option
-							allOption.value = "0";
-							allOption.textContent = "All";
-							// Append the 'All' option to the select element
-							selectElement.appendChild(allOption);
-							// Loop to add options from 1 to 50
-							for (var i = 1; i <= 50; i++) {
-								// Create a new option element
-								var option = document.createElement("option");
-								// Set the value and text content for the option
-								option.value = i;
-								if (i === 10) {
-									option.textContent = 'Volume 1 (' + i + ')';
-								}else if (i === 20) {
-									option.textContent = 'Volume 2 (' + i + ')';
-								} else if (i === 30) {
-									option.textContent = 'Volume 3 (' + i + ')';
-								} else if (i === 40) {
-									option.textContent = 'Volume 4 (' + i + ')';
-								} else if ((i === 49) || (i === 50)) {
-									option.textContent = 'Volume 5 (' + i + ')';
-								} else {
-									option.textContent = i;
-								}
-								// Append the option to the select element
-								selectElement.appendChild(option);
-							}
-						</script>
 					</div>
 					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
@@ -530,7 +533,7 @@ function deletePracticeSchedule(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="getPracticeByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -541,11 +544,15 @@ function deletePracticeSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle" style="width: 20%">Academic Year</th>
-										<th class="text-center align-middle" style="width: 20%">Set</th>
-										<th class="text-center align-middle" style="width: 40%">Information</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Activated</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
+										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
+										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">End</th>
+										<th class="text-center align-middle" style="width: 20%">Practice Type</th>
+										<th class="text-center align-middle" style="width: 15%">Grade</th>
+										<th class="text-center align-middle" style="width: 10%">Week</th>
+										<th class="text-center align-middle" style="width: 20%">Information</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 6%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -555,21 +562,42 @@ function deletePracticeSchedule(id) {
 												<tr>
 													<td class="small align-middle">
 														<span>
-															Academic Year <c:out value="${scheduleItem.year}" />/<c:out value="${scheduleItem.year+1}" />
+															<c:out value="${scheduleItem.from}" />
 														</span>
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:choose>
-																<c:when test="${scheduleItem.week == 10}">End of Volume 1 (10)</c:when>
-																<c:when test="${scheduleItem.week == 20}">End of Volume 2 (20)</c:when>
-																<c:when test="${scheduleItem.week == 30}">End of Volume 3 (30)</c:when>
-																<c:when test="${scheduleItem.week == 40}">End of Volume 4 (40)</c:when>
-																<c:when test="${scheduleItem.week >= 49}">End of Volume 5 (50)</c:when>
-																<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
-															</c:choose>
+															<c:out value="${scheduleItem.to}" />
 														</span>
 													</td>
+													<td class="small align-middle">
+														<span>
+															<c:forEach var="group" items="${scheduleItem.practiceGroup}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(practiceGroupName('${group}'));
+																</script>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:forEach var="grade" items="${scheduleItem.grade}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(gradeName('${grade}'));
+																</script>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:forEach var="week" items="${scheduleItem.week}" varStatus="status">
+																<c:out value="${week}"/>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>													
 													<td class="small align-middle text-truncate" style="min-width: 300px;">
 														<span>
 															<c:out value="${scheduleItem.info}" />
@@ -615,7 +643,7 @@ function deletePracticeSchedule(id) {
 		<div class="modal-content jae-border-info">
 			<div class="modal-body">
 				<section class="fieldset rounded border-info">
-					<header class="text-info font-weight-bold">Practice Schedule</header>
+					<header class="text-info font-weight-bold">Practice Schedule Registration</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
@@ -640,71 +668,6 @@ function deletePracticeSchedule(id) {
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
-
-									<!-- <div class="col-md-12">
-										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
-										<div id="addGrade" name="addGrade" style="display: flex; flex-wrap: wrap; gap: 15px;">
-											<div id="addGradeCheckbox" class="checkbox-container">											
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
-													<label class="form-check-label" for="addGradeAll">All/None</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
-													<label class="form-check-label" for="addP2">P2</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="2" id="addP3" name="grades">
-													<label class="form-check-label" for="addP3">P3</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="3" id="addP4" name="grades">
-													<label class="form-check-label" for="addP4">P4</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="4" id="addP5" name="grades">
-													<label class="form-check-label" for="addP5">P5</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
-													<label class="form-check-label" for="addP6">P6</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="6" id="addS7" name="grades">
-													<label class="form-check-label" for="addS7">S7</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="7" id="addS8" name="grades">
-													<label class="form-check-label" for="addS8">S8</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="8" id="addS9" name="grades">
-													<label class="form-check-label" for="addS9">S9</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
-													<label class="form-check-label" for="addS10">S10</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
-													<label class="form-check-label" for="addTT6">TT6</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
-													<label class="form-check-label" for="addTT8">TT8</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
-													<label class="form-check-label" for="addJMSS">JMSS</label>
-												</div>
-											</div>
-										</div>
-									</div>									 -->
-
-
-
-
-
 									<div class="col-md-12">
 										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
 										<div id="addGrade" name="addGrade">
@@ -769,19 +732,6 @@ function deletePracticeSchedule(id) {
 										</div>
 									</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 								</div>
 							</div>
 						</div>
@@ -789,7 +739,7 @@ function deletePracticeSchedule(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label for="addGrade" class="label-form h6 badge badge-success">Practice</label>										
+										<label class="label-form h6 badge badge-success">Practice</label>										
 									</div>
 								</div>
 								<div class="form-row">
@@ -834,7 +784,6 @@ function deletePracticeSchedule(id) {
         							<thead class="thead-light">
 										<tr>
 											<th data-field="type" style="width: 75%;">Practice</th>
-											<!-- <th data-field="grade" style="width: 10%;">Grade</th> -->
 											<th data-field="set" style="width: 15%;">Set</th>
 											<th data-field="action" style="width: 10%;">Action</th>
 										</tr>
@@ -865,56 +814,14 @@ function deletePracticeSchedule(id) {
 					<form id="scheduleEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-7">
-									<label for="editYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="editYear" name="editYear">
-										<%
-											Calendar editNow = Calendar.getInstance();
-											int editCurrentYear = editNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= editCurrentYear %>">Academic Year <%= (editCurrentYear) %>/<%= (editCurrentYear)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
-										<%
-										}
-										%>
-									</select>
+								<div class="col-md-6">
+									<label for="editFrom" class="label-form">From</label>
+									<input type="datetime-local" class="form-control datepicker" id="editFrom" name="editFrom" placeholder="From" required>
 								</div>
-								<div class="col-md-5">
-									<label for="editWeek" class="label-form">Set</label>
-									<select class="form-control" id="editWeek" name="editWeek">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editWeek");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										//   option.textContent = i;
-										  if (i === 10) {
-											option.textContent = 'Volume 1 (' + i + ')';
-										  }else if (i === 20) {
-											option.textContent = 'Volume 2 (' + i + ')';
-										  } else if (i === 30) {
-											option.textContent = 'Volume 3 (' + i + ')';
-										  } else if (i === 40) {
-											option.textContent = 'Volume 4 (' + i + ')';
-										  } else if ((i === 49) || (i === 50)) {
-											option.textContent = 'Volume 5 (' + i + ')';
-										  } else {
-												option.textContent = i;
-										  }
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
+								<div class="col-md-6">
+									<label for="editTo" class="label-form">To</label> 
+									<input type="datetime-local" class="form-control datepicker" id="editTo" name="editTo" placeholder="To" required>
+								</div>			
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
@@ -934,38 +841,109 @@ function deletePracticeSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="type" style="width: 70%;">Practice</th>
-											<th data-field="grade" style="width: 10%;">Grade</th>
-											<th data-field="set" style="width: 10%;">Set</th>
-											<th data-field="action" style="width: 10%;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+									<div class="col-md-12">
+										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="editGrade" name="editGrade">
+											<!-- First Row -->
+											<div id="editGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" id="editGradeAll" name="editGradeAll">
+													<label class="form-check-label" for="editGradeAll">All/None</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
+													<label class="form-check-label" for="editP2">P2</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="editP3" name="grades">
+													<label class="form-check-label" for="editP3">P3</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="editP4" name="grades">
+													<label class="form-check-label" for="editP4">P4</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="editP5" name="grades">
+													<label class="form-check-label" for="editP5">P5</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="editP6" name="grades">
+													<label class="form-check-label" for="editP6">P6</label>
+												</div>
+											</div>
+											<!-- Second Row -->
+											<div id="editGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="editS7" name="grades">
+													<label class="form-check-label" for="editS7">S7</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="editS8" name="grades">
+													<label class="form-check-label" for="editS8">S8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="editS9" name="grades">
+													<label class="form-check-label" for="editS9">S9</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="editS10" name="grades">
+													<label class="form-check-label" for="editS10">S10</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
+													<label class="form-check-label" for="editTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
+													<label class="form-check-label" for="editTT8">TT8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="19" id="editJMSS" name="grades">
+													<label class="form-check-label" for="editJMSS">JMSS</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
-									<div class="col-md-7">
-										<label for="editPracticeTypeSearch" class="label-form">Practice</label>
+									<div class="col-md-12">
+										<label class="label-form h6 badge badge-success">Practice</label>										
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="col-md-8">
+										<label for="editPracticeTypeSearch" class="label-form">Type</label>
 										<select class="form-control" id="editPracticeTypeSearch" name="editPracticeTypeSearch">
+											<option value="1">Mega Practice</option>
+											<option value="2">Revision Practice</option>
+											<option value="3">Edu Practice</option>
+											<option value="4">Acer Practice</option>
+											<option value="5">NAPLAN Practice</option>
 										</select>
 									</div>
-									<div class="col-md-2">
-										<label for="editGradeSearch" class="label-form">Grade</label>
-										<select class="form-control" id="editGradeSearch" name="editGradeSearch">
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="editSet" class="label-form">Set</label>
+									<div class="col-md-3">
+										<label for="addSet" class="label-form">Set</label>
 										<select class="form-control" id="editSet" name="editSet">
 										</select>
+										<script>
+											var selectElement = document.getElementById("editSet");
+											// Loop to add options from 1 to 50
+											for (var i = 1; i <= 50; i++) {
+												// Create a new option element
+												var option = document.createElement("option");
+												// Set the value and text content for the option
+												option.value = i;
+												option.textContent = i;
+												// Append the option to the select element
+												selectElement.appendChild(option);
+											}
+										</script>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
 										<label class="label-form text-white">Add</label>
@@ -974,50 +952,14 @@ function deletePracticeSchedule(id) {
 								</div>
 							</div>
 						</div>
-						<input type="hidden" id="editId" name="editId" />
-					</form>
-					<div class="d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="updateScheduleInfo()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleEdit'); clearTable('edit')" data-dismiss="modal">Close</button>
-					</div>
-				</section>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- Add Answer Form Dialogue -->
-<div class="modal fade" id="registerTestAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-body">
-				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Test Answer Sheet</header>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
-									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
-									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
-								</div>
-							</div>
-						</div>
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="answerSheetTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
-											<th data-field="question" style="width: 10%;">Question#</th>
-											<th data-field="answer" style="width: 10%;">Answer</th>
-											<th data-field="topic" style="width: 70%;">Topic</th>
-											<th data-field="remove" style="width: 10%;">Remove</th>
+											<th data-field="type" style="width: 75%;">Practice</th>
+											<th data-field="set" style="width: 15%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -1025,41 +967,11 @@ function deletePracticeSchedule(id) {
 								</table>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="form-row align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
-								<div class="col-md-3">
-									<label for="answerQuestionNumber" class="label-form">Number</label>
-									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
-											<option value="${i}">${i}</option>
-										</c:forEach>
-									</select>
-								</div>
-								<div class="col-md-2">
-									<label for="correctAnswerOption" class="label-form">Answer</label>
-									<select class="form-control" id="correctAnswerOption" name="correctAnswerOption">
-										<option value="1">A</option>
-										<option value="2">B</option>
-										<option value="3">C</option>
-										<option value="4">D</option>
-										<option value="5">E</option>
-									</select>
-								</div>
-								<div class="col-md-5">
-									<label for="answerTopic" class="label-form">Topic</label>
-									<input type="text" class="form-control" name="answerTopic" id="answerTopic" placeholder="Add Topic" />
-								</div>
-								<div class="col-md-2">
-									<label for="" class="label-form">&nbsp;</label>
-									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>
-								</div>
-							</div>
-						</div>
-						<input type="hidden" id="answerId" name="answerId" />
-						<input type="hidden" id="testId4Answer" name="testId4Answer" />
-					<div class="mt-4 d-flex justify-content-end">
-						<button type="submit" class="btn btn-primary" onclick="collectAndSubmitAnswers()">Save</button>&nbsp;&nbsp;
-						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('testRegister')" data-dismiss="modal">Close</button>
+						<input type="hidden" id="editId" name="editId" />
+					</form>
+					<div class="d-flex justify-content-end">
+						<button type="submit" class="btn btn-primary" onclick="updateScheduleInfo()">Save</button>&nbsp;&nbsp;
+						<button type="button" class="btn btn-default btn-secondary" onclick="clearForm('scheduleEdit'); clearTable('edit')" data-dismiss="modal">Close</button>
 					</div>
 				</section>
 			</div>

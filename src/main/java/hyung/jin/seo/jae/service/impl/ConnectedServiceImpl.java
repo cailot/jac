@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -514,20 +515,24 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
-	public PracticeSchedule updatePracticeSchedule(PracticeSchedule newWork, Long id) {
+	public PracticeSchedule updatePracticeSchedule(PracticeSchedule schedule, Long id) {
 		// search by getId
 		PracticeSchedule existing = practiceScheduleRepository.findById(id).get();
 		// update info
-		int newYear = newWork.getYear();
-		existing.setYear(newYear);
-		int newWeek = newWork.getWeek();
-		existing.setWeek(newWeek);
-		boolean newActive = newWork.isActive();
+		LocalDateTime newFrom = schedule.getFromDatetime();
+		existing.setFromDatetime(newFrom);
+		LocalDateTime newTo = schedule.getToDatetime();
+		existing.setToDatetime(newTo);
+		boolean newActive = schedule.isActive();
 		existing.setActive(newActive);
-		String newInfo = newWork.getInfo();
+		String newInfo = schedule.getInfo();
 		existing.setInfo(newInfo);
-		Set<Practice> newPracs = newWork.getPractices();
-		existing.setPractices(newPracs);
+		String newGrade = schedule.getGrade();
+		existing.setGrade(newGrade);
+		String newPracticeGroup = schedule.getPracticeGroup();
+		existing.setPracticeGroup(newPracticeGroup);
+		String newWeek = schedule.getWeek();
+		existing.setWeek(newWeek);
 		// update the existing record
 		PracticeSchedule updated = practiceScheduleRepository.save(existing);
 		return updated;	
@@ -649,11 +654,6 @@ public class ConnectedServiceImpl implements ConnectedService {
 	public void deletePracticeSchedule(Long id) {
 		PracticeSchedule practiceSchedule = practiceScheduleRepository.findById(id).orElse(null);
 		if (practiceSchedule != null) {
-			// Retrieve the associated practices
-			Set<Practice> practices = practiceSchedule.getPractices();		
-			// Remove the associations between PracticeSchedule and Practice entities
-			practiceSchedule.setPractices(new LinkedHashSet<>());
-			practiceScheduleRepository.save(practiceSchedule); // Update to remove associations
 			// Now you can safely delete the PracticeSchedule record
 			practiceScheduleRepository.delete(practiceSchedule);
 		} else {
@@ -766,7 +766,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 	public List<HomeworkScheduleDTO> listHomeworkSchedule(LocalDateTime from, LocalDateTime to) {
 		List<HomeworkScheduleDTO> dtos = new ArrayList<>();
 		try{
-			dtos = homeworkScheduleRepository.filterHomeworkScheduleByYear(from, to);
+			dtos = homeworkScheduleRepository.filterHomeworkScheduleByTime(from, to);
 		}catch(Exception e){
 			System.out.println("No Homework Schedule found");
 		}
@@ -774,10 +774,11 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public List<PracticeScheduleDTO> listPracticeSchedule(int year, int week) {
+	public List<PracticeScheduleDTO> listPracticeSchedule(LocalDateTime from, LocalDateTime to, int group) {
 		List<PracticeScheduleDTO> dtos = new ArrayList<>();
 		try{
-			dtos = practiceScheduleRepository.filterPracticeScheduleByYearNWeek(year, week);
+			// dtos = practiceScheduleRepository.filterPracticeScheduleByTimeNGroup(from, to, group+"", PageRequest.of(0, 1));
+			dtos = practiceScheduleRepository.filterPracticeScheduleByTimeNGroup(from, to, group+"");
 		}catch(Exception e){
 			System.out.println("No Practice Schedule found");
 		}
