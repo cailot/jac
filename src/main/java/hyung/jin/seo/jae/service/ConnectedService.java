@@ -271,8 +271,8 @@ public interface ConnectedService {
 	// list all Practice Schedules
 	List<PracticeSchedule> allPracticeSchedules();
 
-	// list Practice Schedule by year & week
-	List<PracticeScheduleDTO> listPracticeSchedule(int year, int week);
+	// list Practice Schedule by time
+	List<PracticeScheduleDTO> listPracticeSchedule(LocalDateTime from, LocalDateTime to, int group);
 
 	// retrieve Practice Schedule by Id
 	PracticeSchedule getPracticeSchedule(Long id);

@@ -624,7 +624,7 @@ function deleteHomeworkSchedule(id) {
 		<div class="modal-content jae-border-info">
 			<div class="modal-body">
 				<section class="fieldset rounded border-info">
-					<header class="text-info font-weight-bold">Homework Schedule</header>
+					<header class="text-info font-weight-bold">Homework Schedule Registration</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
@@ -812,11 +812,6 @@ function deleteHomeworkSchedule(id) {
 		</div>
 	</div>
 </div>
-
-
-
-
-
 
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
