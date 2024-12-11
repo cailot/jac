@@ -22,6 +22,6 @@ public interface HomeworkScheduleRepository extends JpaRepository<HomeworkSchedu
 	@Query("SELECT new hyung.jin.seo.jae.dto.HomeworkScheduleDTO(h.id, h.fromDatetime, h.toDatetime, h.grade, h.subject, h.subjectDisplay, h.answerDisplay, h.info, h.active, h.registerDate) " + 
 	"FROM HomeworkSchedule h WHERE h.fromDatetime BETWEEN :from AND :to " +
 	"ORDER BY h.id")
-	List<HomeworkScheduleDTO> filterHomeworkScheduleByYear(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+	List<HomeworkScheduleDTO> filterHomeworkScheduleByTime(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
 }

@@ -11,16 +11,11 @@ import lombok.ToString;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,11 +30,20 @@ public class PracticeSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment
     private Long id;
     
-    @Column(length = 4, nullable = true)
-    private Integer year;
+    @Column(nullable = false)
+    private LocalDateTime fromDatetime;
 
-    @Column(length = 2, nullable = true)
-    private Integer week;
+    @Column(nullable = false)
+    private LocalDateTime toDatetime;
+
+    @Column(length = 30, nullable = true)
+    private String grade;
+
+    @Column(length = 30, nullable = true)
+    private String practiceGroup;
+   
+    @Column(length = 30, nullable = true)
+    private String week;
 
     @Column(length = 50, nullable = false)
     private String info;
@@ -50,16 +54,16 @@ public class PracticeSchedule {
     @CreationTimestamp
     private LocalDate registerDate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(
-		name = "PracticeScheculeLink",
-		joinColumns = { @JoinColumn(name = "practiceScheduleId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_PracticeSchedule")) },
-		inverseJoinColumns = { @JoinColumn(name = "practiceId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_Practice")) }
-	)
-	private Set<Practice> practices = new LinkedHashSet();
+    // @ManyToMany(cascade = CascadeType.ALL)
+	// @JoinTable(
+	// 	name = "PracticeScheculeLink",
+	// 	joinColumns = { @JoinColumn(name = "practiceScheduleId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_PracticeSchedule")) },
+	// 	inverseJoinColumns = { @JoinColumn(name = "practiceId", foreignKey = @javax.persistence.ForeignKey(name = "FK_PracticeScheduleLink_Practice")) }
+	// )
+	// private Set<Practice> practices = new LinkedHashSet();
 
-    public void addPractice(Practice practice){
-        practices.add(practice);
-    }
+    // public void addPractice(Practice practice){
+    //     practices.add(practice);
+    // }
 
  }

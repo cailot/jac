@@ -163,18 +163,9 @@ public class ConnectedController {
 	@ResponseBody
 	public PracticeScheduleDTO registerPracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
 		PracticeSchedule schedule = formData.convertToPracticeSchedule();
-		List<PracticeDTO> practices = formData.getPractices();
-		// associate practice to schedule
-		for(PracticeDTO practice : practices){
-			String practiceId = practice.getId();
-			Practice prac = connectedService.getPractice(Long.parseLong(practiceId));
-			schedule.addPractice(prac);
-		}
 		schedule.setActive(true);
-		// save practice schedule
 		schedule = connectedService.addPracticeSchedule(schedule);
 		PracticeScheduleDTO dto = new PracticeScheduleDTO(schedule);
-		// return dto
 		return dto;
 	}
 	
@@ -202,7 +193,7 @@ public class ConnectedController {
 	@PostMapping("/addHomeworkSchedule")
 	@ResponseBody
 	public HomeworkScheduleDTO registerHomeworkSchedule(@RequestBody HomeworkScheduleDTO formData) {
-		System.out.println("formData : " + formData);
+		// System.out.println("formData : " + formData);
 		HomeworkSchedule schedule = formData.convertToHomeworkSchedule();
 		schedule = connectedService.addHomeworkSchedule(schedule);
 		HomeworkScheduleDTO dto = new HomeworkScheduleDTO(schedule);
@@ -294,30 +285,22 @@ public class ConnectedController {
 		}
 	}
 
-		// update existing practice schedule
-		@PutMapping("/updatePracticeSchedule")
-		@ResponseBody
-		public ResponseEntity<String> updatePracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
-			try{
-				// 1. create barebone PracticeSchedule
-				PracticeSchedule work = formData.convertToPracticeSchedule();
-				// 2. update associated Practices
-				List<PracticeDTO> practices = formData.getPractices();
-				for(PracticeDTO practice : practices){
-					// 2.1 get Practice
-					Practice prac = connectedService.getPractice(Long.parseLong(practice.getId()));
-					// 2.2 update Practice
-					work.addPractice(prac);
-				}
-				// 3. update PracticeSchedule
-				work = connectedService.updatePracticeSchedule(work, Long.parseLong(formData.getId()));
-				// 4.return flag
-				return ResponseEntity.ok("\"Practice Schedule updated successfully\"");
-			}catch(Exception e){
-				String message = "Error updating Practice Schedule : " + e.getMessage();
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
-			}
+	// update existing practice schedule
+	@PutMapping("/updatePracticeSchedule")
+	@ResponseBody
+	public ResponseEntity<String> updatePracticeSchedule(@RequestBody PracticeScheduleDTO formData) {
+		try{
+			// 1. create barebone PracticeSchedule
+			PracticeSchedule work = formData.convertToPracticeSchedule();
+			// 2. update PracticeSchedule
+			work = connectedService.updatePracticeSchedule(work, Long.parseLong(formData.getId()));
+			// 3.return flag
+			return ResponseEntity.ok("\"Practice Schedule updated successfully\"");
+		}catch(Exception e){
+			String message = "Error updating Practice Schedule : " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
+	}
 
 	// update existing test schedule
 	@PutMapping("/updateTestSchedule")
@@ -395,14 +378,6 @@ public class ConnectedController {
 	public PracticeScheduleDTO getPracticeSchedule(@PathVariable Long id) {
 		PracticeSchedule work = connectedService.getPracticeSchedule(id);
 		PracticeScheduleDTO dto = new PracticeScheduleDTO(work);
-		Set<Practice> practices = work.getPractices();
-		for(Practice practice : practices){
-			PracticeDTO prac = new PracticeDTO(practice);
-			// get PracticeType name
-			String name =  connectedService.getPracticeTypeName(practice.getId());
-			prac.setName(name);
-			dto.addPractice(prac);
-		}
 		return dto;
 	}
 
@@ -521,25 +496,25 @@ public class ConnectedController {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
 	@GetMapping("/filterPracticeSchedule")
 	public String listPracticeSchedules(
-			@RequestParam(value = "listYear", required = false) String listYear,
-			@RequestParam(value = "listWeek", required = false) String listWeek,
+			@RequestParam(value = "listYear", required = false) int listYear,
+			@RequestParam(value = "listPracticeType", required = false) int listPracticeType,
 			Model model) {
+		LocalDateTime startTime = JaeConstants.START_TIME;
+		LocalDateTime endTime = JaeConstants.END_TIME;
+		// if listYear != 0, check Cycle's first day and last day
+		if(listYear != 0){
+			CycleDTO cycle = cycleService.listCycles(listYear);
+			String start = cycle.getStartDate();
+			String end = cycle.getEndDate();
+			LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_LOCAL_DATE);
+			startTime = startDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+			LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_LOCAL_DATE);
+			endTime = endDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+		}
 		List<PracticeScheduleDTO> dtos = new ArrayList();
-		String filteredYear = StringUtils.defaultString(listYear, "0");
-		String filteredWeek = StringUtils.defaultString(listWeek, "0");
-		dtos = connectedService.listPracticeSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		dtos = connectedService.listPracticeSchedule(startTime, endTime, listPracticeType); 		
 		model.addAttribute(JaeConstants.PRACTICE_SCHEDULE_LIST, dtos);
 		return "practiceSchedulePage";
 	}
@@ -676,12 +651,12 @@ public class ConnectedController {
 	}
 
 	// list practice type for schedule
-	@GetMapping("/practice4Schedule/{type}/{grade}")
-	@ResponseBody
-	List<PracticeDTO> getPracticeForSchedule(@PathVariable int type, @PathVariable String grade) {
-		List<PracticeDTO> dtos = connectedService.listPracticeByTypeNGrade(type, grade); 
-		return dtos;
-	}
+	// @GetMapping("/practiceGroup4Schedule/{group}")
+	// @ResponseBody
+	// List<PracticeType> getPracticeGroupForSchedule(@PathVariable int group) {
+	// 	List<PracticeType> dtos = codeService.getPracticeTypes(group);
+	// 	return dtos;
+	// }
 
 	// list test type for schedule
 	@GetMapping("/test4Schedule/{type}/{grade}")
@@ -717,9 +692,9 @@ public class ConnectedController {
 
 	@DeleteMapping(value = "/deletePracticeSchedule/{practiceScheduleId}")
 	@ResponseBody
-    public ResponseEntity<String> removePracticeSchedule(@PathVariable String practiceScheduleId) {
-        Long id = Long.parseLong(StringUtils.defaultString(practiceScheduleId, "0"));
-		connectedService.deletePracticeSchedule(id);
+    public ResponseEntity<String> removePracticeSchedule(@PathVariable long practiceScheduleId) {
+        // Long id = Long.parseLong(StringUtils.defaultString(practiceScheduleId, "0"));
+		connectedService.deletePracticeSchedule(practiceScheduleId);
 		return ResponseEntity.ok("\"Practice Schedule deleted successfully\"");
     }
 
