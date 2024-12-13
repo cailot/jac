@@ -21,11 +21,11 @@ public interface PracticeRepository extends JpaRepository<Practice, Long>{
 	PracticeDTO findPractice(int type, String grade, int volume);
 
 	// filter PracticeDTO by type, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.PracticeDTO(p.id, p.pdfPath, p.volume, p.active, p.info, p.grade.code, p.practiceType.id, p.practiceType.name, p.practiceType.practiceGroup, p.registerDate) FROM Practice p WHERE (?1 = 0 OR p.practiceType.id = ?1) AND (?2 = 'All' OR p.grade.code = ?2) AND (?3 = 0 OR p.volume = ?3)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.PracticeDTO(p.id, p.pdfPath, p.volume, p.active, p.info, p.grade.code, p.practiceType.id, p.practiceType.name, p.practiceType.practiceGroup, p.registerDate) FROM Practice p WHERE (?1 = 0 OR p.practiceType.id = ?1) AND (?2 = '0' OR p.grade.code = ?2) AND (?3 = 0 OR p.volume = ?3)")
 	List<PracticeDTO> filterPracticeByTypeNGradeNVolume(int type, String grade, int volume);
 
 	// filter active PracticeDTO by type, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.PracticeDTO(p.id, p.pdfPath, p.volume, p.active, p.info, p.grade.code, p.practiceType.id, p.practiceType.name, p.practiceType.practiceGroup, p.registerDate) FROM Practice p WHERE (?1 = 0 OR p.practiceType.id = ?1) AND (?2 = 'All' OR p.grade.code = ?2) AND (?3 = 0 OR p.volume = ?3) AND (p.active = 1)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.PracticeDTO(p.id, p.pdfPath, p.volume, p.active, p.info, p.grade.code, p.practiceType.id, p.practiceType.name, p.practiceType.practiceGroup, p.registerDate) FROM Practice p WHERE (?1 = 0 OR p.practiceType.id = ?1) AND (?2 = '0' OR p.grade.code = ?2) AND (?3 = 0 OR p.volume = ?3) AND (p.active = 1)")
 	List<PracticeDTO> filterActivePracticeByTypeNGradeNVolume(int type, String grade, int volume);
 	
 	// summarise Extawork by grade

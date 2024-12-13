@@ -97,6 +97,8 @@ function retrievePracticeInfo(id) {
 			$("#editId").val(practice.id);
 			$("#editPracticeType").val(practice.practiceType);
 			$("#editGrade").val(practice.grade);
+			// $("#editVolume").val(practice.volume);
+			updateVolumeOptions('edit');
 			$("#editVolume").val(practice.volume);
 			$("#editInfo").val(practice.info);
 			$("#editPdfPath").val(practice.pdfPath);	
@@ -195,6 +197,8 @@ function displayAnswerSheet(practiceId) {
 	document.getElementById("practiceId4Answer").value = practiceId;
 	// clear answerId
 	document.getElementById("answerId").value = '';
+	// show count of answer
+	updateRadioButtons();
 
 	// check if answer exists or not
 	// if exists, then display info
@@ -444,6 +448,82 @@ function deletePractice(id) {
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Volume Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateVolumeOptions(action) {
+	// Get the selected practice type text
+	var practiceTypeSelect = document.getElementById(action + "PracticeType");
+	var practiceTypeText = practiceTypeSelect.selectedOptions[0].text;
+
+	// console.log(practiceTypeText);
+	
+	// Clear existing options
+	var selectElement = document.getElementById(action + "Volume");
+	selectElement.innerHTML = '';
+
+	// Check if the practice type starts with "Mega" or "Revision"
+	if (practiceTypeText.startsWith("Mega") || practiceTypeText.startsWith("Revision")) {
+		// Loop to add options "Vol.1-1", "Vol.1-2", etc.
+		for (var i = 1; i <= 5; i++) {
+			for (var j = 1; j <= 2; j++) {
+				// Create a new option element
+				var option = document.createElement("option");
+				// Set the value and text content for the option
+				option.value = (i - 1) * 2 + j;
+				option.textContent = "Vol " + i + "-" + j;
+				// Append the option to the select element
+				selectElement.appendChild(option);
+			}
+		}
+	} else {
+		// Loop to add options 1, 2, etc.
+		for (var i = 1; i <= 25; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Answer Radio Button Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateRadioButtons() {
+	// Get the selected count
+	var count = document.getElementById("addAnswerCount").value;
+	console.log(count);
+	// Get a reference to the container for the radio buttons
+	var container = document.getElementById("radioButtonsContainer");
+	// Clear existing radio buttons
+	container.innerHTML = '';
+
+	// Loop to add radio buttons based on the selected count
+	for (var i = 1; i <= count; i++) {
+		// Create a new radio button input element
+		var radioInput = document.createElement("input");
+		radioInput.className = "form-check-input";
+		radioInput.type = "radio";
+		radioInput.name = "inlineRadioOptions";
+		radioInput.id = "inlineRadio" + i;
+		radioInput.value = i;
+
+		// Create a new label element
+		var label = document.createElement("label");
+		label.className = "form-check-label";
+		label.htmlFor = "inlineRadio" + i;
+		label.textContent = String.fromCharCode(64 + i); // Convert number to corresponding letter (A, B, C, ...)
+
+		// Append the radio button and label to the container
+		container.appendChild(radioInput);
+		container.appendChild(label);
+	}
+}
+
 </script>
 
 <style>
@@ -468,6 +548,14 @@ function deletePractice(id) {
 		height: 45px 	
 	} 
 
+	.form-check-input {
+		margin-right: 5px;
+	}
+
+	.form-check-label {
+		margin-right: 25px;
+	}
+
 </style>
 
 <!-- List Body -->
@@ -485,7 +573,7 @@ function deletePractice(id) {
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -527,7 +615,7 @@ function deletePractice(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerPracticeModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerPracticeModal" onclick="updateVolumeOptions('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -540,9 +628,9 @@ function deletePractice(id) {
 									<tr>
 										<th class="text-center align-middle" style="width: 20%">Practice Type</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
-										<th class="text-center align-middle" style="width: 5%">Set</th>
+										<th class="text-center align-middle" style="width: 10%">Set</th>
 										<th class="text-center align-middle" style="width: 30%">Document Path</th>
-										<th class="text-center align-middle" style="width: 25%">Information</th>
+										<th class="text-center align-middle" style="width: 20%">Information</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -602,9 +690,29 @@ function deletePractice(id) {
 														</span>
 													</td>
 													<td class="small align-middle text-center">
-														<span>
+														<!-- <span>
 															<c:out value="${practice.volume}" />
-														</span>
+														</span> -->
+														<c:choose>
+															<c:when test="${fn:startsWith(practice.name, 'Mega') || fn:startsWith(practice.name, 'Revision')}">
+																<c:choose>
+																	<c:when test="${practice.volume == '1'}">Vol.1-1</c:when>
+																	<c:when test="${practice.volume == '2'}">Vol.1-2</c:when>
+																	<c:when test="${practice.volume == '3'}">Vol.2-1</c:when>
+																	<c:when test="${practice.volume == '4'}">Vol.2-2</c:when>
+																	<c:when test="${practice.volume == '5'}">Vol.3-1</c:when>
+																	<c:when test="${practice.volume == '6'}">Vol.3-2</c:when>
+																	<c:when test="${practice.volume == '7'}">Vol.4-1</c:when>
+																	<c:when test="${practice.volume == '8'}">Vol.4-2</c:when>
+																	<c:when test="${practice.volume == '9'}">Vol.5-1</c:when>
+																	<c:when test="${practice.volume == '10'}">Vol.5-2</c:when>
+																	<c:otherwise></c:otherwise>
+																</c:choose>
+															</c:when>
+															<c:otherwise>
+																<c:out value="${practice.volume}" />
+															</c:otherwise>
+														</c:choose>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
 														<span>
@@ -661,9 +769,9 @@ function deletePractice(id) {
 					<form id="practiceRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-8">
+								<div class="col-md-7">
 									<label for="addPracticeType" class="label-form">Practice Type</label>
-									<select class="form-control" id="addPracticeType" name="addPracticeType">
+									<select class="form-control" id="addPracticeType" name="addPracticeType" onchange="updateVolumeOptions('add')">
 									</select>
 								</div>
 								<div class="col-md-2">
@@ -671,24 +779,10 @@ function deletePractice(id) {
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<label for="addVolume" class="label-form">Set</label>
 									<select class="form-control" id="addVolume" name="addVolume">
 									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("addVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
 								</div>
 							</div>
 						</div>
@@ -729,7 +823,7 @@ function deletePractice(id) {
 					<form id="practiceEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-8">
+								<div class="col-md-7">
 									<label for="editPracticeType" class="label-form">Practice Type</label>
 									<select class="form-control" id="editPracticeType" name="editPracticeType" disabled>
 									</select>
@@ -739,24 +833,10 @@ function deletePractice(id) {
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<label for="editVolume" class="label-form">Set</label>
 									<select class="form-control" id="editVolume" name="editVolume">
 									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
 								</div>
 							</div>
 						</div>
@@ -796,7 +876,6 @@ function deletePractice(id) {
 	</div>
 </div>
 
-
 <!-- Add Answer Form Dialogue -->
 <div class="modal fade" id="registerPracticeAnswerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -804,7 +883,6 @@ function deletePractice(id) {
 			<div class="modal-body">
 				<section class="fieldset rounded border-success">
 					<header class="text-success font-weight-bold">Practice Answer Sheet</header>
-					<!-- <form id="practiceAnswerRegister"> -->
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
@@ -815,9 +893,16 @@ function deletePractice(id) {
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12">
+								<div class="col-md-10">
 									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
 									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
+								</div>
+								<div class="col-md-2">
+									<label for="addAnswerCount" class="label-form">Count</label>
+									<select class="form-control" id="addAnswerCount" name="addAnswerCount" onchange="updateRadioButtons()">
+										<option value="4">4</option>
+										<option value="5">5</option>
+									</select>
 								</div>
 							</div>
 						</div>
@@ -845,15 +930,8 @@ function deletePractice(id) {
 										</c:forEach>
 									</select>
 								</div>
-								<div class="col-md-7" style="text-align: right;">
-									<style>
-										.form-check-input {
-											margin-right: 5px;
-										}
-										.form-check-label {
-											margin-right: 25px;
-										}
-									</style>
+								<div class="col-md-7" style="text-align: right;" id="radioButtonsContainer">
+									<!--
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">
 									<label class="form-check-label" for="inlineRadio1">A</label>
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
@@ -863,7 +941,7 @@ function deletePractice(id) {
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="4">
 									<label class="form-check-label" for="inlineRadio4">D</label>
 									<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value="5">
-									<label class="form-check-label" for="inlineRadio5">E</label>
+									<label class="form-check-label" for="inlineRadio5">E</label> -->
 								</div>
 								<div class="col-md-2">
 									<button type="button" class="btn btn-success btn-block" onclick="addAnswerToTable()"> <i class="bi bi-plus"></i></button>

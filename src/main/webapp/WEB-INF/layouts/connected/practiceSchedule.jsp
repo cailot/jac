@@ -61,13 +61,13 @@ $(document).ready(function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addPractice(action) {
 	// Get the values from the select elements
-	var practiceTypeSelect = document.getElementById(action + "PracticeTypeSearch");
+	var practiceTypeSelect = document.getElementById(action + "PracticeType");
 	var practiceTypeGroup = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].value;
 	var practiceTypeName = practiceTypeSelect.options[practiceTypeSelect.selectedIndex].text;
 
-	var setSelect = document.getElementById(action + "Set");
+	var setSelect = document.getElementById(action + "Volume");
 	var set = setSelect.options[setSelect.selectedIndex].text;
-	var practiceTypeWeek = document.getElementById(action + "Set").value;
+	var practiceTypeWeek = document.getElementById(action + "Volume").value;
 
 	// Get a reference to the table
 	var table = document.getElementById(action + "ScheduleTable");
@@ -252,7 +252,48 @@ function retrieveScheduleInfo(id) {
 				var row = $("<tr>");
 				// Create the cells for the row
 				var cell1 = $("<td>").text(practiceGroupName(practiceTypeGroup));
-				var cell2 = $("<td>").text(practiceTypeWeek);
+				// var cell2 = $("<td>").text(practiceTypeWeek);
+				var cell2Text = '';
+				if(practiceTypeGroup == 1 || practiceTypeGroup == 2){
+					switch (practiceTypeWeek) {
+						case '1':
+							cell2Text = 'Vol 1-1';
+							break;
+						case '2':
+							cell2Text = 'Vol 1-2';
+							break;
+						case '3':
+							cell2Text = 'Vol 2-1';
+							break;
+						case '4':
+							cell2Text = 'Vol 2-2';
+							break;
+						case '5':
+							cell2Text = 'Vol 3-1';
+							break;
+						case '6':
+							cell2Text = 'Vol 3-2';
+							break;
+						case '7':
+							cell2Text = 'Vol 4-1';
+							break;
+						case '8':
+							cell2Text = 'Vol 4-2';
+							break;
+						case '9':
+							cell2Text = 'Vol 5-1';
+							break;
+						case '10':
+							cell2Text = 'Vol 5-2';
+							break;
+						default:
+							cell2Text = practiceTypeWeek;
+							break;
+					}
+				}else{
+					cell2Text = practiceTypeWeek;
+				}
+				var cell2 = $("<td>").text(cell2Text);	
 
 				// cell3
 				var binIcon = $('<i class="bi bi-trash h5"></i>');
@@ -276,7 +317,8 @@ function retrieveScheduleInfo(id) {
 				// Append the row to the table
 				$("#editScheduleTable").append(row);
 			}
-			
+			// show volume options
+			updateVolumeOptions('edit');
 			// display available set to be ready to select
 			$('#editScheduleModal').modal('show');
 		},
@@ -452,6 +494,48 @@ function deletePracticeSchedule(id) {
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Volume Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateVolumeOptions(action) {
+	// Get the selected practice type text
+	var practiceTypeSelect = document.getElementById(action + "PracticeType");
+	var practiceTypeText = practiceTypeSelect.selectedOptions[0].text;
+
+	console.log(practiceTypeText);
+	
+	// Clear existing options
+	var selectElement = document.getElementById(action + "Volume");
+	selectElement.innerHTML = '';
+
+	// Check if the practice type starts with "Mega" or "Revision"
+	if (practiceTypeText.startsWith("Mega") || practiceTypeText.startsWith("Revision")) {
+		// Loop to add options "Vol.1-1", "Vol.1-2", etc.
+		for (var i = 1; i <= 5; i++) {
+			for (var j = 1; j <= 2; j++) {
+				// Create a new option element
+				var option = document.createElement("option");
+				// Set the value and text content for the option
+				option.value = (i - 1) * 2 + j;
+				option.textContent = "Vol " + i + "-" + j;
+				// Append the option to the select element
+				selectElement.appendChild(option);
+			}
+		}
+	} else {
+		// Loop to add options 1, 2, etc.
+		for (var i = 1; i <= 25; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
+}
+
 </script>
 
 <style>
@@ -533,7 +617,7 @@ function deletePracticeSchedule(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="updateVolumeOptions('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -592,9 +676,29 @@ function deletePracticeSchedule(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:forEach var="week" items="${scheduleItem.week}" varStatus="status">
-																<c:out value="${week}"/>
-																<c:if test="${!status.last}">, </c:if>
+															<!-- Display Weeks for Each Group -->
+															<c:forEach var="week" items="${scheduleItem.week}" varStatus="weekStatus">
+																<c:choose>
+																	<c:when test="${scheduleItem.practiceGroup[weekStatus.index] == 1 || scheduleItem.practiceGroup[weekStatus.index] == 2}">
+																		<c:choose>
+																			<c:when test="${week == '1'}">Vol 1-1</c:when>
+																			<c:when test="${week == '2'}">Vol 1-2</c:when>
+																			<c:when test="${week == '3'}">Vol 2-1</c:when>
+																			<c:when test="${week == '4'}">Vol 2-2</c:when>
+																			<c:when test="${week == '5'}">Vol 3-1</c:when>
+																			<c:when test="${week == '6'}">Vol 3-2</c:when>
+																			<c:when test="${week == '7'}">Vol 4-1</c:when>
+																			<c:when test="${week == '8'}">Vol 4-2</c:when>
+																			<c:when test="${week == '9'}">Vol 5-1</c:when>
+																			<c:when test="${week == '10'}">Vol 5-2</c:when>
+																			<c:otherwise><c:out value="${week}" /></c:otherwise>
+																		</c:choose>
+																	</c:when>
+																	<c:otherwise>
+																		<c:out value="${week}" />
+																	</c:otherwise>
+																</c:choose>
+																<c:if test="${!weekStatus.last}">, </c:if>
 															</c:forEach>
 														</span>
 													</td>													
@@ -743,9 +847,9 @@ function deletePracticeSchedule(id) {
 									</div>
 								</div>
 								<div class="form-row">
-									<div class="col-md-8">
-										<label for="addPracticeTypeSearch" class="label-form">Type</label>
-										<select class="form-control" id="addPracticeTypeSearch" name="addPracticeTypeSearch">
+									<div class="col-md-7">
+										<label for="addPracticeType" class="label-form">Type</label>
+										<select class="form-control" id="addPracticeType" name="addPracticeType" onchange="updateVolumeOptions('add')">
 											<option value="1">Mega Practice</option>
 											<option value="2">Revision Practice</option>
 											<option value="3">Edu Practice</option>
@@ -753,23 +857,10 @@ function deletePracticeSchedule(id) {
 											<option value="5">NAPLAN Practice</option>
 										</select>
 									</div>
-									<div class="col-md-3">
-										<label for="addSet" class="label-form">Set</label>
-										<select class="form-control" id="addSet" name="addSet">
+									<div class="col-md-4">
+										<label for="addVolume" class="label-form">Set</label>
+										<select class="form-control" id="addVolume" name="addVolume">
 										</select>
-										<script>
-											var selectElement = document.getElementById("addSet");
-											// Loop to add options from 1 to 50
-											for (var i = 1; i <= 50; i++) {
-												// Create a new option element
-												var option = document.createElement("option");
-												// Set the value and text content for the option
-												option.value = i;
-												option.textContent = i;
-												// Append the option to the select element
-												selectElement.appendChild(option);
-											}
-										</script>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
 										<label class="label-form text-white">Add</label>
@@ -783,8 +874,8 @@ function deletePracticeSchedule(id) {
 								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
-											<th data-field="type" style="width: 75%;">Practice</th>
-											<th data-field="set" style="width: 15%;">Set</th>
+											<th data-field="type" style="width: 65%;">Practice</th>
+											<th data-field="set" style="width: 25%;">Set</th>
 											<th data-field="action" style="width: 10%;">Action</th>
 										</tr>
 									</thead>
@@ -917,9 +1008,9 @@ function deletePracticeSchedule(id) {
 									</div>
 								</div>
 								<div class="form-row">
-									<div class="col-md-8">
-										<label for="editPracticeTypeSearch" class="label-form">Type</label>
-										<select class="form-control" id="editPracticeTypeSearch" name="editPracticeTypeSearch">
+									<div class="col-md-7">
+										<label for="editPracticeType" class="label-form">Type</label>
+										<select class="form-control" id="editPracticeType" name="editPracticeType" onchange="updateVolumeOptions('edit')">
 											<option value="1">Mega Practice</option>
 											<option value="2">Revision Practice</option>
 											<option value="3">Edu Practice</option>
@@ -927,23 +1018,10 @@ function deletePracticeSchedule(id) {
 											<option value="5">NAPLAN Practice</option>
 										</select>
 									</div>
-									<div class="col-md-3">
-										<label for="addSet" class="label-form">Set</label>
-										<select class="form-control" id="editSet" name="editSet">
+									<div class="col-md-4">
+										<label for="editVolume" class="label-form">Set</label>
+										<select class="form-control" id="editVolume" name="editVolume">
 										</select>
-										<script>
-											var selectElement = document.getElementById("editSet");
-											// Loop to add options from 1 to 50
-											for (var i = 1; i <= 50; i++) {
-												// Create a new option element
-												var option = document.createElement("option");
-												// Set the value and text content for the option
-												option.value = i;
-												option.textContent = i;
-												// Append the option to the select element
-												selectElement.appendChild(option);
-											}
-										</script>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
 										<label class="label-form text-white">Add</label>
@@ -957,8 +1035,8 @@ function deletePracticeSchedule(id) {
 								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
         							<thead class="thead-light">
 										<tr>
-											<th data-field="type" style="width: 75%;">Practice</th>
-											<th data-field="set" style="width: 15%;">Set</th>
+											<th data-field="type" style="width: 65%;">Practice</th>
+											<th data-field="set" style="width: 25%;">Set</th>
 											<th data-field="action" style="width: 10%;">Action</th>
 										</tr>
 									</thead>

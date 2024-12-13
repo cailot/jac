@@ -26,12 +26,15 @@ public class PracticeAnswerDTO implements Serializable {
 
 	private long practiceId;
 
+	private int answerCount;
+
 	private List<Integer> answers;
 
 	public PracticeAnswerDTO(PracticeAnswer work){
 		this.id = String.valueOf(work.getId());
 		this.videoPath = work.getVideoPath();
 		this.pdfPath = work.getPdfPath();
+		this.answerCount = work.getAnswerCount();
 		this.practiceId = work.getPractice().getId();
 		this.answers = work.getAnswers();
 	}

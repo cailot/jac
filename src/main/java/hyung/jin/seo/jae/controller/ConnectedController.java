@@ -442,7 +442,7 @@ public class ConnectedController {
 			Model model) {
 		List<PracticeDTO> dtos = new ArrayList();
 		String filteredType = StringUtils.defaultString(practiceType, "0");
-		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
+		String filteredGrade = StringUtils.defaultString(grade, "0");
 		String filteredVolume = StringUtils.defaultString(volume, "0");
 		dtos = connectedService.listPractice(Integer.parseInt(filteredType), filteredGrade, Integer.parseInt(filteredVolume));		
 		model.addAttribute(JaeConstants.PRACTICE_LIST, dtos);
@@ -463,13 +463,6 @@ public class ConnectedController {
 		model.addAttribute(JaeConstants.TEST_LIST, dtos);
 		return "testListPage";
 	}
-
-
-
-
-
-
-
 
 
 
