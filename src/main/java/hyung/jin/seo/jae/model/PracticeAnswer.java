@@ -41,6 +41,9 @@ public class PracticeAnswer {
     @Column(length = 300, nullable = true)
     private String pdfPath;
 
+    @Column
+    private int answerCount;
+
     @ElementCollection
     @CollectionTable(name = "PracticeAnswerCollection",
     joinColumns = @JoinColumn(name="PracticeAnswer_id", foreignKey = @ForeignKey(name="FK_PracticeAnswerCollection_PracticeAnswer"))) // Set the custom table name
