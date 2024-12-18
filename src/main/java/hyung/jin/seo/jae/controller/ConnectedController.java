@@ -543,6 +543,7 @@ public class ConnectedController {
 		String practiceId = payload.get("practiceId").toString();
 		String video = payload.get("videoPath").toString();
 		String pdf = payload.get("pdfPath").toString();
+		String answerCount = payload.get("answerCount").toString();
 		List<Map<String, Object>> mapAns = (List<Map<String, Object>>) payload.get("answers");
 		// convert the Map of answers to List
 		List<Integer>  answer = convertAnswers(mapAns);
@@ -554,6 +555,7 @@ public class ConnectedController {
 			// 2. populate PracticeAnswer
 			pa.setVideoPath(video);
 			pa.setPdfPath(pdf);
+			pa.setAnswerCount(Integer.parseInt(answerCount));
 			pa.setAnswers(answer);
 			// 3. get Practice
 			Practice practice = connectedService.getPractice(Long.parseLong(practiceId));
@@ -568,6 +570,7 @@ public class ConnectedController {
 			// 2. populate PracticeAnswer
 			pa.setVideoPath(video);
 			pa.setPdfPath(pdf);
+			pa.setAnswerCount(Integer.parseInt(answerCount));
 			pa.setAnswers(answer);
 			// 3. update PracticeAnswer
 			connectedService.updatePracticeAnswer(pa, Long.parseLong(answerId));
