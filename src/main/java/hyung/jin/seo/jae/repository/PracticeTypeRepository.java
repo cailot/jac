@@ -17,4 +17,8 @@ public interface PracticeTypeRepository extends JpaRepository<PracticeType, Long
 	// get name by id
 	@Query(value = "SELECT p.name FROM PracticeType p WHERE p.id = ?1", nativeQuery = true)
 	String getNameById(Long id);
+
+	// get groupId by id
+	@Query(value = "SELECT p.practiceGroup FROM PracticeType p WHERE p.id = ?1", nativeQuery = true)
+	int getPracticeGroupById(Long id);
 }

@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -352,6 +353,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 		// existing.setYear(newYear);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
+		// update timestamp
+		existing.setRegisterDate(LocalDate.now());
         // update the existing record
         Homework updated = homeworkRepository.save(existing);
         return updated;
@@ -396,6 +399,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 		existing.setVolume(newVolume);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
+		// update timestamp
+		existing.setRegisterDate(LocalDate.now());
         // update the existing record
         Practice updated = practiceRepository.save(existing);
 		return updated;

@@ -327,9 +327,10 @@ function deleteHomework(id) {
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<!-- <th class="text-center align-middle" style="width: 10%">Academic Year</th> -->
 										<th class="text-center align-middle" style="width: 5%">Week</th>
-										<th class="text-center align-middle" style="width: 27.5%">Video Path</th>
-										<th class="text-center align-middle" style="width: 27.5%">Document Path</th>
+										<th class="text-center align-middle" style="width: 24%">Document Path</th>
+										<th class="text-center align-middle" style="width: 24%">Video Path</th>
 										<th class="text-center align-middle" style="width: 10%">Information</th>
+										<th class="text-center align-middle" style="width: 7%">Date</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -384,17 +385,22 @@ function deleteHomework(id) {
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.videoPath}" />
+															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.pdfPath}" />
+															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>
 													<td class="small align-middle">
 														<span>
 															<c:out value="${homework.info}" />
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${homework.registerDate}" />
 														</span>
 													</td>
 													<c:set var="active" value="${homework.active}" />
@@ -478,16 +484,16 @@ function deleteHomework(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
+									<label for="addPdfPath" class="label-form">Document Path</label>
+									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addPdfPath" class="label-form">Document Path</label>
-									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
+									<label for="addVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 							</div>
 						</div>
@@ -558,16 +564,16 @@ function deleteHomework(id) {
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
+									<label for="editPdfPath" class="label-form">Document Path</label>
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
+									<label for="editVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
 								</div>
 							</div>
 						</div>
