@@ -197,9 +197,6 @@ function displayAnswerSheet(practiceId) {
 	document.getElementById("practiceId4Answer").value = practiceId;
 	// clear answerId
 	document.getElementById("answerId").value = '';
-	// show count of answer
-	updateRadioButtons();
-
 	// check if answer exists or not
 	// if exists, then display info
 	// if not, show empty form to register
@@ -208,12 +205,14 @@ function displayAnswerSheet(practiceId) {
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
-			//console.log(answerSheet);
+			console.log(answerSheet);
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
 				$("#addAnswerVideoPath").val(answerSheet.videoPath);
 				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
+				$("#addAnswerCount").val(answerSheet.answerCount);
+
 				// Display the answer sheet table
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
@@ -275,6 +274,10 @@ function displayAnswerSheet(practiceId) {
 				var answerQuestionNumberSelect = document.getElementById("answerQuestionNumber");
 				answerQuestionNumberSelect.value = "1";
 			}
+
+			// show count of answer
+			updateRadioButtons();
+
 			// Display the modal
 			$('#registerPracticeAnswerModal').modal('show');
 		},
@@ -350,6 +353,7 @@ function collectAndSubmitAnswers() {
 	var practiceId = document.getElementById("practiceId4Answer").value;
     var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
     var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
+	var answerCount = document.getElementById("addAnswerCount").value;
 
     // Collect question number and selected value from the answerSheetTable
     var answerList = [];
@@ -388,6 +392,7 @@ function collectAndSubmitAnswers() {
 			practiceId : practiceId,
 			videoPath : answerVideoPath,
 			pdfPath : answerPdfPath,
+			answerCount : answerCount,
 			answers : answerList
 		}),
         success: function (response) {
@@ -626,11 +631,12 @@ function updateRadioButtons() {
 							<table id="practiceListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle" style="width: 20%">Practice Type</th>
+										<th class="text-center align-middle" style="width: 15%">Practice Type</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<th class="text-center align-middle" style="width: 10%">Set</th>
-										<th class="text-center align-middle" style="width: 30%">Document Path</th>
+										<th class="text-center align-middle" style="width: 25%">Document Path</th>
 										<th class="text-center align-middle" style="width: 20%">Information</th>
+										<th class="text-center align-middle" style="width: 10%">Date</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -722,6 +728,11 @@ function updateRadioButtons() {
 													<td class="small align-middle">
 														<span>
 															<c:out value="${practice.info}" />
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${practice.registerDate}" />
 														</span>
 													</td>
 													<c:set var="active" value="${practice.active}" />
@@ -843,7 +854,7 @@ function updateRadioButtons() {
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
+									<label for="editPdfPath" class="label-form">Document Path</label>
 									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
@@ -886,16 +897,16 @@ function updateRadioButtons() {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
-									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
-									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
+									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
+									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-10">
-									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
-									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
+									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
+									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 								<div class="col-md-2">
 									<label for="addAnswerCount" class="label-form">Count</label>

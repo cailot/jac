@@ -31,28 +31,28 @@ $(document).ready(function () {
 	});
 
 
-	$('#addGradeAll').on('change', function() {
-        var isChecked = $(this).is(':checked');
-        $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
-    });
+	// $('#addGradeAll').on('change', function() {
+    //     var isChecked = $(this).is(':checked');
+    //     $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
+    // });
 
-	$('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
-        var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
-        var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
-        $('#addGradeAll').prop('checked', allChecked);
-    });
+	// $('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
+    //     var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
+    //     var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+    //     $('#addGradeAll').prop('checked', allChecked);
+    // });
 
 
-	$('#editGradeAll').on('change', function() {
-		var isChecked = $(this).is(':checked');
-		$('#editGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
-	});
+	// $('#editGradeAll').on('change', function() {
+	// 	var isChecked = $(this).is(':checked');
+	// 	$('#editGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
+	// });
 
-	$('#editGradeCheckbox input[type="checkbox"]').on('change', function() {
-		var checkboxes = $('#editGradeCheckbox input[type="checkbox"]');
-		var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
-		$('#editGradeAll').prop('checked', allChecked);
-	});
+	// $('#editGradeCheckbox input[type="checkbox"]').on('change', function() {
+	// 	var checkboxes = $('#editGradeCheckbox input[type="checkbox"]');
+	// 	var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+	// 	$('#editGradeAll').prop('checked', allChecked);
+	// });
 
 });
 
@@ -777,10 +777,10 @@ function updateVolumeOptions(action) {
 										<div id="addGrade" name="addGrade">
 											<!-- First Row -->
 											<div id="addGradeCheckbox" class="checkbox-container">
-												<div class="form-check">
+												<!-- <div class="form-check">
 													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
 													<label class="form-check-label" for="addGradeAll">All/None</label>
-												</div>
+												</div> -->
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
 													<label class="form-check-label" for="addP2">P2</label>
@@ -801,6 +801,14 @@ function updateVolumeOptions(action) {
 													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
 													<label class="form-check-label" for="addP6">P6</label>
 												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
+													<label class="form-check-label" for="addTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
+													<label class="form-check-label" for="addTT8">TT8</label>
+												</div>
 											</div>
 											<!-- Second Row -->
 											<div id="addGradeCheckbox" class="checkbox-container">
@@ -819,14 +827,6 @@ function updateVolumeOptions(action) {
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
 													<label class="form-check-label" for="addS10">S10</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
-													<label class="form-check-label" for="addTT6">TT6</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
-													<label class="form-check-label" for="addTT8">TT8</label>
 												</div>
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
@@ -939,10 +939,10 @@ function updateVolumeOptions(action) {
 										<div id="editGrade" name="editGrade">
 											<!-- First Row -->
 											<div id="editGradeCheckbox" class="checkbox-container">
-												<div class="form-check">
+												<!-- <div class="form-check">
 													<input class="form-check-input" type="checkbox" id="editGradeAll" name="editGradeAll">
 													<label class="form-check-label" for="editGradeAll">All/None</label>
-												</div>
+												</div> -->
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
 													<label class="form-check-label" for="editP2">P2</label>
@@ -963,6 +963,14 @@ function updateVolumeOptions(action) {
 													<input class="form-check-input" type="checkbox" value="5" id="editP6" name="grades">
 													<label class="form-check-label" for="editP6">P6</label>
 												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
+													<label class="form-check-label" for="editTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
+													<label class="form-check-label" for="editTT8">TT8</label>
+												</div>
 											</div>
 											<!-- Second Row -->
 											<div id="editGradeCheckbox" class="checkbox-container">
@@ -981,14 +989,6 @@ function updateVolumeOptions(action) {
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="9" id="editS10" name="grades">
 													<label class="form-check-label" for="editS10">S10</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
-													<label class="form-check-label" for="editTT6">TT6</label>
-												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
-													<label class="form-check-label" for="editTT8">TT8</label>
 												</div>
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="19" id="editJMSS" name="grades">
