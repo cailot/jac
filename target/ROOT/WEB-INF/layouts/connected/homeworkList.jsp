@@ -265,7 +265,6 @@ function deleteHomework(id) {
 							<option value="2">Mathematics</option>
 							<option value="4">Writing</option>
 							<option value="12">Short Answer</option>
-							<option value="13">Short Answer TT</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -328,9 +327,10 @@ function deleteHomework(id) {
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<!-- <th class="text-center align-middle" style="width: 10%">Academic Year</th> -->
 										<th class="text-center align-middle" style="width: 5%">Week</th>
-										<th class="text-center align-middle" style="width: 27.5%">Video Path</th>
-										<th class="text-center align-middle" style="width: 27.5%">Document Path</th>
+										<th class="text-center align-middle" style="width: 24%">Document Path</th>
+										<th class="text-center align-middle" style="width: 24%">Video Path</th>
 										<th class="text-center align-middle" style="width: 10%">Information</th>
+										<th class="text-center align-middle" style="width: 7%">Date</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -347,7 +347,6 @@ function deleteHomework(id) {
 																<c:when test="${homework.subject == '2'}">Maths</c:when>
 																<c:when test="${homework.subject == '4'}">Writing</c:when>
 																<c:when test="${homework.subject == '12'}">Short Answer</c:when>
-																<c:when test="${homework.subject == '13'}">Short Answer TT</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -386,17 +385,22 @@ function deleteHomework(id) {
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.videoPath}" />
+															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
 														<span>
-															<c:out value="${homework.pdfPath}" />
+															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>
 													<td class="small align-middle">
 														<span>
 															<c:out value="${homework.info}" />
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${homework.registerDate}" />
 														</span>
 													</td>
 													<c:set var="active" value="${homework.active}" />
@@ -449,7 +453,6 @@ function deleteHomework(id) {
 										<option value="2">Mathematics</option>
 										<option value="4">Writing</option>
 										<option value="12">Short Answer</option>
-										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
@@ -481,16 +484,16 @@ function deleteHomework(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
+									<label for="addPdfPath" class="label-form">Document Path</label>
+									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="addPdfPath" class="label-form">Document Path</label>
-									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
+									<label for="addVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 							</div>
 						</div>
@@ -513,6 +516,26 @@ function deleteHomework(id) {
 	</div>
 </div>
 
+<!-- 
+<script>
+    // Function to handle the enabling/disabling of the Video Path field
+    document.addEventListener("DOMContentLoaded", function() {
+        const subjectSelect = document.getElementById("addSubject");
+        const videoPathInput = document.getElementById("addVideoPath");
+        // Add an event listener to the Subject dropdown
+        subjectSelect.addEventListener("change", function() {
+            if (subjectSelect.value === "12") { // Check if 'Short Answer' is selected
+                videoPathInput.disabled = true; // Disable the Video Path input
+                videoPathInput.value = ""; // Clear the field
+            } else {
+                videoPathInput.disabled = false; // Enable the Video Path input
+            }
+        });
+    });
+</script> -->
+
+
+
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -530,7 +553,6 @@ function deleteHomework(id) {
 										<option value="2">Mathematics</option>
 										<option value="4">Writing</option>
 										<option value="12">Short Answer</option>
-										<option value="13">Short Answer TT</option>
 									</select>
 								</div>
 								<div class="col-md-3">
@@ -562,16 +584,16 @@ function deleteHomework(id) {
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
+									<label for="editPdfPath" class="label-form">Document Path</label>
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
+									<label for="editVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
 								</div>
 							</div>
 						</div>
@@ -603,9 +625,42 @@ function deleteHomework(id) {
 	</div>
 </div>
 
+<script>
+    // Unified function to handle the enabling/disabling of the Video Path field
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdowns = [
+            { subject: "addSubject", videoPath: "addVideoPath" },
+            { subject: "editSubject", videoPath: "editVideoPath" }
+        ];
 
+        // Add event listeners to both dropdowns
+        dropdowns.forEach(({ subject, videoPath }) => {
+            const subjectSelect = document.getElementById(subject);
+            const videoPathInput = document.getElementById(videoPath);
 
+            if (subjectSelect && videoPathInput) {
+                subjectSelect.addEventListener("change", function () {
+                    if (subjectSelect.value === "12") { // Check if 'Short Answer' is selected
+                        videoPathInput.disabled = true; // Disable the Video Path input
+                        videoPathInput.value = ""; // Clear the field
+                    } else {
+                        videoPathInput.disabled = false; // Enable the Video Path input
+                    }
+                });
 
+                // Trigger the logic once when the respective modal is shown
+                const modalId = subject === "addSubject" ? "#registerHomeworkModal" : "#editHomeworkModal";
+                $(modalId).on("shown.bs.modal", function () {
+                    if (subjectSelect.value === "12") {
+                        videoPathInput.disabled = true; // Disable if 'Short Answer' is already selected
+                    } else {
+                        videoPathInput.disabled = false; // Enable otherwise
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">

@@ -10,6 +10,5 @@ INSERT INTO jac.Subject(abbr,description,name,registerDate) VALUES ('THREE','3 S
 INSERT INTO jac.Subject(abbr,description,name,registerDate) VALUES ('VR','Verval Reasoning Test','Verbal Reasoning',sysdate());
 INSERT INTO jac.Subject(abbr,description,name,registerDate) VALUES ('NR','Numerical Reasoning Test','Numerical Reasoning',sysdate());
 INSERT INTO jac.Subject(abbr,description,name,registerDate) VALUES ('SA','Short Answer at Homework menu','Short Answer',sysdate());
-INSERT INTO jac.Subject(abbr,description,name,registerDate) VALUES ('SAT','Short Answer TT at Homework menu','Short Answer (TT)',sysdate());
 
 commit;
