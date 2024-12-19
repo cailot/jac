@@ -585,11 +585,12 @@ public class ConnectedServiceImpl implements ConnectedService {
 			// 1. get associated PracticeAnswer
 			PracticeAnswer pa = practiceAnswerRepository.findPracticeAnswerByPractice(id);
 			// 2. empty PracticeAnswerCollection
-			pa.setAnswers(new ArrayList<>());
-			practiceAnswerRepository.save(pa);
-			// 3. delete associated practiceAnswer
-			practiceAnswerRepository.deletePracticeAnswerByPractice(id);
-			// 4. delete practice
+			if(pa!=null){
+				pa.setAnswers(new ArrayList<>());
+				practiceAnswerRepository.save(pa);
+				// 3. delete associated practiceAnswer
+				practiceAnswerRepository.deletePracticeAnswerByPractice(id);
+			} // 4. delete practice
 			practiceRepository.deleteById(id);
 		}catch(Exception e){
 			System.out.println("Nothing to delete");

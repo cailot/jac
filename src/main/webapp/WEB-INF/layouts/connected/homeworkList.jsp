@@ -516,6 +516,26 @@ function deleteHomework(id) {
 	</div>
 </div>
 
+<!-- 
+<script>
+    // Function to handle the enabling/disabling of the Video Path field
+    document.addEventListener("DOMContentLoaded", function() {
+        const subjectSelect = document.getElementById("addSubject");
+        const videoPathInput = document.getElementById("addVideoPath");
+        // Add an event listener to the Subject dropdown
+        subjectSelect.addEventListener("change", function() {
+            if (subjectSelect.value === "12") { // Check if 'Short Answer' is selected
+                videoPathInput.disabled = true; // Disable the Video Path input
+                videoPathInput.value = ""; // Clear the field
+            } else {
+                videoPathInput.disabled = false; // Enable the Video Path input
+            }
+        });
+    });
+</script> -->
+
+
+
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editHomeworkModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -605,9 +625,42 @@ function deleteHomework(id) {
 	</div>
 </div>
 
+<script>
+    // Unified function to handle the enabling/disabling of the Video Path field
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdowns = [
+            { subject: "addSubject", videoPath: "addVideoPath" },
+            { subject: "editSubject", videoPath: "editVideoPath" }
+        ];
 
+        // Add event listeners to both dropdowns
+        dropdowns.forEach(({ subject, videoPath }) => {
+            const subjectSelect = document.getElementById(subject);
+            const videoPathInput = document.getElementById(videoPath);
 
+            if (subjectSelect && videoPathInput) {
+                subjectSelect.addEventListener("change", function () {
+                    if (subjectSelect.value === "12") { // Check if 'Short Answer' is selected
+                        videoPathInput.disabled = true; // Disable the Video Path input
+                        videoPathInput.value = ""; // Clear the field
+                    } else {
+                        videoPathInput.disabled = false; // Enable the Video Path input
+                    }
+                });
 
+                // Trigger the logic once when the respective modal is shown
+                const modalId = subject === "addSubject" ? "#registerHomeworkModal" : "#editHomeworkModal";
+                $(modalId).on("shown.bs.modal", function () {
+                    if (subjectSelect.value === "12") {
+                        videoPathInput.disabled = true; // Disable if 'Short Answer' is already selected
+                    } else {
+                        videoPathInput.disabled = false; // Enable otherwise
+                    }
+                });
+            }
+        });
+    });
+</script>
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
