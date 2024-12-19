@@ -91,9 +91,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "LEFT JOIN Payment p ON i.id = p.invoiceId " +
         "WHERE (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
-        "AND (p.registerDate BETWEEN :from AND :to)",
+        "AND (p.registerDate BETWEEN :fromTime AND :toTime)",
         nativeQuery = true)
-        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("from") LocalDate from, @Param("to") LocalDate to);
+        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // retrieve payment student by state, branch & grade called from paymentList.jsp
         @Query(value = "SELECT DISTINCT s.id AS studentId, s.firstName, s.lastName, s.grade, s.state, s.branch, " +
@@ -105,9 +105,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "WHERE (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
         "AND (:payment = '0' OR p.method = :payment) " +
-        "AND (p.registerDate BETWEEN :from AND :to)",
+        "AND (p.registerDate BETWEEN :fromTime AND :toTime)",
         nativeQuery = true)
-        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("payment") String payment, @Param("from") LocalDate from, @Param("to") LocalDate to);
+        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("payment") String payment, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // retrieve overdue student by state, branch & grade called from overdueList.jsp
         @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(" +
@@ -149,9 +149,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "LEFT JOIN LoginActivity l ON s.id = l.studentId " +
         "WHERE (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
-        "AND (l.registerDate BETWEEN :from AND :to)",
+        "AND (l.registerDate BETWEEN :fromTime AND :toTime)",
         nativeQuery = true)
-        List<Object[]> listStudentLogin(@Param("branch") String branch, @Param("grade") String grade, @Param("from") LocalDate from, @Param("to") LocalDate to);
+        List<Object[]> listStudentLogin(@Param("branch") String branch, @Param("grade") String grade, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // search student by keyword for Id
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.id = ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")

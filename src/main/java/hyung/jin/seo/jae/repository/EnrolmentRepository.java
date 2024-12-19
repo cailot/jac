@@ -103,7 +103,7 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	@Query(value = "SELECT en.id "
 	+ "FROM Enrolment en " 
 	+ "LEFT JOIN Class cl ON en.clazzId = cl.id " 
-	+ "JOIN Cycle cy ON cl.cycleId = cy.id " 
+	+ "LEFT JOIN jac.Cycle cy ON cl.cycleId = cy.id " 
 	+ "WHERE (en.studentId = :studentId) AND (cy.year = :year) AND (:week BETWEEN en.startWeek AND en.endWeek) AND en.old = 0", nativeQuery = true)
 	List<Long> checkEnrolmentTime(@Param("studentId") long studentId, @Param("year") int year, @Param("week") int week);
 
