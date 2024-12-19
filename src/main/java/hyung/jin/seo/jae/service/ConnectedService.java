@@ -50,6 +50,9 @@ public interface ConnectedService {
 	// delete Homework
 	void deleteHomework(Long id);
 
+	// delete HomeworkProgress
+	// void deleteHomeworkProgress(Long id);
+
 	// get Homework by subject & week
 	// HomeworkDTO getHomeworkInfo(long subject, int week);
 

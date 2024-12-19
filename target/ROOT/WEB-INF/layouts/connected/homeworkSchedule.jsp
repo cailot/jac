@@ -624,7 +624,7 @@ function deleteHomeworkSchedule(id) {
 		<div class="modal-content jae-border-info">
 			<div class="modal-body">
 				<section class="fieldset rounded border-info">
-					<header class="text-info font-weight-bold">Homework Schedule</header>
+					<header class="text-info font-weight-bold">Homework Schedule Registration</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
@@ -764,12 +764,6 @@ function deleteHomeworkSchedule(id) {
 														Short Answer
 													</label>
 												</div>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="13" id="addSATT" name="subjects">
-													<label class="form-check-label" for="addSATT">
-														Short Answer (TT)
-													</label>
-												</div>
 											</div>
 										</div>
 									</div>	
@@ -819,11 +813,6 @@ function deleteHomeworkSchedule(id) {
 	</div>
 </div>
 
-
-
-
-
-
 <!-- Edit Form Dialogue -->
 <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -860,17 +849,6 @@ function deleteHomeworkSchedule(id) {
 								</div>
 							</div>
 						</div>
-
-
-
-
-
-
-
-
-
-
-
 
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
@@ -991,12 +969,12 @@ function deleteHomeworkSchedule(id) {
 														Short Answer
 													</label>
 												</div>
-												<div class="form-check">
+												<!-- <div class="form-check">
 													<input class="form-check-input" type="checkbox" value="13" id="editSATT" name="subjects">
 													<label class="form-check-label" for="editSATT">
 														Short Answer (TT)
 													</label>
-												</div>
+												</div> -->
 											</div>
 										</div>
 									</div>	

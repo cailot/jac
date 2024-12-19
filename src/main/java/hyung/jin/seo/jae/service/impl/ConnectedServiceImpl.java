@@ -29,6 +29,7 @@ import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.model.HomeworkProgress;
 import hyung.jin.seo.jae.model.HomeworkSchedule;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
@@ -40,6 +41,7 @@ import hyung.jin.seo.jae.model.TestAnswer;
 import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.model.TestSchedule;
 import hyung.jin.seo.jae.repository.ExtraworkRepository;
+import hyung.jin.seo.jae.repository.HomeworkProgressRepository;
 import hyung.jin.seo.jae.repository.HomeworkRepository;
 import hyung.jin.seo.jae.repository.HomeworkScheduleRepository;
 import hyung.jin.seo.jae.repository.PracticeAnswerRepository;
@@ -87,6 +89,9 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Autowired
 	private HomeworkScheduleRepository homeworkScheduleRepository;
+
+	@Autowired
+	private HomeworkProgressRepository homeworkProgressRepository;
 
 	@Override
 	public List<Homework> allHomeworks() {
@@ -572,6 +577,9 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Transactional
 	public void deleteHomework(Long id) {
 		try{
+			// 1. delete associated HomeworkProgress
+			homeworkProgressRepository.deleteHomeworkProgressByHomework(id);
+			// 2. delete Homework
 		    homeworkRepository.deleteById(id);
         }catch(org.springframework.dao.EmptyResultDataAccessException e){
             System.out.println("Nothing to delete");
@@ -684,6 +692,15 @@ public class ConnectedServiceImpl implements ConnectedService {
 		}	
 	}
 
+	// @Override
+	// @Transactional
+	// public void deleteHomeworkProgress(Long id) {
+	// 	try{
+	// 		homeworkProgressRepository.deleteHomeworkProgressByHomework(id);
+	// 	}catch(Exception e){
+	// 		System.out.println("Nothing to delete");
+	// 	}
+	// }
 
 	// @Override
 	// public HomeworkDTO getHomeworkInfo(long subject, int week) {

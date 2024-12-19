@@ -36,6 +36,7 @@ hyung/jin/seo/jae/repository/OnlineSessionRepository.class
 hyung/jin/seo/jae/model/GuestStudentAssessment.class
 hyung/jin/seo/jae/repository/InvoiceRepository.class
 hyung/jin/seo/jae/controller/OnlineSessionController.class
+hyung/jin/seo/jae/model/HomeworkProgress.class
 hyung/jin/seo/jae/repository/HomeworkScheduleRepository.class
 hyung/jin/seo/jae/repository/AssessmentRepository.class
 hyung/jin/seo/jae/model/StudentPractice.class
@@ -85,6 +86,7 @@ hyung/jin/seo/jae/dto/HomeworkDTO.class
 hyung/jin/seo/jae/repository/BookRepository.class
 hyung/jin/seo/jae/repository/StudentTestRepository.class
 hyung/jin/seo/jae/repository/PracticeAnswerRepository.class
+hyung/jin/seo/jae/repository/HomeworkProgressRepository.class
 hyung/jin/seo/jae/controller/EnrolmentController.class
 hyung/jin/seo/jae/utils/JaeUtils.class
 hyung/jin/seo/jae/service/LoginActivityService.class
@@ -202,5 +204,6 @@ hyung/jin/seo/jae/model/TestAnswerItem.class
 hyung/jin/seo/jae/model/State.class
 hyung/jin/seo/jae/model/Material.class
 hyung/jin/seo/jae/controller/ConnectedController.class
+hyung/jin/seo/jae/dto/HomeworkProgressDTO.class
 hyung/jin/seo/jae/controller/StatisticController.class
 hyung/jin/seo/jae/service/AssessmentService.class
