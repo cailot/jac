@@ -1,15 +1,15 @@
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mega English', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mega Mathematics', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mega General Ability', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Revision English', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Revision Mathematics', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Revision Science', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Reeading Comprehension (EDU)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Verbal Reasoning (EDU)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mathematics (EDU)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Numerical Reasoning (EDU)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Humanities (ACER)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mathematics (ACER)', sysdate());
-INSERT INTO jac.TestType(name, registerDate) VALUES ('Mock Test', sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mega English', 1, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mega Mathematics', 1, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mega General Ability', 1, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Revision English', 2, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Revision Mathematics', 2, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Revision Science', 2, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Reeading Comprehension (EDU)', 3, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Verbal Reasoning (EDU)', 3, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mathematics (EDU)', 3, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Numerical Reasoning (EDU)', 3, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Humanities (ACER)', 4, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mathematics (ACER)', 4, sysdate());
+INSERT INTO jac.TestType(name, testGroup, registerDate) VALUES ('Mock Test', 5, sysdate());
 
 commit;

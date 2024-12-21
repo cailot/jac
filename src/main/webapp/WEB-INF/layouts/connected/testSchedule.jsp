@@ -11,9 +11,6 @@
 <script src="${pageContext.request.contextPath}/js/vfs_fonts.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
-<!-- Date Time picker -->
-<script src="${pageContext.request.contextPath}/js/jquery-ui-timepicker-addon-1.6.3.min.js"></script>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui-timepicker-addon-1.6.3.min.css"></link>
 
 <script>
 $(document).ready(function () {
@@ -32,86 +29,20 @@ $(document).ready(function () {
 			'print'
 		],
 	});
-
-	$("#addStart").datetimepicker({
-		dateFormat: 'dd/mm/yy',
-		timeFormat: 'HH:mm'
-	});
-	$("#addEnd").datetimepicker({
-		dateFormat: 'dd/mm/yy',
-		timeFormat: 'HH:mm'
-	});
-	$("#editStart").datetimepicker({
-		dateFormat: 'dd/mm/yy',
-		timeFormat: 'HH:mm'
-	});
-	$("#editEnd").datetimepicker({
-		dateFormat: 'dd/mm/yy',
-		timeFormat: 'HH:mm'
-	});
-
-	// When the academic year dropdown changes, send an Ajax request to get the corresponding Practice
-	$('#addTestTypeSearch').change(function () {
-		getTestByTypeNGrade('add');
-	});
-	$('#addGradeSearch').change(function () {
-		getTestByTypeNGrade('add');
-	});
-	$('#editTestTypeSearch').change(function () {
-		getTestByTypeNGrade('edit');
-	});
-	$('#editGradeSearch').change(function () {
-		getTestByTypeNGrade('edit');
-	});
-		
-	// initialise state list when loading
-	listGrade('#addGradeSearch');
-	listGrade('#editGradeSearch');
-	listTestType('#addTestTypeSearch');
-	listTestType('#editTestTypeSearch');
-
 });
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Populate Practice by type and grade
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function getTestByTypeNGrade(action) {
-	// debugger;
-	var type = $('#'+action+'TestTypeSearch').val();
-	var grade = $('#'+action+'GradeSearch').val();
-
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/test4Schedule/' + type + '/' + grade,
-		method: 'GET',
-		success: function (data) {
-			// clean up existing options
-			$('#'+action+'SetSearch').empty();
-			$.each(data, function (index, value) {
-				// console.log(value.volume);
-				$('#'+action+'SetSearch').append($("<option value='" + value.id + "'>" + value.volume + "</option>")); // add new option
-			});
-		},
-		error: function (xhr, status, error) {
-			console.error(xhr.responseText);
-		}
-	});
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Add Test into Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addTest(action) {
 	// Get the values from the select elements
-	var testTypeSelect = document.getElementById(action + "TestTypeSearch");
-	var testType = testTypeSelect.options[testTypeSelect.selectedIndex].text;
+	var testTypeSelect = document.getElementById(action + "TestType");
+	var testTypeGroup = testTypeSelect.options[testTypeSelect.selectedIndex].value;
+	var testTypeName = testTypeSelect.options[testTypeSelect.selectedIndex].text;
 
-	var gradeSelect = document.getElementById(action + "GradeSearch");
-	var grade = gradeSelect.options[gradeSelect.selectedIndex].text;
-
-	var setSelect = document.getElementById(action + "SetSearch");
+	var setSelect = document.getElementById(action + "Volume");
 	var set = setSelect.options[setSelect.selectedIndex].text;
-	var testId = document.getElementById(action + "SetSearch").value;
+	var testTypeWeek = document.getElementById(action + "Volume").value;
 
 	// Get a reference to the table
 	var table = document.getElementById(action + "ScheduleTable");
@@ -120,26 +51,26 @@ function addTest(action) {
 	var row = $("<tr>");
 
 	// Create the cells for the row
-	var cell1 = $("<td>").text(testType);
-	var cell2 = $("<td>").text(grade);
-	var cell3 = $("<td>").text(set);
+	var cell1 = $("<td>").text(testTypeName);
+	var cell2 = $("<td>").text(set);
 
-	// cell4
+	// cell3
 	var binIcon = $('<i class="bi bi-trash h5"></i>');
 	var binIconLink = $("<a>")
 		.attr("href", "javascript:void(0)")
-		.attr("title", "Delete Practice")
+		.attr("title", "Delete Test")
 		.click(function () {
 			row.remove();
 		});
 	binIconLink.append(binIcon);
-	var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+	var cell3 = $("<td>").addClass('text-center').append(binIconLink);
 
-	// hidden td for testId
-	var td = $("<td>").css("display", "none").addClass("testId").text(testId);
+	// hidden td for testTypeWeek
+	var hidden1 = $("<td>").css("display", "none").addClass("testTypeWeek").text(testTypeWeek);
+	var hidden2 = $("<td>").css("display", "none").addClass("testTypeGroup").text(testTypeGroup);
 
 	// Append cells to the row
-	row.append(cell1, cell2, cell3, cell4, td);
+	row.append(cell1, cell2, cell3, hidden1, hidden2);
 
 	// Append the row to the table
 	$("#"+ action +"ScheduleTable").append(row);
@@ -150,48 +81,51 @@ function addTest(action) {
 //		Register Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerSchedule() {
-
-	// start, end validation
-	var start = document.getElementById('addStart');
-	if(start.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter start date & time');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			start.focus();
+	// Collect the values of the selected grade checkboxes
+	var selectedGrades = [];
+	// var allGradesChecked = $('#addGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
+	// if (allGradesChecked) {
+	// 	selectedGrades.push('0');
+	// } else {
+		$('#addGradeCheckbox input[name="grades"]:checked').each(function() {
+			selectedGrades.push($(this).val());
 		});
-		return false;
-	}
-	var end = document.getElementById('addEnd');
-	if(end.value== ""){
+	// }
+	// check if no grade is selected
+	if(selectedGrades.length == 0){
 		$('#validation-alert .modal-body').text(
-		'Please enter end date & time');
+		'Please select grade');
 		$('#validation-alert').modal('show');
 		$('#validation-alert').on('hidden.bs.modal', function () {
-			end.focus();
+			$('#addGrade').focus();
 		});
 		return false;
 	}
 
-	// Get testIds form addScheduleTable
-	var testDtos = [];
+	// Get testTypeGroup & set form addScheduleTable
+	var testGroups = [];
+	var weeks = [];
 	$('#addScheduleTable tr').each(function () {
-		var testId = $(this).find('.testId').text();
-		if (testId != '') {
-			testDtos.push({id : testId});
+		var testGroup = $(this).find('.testTypeGroup').text();
+		var testSet = $(this).find('.testTypeWeek').text();
+		console.log(testGroup + ' set : ' + testSet);
+		if (testGroup != '') {
+			//practiceDtos.push({group : testGroup, week : testSet});
+			testGroups.push(testGroup);
+			weeks.push(testSet);
 		}
 	});
-	var startTime = $("#addStart").val();
-	var endTime = $("#addEnd").val();
-	//debugger;
+
 	var schedule = {
-		year: $("#addYear").val(),
-		week: $("#addVolume").val(),
-		startDate: startTime,
-		endDate: endTime,
+		from: $("#addFrom").val(),
+		to: $("#addTo").val(),
 		info: $("#addInfo").val(),
-		tests: testDtos
+		grade : selectedGrades,
+		testGroup: testGroups,
+		week: weeks
 	}
+
+	//console.log(schedule);
 	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/connected/addTestSchedule',
@@ -206,6 +140,7 @@ function registerSchedule() {
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
 			});
+
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -227,10 +162,11 @@ function retrieveScheduleInfo(id) {
 		success: function (scheduleItem) {
 			// console.log(scheduleItem);
 			$("#editId").val(scheduleItem.id);
-			$("#editYear").val(scheduleItem.year);
-			$("#editWeek").val(scheduleItem.week);
-			$("#editStart").val(scheduleItem.startDate);
-			$("#editEnd").val(scheduleItem.endDate);
+			// Convert 'from' and 'to' to the format expected by datetime-local input
+			var fromDateTime = convertToDateTimeLocal(scheduleItem.from);
+            var toDateTime = convertToDateTimeLocal(scheduleItem.to);
+			$("#editFrom").val(fromDateTime);
+			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
@@ -238,52 +174,149 @@ function retrieveScheduleInfo(id) {
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
+			// Check the corresponding grade checkboxes
+			$('#editGradeCheckbox input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first
+			if(scheduleItem.grade.includes('0')) {
+				$('#editGradeAll').prop('checked', true);
+				$('#editGradeCheckbox input[type="checkbox"]').prop('checked', true);
+			}else{
+				scheduleItem.grade.forEach(function(grade) {
+					$('#editGradeCheckbox input[type="checkbox"][value="' + grade + '"]').prop('checked', true);
+				});
+			}
+
+			// add rows to the table
 			// clear all rows on editScheduleTable
-			$("#editScheduleTable").find("tr:gt(0)").remove();	
-			// append Test Info into table
-			var tests = scheduleItem.tests;
-			$.each(tests, function (index, value) {
+			$("#editScheduleTable").find("tr:gt(0)").remove();
+			// Handle testGroup as String[]
+			var testGroups = [];
+			if (typeof scheduleItem.testGroup === 'string' && scheduleItem.testGroup) {
+				testGroups = scheduleItem.testGroup.split(',').map(function(item) {
+					return item.trim();
+				});
+			} else if (Array.isArray(scheduleItem.testGroup)) {
+				if (scheduleItem.testGroup.length === 1 && scheduleItem.testGroup[0] === '') {
+					testGroups = [];
+				} else {
+					testGroups = scheduleItem.testGroup;
+				}
+			}
+			// Handle weeks as String[]
+			var weeks = [];
+			if (typeof scheduleItem.week === 'string' && scheduleItem.week) {
+				weeks = scheduleItem.week.split(',').map(function(item) {
+					return item.trim();
+				});
+			} else if (Array.isArray(scheduleItem.week)) {
+				// weeks = scheduleItem.week;
+				if (scheduleItem.week.length === 1 && scheduleItem.week[0] === '') {
+					weeks = [];
+				} else {
+					weeks = scheduleItem.week;
+				}
+			}
+
+			// add rows to the table for testGroup and week
+			for (var i = 0; i < weeks.length; i++) {
 				// Get the values from the select elements
-				var gradeSelect = document.getElementById("editGradeSearch");
-				var grade = gradeSelect.options[value.grade].text;
+				var testTypeGroup = testGroups[i];
+				var testTypeWeek = weeks[i];
 				// Get a reference to the table
 				var table = document.getElementById("editScheduleTable");
 				// Create a new row
 				var row = $("<tr>");
 				// Create the cells for the row
-				var cell1 = $("<td>").text(value.name);
-				var cell2 = $("<td>").text(grade);
-				var cell3 = $("<td>").text(value.volume);
+				var cell1 = $("<td>").text(testGroupName(testTypeGroup));
+				// var cell2 = $("<td>").text(testTypeWeek);
+				var cell2Text = '';
+				if(testTypeGroup == 1 || testTypeGroup == 2){
+					switch (testTypeWeek) {
+						case '1':
+							cell2Text = 'Vol 1-1';
+							break;
+						case '2':
+							cell2Text = 'Vol 1-2';
+							break;
+						case '3':
+							cell2Text = 'Vol 2-1';
+							break;
+						case '4':
+							cell2Text = 'Vol 2-2';
+							break;
+						case '5':
+							cell2Text = 'Vol 3-1';
+							break;
+						case '6':
+							cell2Text = 'Vol 3-2';
+							break;
+						case '7':
+							cell2Text = 'Vol 4-1';
+							break;
+						case '8':
+							cell2Text = 'Vol 4-2';
+							break;
+						case '9':
+							cell2Text = 'Vol 5-1';
+							break;
+						case '10':
+							cell2Text = 'Vol 5-2';
+							break;
+						default:
+							cell2Text = testTypeWeek;
+							break;
+					}
+				}else{
+					cell2Text = testTypeWeek;
+				}
+				var cell2 = $("<td>").text(cell2Text);	
 
-				// cell4
+				// cell3
 				var binIcon = $('<i class="bi bi-trash h5"></i>');
 				var binIconLink = $("<a>")
 					.attr("href", "javascript:void(0)")
 					.attr("title", "Delete Test")
-					.click(function () {
-						row.remove();
-					});
+					.click((function(row) {
+						return function() {
+							row.remove();
+						};
+					})(row));
 				binIconLink.append(binIcon);
-				var cell4 = $("<td>").addClass('text-center').append(binIconLink);
+				var cell3 = $("<td>").addClass('text-center').append(binIconLink);
 
-				// hidden td for testId
-				var td = $("<td>").css("display", "none").addClass("testId").text(value.id);
+				var hidden1 = $("<td>").css("display", "none").addClass("testTypeWeek").text(testTypeWeek);
+				var hidden2 = $("<td>").css("display", "none").addClass("testTypeGroup").text(testTypeGroup);
 
 				// Append cells to the row
-				row.append(cell1, cell2, cell3, cell4, td);
+				row.append(cell1, cell2, cell3, hidden1, hidden2);
 
 				// Append the row to the table
 				$("#editScheduleTable").append(row);
-			});
+			}
+			// show volume options
+			updateVolumeOptions('edit');
 			// display available set to be ready to select
-			getTestByTypeNGrade('edit');
 			$('#editScheduleModal').modal('show');
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
 		}
-
 	});
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Convert date time string to date time local format
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function convertToDateTimeLocal(dateTimeStr) {
+    // Assuming the input format is 'dd/MM/yyyy, HH:mm'
+    var parts = dateTimeStr.split(', ');
+    var dateParts = parts[0].split('/');
+    var timeParts = parts[1].split(':');
+    var year = dateParts[2];
+    var month = dateParts[1].padStart(2, '0');
+    var day = dateParts[0].padStart(2, '0');
+    var hours = timeParts[0].padStart(2, '0');
+    var minutes = timeParts[1].padStart(2, '0');
+    return year+'-'+month+'-'+day+'T'+hours+':'+minutes;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,46 +335,50 @@ function updateEditActiveValue(checkbox) {
 //		Update Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
-
-	// start, end validation
-	var start = document.getElementById('editStart');
-	if(start.value== ""){
-		$('#validation-alert .modal-body').text(
-		'Please enter start date & time');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			start.focus();
+	// Collect the values of the selected grade checkboxes
+	var selectedGrades = [];
+	// var allGradesChecked = $('#editGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
+	// if (allGradesChecked) {
+	// 	selectedGrades.push('0');
+	// } else {
+		$('#editGradeCheckbox input[name="grades"]:checked').each(function() {
+			selectedGrades.push($(this).val());
 		});
-		return false;
-	}
-	var end = document.getElementById('editEnd');
-	if(end.value== ""){
+	// }
+	// check if no grade is selected
+	if(selectedGrades.length == 0){
 		$('#validation-alert .modal-body').text(
-		'Please enter end date & time');
+		'Please select grade');
 		$('#validation-alert').modal('show');
 		$('#validation-alert').on('hidden.bs.modal', function () {
-			end.focus();
+			$('#editGrade').focus();
 		});
 		return false;
 	}
 
-	// get from formData
-	var testDtos = [];
+	// Get testTypeGroup & set form editScheduleTable
+	var testGroups = [];
+	var weeks = [];
 	$('#editScheduleTable tr').each(function () {
-		var testId = $(this).find('.testId').text();
-		if (testId != '') {
-			testDtos.push({id : testId});
+		var testGroup = $(this).find('.testTypeGroup').text();
+		var testSet = $(this).find('.testTypeWeek').text();
+		// console.log(testGroup + ' set : ' + testSet);
+		if (testGroup != '') {
+			//practiceDtos.push({group : testGroup, week : testSet});
+			testGroups.push(testGroup);
+			weeks.push(testSet);
 		}
 	});
-	var scheduleItem = {
+
+	var schedule = {
 		id: $("#editId").val(),
-		year: $("#editYear").val(),
-		week: $("#editWeek").val(),
-		startDate: $("#editStart").val(),
-		endDate: $("#editEnd").val(),
+		from: $("#editFrom").val(),
+		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
-		tests: testDtos
+		grade : selectedGrades,
+		testGroup: testGroups,
+		week: weeks
 	}
 
 	// send query to controller
@@ -349,7 +386,7 @@ function updateScheduleInfo() {
 		url: '${pageContext.request.contextPath}/connected/updateTestSchedule',
 		type: 'PUT',
 		dataType: 'json',
-		data: JSON.stringify(scheduleItem),
+		data: JSON.stringify(schedule),
 		contentType: 'application/json',
 		success: function (value) {
 			// Display success alert
@@ -400,19 +437,19 @@ function updateEditActiveValue(checkbox) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Confirm before deleting TestSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmDelete(testId) {
+function confirmDelete(practiceId) {
     // Show the warning modal
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
     $('#agreeConfirmation').one('click', function() {
-        deleteTestSchedule(testId);
+        deleteTestSchedule(practiceId);
         $('#deleteConfirmModal').modal('hide');
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Delete TestSchedule
+//		Delete PracticeSchedule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function deleteTestSchedule(id) {
 	$.ajax({
@@ -430,6 +467,48 @@ function deleteTestSchedule(id) {
             console.error(error);
         }
     });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Volume Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateVolumeOptions(action) {
+	// Get the selected practice type text
+	var testTypeSelect = document.getElementById(action + "TestType");
+	var testTypeText = testTypeSelect.selectedOptions[0].text;
+
+	console.log(testTypeText);
+	
+	// Clear existing options
+	var selectElement = document.getElementById(action + "Volume");
+	selectElement.innerHTML = '';
+
+	// Check if the practice type starts with "Mega" or "Revision"
+	if (testTypeText.startsWith("Mega") || testTypeText.startsWith("Revision")) {
+		// Loop to add options "Vol.1-1", "Vol.1-2", etc.
+		for (var i = 1; i <= 5; i++) {
+			for (var j = 1; j <= 2; j++) {
+				// Create a new option element
+				var option = document.createElement("option");
+				// Set the value and text content for the option
+				option.value = (i - 1) * 2 + j;
+				option.textContent = "Vol " + i + "-" + j;
+				// Append the option to the select element
+				selectElement.appendChild(option);
+			}
+		}
+	} else {
+		// Loop to add options 1, 2, etc.
+		for (var i = 1; i <= 40; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
 }
 
 </script>
@@ -455,6 +534,19 @@ function deleteTestSchedule(id) {
 		vertical-align: middle;
 		height: 45px 	
 	} 
+
+	.checkbox-container {
+		display: flex;
+		flex-wrap: nowrap; /* Prevents wrapping to the next line */
+		gap: 10px; /* Adjusts spacing between checkboxes */
+		justify-content: flex-start; /* Ensures alignment starts from the left */
+	}
+
+	.form-check {
+		display: flex;
+		align-items: center; /* Aligns checkboxes and labels vertically */
+		margin-right: 2.8px; /* Adds spacing between checkboxes */
+	}
 
 </style>
 
@@ -484,42 +576,15 @@ function deleteTestSchedule(id) {
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="listWeek" class="label-form">Set Schedule</label>
-						<select class="form-control" id="listWeek" name="listWeek">
+						<label for="listTestType" class="label-form">Test Type</label>
+						<select class="form-control" id="listTestType" name="listTestType">
+							<option value="0">All</option>
+							<option value="1">Mega Practice</option>
+							<option value="2">Revision Practice</option>
+							<option value="3">Edu Practice</option>
+							<option value="4">Acer Practice</option>
+							<option value="5">NAPLAN Practice</option>
 						</select>
-						<script>
-							// Get a reference to the select element
-							var selectElement = document.getElementById("listWeek");
-							// Create a new option element for 'All'
-							var allOption = document.createElement("option");
-							// Set the value and text content for the 'All' option
-							allOption.value = "0";
-							allOption.textContent = "All";
-							// Append the 'All' option to the select element
-							selectElement.appendChild(allOption);
-							// Loop to add options from 1 to 50
-							for (var i = 1; i <= 50; i++) {
-								// Create a new option element
-								var option = document.createElement("option");
-								// Set the value and text content for the option
-								option.value = i;
-								if (i === 10) {
-									option.textContent = 'Volume 1 (' + i + ')';
-								}else if (i === 20) {
-									option.textContent = 'Volume 2 (' + i + ')';
-								} else if (i === 30) {
-									option.textContent = 'Volume 3 (' + i + ')';
-								} else if (i === 40) {
-									option.textContent = 'Volume 4 (' + i + ')';
-								} else if ((i === 49) || (i === 50)) {
-									option.textContent = 'Volume 5 (' + i + ')';
-								} else {
-									option.textContent = i;
-								}
-								// Append the option to the select element
-								selectElement.appendChild(option);
-							}
-						</script>
 					</div>
 					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
@@ -528,7 +593,7 @@ function deleteTestSchedule(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="getTestByTypeNGrade('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerScheduleModal" onclick="updateVolumeOptions('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -539,13 +604,15 @@ function deleteTestSchedule(id) {
 							<table id="scheduleListTable" class="table table-striped table-bordered">
 								<thead class="table-primary">
 									<tr>
-										<th class="text-center align-middle" style="width: 15%">Academic Year</th>
-										<th class="text-center align-middle" style="width: 15%">Set</th>
-										<th class="text-center align-middle" style="width: 10%">Start</th>
-										<th class="text-center align-middle" style="width: 10%">End</th>
-										<th class="text-center align-middle" style="width: 40%">Information</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Action</th>
+										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
+										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">End</th>
+										<th class="text-center align-middle" style="width: 20%">Test Type</th>
+										<th class="text-center align-middle" style="width: 15%">Grade</th>
+										<th class="text-center align-middle" style="width: 10%">Week</th>
+										<th class="text-center align-middle" style="width: 20%">Information</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 6%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -555,31 +622,57 @@ function deleteTestSchedule(id) {
 												<tr>
 													<td class="small align-middle">
 														<span>
-															Academic Year <c:out value="${scheduleItem.year}" />/<c:out value="${scheduleItem.year+1}" />
+															<c:out value="${scheduleItem.from}" />
 														</span>
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:choose>
-																<c:when test="${scheduleItem.week == 10}">End of Volume 1 (10)</c:when>
-																<c:when test="${scheduleItem.week == 20}">End of Volume 2 (20)</c:when>
-																<c:when test="${scheduleItem.week == 30}">End of Volume 3 (30)</c:when>
-																<c:when test="${scheduleItem.week == 40}">End of Volume 4 (40)</c:when>
-																<c:when test="${scheduleItem.week >= 49}">End of Volume 5 (50)</c:when>
-																<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
-															</c:choose>
+															<c:out value="${scheduleItem.to}" />
 														</span>
 													</td>
-													<td class="small align-middle text-center">
+													<td class="small align-middle">
 														<span>
-															<c:out value="${scheduleItem.startDate}" />
+															<c:forEach var="group" items="${scheduleItem.testGroup}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(testGroupName('${group}'));
+																</script>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
 														</span>
 													</td>
-													<td class="small align-middle text-center">
+													<td class="small align-middle">
 														<span>
-															<c:out value="${scheduleItem.endDate}" />
+															<c:forEach var="grade" items="${scheduleItem.grade}" varStatus="status">
+																<script type="text/javascript">
+																	document.write(gradeName('${grade}'));
+																</script>
+																<c:if test="${!status.last}">, </c:if>
+															</c:forEach>
 														</span>
 													</td>
+													<td class="small align-middle">
+														<span>
+															<!-- Display Weeks for Each Group -->
+															<c:forEach var="week" items="${scheduleItem.week}" varStatus="weekStatus">
+																<c:choose>
+																	<c:when test="${scheduleItem.testGroup[weekStatus.index] == 1 || scheduleItem.testGroup[weekStatus.index] == 2}">
+																		<c:choose>
+																			<c:when test="${week == '1'}">Vol 1</c:when>
+																			<c:when test="${week == '2'}">Vol 2</c:when>
+																			<c:when test="${week == '3'}">Vol 3</c:when>
+																			<c:when test="${week == '4'}">Vol 4</c:when>
+																			<c:when test="${week == '5'}">Vol 5</c:when>
+																			<c:otherwise><c:out value="${week}" /></c:otherwise>
+																		</c:choose>
+																	</c:when>
+																	<c:otherwise>
+																		<c:out value="${week}" />
+																	</c:otherwise>
+																</c:choose>
+																<c:if test="${!weekStatus.last}">, </c:if>
+															</c:forEach>
+														</span>
+													</td>													
 													<td class="small align-middle text-truncate" style="min-width: 300px;">
 														<span>
 															<c:out value="${scheduleItem.info}" />
@@ -599,10 +692,10 @@ function deleteTestSchedule(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit Practice Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
+														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit Test Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
 														</i>
 														&nbsp;&nbsp;
-														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete Practice Schedule" onclick="confirmDelete('${scheduleItem.id}')">
+														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete Test Schedule" onclick="confirmDelete('${scheduleItem.id}')">
 														</i>
 													</td>
 												</tr>
@@ -625,73 +718,18 @@ function deleteTestSchedule(id) {
 		<div class="modal-content jae-border-info">
 			<div class="modal-body">
 				<section class="fieldset rounded border-info">
-					<header class="text-info font-weight-bold">Class Test Schedule</header>
+					<header class="text-info font-weight-bold">Test Schedule Registration</header>
 					<form id="scheduleRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-7">
-									<label for="addYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="addYear" name="addYear">
-										<%
-											Calendar addNow = Calendar.getInstance();
-											int addCurrentYear = addNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= addCurrentYear %>">Academic Year <%= (addCurrentYear) %>/<%= (addCurrentYear)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = addCurrentYear - 1; i >= addCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
-								<!-- <div class="offset-md-1"></div> -->
-								<div class="col-md-5">
-									<label for="addVolume" class="label-form">Set Schedule</label>
-									<select class="form-control" id="addVolume" name="addVolume">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("addVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  //option.textContent = i;
-										  if (i === 10) {
-											option.textContent = 'Volume 1 (' + i + ')';
-										  }else if (i === 20) {
-											option.textContent = 'Volume 2 (' + i + ')';
-										  } else if (i === 30) {
-											option.textContent = 'Volume 3 (' + i + ')';
-										  } else if (i === 40) {
-											option.textContent = 'Volume 4 (' + i + ')';
-										  } else if ((i === 49) || (i === 50)) {
-											option.textContent = 'Volume 5 (' + i + ')';
-										  } else {
-												option.textContent = i;
-										  }
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
 								<div class="col-md-6">
-									<label for="addStart" class="label-form">Start Date & Time</label>
-									<input type="text" class="form-control" id="addStart" name="addStart" title="Please set Start Date & Time" />
+									<label for="addFrom" class="label-form">From</label>
+									<input type="datetime-local" class="form-control datepicker" id="addFrom" name="addFrom" placeholder="From" required>
 								</div>
 								<div class="col-md-6">
-									<label for="addEnd" class="label-form">End Date & Time</label>
-									<input type="text" class="form-control" id="addEnd" name="addEnd" title="Please set End Date & Time" />
-								</div>
+									<label for="addTo" class="label-form">To</label> 
+									<input type="datetime-local" class="form-control datepicker" id="addTo" name="addTo" placeholder="To" required>
+								</div>			
 							</div>
 						</div>
 						<div class="form-group">
@@ -703,37 +741,95 @@ function deleteTestSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="type" style="width: 70%;">Test</th>
-											<th data-field="grade" style="width: 10%;">Grade</th>
-											<th data-field="set" style="width: 10%;">Set</th>
-											<th data-field="action" style="width: 10%;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+									<div class="col-md-12">
+										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="addGrade" name="addGrade">
+											<!-- First Row -->
+											<div id="addGradeCheckbox" class="checkbox-container">
+												<!-- <div class="form-check">
+													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
+													<label class="form-check-label" for="addGradeAll">All/None</label>
+												</div> -->
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
+													<label class="form-check-label" for="addP2">P2</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="addP3" name="grades">
+													<label class="form-check-label" for="addP3">P3</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="addP4" name="grades">
+													<label class="form-check-label" for="addP4">P4</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="addP5" name="grades">
+													<label class="form-check-label" for="addP5">P5</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
+													<label class="form-check-label" for="addP6">P6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
+													<label class="form-check-label" for="addTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
+													<label class="form-check-label" for="addTT8">TT8</label>
+												</div>
+											</div>
+											<!-- Second Row -->
+											<div id="addGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="addS7" name="grades">
+													<label class="form-check-label" for="addS7">S7</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="addS8" name="grades">
+													<label class="form-check-label" for="addS8">S8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="addS9" name="grades">
+													<label class="form-check-label" for="addS9">S9</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
+													<label class="form-check-label" for="addS10">S10</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
+													<label class="form-check-label" for="addJMSS">JMSS</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+									<div class="col-md-12">
+										<label class="label-form h6 badge badge-success">Class Test</label>										
+									</div>
+								</div>
 								<div class="form-row">
 									<div class="col-md-7">
-										<label for="addTestTypeSearch" class="label-form">Test</label>
-										<select class="form-control" id="addTestTypeSearch" name="addTestTypeSearch">
+										<label for="addTestType" class="label-form">Type</label>
+										<select class="form-control" id="addTestType" name="addTestType" onchange="updateVolumeOptions('add')">
+											<option value="1">Mega Practice</option>
+											<option value="2">Revision Practice</option>
+											<option value="3">Edu Practice</option>
+											<option value="4">Acer Practice</option>
+											<!-- <option value="5">NAPLAN Practice</option> -->
 										</select>
 									</div>
-									<div class="col-md-2">
-										<label for="addGradeSearch" class="label-form">Grade</label>
-										<select class="form-control" id="addGradeSearch" name="addGradeSearch">
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="addSetSearch" class="label-form">Set</label>
-										<select class="form-control" id="addSetSearch" name="addSetSearch">
+									<div class="col-md-4">
+										<label for="addVolume" class="label-form">Set</label>
+										<select class="form-control" id="addVolume" name="addVolume">
 										</select>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
@@ -741,6 +837,21 @@ function deleteTestSchedule(id) {
 										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addTest('add')"><i class="bi bi-plus"></i></button>
 									</div>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="addScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 65%;">Test</th>
+											<th data-field="set" style="width: 25%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</form>
@@ -760,72 +871,18 @@ function deleteTestSchedule(id) {
 		<div class="modal-content jae-border-primary">
 			<div class="modal-body">
 				<section class="fieldset rounded border-primary">
-					<header class="text-primary font-weight-bold">Class Test Schedule Edit</header>
+					<header class="text-primary font-weight-bold">Test Schedule Edit</header>
 					<form id="scheduleEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-7">
-									<label for="editYear" class="label-form">Academic Year</label>
-									<select class="form-control" id="editYear" name="editYear">
-										<%
-											Calendar editNow = Calendar.getInstance();
-											int editCurrentYear = editNow.get(Calendar.YEAR);
-										%>
-										<option value="<%= editCurrentYear %>">Academic Year <%= (editCurrentYear) %>/<%= (editCurrentYear)+1 %></option>
-										<%
-											// Adding the last three years
-											for (int i = editCurrentYear - 1; i >= editCurrentYear - 3; i--) {
-										%>
-											<option value="<%= i %>">Academic Year <%= i %>/<%= i+1 %></option>
-										<%
-										}
-										%>
-									</select>
-								</div>
-								<div class="col-md-5">
-									<label for="editWeek" class="label-form">Set</label>
-									<select class="form-control" id="editWeek" name="editWeek">
-									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editWeek");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										//   option.textContent = i;
-										  if (i === 10) {
-											option.textContent = 'Volume 1 (' + i + ')';
-										  }else if (i === 20) {
-											option.textContent = 'Volume 2 (' + i + ')';
-										  } else if (i === 30) {
-											option.textContent = 'Volume 3 (' + i + ')';
-										  } else if (i === 40) {
-											option.textContent = 'Volume 4 (' + i + ')';
-										  } else if ((i === 49) || (i === 50)) {
-											option.textContent = 'Volume 5 (' + i + ')';
-										  } else {
-												option.textContent = i;
-										  }
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-row">
 								<div class="col-md-6">
-									<label for="editStart" class="label-form">Start Date & Time</label>
-									<input type="text" class="form-control" id="editStart" name="editStart" title="Please set Start Date & Time" />
+									<label for="editFrom" class="label-form">From</label>
+									<input type="datetime-local" class="form-control datepicker" id="editFrom" name="editFrom" placeholder="From" required>
 								</div>
 								<div class="col-md-6">
-									<label for="editEnd" class="label-form">End Date & Time</label>
-									<input type="text" class="form-control" id="editEnd" name="editEnd" title="Please set End Date & Time" />
-								</div>
+									<label for="editTo" class="label-form">To</label> 
+									<input type="datetime-local" class="form-control datepicker" id="editTo" name="editTo" placeholder="To" required>
+								</div>			
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
@@ -845,37 +902,95 @@ function deleteTestSchedule(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row mt-4">
-								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
-        							<thead class="thead-light">
-										<tr>
-											<th data-field="type" style="width: 70%;">Practice</th>
-											<th data-field="grade" style="width: 10%;">Grade</th>
-											<th data-field="set" style="width: 10%;">Set</th>
-											<th data-field="action" style="width: 10%;">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+									<div class="col-md-12">
+										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
+										<div id="editGrade" name="editGrade">
+											<!-- First Row -->
+											<div id="editGradeCheckbox" class="checkbox-container">
+												<!-- <div class="form-check">
+													<input class="form-check-input" type="checkbox" id="editGradeAll" name="editGradeAll">
+													<label class="form-check-label" for="editGradeAll">All/None</label>
+												</div> -->
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
+													<label class="form-check-label" for="editP2">P2</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="2" id="editP3" name="grades">
+													<label class="form-check-label" for="editP3">P3</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="3" id="editP4" name="grades">
+													<label class="form-check-label" for="editP4">P4</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="4" id="editP5" name="grades">
+													<label class="form-check-label" for="editP5">P5</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="5" id="editP6" name="grades">
+													<label class="form-check-label" for="editP6">P6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
+													<label class="form-check-label" for="editTT6">TT6</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
+													<label class="form-check-label" for="editTT8">TT8</label>
+												</div>
+											</div>
+											<!-- Second Row -->
+											<div id="editGradeCheckbox" class="checkbox-container">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="6" id="editS7" name="grades">
+													<label class="form-check-label" for="editS7">S7</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="7" id="editS8" name="grades">
+													<label class="form-check-label" for="editS8">S8</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="8" id="editS9" name="grades">
+													<label class="form-check-label" for="editS9">S9</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="9" id="editS10" name="grades">
+													<label class="form-check-label" for="editS10">S10</label>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="19" id="editJMSS" name="grades">
+													<label class="form-check-label" for="editJMSS">JMSS</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
+							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<div class="form-row">
+									<div class="col-md-12">
+										<label class="label-form h6 badge badge-success">Class Test</label>										
+									</div>
+								</div>
 								<div class="form-row">
 									<div class="col-md-7">
-										<label for="editTestTypeSearch" class="label-form">Practice</label>
-										<select class="form-control" id="editTestTypeSearch" name="editTestTypeSearch">
+										<label for="editTestType" class="label-form">Type</label>
+										<select class="form-control" id="editTestType" name="editTestType" onchange="updateVolumeOptions('edit')">
+											<option value="1">Mega Practice</option>
+											<option value="2">Revision Practice</option>
+											<option value="3">Edu Practice</option>
+											<option value="4">Acer Practice</option>
+											<!-- <option value="5">NAPLAN Practice</option> -->
 										</select>
 									</div>
-									<div class="col-md-2">
-										<label for="editGradeSearch" class="label-form">Grade</label>
-										<select class="form-control" id="editGradeSearch" name="editGradeSearch">
-										</select>
-									</div>
-									<div class="col-md-2">
-										<label for="editSetSearch" class="label-form">Set</label>
-										<select class="form-control" id="editSetSearch" name="editSetSearch">
+									<div class="col-md-4">
+										<label for="editVolume" class="label-form">Set</label>
+										<select class="form-control" id="editVolume" name="editVolume">
 										</select>
 									</div>
 									<div class="col-md-1 d-flex flex-column justify-content-center">
@@ -883,6 +998,21 @@ function deleteTestSchedule(id) {
 										<button type="button" class="btn btn-success btn-block d-flex justify-content-center align-items-center" onclick="addTest('edit')"><i class="bi bi-plus"></i></button>
 									</div>
 								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row mt-4">
+								<table class="table table-striped table-bordered" id="editScheduleTable" data-header-style="headerStyle" style="font-size: smaller; width: 90%; margin-left: auto; margin-right: auto;">
+        							<thead class="thead-light">
+										<tr>
+											<th data-field="type" style="width: 65%;">Test</th>
+											<th data-field="set" style="width: 25%;">Set</th>
+											<th data-field="action" style="width: 10%;">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
 							</div>
 						</div>
 						<input type="hidden" id="editId" name="editId" />
@@ -912,11 +1042,11 @@ function deleteTestSchedule(id) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content jae-border-danger">
             <div class="modal-header btn-danger">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Class Test Schedule Delete</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Test Schedule Delete</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to delete Test Schedule ?</p>	
+                <p> Are you sure to delete Practice Schedule ?</p>	
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>

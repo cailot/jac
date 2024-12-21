@@ -34,9 +34,6 @@ $(document).ready(function () {
 	listGrade('#listGrade');
 	listGrade('#addGrade');
 	listGrade('#editGrade');
-	// listSubject('#listSubject');
-	// listSubject('#addSubject');
-	// listSubject('#editSubject');
 
 });
 
@@ -249,6 +246,7 @@ function deleteHomework(id) {
 		height: 45px 	
 	}
 
+
 </style>
 
 <!-- List Body -->
@@ -384,12 +382,13 @@ function deleteHomework(id) {
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
-														<span>
+														<span data-toggle="tooltip" title="${homework.pdfPath}">
 															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
-													<td class="small align-middle text-truncate" style="max-width: 150px;">
-														<span>
+													<td class="small align-middle text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="${homework.videoPath}">
+														<!-- <span data-toggle="tooltip" title="${homework.videoPath}"> -->
+														<span>	
 															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>
