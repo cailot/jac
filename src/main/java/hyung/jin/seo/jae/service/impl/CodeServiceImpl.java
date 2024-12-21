@@ -426,6 +426,17 @@ public class CodeServiceImpl implements CodeService {
 	}
 
 	@Override
+	public List<TestType> getTestTypes(int group) {
+		List<TestType> types = new ArrayList<>();
+		try{
+			types = testTypeRepository.findByTestGroup(group);
+		}catch(Exception e){
+			System.out.println("No TestType found");
+		}
+		return types;
+	}
+
+	@Override
 	public List<SimpleBasketDTO> loadPracticeType() {
 		List<Object[]> objects = new ArrayList<>();
 		try{
@@ -486,6 +497,17 @@ public class CodeServiceImpl implements CodeService {
 			name = practiceTypeRepository.getNameById(id);
 		}catch(Exception e){
 			System.out.println("No PracticeType found");
+		}
+		return name;
+	}
+
+	@Override
+	public String getTestTypeName(Long id) {
+		String name = "";
+		try{
+			name = testTypeRepository.getNameById(id);
+		}catch(Exception e){
+			System.out.println("No TestType found");
 		}
 		return name;
 	}
