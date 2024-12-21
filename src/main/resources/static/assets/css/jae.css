@@ -274,6 +274,12 @@ td a i.fa-trash {
 	cursor: pointer;
 }
 
+.tooltip-inner {
+	white-space: nowrap !important;
+	max-width: none !important;
+}
+
+
 @media screen and (max-width: 768px){
 	.navbar{
 		flex-direction: column;

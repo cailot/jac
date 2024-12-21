@@ -117,6 +117,12 @@ public interface CodeService {
 	// get test type
 	TestType getTestType(Long id);
 
+	// get test type name by id
+	String getTestTypeName(Long id);
+	
+	// list for test type value
+	List<TestType> getTestTypes(int group);
+
 	// list for initial test type value
 	List<SimpleBasketDTO> loadTestType();
 

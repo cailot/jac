@@ -31,11 +31,19 @@
     .main-content {
         transition: padding-top 0.3s; /* Smooth transition for padding */
     }
+
+    .tooltip {
+    z-index: 1050 !important; /* Default for Bootstrap */
+}
 </style>
 <script>
     $(function() {
         // Enable Bootstrap tooltips
         $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip({
+        //     container: 'body',
+        //     placement: 'top' // or 'bottom', 'left', 'right'
+        // });
     });
 
     var sessionTimeout = 1000*60*30; // 30 mins for demonstration

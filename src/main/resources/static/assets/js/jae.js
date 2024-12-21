@@ -362,6 +362,20 @@ function  practiceGroupName(value){
 	return groupText;
 }
 
+// get test group name
+function  testGroupName(value){
+	var groupText = '';
+	switch(value) {
+		case '1': groupText = 'Mega Practice'; break;
+		case '2': groupText = 'Revision Practice'; break;
+		case '3': groupText = 'Edu Practice'; break;
+		case '4': groupText = 'Acer Practice'; break;
+		case '5': groupText = 'Naplan Practice'; break;
+		default: groupText = 'All'; 
+	}
+	return groupText;
+}
+
 // get the context path dynamically
 function getContextPath(){
 	var contextPath = window.location.pathname.split('/')[1];
