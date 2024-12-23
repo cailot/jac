@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
 import hyung.jin.seo.jae.model.TestSchedule;
+import hyung.jin.seo.jae.utils.JaeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +12,8 @@ import lombok.ToString;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Getter
 @Setter
@@ -27,59 +24,59 @@ public class TestScheduleDTO implements Serializable {
 
 	private String id;
 
-	private int year;
+	private String from;
 
-	private int week;
+	private String to;
+
+	private String[] grade;
+
+	private String[] testGroup;
+
+	private String[] week;
 
 	private String info;
 
 	private boolean active;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-	private LocalDateTime startDate;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
-	private LocalDateTime endDate;
-
 	private String registerDate;
 
-	private List<TestDTO> tests = new ArrayList();
-
-	public void addTest(TestDTO test){
-		tests.add(test);
-	}
 
 	public TestSchedule convertToTestSchedule() {
     	TestSchedule ts = new TestSchedule();
-		ts.setYear(this.year);
-		ts.setWeek(this.week);
-		ts.setInfo(this.info);
+		if(StringUtils.isNotBlank(id)) ts.setId(Long.parseLong(this.id));
+		ts.setFromDatetime(LocalDateTime.parse(this.from, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		ts.setToDatetime(LocalDateTime.parse(this.to, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		ts.setActive(this.active);
-		ts.setStartDate(this.startDate);
-		ts.setEndDate(this.endDate);
+		ts.setInfo(this.info);
+		ts.setGrade(JaeUtils.joinString(this.grade));
+		ts.setTestGroup(JaeUtils.joinString(this.testGroup));
+		ts.setWeek(JaeUtils.joinString(this.week));
 		return ts;
 	}
 
-	public TestScheduleDTO(TestSchedule work){
-		this.id = String.valueOf(work.getId());
-		this.year = work.getYear();
-		this.week = work.getWeek();
-		this.info = work.getInfo();
-		this.active = work.isActive();
-		this.registerDate = work.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		this.startDate = work.getStartDate();
-		this.endDate = work.getEndDate();
+	public TestScheduleDTO(TestSchedule schedule){
+		this.id = String.valueOf(schedule.getId());
+		this.from = schedule.getFromDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
+		this.to = schedule.getToDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
+		this.grade = JaeUtils.splitString(schedule.getGrade());
+		this.testGroup = JaeUtils.splitString(schedule.getTestGroup());
+		this.week = JaeUtils.splitString(schedule.getWeek());
+		this.info = schedule.getInfo();
+		this.active = schedule.isActive();
+		this.registerDate = schedule.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
 
-	public TestScheduleDTO(long id, int year, int week, String info, boolean active, LocalDate registerDate, LocalDateTime starDateTime, LocalDateTime endDateTime){
+	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate){
 		this.id = String.valueOf(id);
-		this.year = year;
-		this.week = week;
+		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
+		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
+		this.grade = JaeUtils.splitString(grade);
+		this.testGroup = JaeUtils.splitString(group);
+		this.week = JaeUtils.splitString(week);
 		this.info = info;
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-		this.startDate = starDateTime;
-		this.endDate = endDateTime;
 	}
+
 
 }

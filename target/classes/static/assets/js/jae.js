@@ -366,11 +366,11 @@ function  practiceGroupName(value){
 function  testGroupName(value){
 	var groupText = '';
 	switch(value) {
-		case '1': groupText = 'Mega Practice'; break;
-		case '2': groupText = 'Revision Practice'; break;
-		case '3': groupText = 'Edu Practice'; break;
-		case '4': groupText = 'Acer Practice'; break;
-		case '5': groupText = 'Naplan Practice'; break;
+		case '1': groupText = 'Mega Test'; break;
+		case '2': groupText = 'Revision Test'; break;
+		case '3': groupText = 'Edu Test'; break;
+		case '4': groupText = 'Acer Test'; break;
+		case '5': groupText = 'Mock Test'; break;
 		default: groupText = 'All'; 
 	}
 	return groupText;

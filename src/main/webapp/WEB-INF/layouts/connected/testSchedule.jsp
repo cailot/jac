@@ -160,7 +160,7 @@ function retrieveScheduleInfo(id) {
 		url: '${pageContext.request.contextPath}/connected/getTestSchedule/' + id,
 		type: 'GET',
 		success: function (scheduleItem) {
-			// console.log(scheduleItem);
+			console.log(scheduleItem);
 			$("#editId").val(scheduleItem.id);
 			// Convert 'from' and 'to' to the format expected by datetime-local input
 			var fromDateTime = convertToDateTimeLocal(scheduleItem.from);
@@ -232,34 +232,19 @@ function retrieveScheduleInfo(id) {
 				if(testTypeGroup == 1 || testTypeGroup == 2){
 					switch (testTypeWeek) {
 						case '1':
-							cell2Text = 'Vol 1-1';
+							cell2Text = 'Vol 1';
 							break;
 						case '2':
-							cell2Text = 'Vol 1-2';
+							cell2Text = 'Vol 2';
 							break;
 						case '3':
-							cell2Text = 'Vol 2-1';
+							cell2Text = 'Vol 3';
 							break;
 						case '4':
-							cell2Text = 'Vol 2-2';
+							cell2Text = 'Vol 4';
 							break;
 						case '5':
-							cell2Text = 'Vol 3-1';
-							break;
-						case '6':
-							cell2Text = 'Vol 3-2';
-							break;
-						case '7':
-							cell2Text = 'Vol 4-1';
-							break;
-						case '8':
-							cell2Text = 'Vol 4-2';
-							break;
-						case '9':
-							cell2Text = 'Vol 5-1';
-							break;
-						case '10':
-							cell2Text = 'Vol 5-2';
+							cell2Text = 'Vol 5';
 							break;
 						default:
 							cell2Text = testTypeWeek;
@@ -477,7 +462,7 @@ function updateVolumeOptions(action) {
 	var testTypeSelect = document.getElementById(action + "TestType");
 	var testTypeText = testTypeSelect.selectedOptions[0].text;
 
-	console.log(testTypeText);
+	// console.log(testTypeText);
 	
 	// Clear existing options
 	var selectElement = document.getElementById(action + "Volume");
@@ -485,17 +470,15 @@ function updateVolumeOptions(action) {
 
 	// Check if the practice type starts with "Mega" or "Revision"
 	if (testTypeText.startsWith("Mega") || testTypeText.startsWith("Revision")) {
-		// Loop to add options "Vol.1-1", "Vol.1-2", etc.
+		// Loop to add options "Vol.1", "Vol.2", etc.
 		for (var i = 1; i <= 5; i++) {
-			for (var j = 1; j <= 2; j++) {
-				// Create a new option element
-				var option = document.createElement("option");
-				// Set the value and text content for the option
-				option.value = (i - 1) * 2 + j;
-				option.textContent = "Vol " + i + "-" + j;
-				// Append the option to the select element
-				selectElement.appendChild(option);
-			}
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = "Vol " + i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
 		}
 	} else {
 		// Loop to add options 1, 2, etc.
@@ -579,11 +562,11 @@ function updateVolumeOptions(action) {
 						<label for="listTestType" class="label-form">Test Type</label>
 						<select class="form-control" id="listTestType" name="listTestType">
 							<option value="0">All</option>
-							<option value="1">Mega Practice</option>
-							<option value="2">Revision Practice</option>
-							<option value="3">Edu Practice</option>
-							<option value="4">Acer Practice</option>
-							<option value="5">NAPLAN Practice</option>
+							<option value="1">Mega Test</option>
+							<option value="2">Revision Test</option>
+							<option value="3">Edu Test</option>
+							<option value="4">Acer Test</option>
+							<option value="5">Mock Test</option>
 						</select>
 					</div>
 					<div class="offset-md-5"></div>
@@ -748,10 +731,6 @@ function updateVolumeOptions(action) {
 										<div id="addGrade" name="addGrade">
 											<!-- First Row -->
 											<div id="addGradeCheckbox" class="checkbox-container">
-												<!-- <div class="form-check">
-													<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
-													<label class="form-check-label" for="addGradeAll">All/None</label>
-												</div> -->
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
 													<label class="form-check-label" for="addP2">P2</label>
@@ -820,11 +799,11 @@ function updateVolumeOptions(action) {
 									<div class="col-md-7">
 										<label for="addTestType" class="label-form">Type</label>
 										<select class="form-control" id="addTestType" name="addTestType" onchange="updateVolumeOptions('add')">
-											<option value="1">Mega Practice</option>
-											<option value="2">Revision Practice</option>
-											<option value="3">Edu Practice</option>
-											<option value="4">Acer Practice</option>
-											<!-- <option value="5">NAPLAN Practice</option> -->
+											<option value="1">Mega Test</option>
+											<option value="2">Revision Test</option>
+											<option value="3">Edu Test</option>
+											<option value="4">Acer Test</option>
+											<option value="5">Mock Test</option>
 										</select>
 									</div>
 									<div class="col-md-4">
@@ -909,10 +888,6 @@ function updateVolumeOptions(action) {
 										<div id="editGrade" name="editGrade">
 											<!-- First Row -->
 											<div id="editGradeCheckbox" class="checkbox-container">
-												<!-- <div class="form-check">
-													<input class="form-check-input" type="checkbox" id="editGradeAll" name="editGradeAll">
-													<label class="form-check-label" for="editGradeAll">All/None</label>
-												</div> -->
 												<div class="form-check">
 													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
 													<label class="form-check-label" for="editP2">P2</label>
@@ -981,11 +956,11 @@ function updateVolumeOptions(action) {
 									<div class="col-md-7">
 										<label for="editTestType" class="label-form">Type</label>
 										<select class="form-control" id="editTestType" name="editTestType" onchange="updateVolumeOptions('edit')">
-											<option value="1">Mega Practice</option>
-											<option value="2">Revision Practice</option>
-											<option value="3">Edu Practice</option>
-											<option value="4">Acer Practice</option>
-											<!-- <option value="5">NAPLAN Practice</option> -->
+											<option value="1">Mega Test</option>
+											<option value="2">Revision Test</option>
+											<option value="3">Edu Test</option>
+											<option value="4">Acer Test</option>
+											<option value="5">Mock Test</option>
 										</select>
 									</div>
 									<div class="col-md-4">
