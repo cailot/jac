@@ -386,9 +386,8 @@ function deleteHomework(id) {
 															<c:out value="${homework.pdfPath}" />
 														</span>
 													</td>
-													<td class="small align-middle text-truncate" style="max-width: 150px;" data-toggle="tooltip" title="${homework.videoPath}">
-														<!-- <span data-toggle="tooltip" title="${homework.videoPath}"> -->
-														<span>	
+													<td class="small align-middle text-truncate" style="max-width: 150px;">
+														<span data-toggle="tooltip" title="${homework.videoPath}">
 															<c:out value="${homework.videoPath}" />
 														</span>
 													</td>

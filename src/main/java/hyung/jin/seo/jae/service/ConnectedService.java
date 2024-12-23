@@ -299,7 +299,9 @@ public interface ConnectedService {
 	List<TestSchedule> allTestSchedules();
 
 	// list Practice Schedule by year & week
-	List<TestScheduleDTO> listTestSchedule(int year, int week);
+	// List<TestScheduleDTO> listTestSchedule(int year, int week);
+	List<TestScheduleDTO> listTestSchedule(LocalDateTime from, LocalDateTime to, int group);
+	
 
 	// retrieve Practice Schedule by Id
 	TestSchedule getTestSchedule(Long id);

@@ -550,24 +550,24 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
-	public TestSchedule updateTestSchedule(TestSchedule newWork, Long id) {
+	public TestSchedule updateTestSchedule(TestSchedule schedule, Long id) {
 		// search by getId
 		TestSchedule existing = testScheduleRepository.findById(id).get();
 		// update info
-		int newYear = newWork.getYear();
-		existing.setYear(newYear);
-		int newWeek = newWork.getWeek();
-		existing.setWeek(newWeek);
-		boolean newActive = newWork.isActive();
+		LocalDateTime newFrom = schedule.getFromDatetime();
+		existing.setFromDatetime(newFrom);
+		LocalDateTime newTo = schedule.getToDatetime();
+		existing.setToDatetime(newTo);
+		boolean newActive = schedule.isActive();
 		existing.setActive(newActive);
-		String newInfo = newWork.getInfo();
+		String newInfo = schedule.getInfo();
 		existing.setInfo(newInfo);
-		LocalDateTime newStart = newWork.getStartDate();
-		existing.setStartDate(newStart);
-		LocalDateTime newEnd = newWork.getEndDate();
-		existing.setEndDate(newEnd);
-		Set<Test> newTests = newWork.getTests();
-		existing.setTests(newTests);
+		String newGrade = schedule.getGrade();
+		existing.setGrade(newGrade);
+		String newTestGroup = schedule.getTestGroup();
+		existing.setTestGroup(newTestGroup);
+		String newWeek = schedule.getWeek();
+		existing.setWeek(newWeek);
 		// update the existing record
 		TestSchedule updated = testScheduleRepository.save(existing);
 		return updated;	
@@ -680,12 +680,7 @@ public class ConnectedServiceImpl implements ConnectedService {
 	public void deleteTestSchedule(Long id) {
 		TestSchedule testSchedule = testScheduleRepository.findById(id).orElse(null);
 		if (testSchedule != null) {
-			// Retrieve the associated tests
-			Set<Test> tests = testSchedule.getTests();		
-			// Remove the associations between PracticeSchedule and Practice entities
-			testSchedule.setTests(new LinkedHashSet<>());
-			testScheduleRepository.save(testSchedule); // Update to remove associations
-			// Now you can safely delete the PracticeSchedule record
+			// Now you can safely delete the TestSchedule record
 			testScheduleRepository.delete(testSchedule);
 		} else {
 			// Handle the case where the PracticeSchedule record doesn't exist
@@ -809,10 +804,11 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public List<TestScheduleDTO> listTestSchedule(int year, int week) {
+	public List<TestScheduleDTO> listTestSchedule(LocalDateTime from, LocalDateTime to, int group) {
 		List<TestScheduleDTO> dtos = new ArrayList<>();
 		try{
-			dtos = testScheduleRepository.filterTestScheduleByYearNWeek(year, week);
+			// dtos = testScheduleRepository.filterTestScheduleByYearNWeek(year, week);
+			dtos = testScheduleRepository.filterTestScheduleByTimeNGroup(from, to, group+"");
 		}catch(Exception e){
 			System.out.println("No Test Schedule found");
 		}

@@ -601,7 +601,7 @@ function deleteTest(id) {
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
-														<span>
+														<span data-toggle="tooltip" title="${testItem.pdfPath}">
 															<c:out value="${testItem.pdfPath}" />
 														</span>
 													</td>

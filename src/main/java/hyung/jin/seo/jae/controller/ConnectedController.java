@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,18 +172,9 @@ public class ConnectedController {
 	@ResponseBody
 	public TestScheduleDTO registerTestSchedule(@RequestBody TestScheduleDTO formData) {
 		TestSchedule schedule = formData.convertToTestSchedule();
-		List<TestDTO> tests = formData.getTests();
-		// associate practice to schedule
-		for(TestDTO test : tests){
-			String testId = test.getId();
-			Test prac = connectedService.getTest(Long.parseLong(testId));
-			schedule.addTest(prac);
-		}
 		schedule.setActive(true);
-		// save practice schedule
 		schedule = connectedService.addTestSchedule(schedule);
 		TestScheduleDTO dto = new TestScheduleDTO(schedule);
-		// return dto
 		return dto;
 	}
 
@@ -309,15 +298,7 @@ public class ConnectedController {
 		try{
 			// 1. create barebone TestSchedule
 			TestSchedule work = formData.convertToTestSchedule();
-			// 2. update associated Practices
-			List<TestDTO> tests = formData.getTests();
-			for(TestDTO test : tests){
-				// 2.1 get Test
-				Test prac = connectedService.getTest(Long.parseLong(test.getId()));
-				// 2.2 update Test
-				work.addTest(prac);
-			}
-			// 3. update PracticeSchedule
+			// 2. update TestSchedule
 			work = connectedService.updateTestSchedule(work, Long.parseLong(formData.getId()));
 			// 4.return flag
 			return ResponseEntity.ok("\"Test Schedule updated successfully\"");
@@ -387,14 +368,6 @@ public class ConnectedController {
 	public TestScheduleDTO getTestSchedule(@PathVariable Long id) {
 		TestSchedule work = connectedService.getTestSchedule(id);
 		TestScheduleDTO dto = new TestScheduleDTO(work);
-		Set<Test> tests = work.getTests();
-		for(Test test : tests){
-			TestDTO prac = new TestDTO(test);
-			// get TestType name
-			String name =  connectedService.getTestTypeName(test.getId());
-			prac.setName(name);
-			dto.addTest(prac);
-		}
 		return dto;
 	}
 
@@ -514,13 +487,23 @@ public class ConnectedController {
 
 	@GetMapping("/filterTestSchedule")
 	public String listTestSchedules(
-			@RequestParam(value = "listYear", required = false) String listYear,
-			@RequestParam(value = "listWeek", required = false) String listWeek,
+			@RequestParam(value = "listYear", required = false) int listYear,
+			@RequestParam(value = "listTestType", required = false) int listTestType,
 			Model model) {
+		LocalDateTime startTime = JaeConstants.START_TIME;
+		LocalDateTime endTime = JaeConstants.END_TIME;
+		// if listYear != 0, check Cycle's first day and last day
+		if(listYear != 0){
+			CycleDTO cycle = cycleService.listCycles(listYear);
+			String start = cycle.getStartDate();
+			String end = cycle.getEndDate();
+			LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_LOCAL_DATE);
+			startTime = startDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+			LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_LOCAL_DATE);
+			endTime = endDate.atStartOfDay(); // Combine with start of the day (00:00:00)
+		}
 		List<TestScheduleDTO> dtos = new ArrayList();
-		String filteredYear = StringUtils.defaultString(listYear, "0");
-		String filteredWeek = StringUtils.defaultString(listWeek, "0");
-		dtos = connectedService.listTestSchedule(Integer.parseInt(filteredYear), Integer.parseInt(filteredWeek)); 		
+		dtos = connectedService.listTestSchedule(startTime, endTime, listTestType); 		
 		model.addAttribute(JaeConstants.TEST_SCHEDULE_LIST, dtos);
 		return "testSchedulePage";
 	}
@@ -696,9 +679,9 @@ public class ConnectedController {
 
 	@DeleteMapping(value = "/deleteTestSchedule/{testScheduleId}")
 	@ResponseBody
-    public ResponseEntity<String> removeTestSchedule(@PathVariable String testScheduleId) {
-        Long id = Long.parseLong(StringUtils.defaultString(testScheduleId, "0"));
-		connectedService.deleteTestSchedule(id);
+    public ResponseEntity<String> removeTestSchedule(@PathVariable long testScheduleId) {
+        // Long id = Long.parseLong(StringUtils.defaultString(testScheduleId, "0"));
+		connectedService.deleteTestSchedule(testScheduleId);
 		return ResponseEntity.ok("\"Test Schedule deleted successfully\"");
     }
 
