@@ -652,18 +652,18 @@ function updateRadioButtons() {
 																<c:when test="${practice.practiceType == '1'}">Mega English</c:when>
 																<c:when test="${practice.practiceType == '2'}">Mega Mathematics</c:when>
 																<c:when test="${practice.practiceType == '3'}">Mega General Ability</c:when>
-																<c:when test="${practice.practiceType == '4'}">NAPLAN Math</c:when>
-																<c:when test="${practice.practiceType == '5'}">NAPLAN Reading</c:when>
-																<c:when test="${practice.practiceType == '6'}">NAPLAN LC</c:when>
-																<c:when test="${practice.practiceType == '7'}">Revision English</c:when>
-																<c:when test="${practice.practiceType == '8'}">Revision Mathematics</c:when>
-																<c:when test="${practice.practiceType == '9'}">Revision Science</c:when>
-																<c:when test="${practice.practiceType == '10'}">Reeading Comprehension (EDU)</c:when>
-																<c:when test="${practice.practiceType == '11'}">Verbal Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '12'}">Mathematics (EDU)</c:when>
-																<c:when test="${practice.practiceType == '13'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '14'}">Humanities (ACER)</c:when>
-																<c:when test="${practice.practiceType == '15'}">Mathematics (ACER)</c:when>
+																<c:when test="${practice.practiceType == '4'}">Revision English</c:when>
+																<c:when test="${practice.practiceType == '5'}">Revision Mathematics</c:when>
+																<c:when test="${practice.practiceType == '6'}">Revision Science</c:when>
+																<c:when test="${practice.practiceType == '7'}">Reeading Comprehension (EDU)</c:when>
+																<c:when test="${practice.practiceType == '8'}">Verbal Reasoning (EDU)</c:when>
+																<c:when test="${practice.practiceType == '9'}">Mathematics (EDU)</c:when>
+																<c:when test="${practice.practiceType == '10'}">Numerical Reasoning (EDU)</c:when>
+																<c:when test="${practice.practiceType == '11'}">Humanities (ACER)</c:when>
+																<c:when test="${practice.practiceType == '12'}">Mathematics (ACER)</c:when>
+																<c:when test="${practice.practiceType == '13'}">NAPLAN Math</c:when>
+																<c:when test="${practice.practiceType == '14'}">NAPLAN Reading</c:when>
+																<c:when test="${practice.practiceType == '15'}">NAPLAN LC</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -721,7 +721,7 @@ function updateRadioButtons() {
 														</c:choose>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
-														<span>
+														<span data-toggle="tooltip" title="${practice.pdfPath}">
 															<c:out value="${practice.pdfPath}" />
 														</span>
 													</td>
