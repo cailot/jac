@@ -93,10 +93,12 @@ function retrieveTestInfo(id) {
 		url: '${pageContext.request.contextPath}/connected/getTest/' + id,
 		type: 'GET',
 		success: function (testItem) {
-			// console.log(homework);
+			// console.log(testItem);
 			$("#editId").val(testItem.id);
 			$("#editTestType").val(testItem.testType);
 			$("#editGrade").val(testItem.grade);
+			// $("#editVolume").val(testItem.volume);
+			updateVolumeOptions('edit');
 			$("#editVolume").val(testItem.volume);
 			$("#editInfo").val(testItem.info);
 			$("#editPdfPath").val(testItem.pdfPath);	
@@ -204,12 +206,13 @@ function displayAnswerSheet(testId) {
 		type: 'GET',
 		success: function (answerSheet) {
 			// debugger;
-			// console.log(answerSheet);
+			console.log(answerSheet);
 			if (answerSheet != null && answerSheet != '') {
 				// Display the answer sheet info
 				$("#answerId").val(answerSheet.id);				
 				$("#addAnswerVideoPath").val(answerSheet.videoPath);
 				$("#addAnswerPdfPath").val(answerSheet.pdfPath);
+				$("#addAnswerCount").val(answerSheet.answerCount);
 				// Display the answer sheet table
 				var answerSheetTableBody = document.getElementById("answerSheetTable").getElementsByTagName('tbody')[0];
 				answerSheetTableBody.innerHTML = "";
@@ -277,6 +280,8 @@ function displayAnswerSheet(testId) {
 				var answerTopicSelect = document.getElementById("answerTopic");
 				answerTopicSelect.value = "";
 			}
+			// show count of answer
+			updateAnswerCount();
 			// Display the modal
 			$('#registerTestAnswerModal').modal('show');
 		},
@@ -347,6 +352,7 @@ function collectAndSubmitAnswers() {
 	var testId = document.getElementById("testId4Answer").value;
     var answerVideoPath = document.getElementById("addAnswerVideoPath").value;
     var answerPdfPath = document.getElementById("addAnswerPdfPath").value;
+	var answerCount = document.getElementById("addAnswerCount").value;
 
     // Collect question number and selected value from the answerSheetTable
     var answerList = [];
@@ -386,6 +392,7 @@ function collectAndSubmitAnswers() {
 			testId : testId,
 			videoPath : answerVideoPath,
 			pdfPath : answerPdfPath,
+			answerCount : answerCount,
 			answers : answerList
 		}),
         success: function (response) {
@@ -446,6 +453,82 @@ function deleteTest(id) {
     });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Volume Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateVolumeOptions(action) {
+	// Get the selected practice type text
+	var testTypeSelect = document.getElementById(action + "TestType");
+	var testTypeText = testTypeSelect.selectedOptions[0].text;
+
+	// console.log(testTypeText);
+	
+	// Clear existing options
+	var selectElement = document.getElementById(action + "Volume");
+	selectElement.innerHTML = '';
+
+	// Check if the practice type starts with "Mega" or "Revision"
+	if (testTypeText.startsWith("Mega") || testTypeText.startsWith("Revision")) {
+		// Loop to add options "Vol.1", "Vol.2", etc.
+		for (var i = 1; i <= 5; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = "Vol " + i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	} else {
+		// Loop to add options 1, 2, etc.
+		for (var i = 1; i <= 40; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Answer Radio Button Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateAnswerCount() {
+	// Get the selected count
+	var count = document.getElementById("addAnswerCount").value;
+	console.log(count);
+	var selectElement = document.getElementById("correctAnswerOption");	
+	// Clear existing radio buttons
+	selectElement.innerHTML = '';
+
+	// Loop to add dropdown list based on the selected count
+	if(count == 4){
+		for (var i = 1; i <= 4; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = String.fromCharCode(64 + i); // Converts 1 to 'A', 2 to 'B', etc.
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}else if(count == 5){
+		for (var i = 1; i <= 5; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = String.fromCharCode(64 + i); // Converts 1 to 'A', 2 to 'B', etc.
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
+}
+
 </script>
 
 <style>
@@ -487,7 +570,7 @@ function deleteTest(id) {
 					<div class="col-md-1">
 						<label for="listGrade" class="label-form">Grade</label>
 						<select class="form-control" id="listGrade" name="listGrade">
-							<option value="All">All</option>
+							<option value="0">All</option>
 						</select>
 					</div>
 					<div class="col-md-1">
@@ -523,7 +606,7 @@ function deleteTest(id) {
 					</div>
 					<div class="col mx-auto">
 						<label class="label-form"><span style="color: white;">0</span></label>
-						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerTestModal"><i class="bi bi-plus"></i>&nbsp;New</button>
+						<button type="button" class="btn btn-block btn-info" data-toggle="modal" data-target="#registerTestModal" onclick="updateVolumeOptions('add')"><i class="bi bi-plus"></i>&nbsp;New</button>
 					</div>
 				</div>
 			</div>
@@ -537,8 +620,8 @@ function deleteTest(id) {
 										<th class="text-center align-middle" style="width: 20%">Test Type</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
 										<th class="text-center align-middle" style="width: 5%">Set</th>
-										<th class="text-center align-middle" style="width: 30%">Document Path</th>
-										<th class="text-center align-middle" style="width: 25%">Information</th>
+										<th class="text-center align-middle" style="width: 35%">Document Path</th>
+										<th class="text-center align-middle" style="width: 20%">Information</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -597,7 +680,21 @@ function deleteTest(id) {
 													</td>
 													<td class="small align-middle text-center">
 														<span>
-															<c:out value="${testItem.volume}" />
+															<c:choose>
+																<c:when test="${fn:startsWith(testItem.name, 'Mega') || fn:startsWith(testItem.name, 'Revision')}">
+																	<c:choose>
+																		<c:when test="${testItem.volume == '1'}">Vol.1</c:when>
+																		<c:when test="${testItem.volume == '2'}">Vol.2</c:when>
+																		<c:when test="${testItem.volume == '3'}">Vol.3</c:when>
+																		<c:when test="${testItem.volume == '4'}">Vol.4</c:when>
+																		<c:when test="${testItem.volume == '5'}">Vol.5</c:when>
+																		<c:otherwise></c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<c:out value="${testItem.volume}" />
+																</c:otherwise>
+															</c:choose>
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
@@ -655,9 +752,9 @@ function deleteTest(id) {
 					<form id="testRegister">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-8">
+								<div class="col-md-7">
 									<label for="addTestType" class="label-form">Test Type</label>
-									<select class="form-control" id="addTestType" name="addTestType">
+									<select class="form-control" id="addTestType" name="addTestType" onchange="updateVolumeOptions('add')">
 									</select>
 								</div>
 								<div class="col-md-2">
@@ -665,24 +762,10 @@ function deleteTest(id) {
 									<select class="form-control" id="addGrade" name="addGrade">
 									</select>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<label for="addVolume" class="label-form">Set</label>
 									<select class="form-control" id="addVolume" name="addVolume">
 									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("addVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
 								</div>
 							</div>
 						</div>
@@ -723,7 +806,7 @@ function deleteTest(id) {
 					<form id="practiceEdit">
 						<div class="form-group">
 							<div class="form-row mt-4">
-								<div class="col-md-8">
+								<div class="col-md-7">
 									<label for="editTestType" class="label-form">Test Type</label>
 									<select class="form-control" id="editTestType" name="editTestType" disabled>
 									</select>
@@ -733,24 +816,10 @@ function deleteTest(id) {
 									<select class="form-control" id="editGrade" name="editGrade" disabled>
 									</select>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<label for="editVolume" class="label-form">Set</label>
 									<select class="form-control" id="editVolume" name="editVolume">
 									</select>
-									<script>
-										// Get a reference to the select element
-										var selectElement = document.getElementById("editVolume");
-										// Loop to add options from 1 to 50
-										for (var i = 1; i <= 50; i++) {
-										  // Create a new option element
-										  var option = document.createElement("option");
-										  // Set the value and text content for the option
-										  option.value = i;
-										  option.textContent = i;
-										  // Append the option to the select element
-										  selectElement.appendChild(option);
-										}
-									</script>
 								</div>
 							</div>
 						</div>
@@ -800,16 +869,23 @@ function deleteTest(id) {
 						<div class="form-group">
 							<div class="form-row">
 								<div class="col-md-12 mt-4">
-									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
-									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
+									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
+									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-row">
-								<div class="col-md-12 mt-4">
-									<label for="addAnswerPdfPath" class="label-form">Answer Document Path</label>
-									<input type="text" class="form-control" id="addAnswerPdfPath" name="addAnswerPdfPath" placeholder="https://" title="Please enter document access address" />
+								<div class="col-md-10">
+									<label for="addAnswerVideoPath" class="label-form">Answer Video Path</label>
+									<input type="text" class="form-control" id="addAnswerVideoPath" name="addAnswerVideoPath" placeholder="https://" title="Please enter video access address" />
+								</div>
+								<div class="col-md-2">
+									<label for="addAnswerCount" class="label-form">Count</label>
+									<select class="form-control" id="addAnswerCount" name="addAnswerCount" onchange="updateAnswerCount()">
+										<option value="4">4</option>
+										<option value="5">5</option>
+									</select>
 								</div>
 							</div>
 						</div>
@@ -842,11 +918,6 @@ function deleteTest(id) {
 								<div class="col-md-2">
 									<label for="correctAnswerOption" class="label-form">Answer</label>
 									<select class="form-control" id="correctAnswerOption" name="correctAnswerOption">
-										<option value="1">A</option>
-										<option value="2">B</option>
-										<option value="3">C</option>
-										<option value="4">D</option>
-										<option value="5">E</option>
 									</select>
 								</div>
 								<div class="col-md-5">

@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ page import="java.util.Calendar" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css"></link>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables-1.13.4.min.js"></script>
@@ -16,21 +16,67 @@
 <script>
 
 $(document).ready(function () {
-	$('#hpiiTable').DataTable({
-   	 dom: 'Bfrtip',
-	        buttons: [
-	            'copyHtml5', 'csvHtml5', 'excelHtml5', 
-	            {
-		            extend: 'pdfHtml5',
-		            download: 'open',
-		            pageSize: 'A0'
-		        }
-	        ],
-	    'lengthChange': false,
-	    'order' : []
-	});
+	// initialise state list when loading
+	listState('#state');
+	listBranch('#branch');
+	listGrade('#grade');
+	updateVolumeOptions();
 
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+	// avoid execute several times
+	$(document).ajaxComplete(function(event, xhr, settings) {
+			// Check if the request URL matches the one in branch
+			if (settings.url === '/code/branch') {
+				$("#branch").val(window.branch);
+				// Disable #branch and #addBranch
+				$("#branch").prop('disabled', true);
+				// $("#editBranch").prop('disabled', true);
+			}
+		});
+	}
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Volume Options
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function updateVolumeOptions() {
+	// Get the selected practice type text
+	var testTypeSelect = document.getElementById("testGroup");
+	var testTypeText = testTypeSelect.selectedOptions[0].text;
+
+	// console.log(testTypeText);
+	
+	// Clear existing options
+	var selectElement = document.getElementById("volume");
+	selectElement.innerHTML = '';
+
+	// Check if the practice type starts with "Mega" or "Revision"
+	if (testTypeText.startsWith("Mega") || testTypeText.startsWith("Revision")) {
+		// Loop to add options "Vol.1", "Vol.2", etc.
+		for (var i = 1; i <= 5; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = "Vol " + i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	} else {
+		// Loop to add options 1, 2, etc.
+		for (var i = 1; i <= 40; i++) {
+			// Create a new option element
+			var option = document.createElement("option");
+			// Set the value and text content for the option
+			option.value = i;
+			option.textContent = i;
+			// Append the option to the select element
+			selectElement.appendChild(option);
+		}
+	}
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -181,7 +227,41 @@ function updateFileName(input) {
 		<div class="upload-section col-md-8">
 	    <h2 class="text-center">Upload Scanned OMR Image</h2>
 	    <form method="post" action="${pageContext.request.contextPath}/omr/upload" enctype="multipart/form-data">
-	        <div class="form-row p-4">
+	    	<div class="form-row p-4">
+				<div class="col-md-3">
+					<label for="state" class="label-form">State</label> 
+					<select class="form-control" id="state" disabled>
+					</select>
+					<!-- hidden input to pass the value of disabled state -->
+					 <input type="hidden" name="state" value="1">
+				</div>
+				<div class="col-md-3">
+					<label for="branch" class="label-form">Branch</label> 
+					<select class="form-control" id="branch" name="branch">
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label for="testGroup" class="label-form">Test</label>
+					<select class="form-control" id="testGroup" name="testGroup" onchange="updateVolumeOptions()">
+						<option value="1">Mega Test</option>
+						<option value="2">Revision Test</option>
+						<option value="3">Edu Test</option>
+						<option value="4">Acer Test</option>
+						<option value="5">Mock Test</option>
+					</select>
+				</div>
+				<div class="col-md-1">
+					<label for="grade" class="label-form">Grade</label>
+					<select class="form-control" id="grade" name="grade">
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="volume" class="label-form">Set</label>
+					<select class="form-control" id="volume" name="volume">
+					</select>
+				</div>
+	        </div>
+			<div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->
 	                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
@@ -210,78 +290,68 @@ function updateFileName(input) {
 				</div>
 			</div>
 		</c:when>
-	<c:otherwise>
-		<!-- Result Section -->
-		<div class="row m-3 pt-5 justify-content-center">
-		    <div id="studentResult" class="col-md-10">
-		  	<c:choose>
-				<c:when test="${not empty batchList}">
-				<div class="stats">
-					<!-- Display table if hpiiList is not empty -->
-					<table id="hpiiTable" class="display">
-						<!-- Table headers -->
-						<thead>
-							<tr>
-								<th class="text-center" style="width: 20%">ID</th>
-								<th class="text-center" style="width: 20%">Last Name</th>
-								<th class="text-center" style="width: 20%">First Name</th>
-								<th class="text-center" style="width: 20%">Grade</th>
-								<th class="text-center" style="width: 20%">Contact 1</th>
-								<th class="text-center" style="width: 15%;">Email 1</th>
-								<th class="text-center" style="width: 5%">Relation 1</th>
-								<th class="text-center" style="width: 20%">Contact 2</th>
-								<th class="text-center" style="width: 15%;">Email 2</th>
-								<th class="text-center" style="width: 5%">Relation 2</th>
-								<th class="text-center" style="width: 20%">State</th>
-								<th class="text-center" style="width: 15%;">Branch</th>
-								<th class="text-center" style="width: 5%">Gender</th>
-								<th class="text-center" style="width: 20%">Register Date</th>
-								<th class="text-center" style="width: 15%;">End Date</th>
-								<th class="text-center" style="width: 5%">Active</th>							
-							</tr>
-						</thead>
-						<!-- Table body -->
-						<tbody>
-						<!-- Iterate over hpiiList -->
-						<c:forEach items="${batchList}" var="record">
-							<tr>
-								<!-- Display record if not empty -->
-								<c:if test="${not empty record}">
-									<td class="small ellipsis"><span><c:out value="${record.id}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.lastName}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.firstName}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.grade}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.contactNo1}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.email1}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.relation1}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.contactNo2}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.email2}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.relation2}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.state}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.branch}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.gender}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.registerDate}" /></span></td>
-									<td class="small ellipsis"><span><c:out value="${record.endDate}" /></span></td>
-									<td class="small ellipsis text-center"><span><c:out value="${record.active}" /></span></td>
-								</c:if>
-							</tr>
-						</c:forEach>
-						</tbody>
-					</table>
+		<c:when test="${success != null}">
+			<!-- Handle success -->
+			<div class="row m-3 pt-5 justify-content-center">
+				<div class="col-md-8 alert alert-success" role="alert">
+					<h5>
+						<i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;<c:out value="${success}" />
+					</h5>
 				</div>
-				</c:when>
-				<c:otherwise>
-					<!-- Display warning message if hpiiList is empty -->
-					<div class="alert alert-warning" role="alert">
-						<h5>
-						<i class="fa fa-info-circle fa-lg"></i>&nbsp;&nbsp;Please upload <strong>Scanned</strong> image file with <strong>Test Answer Sheet</strong>.
-						</h5>
+			</div>	
+				<!-- Redirect to the result page -->
+				<!-- <c:choose> 
+					<c:when test="${results != null}">
+						<c:forEach items="${results}" var="result">
+							<c:out value="${result.studentName}" />
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						Nothing....
+					</c:otherwise>
+				</c:choose> -->
+
+
+				<!-- Display OMR Scan Results -->
+				
+				<c:if test="${not empty results}">
+					<div class="row m-3 pt-5 justify-content-center">
+						<div class="col-md-12">
+							<h4>OMR Scan Results - Number of results: ${fn:length(results)}</h4>
+							<div class="row justify-content-center">
+								<c:forEach items="${results}" var="result">
+									<div class="col-md-10 mb-4">
+										<div class="card h-100">
+											<div class="card-body">
+												<h5 class="card-title text-primary"><c:out value="${result.studentName}" /> (<c:out value="${result.studentId}" />)</h5>
+												<h6 class="card-title text-success"><c:out value="${result.testId}" /> ~~~~ <c:out value="${result.testName}" /></h6>
+												
+												<!-- Add more details if available -->
+												<p class="card-text">
+													Here we go with the details of the student.
+												</p>
+											</div>
+											<div class="card-footer text-center">
+												<button class="btn btn-primary btn-sm" onclick="viewDetails('${result.studentId}')">View Details</button>
+											</div>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+							<!-- Optional: Next Button if needed -->
+							<div class="text-center mt-4">
+								<button class="btn btn-success" onclick="proceedNext()">Next</button>
+							</div>
+						</div>
 					</div>
-				</c:otherwise>
-			</c:choose>  
-		    </div>
-		</div>
-	</c:otherwise>
+				</c:if>
+
+
+			<!-- </div> -->
+		</c:when>
+		<c:otherwise>
+			<!-- Other content -->
+		</c:otherwise>
 	</c:choose>
 </div>
 

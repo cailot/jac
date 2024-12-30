@@ -148,7 +148,10 @@ public interface JaeConstants {
 	String NEW_ENROLMENT = "NEW";	
 
 	String ERROR = "error";
+
+	String SUCCESS = "success";
 	
+	String RESULTS = "results";
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	PAYMENT METHOD LIST
@@ -371,24 +374,34 @@ public interface JaeConstants {
 	//	PRACTICE TYPE
 	//
 	////////////////////////////////////
-	String PRACTICE_TYPE_MEGA = "MEGA";
+	// String PRACTICE_TYPE_MEGA = "MEGA";
 	
-	String PRACTICE_TYPE_REVISION = "REVISION";
+	// String PRACTICE_TYPE_REVISION = "REVISION";
 	
-	String PRACTICE_TYPE_EDU = "EDU";
+	// String PRACTICE_TYPE_EDU = "EDU";
 	
-	String PRACTICE_TYPE_ACER = "ACER";
+	// String PRACTICE_TYPE_ACER = "ACER";
 	
-	String PRACTICE_TYPE_NAPLAN = "NAPLAN";
+	// String PRACTICE_TYPE_NAPLAN = "NAPLAN";
 
-	int PRACTICE_MEGA = 1;
+	// int PRACTICE_MEGA = 1;
 	
-	int PRACTICE_REVISION = 2;
+	// int PRACTICE_REVISION = 2;
 	
-	int PRACTICE_EDU = 3;
+	// int PRACTICE_EDU = 3;
 	
-	int PRACTICE_ACER = 4;
+	// int PRACTICE_ACER = 4;
 	
-	int PRACTICE_NAPLAN = 5;
+	// int PRACTICE_NAPLAN = 5;
+
+	////////////////////////////////////
+	//
+	//	OMR PROCESS
+	//
+	////////////////////////////////////
+
+	String OMR_FILE_JPG = "jpg";
+
+	String OMR_FILE_JPEG = "jpeg";
 
 }

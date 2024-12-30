@@ -3,15 +3,11 @@ package hyung.jin.seo.jae.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +25,6 @@ import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Homework;
-import hyung.jin.seo.jae.model.HomeworkProgress;
 import hyung.jin.seo.jae.model.HomeworkSchedule;
 import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
@@ -631,11 +626,13 @@ public class ConnectedServiceImpl implements ConnectedService {
 		try{
 			// 1. get associated TestAnswer
 			TestAnswer ta = testAnswerRepository.findTestAnswerByTest(id);
-			// 2. empty TestAnswerCollection
-			ta.setAnswers(new ArrayList<>());
-			testAnswerRepository.save(ta);
-			// 3. delete associated testAnswer
-			testAnswerRepository.deleteTestAnswerByTest(id);
+			if(ta!=null){
+				// 2. empty TestAnswerCollection
+				ta.setAnswers(new ArrayList<>());
+				testAnswerRepository.save(ta);
+				// 3. delete associated testAnswer
+				testAnswerRepository.deleteTestAnswerByTest(id);
+			}
 			// 4. delete test
 			testRepository.deleteById(id);
 		}catch(Exception e){

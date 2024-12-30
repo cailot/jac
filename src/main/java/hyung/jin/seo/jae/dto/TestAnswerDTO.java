@@ -27,12 +27,15 @@ public class TestAnswerDTO implements Serializable {
 
 	private long testId;
 
+	private int answerCount;
+
 	private List<TestAnswerItem> answers;
 
 	public TestAnswerDTO(TestAnswer work){
 		this.id = String.valueOf(work.getId());
 		this.videoPath = work.getVideoPath();
 		this.pdfPath = work.getPdfPath();
+		this.answerCount = work.getAnswerCount();
 		this.testId = work.getTest().getId();
 		this.answers = work.getAnswers();
 	}
