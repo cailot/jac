@@ -52,7 +52,7 @@ function addPractice() {
 		info : $("#addInfo").val(),
 		pdfPath : $("#addPdfPath").val()
 	}
-	console.log(practice);
+	// console.log(practice);
 
 	// Send AJAX to server
 	$.ajax({
@@ -569,7 +569,7 @@ function updateRadioButtons() {
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterPractice">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2>
+					<div class="col-md-2">
 						<label for="listPracticeType" class="label-form">Practice Type</label>
 						<select class="form-control" id="listPracticeType" name="listPracticeType">
 							<option value="0">All</option>
@@ -696,29 +696,28 @@ function updateRadioButtons() {
 														</span>
 													</td>
 													<td class="small align-middle text-center">
-														<!-- <span>
-															<c:out value="${practice.volume}" />
-														</span> -->
-														<c:choose>
-															<c:when test="${fn:startsWith(practice.name, 'Mega') || fn:startsWith(practice.name, 'Revision')}">
-																<c:choose>
-																	<c:when test="${practice.volume == '1'}">Vol.1-1</c:when>
-																	<c:when test="${practice.volume == '2'}">Vol.1-2</c:when>
-																	<c:when test="${practice.volume == '3'}">Vol.2-1</c:when>
-																	<c:when test="${practice.volume == '4'}">Vol.2-2</c:when>
-																	<c:when test="${practice.volume == '5'}">Vol.3-1</c:when>
-																	<c:when test="${practice.volume == '6'}">Vol.3-2</c:when>
-																	<c:when test="${practice.volume == '7'}">Vol.4-1</c:when>
-																	<c:when test="${practice.volume == '8'}">Vol.4-2</c:when>
-																	<c:when test="${practice.volume == '9'}">Vol.5-1</c:when>
-																	<c:when test="${practice.volume == '10'}">Vol.5-2</c:when>
-																	<c:otherwise></c:otherwise>
-																</c:choose>
-															</c:when>
-															<c:otherwise>
-																<c:out value="${practice.volume}" />
-															</c:otherwise>
-														</c:choose>
+														<span>
+															<c:choose>
+																<c:when test="${fn:startsWith(practice.name, 'Mega') || fn:startsWith(practice.name, 'Revision')}">
+																	<c:choose>
+																		<c:when test="${practice.volume == '1'}">Vol.1-1</c:when>
+																		<c:when test="${practice.volume == '2'}">Vol.1-2</c:when>
+																		<c:when test="${practice.volume == '3'}">Vol.2-1</c:when>
+																		<c:when test="${practice.volume == '4'}">Vol.2-2</c:when>
+																		<c:when test="${practice.volume == '5'}">Vol.3-1</c:when>
+																		<c:when test="${practice.volume == '6'}">Vol.3-2</c:when>
+																		<c:when test="${practice.volume == '7'}">Vol.4-1</c:when>
+																		<c:when test="${practice.volume == '8'}">Vol.4-2</c:when>
+																		<c:when test="${practice.volume == '9'}">Vol.5-1</c:when>
+																		<c:when test="${practice.volume == '10'}">Vol.5-2</c:when>
+																		<c:otherwise></c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<c:out value="${practice.volume}" />
+																</c:otherwise>
+															</c:choose>
+														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
 														<span data-toggle="tooltip" title="${practice.pdfPath}">
