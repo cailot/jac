@@ -430,7 +430,7 @@ public class ConnectedController {
 			Model model) {
 		List<TestDTO> dtos = new ArrayList();
 		String filteredType = StringUtils.defaultString(testType, "0");
-		String filteredGrade = StringUtils.defaultString(grade, JaeConstants.ALL);
+		String filteredGrade = StringUtils.defaultString(grade, "0");
 		String filteredVolume = StringUtils.defaultString(volume, "0");
 		dtos = connectedService.listTest(Integer.parseInt(filteredType), filteredGrade, Integer.parseInt(filteredVolume));		
 		model.addAttribute(JaeConstants.TEST_LIST, dtos);
@@ -569,6 +569,7 @@ public class ConnectedController {
 		String testId = payload.get("testId").toString();
 		String video = payload.get("videoPath").toString();
 		String pdf = payload.get("pdfPath").toString();
+		String answerCount = payload.get("answerCount").toString();	
 		List<TestAnswerItem> items = new ArrayList<>();
 		// convert the answers list from the payload to a List<Map<String, Object>>
 		ObjectMapper mapper = new ObjectMapper();
@@ -592,6 +593,7 @@ public class ConnectedController {
 			// 2. populate PracticeAnswer
 			ta.setPdfPath(pdf);
 			ta.setVideoPath(video);
+			ta.setAnswerCount(Integer.parseInt(answerCount));
 			ta.setAnswers(items);
 			// 3. get Test
 			Test test = connectedService.getTest(Long.parseLong(testId));
@@ -606,6 +608,7 @@ public class ConnectedController {
 			// 2. populate PracticeAnswer
 			ta.setVideoPath(video);
 			ta.setPdfPath(pdf);
+			ta.setAnswerCount(Integer.parseInt(answerCount));
 			ta.setAnswers(items);
 			// 3. update PracticeAnswer
 			connectedService.updateTestAnswer(ta, Long.parseLong(answerId));
@@ -638,12 +641,12 @@ public class ConnectedController {
 	// }
 
 	// list test type for schedule
-	@GetMapping("/test4Schedule/{type}/{grade}")
-	@ResponseBody
-	List<TestDTO> getTestForSchedule(@PathVariable int type, @PathVariable String grade) {
-		List<TestDTO> dtos = connectedService.listTestByTypeNGrade(type, grade); 
-		return dtos;
-	}
+	// @GetMapping("/test4Schedule/{type}/{grade}")
+	// @ResponseBody
+	// List<TestDTO> getTestForSchedule(@PathVariable int type, @PathVariable String grade) {
+	// 	List<TestDTO> dtos = connectedService.listTestByTypeNGrade(type, grade); 
+	// 	return dtos;
+	// }
 	
 	@DeleteMapping(value = "/deleteHomework/{homeId}")
 	@ResponseBody

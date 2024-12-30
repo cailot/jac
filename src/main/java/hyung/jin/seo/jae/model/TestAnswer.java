@@ -41,6 +41,9 @@ public class TestAnswer {
     @Column(length = 300, nullable = true)
     private String pdfPath;
 
+    @Column
+    private int answerCount;
+
     @ElementCollection
     @CollectionTable(name = "TestAnswerCollection", 
     joinColumns = @JoinColumn(name="TestAnswer_id", foreignKey = @ForeignKey(name="FK_TestAnswerCollection_TestAnswer"))) // Set the custom table name
