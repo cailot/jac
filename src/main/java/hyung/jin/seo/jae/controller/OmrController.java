@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,10 +64,12 @@ public class OmrController {
 
 		// create omr results 	
 		List<OmrScanResultDTO> results = processOmrImage();
+		// add the meta to flash attributes
+		redirectAttributes.addFlashAttribute(JaeConstants.METADATA, omrUploadDto);
 		// add the results to flash attributes
 		redirectAttributes.addFlashAttribute(JaeConstants.RESULTS, results);
 		// set scuccess message
-		redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please click next button to proceed scanned image result.");
+		redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please click next button at the bottom to proceed scanned image result.");
         return "redirect:/omr/upload";
 	}
 
@@ -78,12 +81,14 @@ public class OmrController {
 		List<OmrScanResultDTO> results = new ArrayList<>();
 		for(int i=1; i<=5; i++) {
 			OmrScanResultDTO result = new OmrScanResultDTO();
-			result.setTestId("Test Id -" + i*i);
-			result.setTestName("Test Name - " + i*i + " - " + i*i);
-			result.setStudentId("Student Id - " + i*i*i);
-			result.setStudentName("Student Name - " + i*i*i + " - " + i*i*i);
-			for(int j=1; j<5; j++) {
-				result.addAnswer(j);
+			result.setTestId(3+"");
+			result.setTestName("Mega Test");
+			result.setStudentId("1234567");
+			result.setStudentName("David Hwang");
+			for(int j=0; j<40; j++) {
+				// generate radom number from 0 to 4
+				int radom = new Random().nextInt(5);
+				result.addAnswer(radom);
 			}
 			results.add(result);
 		}
