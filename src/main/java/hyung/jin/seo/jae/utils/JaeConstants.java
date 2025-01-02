@@ -152,6 +152,8 @@ public interface JaeConstants {
 	String SUCCESS = "success";
 	
 	String RESULTS = "results";
+
+	String METADATA = "meta";
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	PAYMENT METHOD LIST

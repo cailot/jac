@@ -92,118 +92,64 @@ function updateFileName(input) {
 </script> 
 
 <style>
-       
-    #studentResult {
-        padding: 20px;
-    }
-    
-    label {
-        font-weight: bold;
-    }
-    .form-check-input {
-        margin-top: 5px;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-    
-    .stats {
-        margin-top: 20px;
-    }
 
-    #hpiiTable {
-        width: 100%;
-        border-collapse: collapse;
-    }
+.upload-section {
+	background-color: #f8f9fa;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
 
-    #hpiiTable th,
-    #hpiiTable td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
+.upload-section h2 {
+	color: #007bff;
+	margin-bottom: 20px;
+}
 
-    #hpiiTable th {
-        background-color: #f2f2f2;
-    }
+.csv-image {
+	max-width: 100%;
+	border-radius: 10px;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
 
-    #hpiiTable tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+.csv-template {
+	font-weight: bold;
+	color: #6c757d;
+}
 
-    #hpiiTable tbody tr:hover {
-        background-color: #f2f2f2;
-    }
+.download-link i {
+	color: #007bff;
+	text-decoration: none;
+}
 
-    .ellipsis {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-    
-	
-	.upload-section {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
+.download-link:hove i {
+	color: #007bff;
+}
 
-    .upload-section h2 {
-        color: #007bff;
-        margin-bottom: 20px;
-    }
+.upload-button {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 10px 20px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
 
-    .csv-image {
-        max-width: 100%;
-        border-radius: 10px;
-        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    }
+.upload-button:hover {
+	background-color: #0056b3;
+}
 
-    .csv-template {
-        font-weight: bold;
-        color: #6c757d;
-    }
+.file-input {
+	display: none;
+}
 
-    .download-link i {
-        color: #007bff;
-        text-decoration: none;
-    }
-
-    .download-link:hove i {
-        color: #007bff;
-    }
-
-    .upload-button {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .upload-button:hover {
-        background-color: #0056b3;
-    }
-
-    .file-input {
-        display: none;
-    }
-
-    .upload-label {
-        display: block;
-        margin-top: 10px;
-        color: #6c757d;
-    }
-    .upload-section .form-row .input-group {
-    width: 100%;
+.upload-label {
+	display: block;
+	margin-top: 10px;
+	color: #6c757d;
+}
+.upload-section .form-row .input-group {
+	width: 100%;
 }
 
 .upload-section .form-row .upload-label {
@@ -218,9 +164,226 @@ function updateFileName(input) {
     width: 100%;
 }
     
-	
+.modal-dialog {
+    display: flex !important;
+    align-items: center !important; /* Vertically center modal */
+    justify-content: center !important;
+    height: 90vh !important; /* 90% of the viewport height */
+    width: 80vw !important; /* 80% of the viewport width */
+    max-width: 80vw !important; /* Ensure it respects 80% max width */
+    margin: 30px auto !important; /* Center it horizontally and vertically */
+}
+
+.modal-content {
+    height: 100% !important; /* Ensure the content takes the full height of the modal */
+    width: 100% !important; /* Stretch content to fill the dialog */
+    overflow: hidden !important; /* Prevent content overflow */
+}
+
+.modal-body {
+    height: calc(100% - 120px) !important; /* Adjust for header and footer height */
+    overflow-y: auto !important; /* Enable scrolling for content */
+}
+
+.full-fill {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 </style>
 
+<script>
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Edit Answer
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function editAnswer(id) {
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/getPractice/1', //+ id,
+		type: 'GET',
+		success: function (answer) {
+			// console.log(answer);
+
+			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/test/temp.jpg" alt="Logo" class="img-fluid full-fill">');
+			
+			
+			// Create an editable table with Bootstrap styling and load it into #answerTable
+			var table = `
+				<table class="table table-bordered" style="width: 100%;">
+					<tbody>
+						<tr>
+							<td>1</th>
+							<td>2</th>
+							<td>3</th>
+							<td>4</th>
+							<td>5</th>
+							<td>6</th>
+							<td>7</th>
+							<td>8</th>
+							<td>9</th>
+							<td>10</th>
+						</tr>
+						<tr>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true"></td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">11</td>
+							<td contenteditable="true">12</td>
+							<td contenteditable="true">13</td>
+							<td contenteditable="true">14</td>
+							<td contenteditable="true">15</td>
+							<td contenteditable="true">16</td>
+							<td contenteditable="true">17</td>
+							<td contenteditable="true">18</td>
+							<td contenteditable="true">19</td>
+							<td contenteditable="true">20</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true"></td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">21</td>
+							<td contenteditable="true">22</td>
+							<td contenteditable="true">23</td>
+							<td contenteditable="true">24</td>
+							<td contenteditable="true">25</td>
+							<td contenteditable="true">26</td>
+							<td contenteditable="true">27</td>
+							<td contenteditable="true">28</td>
+							<td contenteditable="true">29</td>
+							<td contenteditable="true">30</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true"></td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">31</td>
+							<td contenteditable="true">32</td>
+							<td contenteditable="true">33</td>
+							<td contenteditable="true">34</td>
+							<td contenteditable="true">35</td>
+							<td contenteditable="true">36</td>
+							<td contenteditable="true">37</td>
+							<td contenteditable="true">38</td>
+							<td contenteditable="true">39</td>
+							<td contenteditable="true">40</td>
+						</tr>
+						<tr>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true"></td>
+							<td contenteditable="true">B</td>
+							<td contenteditable="true">D</td>
+							<td contenteditable="true">A</td>
+							<td contenteditable="true">C</td>
+						</tr>
+					</tbody>
+				</table>
+			`;
+			$("#answerTable").html(table);
+			
+			
+			
+			
+			
+			$('#editModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Generate Table
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function generateTableData(elementId, data) {
+    // console.log('Element ID:', elementId);
+    // console.log('Data:', data);
+    const target = document.getElementById(elementId);
+    if (!target) {
+        console.error(`Element with ID ${elementId} not found.`);
+        return;
+    }
+    if (!Array.isArray(data) || data.length === 0) {
+        target.innerHTML = "<p>No data available</p>";
+        return;
+    }
+    const cols = 10; // Number of columns per row
+    let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
+    // Generate rows dynamically
+    for (let row = 0; row < Math.ceil(data.length / cols); row++) {
+        // Add dynamic serial numbers as header for each row
+        tableHTML += "<tr>";
+        for (let col = 1; col <= cols; col++) {
+            const serialNumber = row * cols + col;
+            if (serialNumber <= data.length) {
+                tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
+            }
+        }
+        tableHTML += "</tr>";
+        // Add data cells for the row
+        tableHTML += "<tr>";
+        for (let col = 1; col <= cols; col++) {
+            const index = row * cols + (col - 1);
+            if (index < data.length) {
+                tableHTML += `<td style="padding: 8px; text-align: center;">`+data[index]+`</td>`;
+            } else {
+                tableHTML += `<td style="padding: 8px; text-align: center;"></td>`;
+            }
+        }
+        tableHTML += "</tr>";
+    }
+    tableHTML += "</table>";
+    // console.log('Generated Table HTML:', tableHTML);
+    target.innerHTML = tableHTML;
+    // console.log('Table rendered successfully!');
+}
+
+
+</script>
+
+<!-- Success Alert -->
+<div id="success-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-success alert-dialog-display">
+			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Main page -->
 <div style="width: 85%; margin:0 auto;">
 	<!-- Search section -->
 	<div class="row m-3 pt-5 justify-content-center">
@@ -272,12 +435,22 @@ function updateFileName(input) {
 	                <div id="file-name-container"></div>
 	            </div>
 	            <div class="col-md-4 text-right">
-	                <button type="submit" class="upload-button btn btn-primary">Upload</button>
+	                <button type="submit" id="file-upload" class="upload-button btn btn-primary">Upload</button>
 	            </div>
 	        </div>
 	    </form>
 		</div>
 	</div>
+
+
+
+
+
+
+
+
+
+
 	<!-- Result/Error display -->
 	<c:choose>
 		<c:when test="${error != null}">
@@ -292,47 +465,69 @@ function updateFileName(input) {
 		</c:when>
 		<c:when test="${success != null}">
 			<!-- Handle success -->
-			<div class="row m-3 pt-5 justify-content-center">
-				<div class="col-md-8 alert alert-success" role="alert">
-					<h5>
-						<i class="fa fa-check-circle fa-lg"></i>&nbsp;&nbsp;<c:out value="${success}" />
-					</h5>
-				</div>
-			</div>	
-				<!-- Redirect to the result page -->
-				<!-- <c:choose> 
-					<c:when test="${results != null}">
-						<c:forEach items="${results}" var="result">
-							<c:out value="${result.studentName}" />
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						Nothing....
-					</c:otherwise>
-				</c:choose> -->
-
-
+			<script>
+				// float success alert 
+				$('#success-alert .modal-body').html('<c:out value="${success}" />');
+				$('#success-alert').modal('show');
+				// disable selection criteria - branch, testGroup, grade, volume dropdown list & upload button
+				$('#branch, #testGroup, #grade, #volume, #file-input, #file-upload').prop('disabled', true);       
+			</script>
 				<!-- Display OMR Scan Results -->
-				
 				<c:if test="${not empty results}">
 					<div class="row m-3 pt-5 justify-content-center">
 						<div class="col-md-12">
-							<h4>OMR Scan Results - Number of results: ${fn:length(results)}</h4>
+							<c:if test="${not empty meta}">
+								<h4>
+									<script type="text/javascript">
+										document.write(
+											branchName('${meta.branch}') + ' '  + 
+											testGroupName('${meta.testGroup}') + ' ' + 
+											gradeName('${meta.grade}') + ' ');
+									</script>
+									Set : 
+									<c:choose>
+										<c:when test="${meta.testGroup=='1' || meta.testGroup=='2'}">
+											<c:choose>
+												<c:when test="${meta.volume == '1'}">Vol.1</c:when>
+												<c:when test="${meta.volume == '2'}">Vol.2</c:when>
+												<c:when test="${meta.volume == '3'}">Vol.3</c:when>
+												<c:when test="${meta.volume == '4'}">Vol.4</c:when>
+												<c:when test="${meta.volume == '5'}">Vol.5</c:when>
+												<c:otherwise></c:otherwise>
+											</c:choose>
+										</c:when>
+										<c:otherwise>
+											<c:out value="${meta.volume}" />
+										</c:otherwise>
+									</c:choose>
+									
+									- Number of results: ${fn:length(results)}</h4>
+							</c:if>
 							<div class="row justify-content-center">
-								<c:forEach items="${results}" var="result">
+								<c:forEach items="${results}" var="result" varStatus="status">
+									<!-- Answer Sheet Card Section-->
 									<div class="col-md-10 mb-4">
 										<div class="card h-100">
 											<div class="card-body">
-												<h5 class="card-title text-primary"><c:out value="${result.studentName}" /> (<c:out value="${result.studentId}" />)</h5>
-												<h6 class="card-title text-success"><c:out value="${result.testId}" /> ~~~~ <c:out value="${result.testName}" /></h6>
-												
-												<!-- Add more details if available -->
-												<p class="card-text">
-													Here we go with the details of the student.
-												</p>
-											</div>
-											<div class="card-footer text-center">
-												<button class="btn btn-primary btn-sm" onclick="viewDetails('${result.studentId}')">View Details</button>
+												<div class="row">
+													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
+														<div><c:out value="${result.studentId}" /> </div>
+														<div><c:out value="${result.studentName}" /> </div>
+														<div>
+															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer('${result.studentId}')"></i>
+															</h3>	
+														</div>		
+													</div>
+													<div class="col-10" id="resultTable${status.index}">
+														<!-- generate table with result -->	
+														<script>
+															// eslint-disable-next-line-string
+															const resultData${status.index} = JSON.parse('${result.answers}');
+															generateTableData('resultTable${status.index}', resultData${status.index});
+														</script>
+													</div>
+
+												</div>
 											</div>
 										</div>
 									</div>
@@ -340,7 +535,7 @@ function updateFileName(input) {
 							</div>
 							<!-- Optional: Next Button if needed -->
 							<div class="text-center mt-4">
-								<button class="btn btn-success" onclick="proceedNext()">Next</button>
+								<button class="btn btn-success" onclick="proceedNext()">Confirm to Save</button>
 							</div>
 						</div>
 					</div>
@@ -355,12 +550,39 @@ function updateFileName(input) {
 	</c:choose>
 </div>
 
-<!-- Success Alert -->
-<div id="success-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-		</div>
-	</div>
+
+<!-- Pop up Edit modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-extra-large" role="document">
+        <div class="modal-content" style="height: 90vh;">
+            <div class="modal-header bg-primary text-white text-center">
+                <h5 class="modal-title w-100" id="editModalLabel">Student Answer Edit Dialog</h5>
+                <button type="button" class="close position-absolute" style="right: 1rem;" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+			<div class="modal-body bg-light" style="display: flex; flex-direction: column; height: 100%;">
+				<!-- 70% Height Section -->
+				<div class="row" style="flex: 7;">
+					<div class="col-12 bg-white p-1 border">
+						<div id="imageContainer">
+						</div>
+					</div>
+				</div>
+				<!-- 30% Height Section -->
+				<div class="row" style="flex: 3;">
+					<div class="col-12 bg-white p-1 border">
+						<div id="answerTable">	
+						</div>
+					</div>
+				</div>
+			</div>
+            <div class="modal-footer bg-dark text-white">
+				<button type="submit" class="btn btn-primary" onclick="updateStudentAnswer()">Update</button>&nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
