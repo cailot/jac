@@ -89,6 +89,230 @@ function updateFileName(input) {
     fileNameContainer.innerHTML = "<p>Selected file: " + fileName + "</p>";
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Edit Answer
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function editAnswer(tableIndex, data) {
+	console.log('Table Index:', tableIndex);
+	// set table index to hidden input
+	document.getElementById("tableIndex").value = tableIndex;
+	// send query to controller
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/getPractice/1', //+ id,
+		type: 'GET',
+		success: function (answer) {
+			// console.log(answer);
+
+			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/test/temp.jpg" alt="Logo" class="img-fluid full-fill">');				
+			// Create an editable table with Bootstrap styling and load it into #answerTable
+			const cols = 10; // Number of columns per row
+			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
+			// Generate rows dynamically
+			for (let row = 0; row < Math.ceil(data.length / cols); row++) {
+				// Add dynamic serial numbers as header for each row
+				tableHTML += "<tr>";
+				for (let col = 1; col <= cols; col++) {
+					const serialNumber = row * cols + col;
+					if (serialNumber <= data.length) {
+						tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
+					}
+				}
+				tableHTML += "</tr>";
+				// Add data cells for the row
+				tableHTML += "<tr>";
+				for (let col = 1; col <= cols; col++) {
+					const index = row * cols + (col - 1);
+					if (index < data.length) {
+						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;">`+ answerName(data[index]) +`</td>`;
+					} else {
+						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;"></td>`;
+					}
+				}
+				tableHTML += "</tr>";
+			}
+			tableHTML += "</table>";
+			$("#answerTable").html(tableHTML);
+			// Show the modal
+			$('#editModal').modal('show');
+		},
+		error: function (xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Generate Table
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function generateTableData(elementId, data) {
+    // console.log('Element ID:', elementId);
+    // console.log('Data:', data);
+    const target = document.getElementById('resultTable'+elementId);
+    if (!target) {
+        console.error(`Element with ID ${elementId} not found.`);
+        return;
+    }
+    if (!Array.isArray(data) || data.length === 0) {
+        target.innerHTML = "<p>No data available</p>";
+        return;
+    }
+    const cols = 10; // Number of columns per row
+    let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
+    // Generate rows dynamically
+    for (let row = 0; row < Math.ceil(data.length / cols); row++) {
+        // Add dynamic serial numbers as header for each row
+        tableHTML += "<tr>";
+        for (let col = 1; col <= cols; col++) {
+            const serialNumber = row * cols + col;
+            if (serialNumber <= data.length) {
+                tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
+            }
+        }
+        tableHTML += "</tr>";
+        // Add data cells for the row
+        tableHTML += "<tr>";
+        for (let col = 1; col <= cols; col++) {
+            const index = row * cols + (col - 1);
+            if (index < data.length) {
+                tableHTML += `<td style="padding: 8px; text-align: center;">`+ answerName(data[index]) +`</td>`;
+            } else {
+                tableHTML += `<td style="padding: 8px; text-align: center;"></td>`;
+            }
+        }
+        tableHTML += "</tr>";
+    }
+    tableHTML += "</table>";
+    // console.log('Generated Table HTML:', tableHTML);
+    target.innerHTML = tableHTML;
+    // console.log('Table rendered successfully!');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Table
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateTestAnswer(){
+	// Get the table element
+	const table = document.getElementById("answerTable");
+	// Get table index
+	const tableIndex = document.getElementById("tableIndex").value;
+	// Get all the rows in the table
+	const rows = table.getElementsByTagName("tr");
+	const updatedAnswers = [];
+	// Define a mapping from letters to numbers
+	const letterToNumber = {
+		'A': 1,
+		'B': 2,
+		'C': 3,
+		'D': 4,
+		'E': 5
+		// Extend this mapping if you have more letters
+	}
+	// Loop through each row (assuming the first row is the header)
+	for (let i = 1; i < rows.length; i++) {
+		// Get all the cells in the current row
+		const cells = rows[i].getElementsByTagName("td");
+		
+		// Loop through each cell in the row
+		for (let j = 0; j < cells.length; j++) {
+			// Get the content of the cell, trim whitespace, and convert to uppercase
+			const content = cells[j].textContent.trim().toUpperCase();
+			let value;
+
+			if (content === '' || content === null) {
+				// Assign 0 for empty, null, or empty string values
+				value = 0;
+			} else if (letterToNumber.hasOwnProperty(content)) {
+				// Map letters 'A' to 'E' to numbers 1 to 5
+				value = letterToNumber[content];
+			} else {
+				// Handle unexpected values by assigning 0 or any default value
+				console.warn(`Unexpected value "${content}" found in cell (${i}, ${j}). Assigning 0.`);
+				value = 0;
+			}
+
+			// Add the numerical value to the updatedAnswers array
+			updatedAnswers.push(value);
+		}
+	}
+	console.log(tableIndex);
+	// apply the updated answers to the original data
+	generateTableData(tableIndex, updatedAnswers);
+	// reset the table index
+	document.getElementById("tableIndex").value = '';
+	// Hide the modal
+	$('#editModal').modal('hide');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Proceed Save Data
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function proceedNext() {
+	// console.log('Proceed to save the data');
+	// Get the meta values
+	const branch = document.getElementById('metaBranch').textContent;
+	const testGroup = document.getElementById('metaTestGroup').textContent;
+	const grade = document.getElementById('metaGrade').textContent;
+	const volume = document.getElementById('metaVolume').textContent;
+
+	const metaDto = {
+		branch: branch,
+		testGroup: testGroup,
+		grade: grade,
+		volume: volume
+	};
+
+	// scan all the table data
+	const omrDtos = [];
+	const tableCount = document.querySelectorAll('[id^="resultTable"]').length;
+	for (let i = 0; i < tableCount; i++) {
+		const table = document.getElementById('resultTable'+i);
+		const rows = table.getElementsByTagName("tr");
+		// student answer data
+		const answerData = [];
+		for (let j = 1; j < rows.length; j++) {
+			const cells = rows[j].getElementsByTagName("td");
+			for (let k = 0; k < cells.length; k++) {
+				const content = cells[k].textContent.trim().toUpperCase();
+				let value;
+				if (content === '' || content === null) {
+					value = 0;
+				} else if (content === 'A') {
+					value = 1;
+				} else if (content === 'B') {
+					value = 2;
+				} else if (content === 'C') {
+					value = 3;
+				} else if (content === 'D') {
+					value = 4;
+				} else if (content === 'E') {
+					value = 5;
+				} else {
+					console.warn(`Unexpected value "${content}" found in cell (${j}, ${k}). Assigning 0.`);
+					value = 0;
+				}
+				answerData.push(value);
+			}
+		}
+
+
+
+		// create omrScanResultDTO object
+		const omrScanResultDTO = {
+			studentId: document.getElementById('studentId'+i).textContent,
+			//studentName: document.getElementById('resultTable'+i).querySelector('th').textContent,
+			answers: JSON.stringify(answerData)
+		};
+		omrDtos.push(omrScanResultDTO);
+
+
+	}
+	
+	console.log(metaDto, omrDtos);
+
+
+
+}
+
 </script> 
 
 <style>
@@ -190,188 +414,12 @@ function updateFileName(input) {
 	height: 100%;
 	object-fit: cover;
 }
+
+.hidden {
+	display: none;
+}
+
 </style>
-
-<script>
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Edit Answer
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function editAnswer(id) {
-	// send query to controller
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPractice/1', //+ id,
-		type: 'GET',
-		success: function (answer) {
-			// console.log(answer);
-
-			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/test/temp.jpg" alt="Logo" class="img-fluid full-fill">');
-			
-			
-			// Create an editable table with Bootstrap styling and load it into #answerTable
-			var table = `
-				<table class="table table-bordered" style="width: 100%;">
-					<tbody>
-						<tr>
-							<td>1</th>
-							<td>2</th>
-							<td>3</th>
-							<td>4</th>
-							<td>5</th>
-							<td>6</th>
-							<td>7</th>
-							<td>8</th>
-							<td>9</th>
-							<td>10</th>
-						</tr>
-						<tr>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true"></td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">11</td>
-							<td contenteditable="true">12</td>
-							<td contenteditable="true">13</td>
-							<td contenteditable="true">14</td>
-							<td contenteditable="true">15</td>
-							<td contenteditable="true">16</td>
-							<td contenteditable="true">17</td>
-							<td contenteditable="true">18</td>
-							<td contenteditable="true">19</td>
-							<td contenteditable="true">20</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true"></td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">21</td>
-							<td contenteditable="true">22</td>
-							<td contenteditable="true">23</td>
-							<td contenteditable="true">24</td>
-							<td contenteditable="true">25</td>
-							<td contenteditable="true">26</td>
-							<td contenteditable="true">27</td>
-							<td contenteditable="true">28</td>
-							<td contenteditable="true">29</td>
-							<td contenteditable="true">30</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true"></td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">31</td>
-							<td contenteditable="true">32</td>
-							<td contenteditable="true">33</td>
-							<td contenteditable="true">34</td>
-							<td contenteditable="true">35</td>
-							<td contenteditable="true">36</td>
-							<td contenteditable="true">37</td>
-							<td contenteditable="true">38</td>
-							<td contenteditable="true">39</td>
-							<td contenteditable="true">40</td>
-						</tr>
-						<tr>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true"></td>
-							<td contenteditable="true">B</td>
-							<td contenteditable="true">D</td>
-							<td contenteditable="true">A</td>
-							<td contenteditable="true">C</td>
-						</tr>
-					</tbody>
-				</table>
-			`;
-			$("#answerTable").html(table);
-			
-			
-			
-			
-			
-			$('#editModal').modal('show');
-		},
-		error: function (xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Generate Table
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function generateTableData(elementId, data) {
-    // console.log('Element ID:', elementId);
-    // console.log('Data:', data);
-    const target = document.getElementById(elementId);
-    if (!target) {
-        console.error(`Element with ID ${elementId} not found.`);
-        return;
-    }
-    if (!Array.isArray(data) || data.length === 0) {
-        target.innerHTML = "<p>No data available</p>";
-        return;
-    }
-    const cols = 10; // Number of columns per row
-    let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
-    // Generate rows dynamically
-    for (let row = 0; row < Math.ceil(data.length / cols); row++) {
-        // Add dynamic serial numbers as header for each row
-        tableHTML += "<tr>";
-        for (let col = 1; col <= cols; col++) {
-            const serialNumber = row * cols + col;
-            if (serialNumber <= data.length) {
-                tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
-            }
-        }
-        tableHTML += "</tr>";
-        // Add data cells for the row
-        tableHTML += "<tr>";
-        for (let col = 1; col <= cols; col++) {
-            const index = row * cols + (col - 1);
-            if (index < data.length) {
-                tableHTML += `<td style="padding: 8px; text-align: center;">`+data[index]+`</td>`;
-            } else {
-                tableHTML += `<td style="padding: 8px; text-align: center;"></td>`;
-            }
-        }
-        tableHTML += "</tr>";
-    }
-    tableHTML += "</table>";
-    // console.log('Generated Table HTML:', tableHTML);
-    target.innerHTML = tableHTML;
-    // console.log('Table rendered successfully!');
-}
-
-
-</script>
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
@@ -478,6 +526,8 @@ function generateTableData(elementId, data) {
 						<div class="col-md-12">
 							<c:if test="${not empty meta}">
 								<h4>
+									<!-- save meta values -->
+									<span id="metaBranch" name="metaBranch" class="hidden">${meta.branch}</span><span id="metaTestGroup" name="metaTestGroup" class="hidden">${meta.testGroup}</span><span id="metaGrade" name="metaGrade" class="hidden">${meta.grade}</span><span id="metaVolume" name="metaVolume" class="hidden">${meta.volume}</span>
 									<script type="text/javascript">
 										document.write(
 											branchName('${meta.branch}') + ' '  + 
@@ -511,19 +561,23 @@ function generateTableData(elementId, data) {
 											<div class="card-body">
 												<div class="row">
 													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
-														<div><c:out value="${result.studentId}" /> </div>
+														<div id="studentId${status.index}"><c:out value="${result.studentId}" /> </div>
 														<div><c:out value="${result.studentName}" /> </div>
 														<div>
-															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer('${result.studentId}')"></i>
+															<script>
+																// eslint-disable-next-line no-template-curly-in-string
+																const resultData${status.index} = JSON.parse("${result.answers}");
+															</script>		
+															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, resultData${status.index})"></i>
 															</h3>	
 														</div>		
 													</div>
 													<div class="col-10" id="resultTable${status.index}">
 														<!-- generate table with result -->	
 														<script>
-															// eslint-disable-next-line-string
-															const resultData${status.index} = JSON.parse('${result.answers}');
-															generateTableData('resultTable${status.index}', resultData${status.index});
+															/* eslint-disable */
+															generateTableData(${status.index}, resultData${status.index});
+															/* eslint-enable */
 														</script>
 													</div>
 
@@ -577,8 +631,9 @@ function generateTableData(elementId, data) {
 					</div>
 				</div>
 			</div>
+			<input type="hidden" id="tableIndex" value="">
             <div class="modal-footer bg-dark text-white">
-				<button type="submit" class="btn btn-primary" onclick="updateStudentAnswer()">Update</button>&nbsp;&nbsp;
+				<button type="submit" class="btn btn-primary" onclick="updateTestAnswer()">Update</button>&nbsp;&nbsp;
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

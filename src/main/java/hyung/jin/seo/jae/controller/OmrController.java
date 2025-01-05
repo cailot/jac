@@ -83,7 +83,7 @@ public class OmrController {
 			OmrScanResultDTO result = new OmrScanResultDTO();
 			result.setTestId(3+"");
 			result.setTestName("Mega Test");
-			result.setStudentId("1234567");
+			result.setStudentId(new Random().nextInt(50000)+"");
 			result.setStudentName("David Hwang");
 			for(int j=0; j<40; j++) {
 				// generate radom number from 0 to 4

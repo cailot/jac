@@ -376,6 +376,20 @@ function  testGroupName(value){
 	return groupText;
 }
 
+// get answer by number
+function  answerName(value){
+	var groupText = '';
+	switch(value) {
+		case 1: groupText = 'A'; break;
+		case 2: groupText = 'B'; break;
+		case 3: groupText = 'C'; break;
+		case 4: groupText = 'D'; break;
+		case 5: groupText = 'E'; break;
+		default: groupText = ''; 
+	}
+	return groupText;
+}
+
 // get the context path dynamically
 function getContextPath(){
 	var contextPath = window.location.pathname.split('/')[1];

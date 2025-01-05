@@ -31,14 +31,20 @@
     "liveServer.settings.port": 5501,
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.debug.settings.exceptionBreakpoint.skipClasses": [],
-    "eslint.validate": [
-        "javascript"
-    ],
-    "eslint.options": {
-        "rules": {
-            "semi": "error"
-        }
-    },
+    
+
+    
+        "eslint.validate": ["javascript", "html", "jsp"],
+        "eslint.options": {
+          "rules": {
+            "no-template-curly-in-string": "off"
+          }
+        },
+    
+
+
+
+
     "typescript.validate.enable": false,
     "javascript.validate.enable": false,
     "javascript.format.enable": false,
