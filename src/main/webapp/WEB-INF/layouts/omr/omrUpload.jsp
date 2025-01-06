@@ -247,28 +247,26 @@ function updateTestAnswer(){
 //		Proceed Save Data
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function proceedNext() {
-	// console.log('Proceed to save the data');
 	// Get the meta values
 	const branch = document.getElementById('metaBranch').textContent;
 	const testGroup = document.getElementById('metaTestGroup').textContent;
 	const grade = document.getElementById('metaGrade').textContent;
 	const volume = document.getElementById('metaVolume').textContent;
-
 	const metaDto = {
 		branch: branch,
 		testGroup: testGroup,
 		grade: grade,
 		volume: volume
 	};
-
 	// scan all the table data
 	const omrDtos = [];
 	const tableCount = document.querySelectorAll('[id^="resultTable"]').length;
 	for (let i = 0; i < tableCount; i++) {
 		const table = document.getElementById('resultTable'+i);
 		const rows = table.getElementsByTagName("tr");
-		// student answer data
-		const answerData = [];
+		// student answer data as int[]
+		const answerData = [];		
+		// int[] answerData = [];
 		for (let j = 1; j < rows.length; j++) {
 			const cells = rows[j].getElementsByTagName("td");
 			for (let k = 0; k < cells.length; k++) {
@@ -293,23 +291,40 @@ function proceedNext() {
 				answerData.push(value);
 			}
 		}
-
-
-
 		// create omrScanResultDTO object
 		const omrScanResultDTO = {
 			studentId: document.getElementById('studentId'+i).textContent,
-			//studentName: document.getElementById('resultTable'+i).querySelector('th').textContent,
-			answers: JSON.stringify(answerData)
+			answers: answerData
 		};
 		omrDtos.push(omrScanResultDTO);
-
-
 	}
-	
+	// send the data to the controller
+	$.ajax({
+        url: '${pageContext.request.contextPath}/omr/saveResult', // Adjust the URL to match your controller's endpoint
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ metaDto: metaDto, omrDtos: omrDtos }),
+        success: function(response) {
+            // console.log('Data successfully sent to the server:', response);
+            // Handle success response
+			$('#success-alert .modal-body').html(response);
+	        $('#success-alert').modal('show');
+			// Attach an event listener to the success alert close event
+			$('#success-alert').on('hidden.bs.modal', function () {
+				// Reload the page after the success alert is closed
+				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+			});
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error sending data to the server:', textStatus, errorThrown);
+			$('#validation-alert .modal-body').html('Failed to save data. Please try again later.');
+	        $('#validation-alert').modal('show');
+        }
+    });
+
+
+
 	console.log(metaDto, omrDtos);
-
-
 
 }
 
