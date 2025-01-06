@@ -565,7 +565,6 @@ function proceedNext() {
 														<div><c:out value="${result.studentName}" /> </div>
 														<div>
 															<script>
-																// eslint-disable-next-line no-template-curly-in-string
 																const resultData${status.index} = JSON.parse("${result.answers}");
 															</script>		
 															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, resultData${status.index})"></i>
@@ -575,12 +574,9 @@ function proceedNext() {
 													<div class="col-10" id="resultTable${status.index}">
 														<!-- generate table with result -->	
 														<script>
-															/* eslint-disable */
 															generateTableData(${status.index}, resultData${status.index});
-															/* eslint-enable */
 														</script>
 													</div>
-
 												</div>
 											</div>
 										</div>
