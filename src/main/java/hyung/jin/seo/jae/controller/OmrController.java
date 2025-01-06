@@ -2,14 +2,19 @@ package hyung.jin.seo.jae.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,7 +34,6 @@ public class OmrController {
         model.addAttribute("omrUploadDto", new OmrUploadDTO());
         return "omrUploadPage";
     }
-
 
 	/**
      * Handle the form submission
@@ -94,5 +98,53 @@ public class OmrController {
 		}
 		return results;
 	}
+
+	@PostMapping("/saveResult")
+    @ResponseBody
+	public ResponseEntity<String> saveResults(@RequestBody SaveResultsRequest payload) {
+    // public ResponseEntity<String> saveResults(@RequestBody Map<String, Object> payload) {
+        // Extract metaDto and omrDtos from the request
+        OmrUploadDTO metaDto = payload.getMetaDto();
+        List<OmrScanResultDTO> omrDtos = payload.getOmrDtos();
+
+        // Save to the database
+
+        // Log the received data for debugging
+        System.out.println("Received metaDto: " + metaDto);
+        System.out.println("Received omrDtos: " + omrDtos);
+
+
+
+		// Return a failed response
+		// return new ResponseEntity<>("OMR data successfully saved", HttpStatus.EXPECTATION_FAILED);
+
+
+        // Return a success response
+        return new ResponseEntity<>("OMR data successfully saved", HttpStatus.OK);
+		
+    }
+
+	// DTO class to handle the request
+    public static class SaveResultsRequest {
+        private OmrUploadDTO metaDto;
+        private List<OmrScanResultDTO> omrDtos;
+
+        // Getters and setters
+        public OmrUploadDTO getMetaDto() {
+            return metaDto;
+        }
+
+        public void setMetaDto(OmrUploadDTO metaDto) {
+            this.metaDto = metaDto;
+        }
+
+        public List<OmrScanResultDTO> getOmrDtos() {
+            return omrDtos;
+        }
+
+        public void setOmrDtos(List<OmrScanResultDTO> omrDtos) {
+            this.omrDtos = omrDtos;
+        }
+    }
 }
 	
