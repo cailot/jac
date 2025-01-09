@@ -75,4 +75,6 @@ public interface StudentService {
 	// get branch receipents
 	List<String> getBranchReceipents(String state, String branch, String grade);
 
+	//get student name by id
+	String getStudentName(Long id);
 }

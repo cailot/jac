@@ -27,7 +27,11 @@ public class StudentTestDTO{
 
 	private Long testId;
 
-	private List<Integer> answers;
+	private List<Integer> answers = new ArrayList<>();
+
+	private String studentName;
+
+	private String testName;
 
 	public StudentTestDTO(Long id, LocalDate registerDate, double score, Long studentId, Long testId, Collection<Integer> answers) {
         this.id = id;
@@ -37,4 +41,8 @@ public class StudentTestDTO{
         this.testId = testId;
         this.answers = new ArrayList<>(answers);
     }
+
+	public void addAnswer(int answer) {
+		this.answers.add(answer);
+	}
 }

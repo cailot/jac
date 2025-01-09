@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,13 +19,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import hyung.jin.seo.jae.dto.OmrScanResultDTO;
+import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.service.ConnectedService;
+import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
 @RequestMapping("omr")
 public class OmrController {
+
+	@Autowired
+	private StudentService studentService;
+
+	@Autowired
+	private ConnectedService connectedService;
 
 	/**
      * Display the OMR upload form
@@ -67,7 +76,7 @@ public class OmrController {
 		// process omr image
 
 		// create omr results 	
-		List<OmrScanResultDTO> results = processOmrImage();
+		List<StudentTestDTO> results = processOmrImage();
 		// add the meta to flash attributes
 		redirectAttributes.addFlashAttribute(JaeConstants.METADATA, omrUploadDto);
 		// add the results to flash attributes
@@ -80,14 +89,21 @@ public class OmrController {
 
 
 
-	private List<OmrScanResultDTO> processOmrImage() {
+	private List<StudentTestDTO> processOmrImage() {
 		
-		List<OmrScanResultDTO> results = new ArrayList<>();
+		List<StudentTestDTO> results = new ArrayList<>();
 		for(int i=1; i<=5; i++) {
-			OmrScanResultDTO result = new OmrScanResultDTO();
-			result.setTestId(3+"");
+			StudentTestDTO result = new StudentTestDTO();
+			result.setTestId(3L);
+
+			// String testName = connectedService.getTestTypeName(result.getTestId());
+
 			result.setTestName("Mega Test");
-			result.setStudentId(new Random().nextInt(50000)+"");
+			Long studentId = (long)new Random().nextInt(50000);
+			result.setStudentId(studentId);
+			
+			// String studentName = studentService.getStudentName(studentId);
+			
 			result.setStudentName("David Hwang");
 			for(int j=0; j<40; j++) {
 				// generate radom number from 0 to 4
@@ -105,7 +121,7 @@ public class OmrController {
     // public ResponseEntity<String> saveResults(@RequestBody Map<String, Object> payload) {
         // Extract metaDto and omrDtos from the request
         OmrUploadDTO metaDto = payload.getMetaDto();
-        List<OmrScanResultDTO> omrDtos = payload.getOmrDtos();
+        List<StudentTestDTO> omrDtos = payload.getOmrDtos();
 
         // Save to the database
 
@@ -127,7 +143,7 @@ public class OmrController {
 	// DTO class to handle the request
     public static class SaveResultsRequest {
         private OmrUploadDTO metaDto;
-        private List<OmrScanResultDTO> omrDtos;
+        private List<StudentTestDTO> omrDtos;
 
         // Getters and setters
         public OmrUploadDTO getMetaDto() {
@@ -138,11 +154,11 @@ public class OmrController {
             this.metaDto = metaDto;
         }
 
-        public List<OmrScanResultDTO> getOmrDtos() {
+        public List<StudentTestDTO> getOmrDtos() {
             return omrDtos;
         }
 
-        public void setOmrDtos(List<OmrScanResultDTO> omrDtos) {
+        public void setOmrDtos(List<StudentTestDTO> omrDtos) {
             this.omrDtos = omrDtos;
         }
     }
