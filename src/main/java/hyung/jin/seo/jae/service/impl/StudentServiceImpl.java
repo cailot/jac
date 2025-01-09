@@ -398,4 +398,15 @@ public class StudentServiceImpl implements StudentService {
 		return emails;
 	}
 
+	@Override
+	public String getStudentName(Long id) {
+		String name = "";
+		try{
+			name = studentRepository.findStudentNameById(id);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return name;
+	}
+
 }

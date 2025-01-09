@@ -292,4 +292,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         List<StudentDTO> listAllInactiveStudentByStateNBranchNGradeNDate(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("weekDate") LocalDate weekDate);
         /// Student List by State, Branch, Grade, Active, Date - studentList.jsp
         /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // get 'FirstName + LastName' by studentId
+        @Query(value = "SELECT CONCAT(s.firstName, ' ', s.lastName) FROM Student s WHERE s.id = ?1", nativeQuery = true)
+        String findStudentNameById(Long id);
 }
