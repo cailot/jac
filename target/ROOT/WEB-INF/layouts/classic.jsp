@@ -31,11 +31,19 @@
     .main-content {
         transition: padding-top 0.3s; /* Smooth transition for padding */
     }
+
+    .tooltip {
+    z-index: 1050 !important; /* Default for Bootstrap */
+}
 </style>
 <script>
     $(function() {
         // Enable Bootstrap tooltips
         $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip({
+        //     container: 'body',
+        //     placement: 'top' // or 'bottom', 'left', 'right'
+        // });
     });
 
     var sessionTimeout = 1000*60*30; // 30 mins for demonstration
@@ -111,7 +119,7 @@
         <footer class="mt-auto">
             <div class="row" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.1</span></div>
+                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.2</span></div>
             </div>
         </footer>	
     </div>

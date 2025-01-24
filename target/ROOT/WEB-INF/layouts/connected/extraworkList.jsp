@@ -305,8 +305,8 @@ function deleteWork(id) {
 									<tr>
 										<th class="text-center align-middle" style="width: 10%">Name</th>
 										<th class="text-center align-middle" style="width: 5%">Grade</th>
-										<th class="text-center align-middle" style="width: 36%">Video Path</th>
 										<th class="text-center align-middle" style="width: 36%">Document Path</th>
+										<th class="text-center align-middle" style="width: 36%">Video Path</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 5%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 8%">Action</th>
 									</tr>
@@ -349,13 +349,13 @@ function deleteWork(id) {
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 200px;">
-														<span>
-															<c:out value="${extrawork.videoPath}" />
+														<span data-toggle="tooltip" title="${extrawork.videoPath}">
+															<c:out value="${extrawork.pdfPath}" />
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 200px;">
-														<span>
-															<c:out value="${extrawork.pdfPath}" />
+														<span data-toggle="tooltip" title="${extrawork.videoPath}">
+															<c:out value="${extrawork.videoPath}" />
 														</span>
 													</td>
 													<c:set var="active" value="${extrawork.active}" />
@@ -414,18 +414,18 @@ function deleteWork(id) {
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="form-row">
-								<div class="col-md-12">
-									<label for="addVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
 							<div class="form-row mb-4">
 								<div class="col-md-12">
 									<label for="addPdfPath" class="label-form">Document Path</label>
 									<input type="text" class="form-control" id="addPdfPath" name="addPdfPath" placeholder="https://" title="Please enter document access address" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-row">
+								<div class="col-md-12">
+									<label for="addVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="addVideoPath" name="addVideoPath" placeholder="https://" title="Please enter video access address" />
 								</div>
 							</div>
 						</div>
@@ -471,16 +471,16 @@ function deleteWork(id) {
 						<div class="form-group mt-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editVideoPath" class="label-form">Video Path</label>
-									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
+									<label for="editPdfPath" class="label-form">Pdf Path</label>
+									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
 								</div>
 							</div>
 						</div>
 						<div class="form-group mt-4 mb-4">
 							<div class="form-row">
 								<div class="col-md-12">
-									<label for="editPdfPath" class="label-form">Pdf Path</label>
-									<input type="text" class="form-control" id="editPdfPath" name="editPdfPath" title="Please edit pdf path" />
+									<label for="editVideoPath" class="label-form">Video Path</label>
+									<input type="text" class="form-control" id="editVideoPath" name="editVideoPath" title="Please edit video path" />
 								</div>
 							</div>
 						</div>
