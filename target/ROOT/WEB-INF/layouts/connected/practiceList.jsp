@@ -52,7 +52,7 @@ function addPractice() {
 		info : $("#addInfo").val(),
 		pdfPath : $("#addPdfPath").val()
 	}
-	console.log(practice);
+	// console.log(practice);
 
 	// Send AJAX to server
 	$.ajax({
@@ -569,7 +569,7 @@ function updateRadioButtons() {
 		<form id="classList" method="get" action="${pageContext.request.contextPath}/connected/filterPractice">
 			<div class="form-group">
 				<div class="form-row">
-					<div class="col-md-2>
+					<div class="col-md-2">
 						<label for="listPracticeType" class="label-form">Practice Type</label>
 						<select class="form-control" id="listPracticeType" name="listPracticeType">
 							<option value="0">All</option>
@@ -652,18 +652,18 @@ function updateRadioButtons() {
 																<c:when test="${practice.practiceType == '1'}">Mega English</c:when>
 																<c:when test="${practice.practiceType == '2'}">Mega Mathematics</c:when>
 																<c:when test="${practice.practiceType == '3'}">Mega General Ability</c:when>
-																<c:when test="${practice.practiceType == '4'}">NAPLAN Math</c:when>
-																<c:when test="${practice.practiceType == '5'}">NAPLAN Reading</c:when>
-																<c:when test="${practice.practiceType == '6'}">NAPLAN LC</c:when>
-																<c:when test="${practice.practiceType == '7'}">Revision English</c:when>
-																<c:when test="${practice.practiceType == '8'}">Revision Mathematics</c:when>
-																<c:when test="${practice.practiceType == '9'}">Revision Science</c:when>
-																<c:when test="${practice.practiceType == '10'}">Reeading Comprehension (EDU)</c:when>
-																<c:when test="${practice.practiceType == '11'}">Verbal Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '12'}">Mathematics (EDU)</c:when>
-																<c:when test="${practice.practiceType == '13'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${practice.practiceType == '14'}">Humanities (ACER)</c:when>
-																<c:when test="${practice.practiceType == '15'}">Mathematics (ACER)</c:when>
+																<c:when test="${practice.practiceType == '4'}">Revision English</c:when>
+																<c:when test="${practice.practiceType == '5'}">Revision Mathematics</c:when>
+																<c:when test="${practice.practiceType == '6'}">Revision Science</c:when>
+																<c:when test="${practice.practiceType == '7'}">Reeading Comprehension (EDU)</c:when>
+																<c:when test="${practice.practiceType == '8'}">Verbal Reasoning (EDU)</c:when>
+																<c:when test="${practice.practiceType == '9'}">Mathematics (EDU)</c:when>
+																<c:when test="${practice.practiceType == '10'}">Numerical Reasoning (EDU)</c:when>
+																<c:when test="${practice.practiceType == '11'}">Humanities (ACER)</c:when>
+																<c:when test="${practice.practiceType == '12'}">Mathematics (ACER)</c:when>
+																<c:when test="${practice.practiceType == '13'}">NAPLAN Math</c:when>
+																<c:when test="${practice.practiceType == '14'}">NAPLAN Reading</c:when>
+																<c:when test="${practice.practiceType == '15'}">NAPLAN LC</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -696,32 +696,31 @@ function updateRadioButtons() {
 														</span>
 													</td>
 													<td class="small align-middle text-center">
-														<!-- <span>
-															<c:out value="${practice.volume}" />
-														</span> -->
-														<c:choose>
-															<c:when test="${fn:startsWith(practice.name, 'Mega') || fn:startsWith(practice.name, 'Revision')}">
-																<c:choose>
-																	<c:when test="${practice.volume == '1'}">Vol.1-1</c:when>
-																	<c:when test="${practice.volume == '2'}">Vol.1-2</c:when>
-																	<c:when test="${practice.volume == '3'}">Vol.2-1</c:when>
-																	<c:when test="${practice.volume == '4'}">Vol.2-2</c:when>
-																	<c:when test="${practice.volume == '5'}">Vol.3-1</c:when>
-																	<c:when test="${practice.volume == '6'}">Vol.3-2</c:when>
-																	<c:when test="${practice.volume == '7'}">Vol.4-1</c:when>
-																	<c:when test="${practice.volume == '8'}">Vol.4-2</c:when>
-																	<c:when test="${practice.volume == '9'}">Vol.5-1</c:when>
-																	<c:when test="${practice.volume == '10'}">Vol.5-2</c:when>
-																	<c:otherwise></c:otherwise>
-																</c:choose>
-															</c:when>
-															<c:otherwise>
-																<c:out value="${practice.volume}" />
-															</c:otherwise>
-														</c:choose>
+														<span>
+															<c:choose>
+																<c:when test="${fn:startsWith(practice.name, 'Mega') || fn:startsWith(practice.name, 'Revision')}">
+																	<c:choose>
+																		<c:when test="${practice.volume == '1'}">Vol.1-1</c:when>
+																		<c:when test="${practice.volume == '2'}">Vol.1-2</c:when>
+																		<c:when test="${practice.volume == '3'}">Vol.2-1</c:when>
+																		<c:when test="${practice.volume == '4'}">Vol.2-2</c:when>
+																		<c:when test="${practice.volume == '5'}">Vol.3-1</c:when>
+																		<c:when test="${practice.volume == '6'}">Vol.3-2</c:when>
+																		<c:when test="${practice.volume == '7'}">Vol.4-1</c:when>
+																		<c:when test="${practice.volume == '8'}">Vol.4-2</c:when>
+																		<c:when test="${practice.volume == '9'}">Vol.5-1</c:when>
+																		<c:when test="${practice.volume == '10'}">Vol.5-2</c:when>
+																		<c:otherwise></c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<c:out value="${practice.volume}" />
+																</c:otherwise>
+															</c:choose>
+														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
-														<span>
+														<span data-toggle="tooltip" title="${practice.pdfPath}">
 															<c:out value="${practice.pdfPath}" />
 														</span>
 													</td>

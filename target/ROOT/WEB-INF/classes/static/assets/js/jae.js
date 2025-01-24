@@ -362,6 +362,34 @@ function  practiceGroupName(value){
 	return groupText;
 }
 
+// get test group name
+function  testGroupName(value){
+	var groupText = '';
+	switch(value) {
+		case '1': groupText = 'Mega Test'; break;
+		case '2': groupText = 'Revision Test'; break;
+		case '3': groupText = 'Edu Test'; break;
+		case '4': groupText = 'Acer Test'; break;
+		case '5': groupText = 'Mock Test'; break;
+		default: groupText = 'All'; 
+	}
+	return groupText;
+}
+
+// get answer by number
+function  answerName(value){
+	var groupText = '';
+	switch(value) {
+		case 1: groupText = 'A'; break;
+		case 2: groupText = 'B'; break;
+		case 3: groupText = 'C'; break;
+		case 4: groupText = 'D'; break;
+		case 5: groupText = 'E'; break;
+		default: groupText = ''; 
+	}
+	return groupText;
+}
+
 // get the context path dynamically
 function getContextPath(){
 	var contextPath = window.location.pathname.split('/')[1];

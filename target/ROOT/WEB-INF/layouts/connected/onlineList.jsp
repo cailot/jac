@@ -326,6 +326,13 @@ function deleteOnline(id) {
 		height: 50px 	
 	} 
 
+
+	.tooltip-inner {
+  white-space:nowrap;
+  max-width:none;
+}
+
+
 </style>
 
 <!-- List Body -->
@@ -492,7 +499,7 @@ function deleteOnline(id) {
 														</span>
 													</td>
 													<td class="small align-middle text-truncate" style="max-width: 150px;">
-														<span>
+														<span data-toggle="tooltip" title="${online.address}">
 															<c:out value="${online.address}" />
 														</span>
 													</td>

@@ -69,6 +69,7 @@ hyung/jin/seo/jae/service/OnlineSessionService.class
 hyung/jin/seo/jae/service/impl/CycleServiceImpl.class
 hyung/jin/seo/jae/model/OnlineActivity.class
 hyung/jin/seo/jae/controller/StudentController.class
+hyung/jin/seo/jae/controller/OmrController$SaveResultsRequest.class
 hyung/jin/seo/jae/service/BookService.class
 hyung/jin/seo/jae/service/UserService.class
 hyung/jin/seo/jae/utils/StudentIdGenerator.class
@@ -93,6 +94,7 @@ hyung/jin/seo/jae/service/LoginActivityService.class
 hyung/jin/seo/jae/model/StudentTest.class
 hyung/jin/seo/jae/service/TeacherService.class
 hyung/jin/seo/jae/controller/AssessmentController$1.class
+hyung/jin/seo/jae/dto/OmrScanResultDTO.class
 hyung/jin/seo/jae/service/PdfService.class
 hyung/jin/seo/jae/service/impl/StudentServiceImpl.class
 hyung/jin/seo/jae/model/Enrolment.class
@@ -183,6 +185,7 @@ hyung/jin/seo/jae/repository/DayScheduleRepository.class
 hyung/jin/seo/jae/model/Score.class
 hyung/jin/seo/jae/dto/UserDTO.class
 hyung/jin/seo/jae/model/User.class
+hyung/jin/seo/jae/dto/OmrUploadDTO.class
 hyung/jin/seo/jae/service/impl/InvoiceServiceImpl.class
 hyung/jin/seo/jae/repository/UserRepository.class
 hyung/jin/seo/jae/controller/rest/JaeRestController.class

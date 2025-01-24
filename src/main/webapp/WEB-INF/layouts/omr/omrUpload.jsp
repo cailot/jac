@@ -123,9 +123,16 @@ function editAnswer(tableIndex, data) {
 				for (let col = 1; col <= cols; col++) {
 					const index = row * cols + (col - 1);
 					if (index < data.length) {
-						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;">`+ answerName(data[index]) +`</td>`;
+
+						if(data[index]===0){ // make backgound color yellow for wrong answers
+							tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center; background-color: yellow;"></td>`;
+						} else {
+							tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;">`+ answerName(data[index]) +`</td>`;
+						}
+
 					} else {
 						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;"></td>`;
+						console.log('Never happens');
 					}
 				}
 				tableHTML += "</tr>";
@@ -504,14 +511,6 @@ function proceedNext() {
 	    </form>
 		</div>
 	</div>
-
-
-
-
-
-
-
-
 
 
 	<!-- Result/Error display -->
