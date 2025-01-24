@@ -29,31 +29,6 @@ $(document).ready(function () {
 			'print'
 		],
 	});
-
-
-	// $('#addGradeAll').on('change', function() {
-    //     var isChecked = $(this).is(':checked');
-    //     $('#addGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
-    // });
-
-	// $('#addGradeCheckbox input[type="checkbox"]').on('change', function() {
-    //     var checkboxes = $('#addGradeCheckbox input[type="checkbox"]');
-    //     var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
-    //     $('#addGradeAll').prop('checked', allChecked);
-    // });
-
-
-	// $('#editGradeAll').on('change', function() {
-	// 	var isChecked = $(this).is(':checked');
-	// 	$('#editGradeCheckbox input[type="checkbox"]').prop('checked', isChecked);
-	// });
-
-	// $('#editGradeCheckbox input[type="checkbox"]').on('change', function() {
-	// 	var checkboxes = $('#editGradeCheckbox input[type="checkbox"]');
-	// 	var allChecked = checkboxes.length === checkboxes.filter(':checked').length;
-	// 	$('#editGradeAll').prop('checked', allChecked);
-	// });
-
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
