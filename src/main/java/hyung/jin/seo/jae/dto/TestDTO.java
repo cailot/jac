@@ -30,6 +30,8 @@ public class TestDTO implements Serializable {
 
 	private boolean processed;
 
+	private double average;
+
 	private String info;
 
 	private String grade;
@@ -41,13 +43,13 @@ public class TestDTO implements Serializable {
 	private String name;
 
 	
-	public TestDTO(long id, String pdfPath, int volume, boolean active, boolean processed, String info, String grade, long testType, String name, LocalDate registerDate){
+	public TestDTO(long id, String pdfPath, int volume, boolean active, boolean processed, double average, String info, String grade, long testType, String name, LocalDate registerDate){
 		this.id = String.valueOf(id);
 		this.pdfPath = pdfPath;
 		this.volume = volume;
-		// this.questionCount = questionCount;
 		this.active = active;
 		this.processed = processed;
+		this.average = average;
 		this.info = info;
 		this.grade = grade;
 		this.testType = testType;
@@ -62,6 +64,7 @@ public class TestDTO implements Serializable {
 		// work.setQuestionCount(this.questionCount);
 		work.setActive(this.active);
 		work.setProcessed(this.processed);
+		work.setAverage(this.average);
 		work.setInfo(this.info);
 		return work;
 	}
@@ -73,6 +76,7 @@ public class TestDTO implements Serializable {
 		// this.questionCount = work.getQuestionCount();
 		this.active = work.isActive();
 		this.processed = work.isProcessed();
+		this.average = work.getAverage();
 		this.info = work.getInfo();
 		this.grade = work.getGrade().getCode();
 		this.testType = work.getTestType().getId();

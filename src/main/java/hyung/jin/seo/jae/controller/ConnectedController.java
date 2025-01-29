@@ -708,7 +708,7 @@ public class ConnectedController {
 	@ResponseBody
     public ResponseEntity<String> processTestResult(@PathVariable String testId) {
         Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
-		// connectedService.deleteTest(id);
+		connectedService.processTestResult(id);
 		return ResponseEntity.ok("\"Test Result processed successfully\"");
     }
 

@@ -239,6 +239,8 @@ public interface ConnectedService {
 	// get TestType name by test id
 	String getTestTypeName(Long id);
 
+	// process Test result
+	Test processTestResult(Long testId);
 
 	/////////////////////////////////////////////////////////
 	//
