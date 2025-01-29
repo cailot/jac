@@ -442,7 +442,7 @@ function confirmProcessResult(testId) {
     // Attach the click event handler to the "I agree" button
     $('#processConfirmation').one('click', function() {
 		processTestResult(testId);
-		$('#processResultmModal').modal('hide');
+		$('#processResultModal').modal('hide');
     });
 }
 
