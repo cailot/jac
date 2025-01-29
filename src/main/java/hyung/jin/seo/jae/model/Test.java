@@ -45,6 +45,9 @@ public class Test{
     @Column
     private boolean active;
 
+    @Column
+    private boolean processed;
+    
     @CreationTimestamp
     private LocalDate registerDate;
 
