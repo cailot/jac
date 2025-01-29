@@ -1035,4 +1035,19 @@ public class ConnectedServiceImpl implements ConnectedService {
 		return name;	
 	}
 
+	@Override
+	@Transactional
+	public Test processTestResult(Long id) {
+		// search by getId
+		Test existing = testRepository.findById(id).get();
+        // process test result
+		// 1. update test average
+		// 2. send email to all students who tested
+		// 3. update the existing record
+		existing.setProcessed(true);
+		// existing.setActive(newActive);
+        Test updated = testRepository.save(existing);
+		return updated;
+	}
+
 }

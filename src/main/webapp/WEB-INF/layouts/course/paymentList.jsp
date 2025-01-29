@@ -188,10 +188,10 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 					</div>
 					<div class="col-md-2">
 						<label for="start" class="label-form">From Date</label>
-						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" required>
+						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" autocomplete="off" required>
 					</div>
 					<div class="col-md-2">
-						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" required>
+						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
 					</div>
 					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
