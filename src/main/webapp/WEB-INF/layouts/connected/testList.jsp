@@ -433,6 +433,20 @@ function confirmDelete(testId) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before processing Test reuslt
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmProcessResult(testId) {
+    // Show the warning modal
+    $('#processResultModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#processConfirmation').one('click', function() {
+		processTestResult(testId);
+		$('#processResultmModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Delete Test
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function deleteTest(id) {
@@ -452,6 +466,28 @@ function deleteTest(id) {
         }
     });
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Process Test Result
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function processTestResult(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/processTestResult/' + id,
+		type: 'PUT',
+		success: function (result) {
+			$('#success-alert .modal-body').text('Test Result proccessed successfully');
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Volume Options
@@ -726,7 +762,19 @@ function updateAnswerCount() {
 														<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
 														</i>&nbsp;
 														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${testItem.id}')">
-														</i>
+														</i>&nbsp;
+														<!-- Result Batch Process -->
+														<c:set var="processed" value="${testItem.processed}" />
+														<c:choose>
+															<c:when test="${processed == false}">
+																<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="Process Test Result" onclick="confirmProcessResult('${testItem.id}')">
+																</i>
+															</c:when>
+															<c:otherwise>
+																<i class="bi bi-check2-square text-secondary fa-lg" data-toggle="tooltip" title="Result Already Processed">
+																</i>
+															</c:otherwise>
+														</c:choose>
 													</td>
 												</tr>
 											</c:forEach>
@@ -985,6 +1033,25 @@ function updateAnswerCount() {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+<!--Process Result Modal -->
+<div class="modal fade" id="processResultModal" tabindex="-1" role="dialog" aria-labelledby="processResultModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-info">
+            <div class="modal-header btn-info">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Process Test Result</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Are you sure to run processing Test result?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info" id="processConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
