@@ -704,6 +704,15 @@ public class ConnectedController {
 		return ResponseEntity.ok("\"Test deleted successfully\"");
     }
 
+	@PutMapping(value = "/processTestResult/{testId}")
+	@ResponseBody
+    public ResponseEntity<String> processTestResult(@PathVariable String testId) {
+        Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+		// connectedService.deleteTest(id);
+		return ResponseEntity.ok("\"Test Result processed successfully\"");
+    }
+
+
 	// helper method converting answers Map to List
 	private List<Integer> convertAnswers(List<Map<String, Object>> answers) {
 		// Sort the answers based on the "question" key
