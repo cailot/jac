@@ -35,6 +35,25 @@ $(document).ready(function () {
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
+	// set current year & week
+	$.ajax({
+		url : '${pageContext.request.contextPath}/class/academy',
+		method: "GET",
+		success: function(response) {
+			// save the response into the variable
+			const academicYear = response[0];
+			const academicWeek = response[1];
+			// console.log('Academic Year : ' + academicYear);
+			// console.log('Academic Week : ' + academicWeek);
+			// $("#listYear").val(academicYear);
+			$("#listWeek").val(academicWeek);
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log('Error : ' + errorThrown);
+		}
+	});
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

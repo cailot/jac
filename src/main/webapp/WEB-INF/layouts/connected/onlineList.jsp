@@ -52,6 +52,25 @@ $(document).ready(function () {
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
+	// set current year & week
+	$.ajax({
+		url : '${pageContext.request.contextPath}/class/academy',
+		method: "GET",
+		success: function(response) {
+			// save the response into the variable
+			const academicYear = response[0];
+			const academicWeek = response[1];
+			// console.log('Academic Year : ' + academicYear);
+			// console.log('Academic Week : ' + academicWeek);
+			$("#listYear").val(academicYear);
+			$("#listSet").val(academicWeek);
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log('Error : ' + errorThrown);
+		}
+	});
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,6 +366,26 @@ function deleteOnline(id) {
 							<option value="0">All</option>
 						</select>
 					</div>
+					<div class="col-md-2">
+						<label for="listYear" class="label-form">Academic Year</label>
+						<select class="form-control" id="listYear" name="listYear">
+							<%
+								Calendar now = Calendar.getInstance();
+								int currentYear = now.get(Calendar.YEAR);
+								int nextYear = currentYear + 1;
+							%>
+							<option value="0">All</option>
+							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
+							<%
+								// Adding the last five years
+								for (int i = currentYear - 1; i >= currentYear - 3; i--) {
+							%>
+								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
+							<%
+							}
+							%>
+						</select>
+					</div>
 					<div class="col-md-1">
 						<label for="listSet" class="label-form">Set</label>
 						<select class="form-control" id="listSet" name="listSet">
@@ -372,26 +411,6 @@ function deleteOnline(id) {
 								selectElement.appendChild(option);
 							}
 						</script>
-					</div>
-					<div class="col-md-2">
-						<label for="listYear" class="label-form">Academic Year</label>
-						<select class="form-control" id="listYear" name="listYear">
-							<%
-								Calendar now = Calendar.getInstance();
-								int currentYear = now.get(Calendar.YEAR);
-								int nextYear = currentYear + 1;
-							%>
-							<option value="0">All</option>
-							<option value="<%= currentYear %>">Academic Year <%= (currentYear%100) %>/<%= (currentYear%100)+1 %></option>
-							<%
-								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 3; i--) {
-							%>
-								<option value="<%= i %>">Academic Year <%= (i%100) %>/<%= (i%100)+1 %></option>
-							<%
-							}
-							%>
-						</select>
 					</div>
 					<div class="offset-md-5"></div>
 					<div class="col mx-auto">
