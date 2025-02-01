@@ -18,7 +18,7 @@
   
 <script>
 
-const branch = window.branch;
+var branch = window.branch;
 var academicYear = '';
 var academicWeek = '';
 
@@ -124,72 +124,72 @@ function displayGradeSummary(year, week, active) {
 		success : function(items) {
 			// Update display info
 			// Sort the items array by name (grade)
-			items.sort(function(a, b) {
-				return a.name - b.name;
-			});
-			console.log(items);
+			// items.sort(function(a, b) {
+			// 	return a.name - b.name;
+			// });
+			// console.log(items);
 			
-			var table = document.getElementById('statTable');
-            // flush tbody
-            var tbody = document.querySelector('#statTable tbody');
-            tbody.innerHTML = "";
-            // initialise tbody
-            addRows();
-			// populate the figures
-			var total = 0;
-			$.each(items, function (index, item) {
-                // Find the th element with the corresponding grade
-                var th = $('#statTable th[grade="' + item.name + '"]');
-                if (th.length > 0) {
-                    // Get the column index of the cell
-                    var cellIndex = th.index();
-                    // Get the corresponding cell in the table body
-                    var cell = $('#statTable tbody tr:nth-child(1) td:nth-child(' + (cellIndex+1) + ')');                   
-					// Update the cell content
-                    cell.text(item.value);
-                    cell.addClass('text-primary');
-                    // Add branch and grade as attributes to the cell
-                    cell.attr('branch', branch);
-					cell.attr('year', year);
-					cell.attr('week', week);
-					cell.attr('active', active);
-                    cell.attr('grade', item.name);
-                     // Add click event to call studentList function
-                    cell.click(function() {
-                        //studentList(branch, item.name);
-						console.log('Branch : ' + branch + ' Grade : ' + item.name);
-                    });
-                    // Change cursor to hand pointer on hover
-                    cell.css('cursor', 'pointer');
-				    // Update the total cell
-					total += parseInt(item.value) || 0;
-                } else {
-                    console.error('No th element found with code ' + branch);
-                }
-            });
+			// var table = document.getElementById('statTable');
+            // // flush tbody
+            // var tbody = document.querySelector('#statTable tbody');
+            // tbody.innerHTML = "";
+            // // initialise tbody
+            // addRows();
+			// // populate the figures
+			// var total = 0;
+			// $.each(items, function (index, item) {
+            //     // Find the th element with the corresponding grade
+            //     var th = $('#statTable th[grade="' + item.name + '"]');
+            //     if (th.length > 0) {
+            //         // Get the column index of the cell
+            //         var cellIndex = th.index();
+            //         // Get the corresponding cell in the table body
+            //         var cell = $('#statTable tbody tr:nth-child(1) td:nth-child(' + (cellIndex+1) + ')');                   
+			// 		// Update the cell content
+            //         cell.text(item.value);
+            //         cell.addClass('text-primary');
+            //         // Add branch and grade as attributes to the cell
+            //         cell.attr('branch', branch);
+			// 		cell.attr('year', year);
+			// 		cell.attr('week', week);
+			// 		cell.attr('active', active);
+            //         cell.attr('grade', item.name);
+            //          // Add click event to call studentList function
+            //         cell.click(function() {
+            //             //studentList(branch, item.name);
+			// 			console.log('Branch : ' + branch + ' Grade : ' + item.name);
+            //         });
+            //         // Change cursor to hand pointer on hover
+            //         cell.css('cursor', 'pointer');
+			// 	    // Update the total cell
+			// 		total += parseInt(item.value) || 0;
+            //     } else {
+            //         console.error('No th element found with code ' + branch);
+            //     }
+            // });
 
 
-			// Add a "Total" cell at the end of each row in the table body
-			var totalTh = $('#statTable th[grade="100"]');
-            var totalCellIndex = totalTh.index();
-			// Get the corresponding cell in the table body
-			var totalCell = $('#statTable tbody tr:nth-child(1) td:nth-child(' + (totalCellIndex+1) + ')');                   
-			// Update the cell content
-			totalCell.text(total);
-			totalCell.addClass('text-primary');
-			// Add branch and grade as attributes to the cell
-			totalCell.attr('branch', branch);
-			totalCell.attr('year', year);
-			totalCell.attr('week', week);
-			totalCell.attr('active', active);
-			totalCell.attr('grade', "100");
-				// Add click event to call studentList function
-				totalCell.click(function() {
-				//studentList(branch, item.name);
-				console.log('Branch : ' + branch + ' Grade : ' + "100");
-			});
-			// Change cursor to hand pointer on hover
-			totalCell.css('cursor', 'pointer');
+			// // Add a "Total" cell at the end of each row in the table body
+			// var totalTh = $('#statTable th[grade="100"]');
+            // var totalCellIndex = totalTh.index();
+			// // Get the corresponding cell in the table body
+			// var totalCell = $('#statTable tbody tr:nth-child(1) td:nth-child(' + (totalCellIndex+1) + ')');                   
+			// // Update the cell content
+			// totalCell.text(total);
+			// totalCell.addClass('text-primary');
+			// // Add branch and grade as attributes to the cell
+			// totalCell.attr('branch', branch);
+			// totalCell.attr('year', year);
+			// totalCell.attr('week', week);
+			// totalCell.attr('active', active);
+			// totalCell.attr('grade', "100");
+			// 	// Add click event to call studentList function
+			// 	totalCell.click(function() {
+			// 	//studentList(branch, item.name);
+			// 	console.log('Branch : ' + branch + ' Grade : ' + "100");
+			// });
+			// // Change cursor to hand pointer on hover
+			// totalCell.css('cursor', 'pointer');
 				    
 
 		},
@@ -623,47 +623,71 @@ function displayFullHistory(studentId) {
 
 
 
+
+
+
+
+
+
 <!-- Summary Info-->
-<div id="summaryInfo" class="alert alert-info">
-	<table id="statTable" style="width: 100%;">
-		<thead>
-			<tr>
-				<th class="text-center" grade="1">P2</th>
-				<th class="text-center" grade="2">P3</th>
-				<th class="text-center" grade="3">P4</th>
-				<th class="text-center" grade="4">P5</th>
-				<th class="text-center" grade="5">P6</th>
-				<th class="text-center" grade="6">S7</th>
-				<th class="text-center" grade="7">S8</th>
-				<th class="text-center" grade="8">S9</th>
-				<th class="text-center" grade="9">S10</th>
-				<th class="text-center" grade="10">S10E</th>
-				<th class="text-center" grade="11">TT6</th>
-				<th class="text-center" grade="12">TT8</th>
-				<th class="text-center" grade="13">TT8E</th>
-				<th class="text-center" grade="14">SRW4</th>
-				<th class="text-center" grade="15">SRW5</th>
-				<th class="text-center" grade="16">SRW6</th>
-				<th class="text-center" grade="17">SRW7</th>
-				<th class="text-center" grade="18">SRW8</th>
-				<th class="text-center" grade="19">JMSS</th>
-				<th class="text-center" grade="20">VCE</th>
-				<th class="text-center" grade="100">Total</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>						
-</div>
+<c:if test="${not empty sessionScope.GradeList}">
+	<div id="summaryInfo" class="alert alert-info">
+		<table id="statTable" style="width: 100%;">
+			
+			<thead>
+				<tr>
+					<th class="text-center" grade="1">P2</th>
+					<th class="text-center" grade="2">P3</th>
+					<th class="text-center" grade="3">P4</th>
+					<th class="text-center" grade="4">P5</th>
+					<th class="text-center" grade="5">P6</th>
+					<th class="text-center" grade="6">S7</th>
+					<th class="text-center" grade="7">S8</th>
+					<th class="text-center" grade="8">S9</th>
+					<th class="text-center" grade="9">S10</th>
+					<th class="text-center" grade="10">S10E</th>
+					<th class="text-center" grade="11">TT6</th>
+					<th class="text-center" grade="12">TT8</th>
+					<th class="text-center" grade="13">TT8E</th>
+					<th class="text-center" grade="14">SRW4</th>
+					<th class="text-center" grade="15">SRW5</th>
+					<th class="text-center" grade="16">SRW6</th>
+					<th class="text-center" grade="17">SRW7</th>
+					<th class="text-center" grade="18">SRW8</th>
+					<th class="text-center" grade="19">JMSS</th>
+					<th class="text-center" grade="20">VCE</th>
+					<th class="text-center" grade="100">Total</th>
+				</tr>
+			</thead>
+
+			
+			<tbody>
+				<tr>
+					<tr>
+						<!-- Retrieve the payments from session -->
+						<c:set var="items" value="${sessionScope.GradeList}" />
+						<c:set var="total" value="0" />
+						<c:forEach items="${items}" var="item">
+							<td class="small align-middle text-center" grade="${item.name}">
+								<c:out value="${item.value}" />
+							</td>
+							<!-- Update the total -->
+							<c:set var="total" value="${total + item.value}" />
+						</c:forEach>
+						<!-- Add the total <td> at the end -->
+						<td class="small align-middle text-center">
+							<c:out value="${total}" />
+						</td>
+					</tr>
+				</tr>
+			</tbody>
 
 
 
 
-
-
-
-
-
+		</table>						
+	</div>
+</c:if>
 
 
 

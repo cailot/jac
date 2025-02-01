@@ -306,6 +306,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 "GROUP BY s.grade")
 List<Object[]> countStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
 
+
         // get grade stats by state, branch, weekDate in studentBranchList.jsp
         @Query("SELECT s.grade, COUNT(s) " +
 "FROM Student s " +
