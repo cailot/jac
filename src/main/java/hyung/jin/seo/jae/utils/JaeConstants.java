@@ -133,6 +133,8 @@ public interface JaeConstants {
 
 	String EMAIL_LIST = "EmailList";
 
+	String GRADE_LIST = "GradeList";	
+
 	String VSSE = "VSSE";
 
 	String ACADEMIC_CYCLES = "academicCycles";

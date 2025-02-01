@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.service;
 
 import java.util.List;
 
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 
@@ -24,6 +25,9 @@ public interface StudentService {
 	
 	// bring student list base on the condition
 	List<StudentDTO> listAllStudents(String state, String branch, String grade, String day, String active);
+
+	// count student per grade base on the condition
+	List<SimpleBasketDTO> countAllStudents(String state, String branch, String day, String active);
 
 	// bring student list base on the condition
 	List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week);
