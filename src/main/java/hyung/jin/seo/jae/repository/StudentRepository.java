@@ -296,4 +296,34 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         // get 'FirstName + LastName' by studentId
         @Query(value = "SELECT CONCAT(s.firstName, ' ', s.lastName) FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findStudentNameById(Long id);
+
+        // get grade stats by state, branch, weekDate in studentBranchList.jsp
+        @Query("SELECT s.grade, COUNT(s) " +
+"FROM Student s " +
+"WHERE (:state = '0' OR s.state = :state) " +
+"AND (:branch = '0' OR s.branch = :branch) " +
+"AND (s.registerDate <= :weekDate) " +
+"GROUP BY s.grade")
+List<Object[]> countStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+
+        // get grade stats by state, branch, weekDate in studentBranchList.jsp
+        @Query("SELECT s.grade, COUNT(s) " +
+"FROM Student s " +
+"WHERE (:state = '0' OR s.state = :state) " +
+"AND (:branch = '0' OR s.branch = :branch) " +
+"AND (s.registerDate <= :weekDate) " +
+"AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate)) " +
+"GROUP BY s.grade")
+List<Object[]> countActiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+
+        // get grade stats by state, branch, weekDate in studentBranchList.jsp
+        @Query("SELECT s.grade, COUNT(s) " +
+"FROM Student s " +
+"WHERE (:state = '0' OR s.state = :state) " +
+"AND (:branch = '0' OR s.branch = :branch) " +
+"AND (s.registerDate <= :weekDate) " +
+"AND (s.active = 1 AND s.endDate <= :weekDate) " +
+"GROUP BY s.grade")
+List<Object[]> countInactiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+
 }
