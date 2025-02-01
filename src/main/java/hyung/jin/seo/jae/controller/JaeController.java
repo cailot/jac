@@ -70,6 +70,11 @@ public class JaeController {
 		return "studentListPage";
 	}
 
+	@GetMapping("/studentBranchList")
+	public String studentBranchList(HttpSession session) {
+		return "studentBranchListPage";
+	}
+
 	@GetMapping("/studentGrade")
 	public String studentGrade(HttpSession session) {
 		return "studentGradePage";

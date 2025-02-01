@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.repository.StudentRepository;
@@ -286,6 +287,28 @@ public class StudentServiceImpl implements StudentService {
 				break;
 			default:
 				dtos = studentRepository.listAllStudentByStateNBranchNGrade(state, branch, grade, weekDate);
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<SimpleBasketDTO> countAllStudents(String state, String branch, String day, String active) {		
+		LocalDate weekDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		List<Object[]> objs = new ArrayList<>();
+		switch(active){
+			case JaeConstants.CURRENT_STUDENT:
+				objs = studentRepository.countActiveStudentsByGrade(state, branch, weekDate);
+				break;
+			case JaeConstants.STOPPED_STUDENT:
+				objs = studentRepository.countInactiveStudentsByGrade(state, branch, weekDate);
+				break;
+			default:
+				objs = studentRepository.countStudentsByGrade(state, branch, weekDate);
+		}
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+		for(Object[] obj : objs){
+			SimpleBasketDTO dto = new SimpleBasketDTO(obj);
+			dtos.add(dto);
 		}
 		return dtos;
 	}

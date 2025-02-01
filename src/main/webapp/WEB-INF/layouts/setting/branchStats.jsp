@@ -97,7 +97,6 @@ function searchStats() {
                 }
             });
 
-
 			// Calculate the total for the row
 			var row = $('#regStatTable tbody tr:nth-child(1)');
             var totalCell = row.find('td:last');
@@ -667,10 +666,10 @@ function export2Excel(){
 <div class="row max-auto p-5" id="searchCriteria" style="width: 80%;">
 	<div class="col-md-2">
 		<label for="fromDate" class="label-form">From Date</label>
-		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
+		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" autocomplete="off" placeholder="From" required>
 	</div>
 	<div class="col-md-2">
-		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" autocomplete="off" placeholder="To" required>
 	</div>
 	<!-- put blank col-md-1 -->
 	<div class="offset-md-5"></div>
