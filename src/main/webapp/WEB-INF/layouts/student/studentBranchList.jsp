@@ -18,7 +18,7 @@
   
 <script>
 
-var branch = window.branch;
+// var branch = window.branch;
 var academicYear = '';
 var academicWeek = '';
 var listActive = 0;
@@ -96,7 +96,7 @@ $(document).ready(function () {
 			$("#listYear").val(academicYear);
 			$("#listWeek").val(academicWeek);
 			// display grade summary
-			displayGradeSummary(academicYear, academicWeek, "0");
+			displayGradeSummary(window.branch, academicYear, academicWeek, "0");
 
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -112,7 +112,7 @@ $(document).ready(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Retrieve Grade Summary Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function displayGradeSummary(year, week, active) {
+function displayGradeSummary(branch, year, week, active) {
 	// send query to controller
 	$.ajax({
 		url : '${pageContext.request.contextPath}/student/gradeList?listState=1&listBranch=' + branch + '&listYear=' + year + '&listWeek=' + week + '&listActive=' + active,
@@ -135,11 +135,12 @@ function displayGradeSummary(year, week, active) {
 //		Search Summary Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function searchSummaryInfo() {
+	var branch = $("#listBranch").val();
 	var year = $("#listYear").val();
 	var week = $("#listWeek").val();
 	var active = $("#listActive").val();
 	// display grade summary
-	displayGradeSummary(year, week, active);
+	displayGradeSummary(branch, year, week, active);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

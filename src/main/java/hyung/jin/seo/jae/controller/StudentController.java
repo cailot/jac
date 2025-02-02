@@ -161,6 +161,32 @@ public class StudentController {
 	}
 
 
+
+
+
+	// list student by condition
+	@GetMapping("/listByCondition")
+	@ResponseBody
+	public List<StudentDTO> listStudentByCondition(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
+		@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
+		@RequestParam(value="listGrade", required=true, defaultValue = "0") String grade,
+		@RequestParam(value="listYear", required=true, defaultValue = "0") Integer year,
+		@RequestParam(value="listWeek", required=true, defaultValue = "0") Integer week,
+		@RequestParam(value="listActive", required=true, defaultValue = "0") String active,
+		Model model) {	
+
+		List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, year, week);
+		
+		return dtos;
+	}
+
+
+
+
+
+
+
+	
 	// @GetMapping("/gradeList")
 	// public String gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
 	// 	@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
