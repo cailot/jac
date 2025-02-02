@@ -77,15 +77,15 @@ $(document).ready(function () {
 	}
 
 	// send diabled select value via <form>
-    document.getElementById("studentList").addEventListener("submit", function() {
-        document.getElementById("listState").disabled = false;
-		document.getElementById("listBranch").disabled = false;
-    });
+    // document.getElementById("studentList").addEventListener("submit", function() {
+    //     document.getElementById("listState").disabled = false;
+	// 	document.getElementById("listBranch").disabled = false;
+    // });
 
 
 <c:if test="${empty sessionScope.GradeList}">
 
-	// set current year & week
+	// first loading, set current year & week
 	$.ajax({
 		url : '${pageContext.request.contextPath}/class/academy',
 		method: "GET",
@@ -106,8 +106,6 @@ $(document).ready(function () {
 
 </c:if>
 
-	console.log('User Branch : ' + window.branch + " Year : " + academicYear + " Week : " + academicWeek); // 0 or 13
-
 });
 
 
@@ -123,7 +121,9 @@ function displayGradeSummary(year, week, active) {
 			academicYear = year;
 			academicWeek = week;
 			listActive = active;
-			console.log('Year : ' + academicYear + ' Week : ' + academicWeek + ' Active : ' + listActive);			
+			console.log('Year : ' + academicYear + ' Week : ' + academicWeek + ' Active : ' + listActive);
+			// save the response into the variable
+			updateSummaryTable(items);			
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -142,6 +142,68 @@ function searchSummaryInfo() {
 	displayGradeSummary(year, week, active);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Update Summary Info	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function updateSummaryTable(items) {	
+    var table = document.getElementById('statTable');
+    // Flush tbody
+    var thead = document.querySelector('#statTable thead');    
+	var tbody = document.querySelector('#statTable tbody');
+	thead.innerHTML = "";
+    tbody.innerHTML = "";
+    // Initialise tbody
+    var total = 0;
+	var thRow = document.createElement('tr');
+    var tdRow = document.createElement('tr');
+	// Calculate the percentage width for each column
+    var columnWidth = 100 / (items.length + 1); // +1 for the total column
+
+    $.each(items, function(index, item) {
+		// Create a <th> cell
+		var thCell = document.createElement('th');
+		thCell.className = 'small align-middle text-center';
+		thCell.style.width = columnWidth + '%';
+		thCell.textContent = gradeName(item.name);		
+
+        // Create a <td> cell
+        var tdCell = document.createElement('td');
+        tdCell.className = 'small align-middle text-center text-primary';
+        tdCell.style.cursor = 'pointer';
+        tdCell.setAttribute('grade', item.name);
+        tdCell.onclick = function() {
+            studentList(item.name);
+        };
+        tdCell.textContent = item.value;
+        tdRow.appendChild(tdCell);
+        // Update the total
+        total += parseInt(item.value);
+
+		thRow.appendChild(thCell);
+    });
+
+	var thTotalCell = document.createElement('th');
+	thTotalCell.className = 'small align-middle text-center';
+	thTotalCell.textContent = 'Total';
+	thRow.appendChild(thTotalCell);
+
+    // Add the total cell
+    var tdTotalCell = document.createElement('td');
+    tdTotalCell.className = 'small align-middle text-center text-primary';
+    tdTotalCell.style.cursor = 'pointer';
+    tdTotalCell.style.fontWeight = 'bold';
+    tdTotalCell.setAttribute('grade', '100');
+    tdTotalCell.onclick = function() {
+        studentList('100');
+    };
+    tdTotalCell.textContent = total;
+    tdRow.appendChild(tdTotalCell);
+
+	// Append the row to the thead
+	thead.appendChild(thRow);
+    // Append the row to the tbody
+    tbody.appendChild(tdRow);
+}
 
 
 
@@ -439,7 +501,7 @@ function displayFullHistory(studentId) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/gradeList">
+		<!-- <form id="studentList" method="get" action="${pageContext.request.contextPath}/student/gradeList"> -->
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-1">
@@ -503,7 +565,7 @@ function displayFullHistory(studentId) {
 					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
+						<button type="submit" class="btn btn-primary btn-block" onclick="searchSummaryInfo()"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 				</div>
 			</div>
@@ -524,53 +586,15 @@ function displayFullHistory(studentId) {
 
 
 
+<div id="summaryInfo" class="alert alert-info">
+	<table id="statTable" style="width: 100%;" border="1">
+		<thead></thead>
+		<tbody></tbody>
+	</table>
+</div>	
 
 
 
-
-
-
-<!-- Summary Info-->
-<c:if test="${not empty sessionScope.GradeList}">
-	<div id="summaryInfo" class="alert alert-info">
-		<!-- Retrieve the grade list from session -->
-		<c:set var="items" value="${sessionScope.GradeList}" />					
-		<table id="statTable" style="width: 100%;">
-			<thead>
-				<tr>
-					<!-- Iterate over the items to create <th> elements -->
-					<c:forEach items="${items}" var="item">
-						<th class="text-center" grade="${item.name}" style="width: 5%;">
-							<script type="text/javascript">
-								document.write(gradeName('${item.name}'));
-							</script>
-						</th>
-					</c:forEach>
-					<!-- Add the total <th> at the end -->
-					<th class="text-center" grade="100" style="width: 10%;">Total</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<!-- Initialize the total variable -->
-					<c:set var="total" value="0" />
-					<!-- Iterate over the items to create <td> elements -->
-					<c:forEach items="${items}" var="item">
-						<td class="small align-middle text-center text-primary" grade="${item.name}" style="cursor: pointer;" onclick="studentList('${item.name}')">
-							<c:out value="${item.value}" />
-						</td>
-						<!-- Update the total -->
-						<c:set var="total" value="${total + item.value}" />
-					</c:forEach>
-					<!-- Add the total <td> at the end -->
-					<td class="small align-middle text-center text-primary" style="cursor: pointer; font-weight: bold;" onclick="studentList('100')" grade="100">
-						<c:out value="${total}" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</c:if>
 
 
 
@@ -670,7 +694,7 @@ function displayFullHistory(studentId) {
 					</div>
 				</div>
 			</div>
-		</form>
+		<!-- </form> -->
 	</div>
 </div>
 
