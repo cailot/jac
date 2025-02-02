@@ -133,34 +133,17 @@ public class StudentController {
 	}
 
 	// list grade figures for student list
-	// @GetMapping("/gradeList")
-	// @ResponseBody
-	// // public String gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
-	// public List<SimpleBasketDTO> gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
-	// 	@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
-	// 	@RequestParam(value="listYear", required=true, defaultValue = "0") Integer year,
-	// 	@RequestParam(value="listWeek", required=true, defaultValue = "0") Integer week,
-	// 	@RequestParam(value="listActive", required=true, defaultValue = "0") String active,
-	// 	Model model) {	
-
-	// 	String day = cycleService.academicStartMonday(year, week);
-	// 	List<SimpleBasketDTO> dtos = studentService.countAllStudents(state, branch, day, active);
-	// 	return dtos;
-	// }
 	@GetMapping("/gradeList")
-	public String gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
+	@ResponseBody
+	public List<SimpleBasketDTO> gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
 		@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
 		@RequestParam(value="listYear", required=true, defaultValue = "0") Integer year,
 		@RequestParam(value="listWeek", required=true, defaultValue = "0") Integer week,
 		@RequestParam(value="listActive", required=true, defaultValue = "0") String active,
-		HttpSession session) {	
-		// 1. flush session from previous payment
-		JaeUtils.clearSession(session);
-		// 2. get day
+		Model model) {	
+
 		String day = cycleService.academicStartMonday(year, week);
-		// 3. get stats
 		List<SimpleBasketDTO> dtos = studentService.countAllStudents(state, branch, day, active);
-		// 4. sort by name as integer
 		Collections.sort(dtos, new Comparator<SimpleBasketDTO>() {
 			@Override
 			public int compare(SimpleBasketDTO o1, SimpleBasketDTO o2) {
@@ -174,11 +157,42 @@ public class StudentController {
 				}
 			}
 		});
-		// 5. add to session
-		session.setAttribute(JaeConstants.GRADE_LIST, dtos);
-		// 6. return page
-		return "studentBranchListPage";
+		return dtos;
 	}
+
+
+	// @GetMapping("/gradeList")
+	// public String gradeListStudents(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
+	// 	@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
+	// 	@RequestParam(value="listYear", required=true, defaultValue = "0") Integer year,
+	// 	@RequestParam(value="listWeek", required=true, defaultValue = "0") Integer week,
+	// 	@RequestParam(value="listActive", required=true, defaultValue = "0") String active,
+	// 	HttpSession session) {	
+	// 	// 1. flush session from previous payment
+	// 	JaeUtils.clearSession(session);
+	// 	// 2. get day
+	// 	String day = cycleService.academicStartMonday(year, week);
+	// 	// 3. get stats
+	// 	List<SimpleBasketDTO> dtos = studentService.countAllStudents(state, branch, day, active);
+	// 	// 4. sort by name as integer
+	// 	Collections.sort(dtos, new Comparator<SimpleBasketDTO>() {
+	// 		@Override
+	// 		public int compare(SimpleBasketDTO o1, SimpleBasketDTO o2) {
+	// 			try {
+	// 				int name1 = Integer.parseInt(o1.getName());
+	// 				int name2 = Integer.parseInt(o2.getName());
+	// 				return Integer.compare(name1, name2);
+	// 			} catch (NumberFormatException e) {
+	// 				// Handle the case where the name is not a valid integer
+	// 				return o1.getName().compareTo(o2.getName());
+	// 			}
+	// 		}
+	// 	});
+	// 	// 5. add to session
+	// 	session.setAttribute(JaeConstants.GRADE_LIST, dtos);
+	// 	// 6. return page
+	// 	return "studentBranchListPage";
+	// }
 
 	// search enrolment student list with state, branch, grade, active
 	@GetMapping("/list")
