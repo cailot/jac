@@ -162,13 +162,13 @@ function updateSummaryTable(items) {
     $.each(items, function(index, item) {
 		// Create a <th> cell
 		var thCell = document.createElement('th');
-		thCell.className = 'small align-middle text-center';
+		thCell.className = 'small align-middle text-center vertical-gap';
 		thCell.style.width = columnWidth + '%';
 		thCell.textContent = gradeName(item.name);		
 
         // Create a <td> cell
         var tdCell = document.createElement('td');
-        tdCell.className = 'small align-middle text-center text-primary';
+        tdCell.className = 'small align-middle text-center vertical-gap text-primary';
         tdCell.style.cursor = 'pointer';
         tdCell.setAttribute('grade', item.name);
         tdCell.onclick = function() {
@@ -183,13 +183,14 @@ function updateSummaryTable(items) {
     });
 
 	var thTotalCell = document.createElement('th');
-	thTotalCell.className = 'small align-middle text-center';
+	thTotalCell.className = 'small align-middle text-center vertical-gap';
+	thTotalCell.style.fontWeight = 'bold';
 	thTotalCell.textContent = 'Total';
 	thRow.appendChild(thTotalCell);
 
     // Add the total cell
     var tdTotalCell = document.createElement('td');
-    tdTotalCell.className = 'small align-middle text-center text-primary';
+    tdTotalCell.className = 'small align-middle text-center vertical-gap text-primary';
     tdTotalCell.style.cursor = 'pointer';
     tdTotalCell.style.fontWeight = 'bold';
     tdTotalCell.setAttribute('grade', '100');
@@ -490,6 +491,11 @@ function displayFullHistory(studentId) {
 	div.dataTables_filter {
 		padding-top: 35px;
 		padding-bottom: 35px;
+	}
+
+	.vertical-gap{
+		padding-top: 10px;
+		padding-bottom: 10px;
 	}
 
 	#studentListTable tr { 
