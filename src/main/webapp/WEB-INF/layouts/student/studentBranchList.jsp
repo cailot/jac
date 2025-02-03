@@ -23,8 +23,11 @@ var academicYear = '';
 var academicWeek = '';
 var listActive = 0;
 
+var listTable = null;
+
 $(document).ready(function () {
-    $('#studentListTable').DataTable({
+    // $('#studentListTable').DataTable({
+	listTable = $('#studentListTable').DataTable({
     	language: {
     		search: 'Filter:'
     	},
@@ -38,6 +41,16 @@ $(document).ready(function () {
  	        },
  	        'print'
         ],
+		columns: [
+			{ title: "ID", className: "text-center" },
+			{ title: "First Name", className: "text-left" },
+			{ title: "Last Name", className: "text-left" },
+			{ title: "Grade", className: "text-center" },
+			{ title: "Gender", className: "text-center" },
+			{ title: "Email", className: "text-left" },
+			{ title: "Contact", className: "text-left" },
+			{ title: "Action", className: "text-center", orderable: false }
+		]
 		//pageLength: 20
     });
     
@@ -173,7 +186,7 @@ function updateSummaryTable(items) {
         tdCell.style.cursor = 'pointer';
         tdCell.setAttribute('grade', item.name);
         tdCell.onclick = function() {
-            studentList(item.name);
+            showStudentList(item.name);
         };
         tdCell.textContent = item.value;
         tdRow.appendChild(tdCell);
@@ -196,7 +209,7 @@ function updateSummaryTable(items) {
     tdTotalCell.style.fontWeight = 'bold';
     tdTotalCell.setAttribute('grade', '100');
     tdTotalCell.onclick = function() {
-        studentList('100');
+        showStudentList('100');
     };
     tdTotalCell.textContent = total;
     tdRow.appendChild(tdTotalCell);
@@ -208,6 +221,46 @@ function updateSummaryTable(items) {
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Populate Student List	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function showStudentList(grade) {
+    var branch = $("#listBranch").val();
+    var year = $("#listYear").val();
+    var week = $("#listWeek").val();
+    var active = $("#listActive").val();
+    $.ajax({
+        url: '${pageContext.request.contextPath}/student/listByCondition?listState=1&listBranch=' + branch + '&listYear=' + year + '&listWeek=' + week + '&listActive=' + active + '&listGrade=' + grade,
+        type: 'GET',
+        success: function(items) {
+            if (items.length > 0) {
+                var rows = items.map(function(item) {
+                    return [
+                        '<td><span class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent(\'' + item.id + '\')">' + item.id + '</span></td>',
+                        '<td><span class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.firstName + '</span></td>',
+                        '<td><span class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.lastName + '</span></td>',
+                        '<td><span class="small align-middle text-center">' + gradeName(item.grade) + '</span></td>',
+                        '<td><span class="small align-middle text-center" style="text-transform: capitalize;">' + item.gender + '</span></td>',
+                        '<td><span class="small align-middle text-center">' + item.email1 + '</span></td>',
+                        '<td><span class="small align-middle text-center">' + item.contactNo1 + '</span></td>',
+                        '<td class="small align-middle text-center"><i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory(' + item.id + ')"></i>&nbsp;&nbsp;' +
+							'<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo(' + item.id + ')"></i>&nbsp;&nbsp;' +
+							'<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal(' + item.id + ')"></i>' +
+						'</td>'
+                    ];
+                });
+                listTable.clear(); // Clear old data
+                listTable.rows.add(rows).draw(); // Add new data
+            } else {
+                console.log("No data available");
+                listTable.clear().draw(); // Clear table if no data
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('Error: ' + error);
+        }
+    });
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Student
@@ -621,7 +674,7 @@ function displayFullHistory(studentId) {
 						<div class="table-wrap">
 							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
 								<thead class="table-primary">
-									<tr>
+									<!-- <tr>
 										<th class="align-middle text-center" style="width: 10%">ID</th>
 										<th class="align-middle text-center" style="width: 10%">First Name</th>
 										<th class="align-middle text-center" style="width: 10%">Last Name</th>
@@ -631,10 +684,10 @@ function displayFullHistory(studentId) {
 										<th class="align-middle text-center" style="width: 10%">Email</th>
 										<th class="align-middle text-center" style="width: 30%">Address</th>
 										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
-									</tr>
+									</tr> -->
 								</thead>
 								<tbody id="list-student-body">
-								<c:choose>
+								<!-- <c:choose>
 									<c:when test="${StudentList != null}">
 										<c:forEach items="${StudentList}" var="student">
 											<tr>
@@ -694,7 +747,7 @@ function displayFullHistory(studentId) {
 											</tr>
 										</c:forEach>
 									</c:when>
-								</c:choose>
+								</c:choose> -->
 								</tbody>
 							</table>
 						</div>
