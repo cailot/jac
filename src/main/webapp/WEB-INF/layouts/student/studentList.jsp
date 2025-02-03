@@ -536,7 +536,7 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
 													<c:out value="${student.contactNo1}" />
 												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"">
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
 													<c:out value="${student.email1}" />
 												</td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.address}" /></span></td>
