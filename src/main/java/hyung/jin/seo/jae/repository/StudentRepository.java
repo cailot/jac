@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO;
 import hyung.jin.seo.jae.model.Student;
 
 public interface StudentRepository extends JpaRepository<Student, Long>{  
@@ -268,7 +270,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                "AND (:grade = '0' OR s.grade = :grade) " +
                "AND (s.registerDate <= :weekDate)")
         List<StudentDTO> listAllStudentByStateNBranchNGrade(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("weekDate") LocalDate weekDate);
-
+        
         // get all active student list 
         @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
                "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, s.registerDate, s.email1, s.contactNo1, s.address, s.active) " +
@@ -297,34 +299,95 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         @Query(value = "SELECT CONCAT(s.firstName, ' ', s.lastName) FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findStudentNameById(Long id);
 
-        // get grade stats by state, branch, weekDate in studentBranchList.jsp
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /// count summary by State, Branch, Grade, Active, Date - studentBranchList.jsp 
         @Query("SELECT s.grade, COUNT(s) " +
-"FROM Student s " +
-"WHERE (:state = '0' OR s.state = :state) " +
-"AND (:branch = '0' OR s.branch = :branch) " +
-"AND (s.registerDate <= :weekDate) " +
-"GROUP BY s.grade")
-List<Object[]> countStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "GROUP BY s.grade")
+        List<Object[]> countStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
 
-
-        // get grade stats by state, branch, weekDate in studentBranchList.jsp
         @Query("SELECT s.grade, COUNT(s) " +
-"FROM Student s " +
-"WHERE (:state = '0' OR s.state = :state) " +
-"AND (:branch = '0' OR s.branch = :branch) " +
-"AND (s.registerDate <= :weekDate) " +
-"AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate)) " +
-"GROUP BY s.grade")
-List<Object[]> countActiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate)) " +
+                "GROUP BY s.grade")
+        List<Object[]> countActiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
 
-        // get grade stats by state, branch, weekDate in studentBranchList.jsp
         @Query("SELECT s.grade, COUNT(s) " +
-"FROM Student s " +
-"WHERE (:state = '0' OR s.state = :state) " +
-"AND (:branch = '0' OR s.branch = :branch) " +
-"AND (s.registerDate <= :weekDate) " +
-"AND (s.active = 1 AND s.endDate <= :weekDate) " +
-"GROUP BY s.grade")
-List<Object[]> countInactiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "AND (s.active = 1 AND s.endDate <= :weekDate) " +
+                "GROUP BY s.grade")
+        List<Object[]> countInactiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
+
+        // get student list with enrolment by grade                                                            
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO(" +
+                "s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, " +
+                "s.registerDate, s.email1, s.contactNo1, s.address, s.active, " +
+                "COALESCE((SELECT MAX(e.startWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.endWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.clazz.name) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), '')) " +
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "AND (:grade = '0' OR s.grade = :grade) " +
+                "ORDER BY s.id")
+        List<StudentWithEnrolmentDTO> listAllStudentsWithEnrolmentByGradeAndWeek(@Param("state") String state, 
+                @Param("branch") String branch, 
+                @Param("grade") String grade,
+                @Param("year") int year, 
+                @Param("week") int week,
+                @Param("weekDate") LocalDate weekDate);
+
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO(" +
+                "s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, " +
+                "s.registerDate, s.email1, s.contactNo1, s.address, s.active, " +
+                "COALESCE((SELECT MAX(e.startWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.endWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.clazz.name) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), '')) " +
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "AND (:grade = '0' OR s.grade = :grade) " +
+                "AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate))" + 
+                "ORDER BY s.id")
+        List<StudentWithEnrolmentDTO> listActiveStudentsWithEnrolmentByGradeAndWeek(@Param("state") String state, 
+                @Param("branch") String branch, 
+                @Param("grade") String grade,
+                @Param("year") int year, 
+                @Param("week") int week,
+                @Param("weekDate") LocalDate weekDate);
+        
+
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO(" +
+                "s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, " +
+                "s.registerDate, s.email1, s.contactNo1, s.address, s.active, " +
+                "COALESCE((SELECT MAX(e.startWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.endWeek) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), 0), " +
+                "COALESCE((SELECT MAX(e.clazz.name) FROM Enrolment e WHERE e.student = s AND e.clazz.course.cycle.year = :year), '')) " +
+                "FROM Student s " +
+                "WHERE (:state = '0' OR s.state = :state) " +
+                "AND (:branch = '0' OR s.branch = :branch) " +
+                "AND (s.registerDate <= :weekDate) " +
+                "AND (:grade = '0' OR s.grade = :grade) " +              
+                "AND (s.active = 1 AND s.endDate <= :weekDate)" +
+                "ORDER BY s.id")
+        List<StudentWithEnrolmentDTO> listInactiveStudentsWithEnrolmentByGradeAndWeek(@Param("state") String state, 
+                @Param("branch") String branch, 
+                @Param("grade") String grade,
+                @Param("year") int year, 
+                @Param("week") int week,
+                @Param("weekDate") LocalDate weekDate);
+        ///
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
