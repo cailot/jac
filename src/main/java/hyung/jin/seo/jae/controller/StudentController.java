@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.StudentService;
@@ -159,7 +160,7 @@ public class StudentController {
 	// list student by condition
 	@GetMapping("/listByCondition")
 	@ResponseBody
-	public List<StudentDTO> listStudentByCondition(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
+	public List<StudentWithEnrolmentDTO> listStudentByCondition(@RequestParam(value="listState", required=true, defaultValue = "0") String state,
 		@RequestParam(value="listBranch", required=true, defaultValue = "0") String branch,
 		@RequestParam(value="listGrade", required=true, defaultValue = "0") String grade,
 		@RequestParam(value="listYear", required=true, defaultValue = "0") Integer year,
@@ -167,7 +168,8 @@ public class StudentController {
 		@RequestParam(value="listActive", required=true, defaultValue = "0") String active) {	
 
 		String day = cycleService.academicStartMonday(year, week);
-		List<StudentDTO> dtos = studentService.listAllStudents(state, branch, grade, day, active);
+		// List<StudentDTO> dtos = studentService.listAllStudents(state, branch, grade, day, active);
+		List<StudentWithEnrolmentDTO> dtos = studentService.overallStudentWithEnrolment(state, branch, grade, active, year, week, day);		
 		return dtos;
 	}
 
