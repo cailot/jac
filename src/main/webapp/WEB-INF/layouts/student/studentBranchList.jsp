@@ -42,14 +42,16 @@ $(document).ready(function () {
  	        'print'
         ],
 		columns: [
-			{ title: "ID", className: "text-center" },
-			{ title: "First Name", className: "text-left" },
-			{ title: "Last Name", className: "text-left" },
-			{ title: "Grade", className: "text-center" },
-			{ title: "Gender", className: "text-center" },
-			{ title: "Email", className: "text-left" },
-			{ title: "Contact", className: "text-left" },
-			{ title: "Action", className: "text-center", orderable: false }
+			{ title: "ID", className: "align-middle text-center" },
+			{ title: "First Name", className: "align-middle text-left" },
+			{ title: "Last Name", className: "align-middle text-left" },
+			{ title: "Grade", className: "align-middle text-center" },
+			{ title: "Class", className: "align-middle text-left" },
+			{ title: "Start", className: "align-middle text-center" },
+			{ title: "End", className: "align-middle text-center" },
+			{ title: "Email", className: "align-middle text-left" },
+			{ title: "Contact", className: "align-middle text-left" },
+			{ title: "Action", className: "align-middle text-center", orderable: false }
 		]
 		//pageLength: 20
     });
@@ -88,13 +90,6 @@ $(document).ready(function () {
 			}
 		});
 	}
-
-	// send diabled select value via <form>
-    // document.getElementById("studentList").addEventListener("submit", function() {
-    //     document.getElementById("listState").disabled = false;
-	// 	document.getElementById("listBranch").disabled = false;
-    // });
-
 
 <c:if test="${empty sessionScope.GradeList}">
 
@@ -176,13 +171,13 @@ function updateSummaryTable(items) {
     $.each(items, function(index, item) {
 		// Create a <th> cell
 		var thCell = document.createElement('th');
-		thCell.className = 'small align-middle text-center vertical-gap';
+		thCell.className = 'small text-center vertical-gap';
 		thCell.style.width = columnWidth + '%';
 		thCell.textContent = gradeName(item.name);		
 
         // Create a <td> cell
         var tdCell = document.createElement('td');
-        tdCell.className = 'small align-middle text-center vertical-gap text-primary';
+        tdCell.className = 'small text-center vertical-gap text-primary';
         tdCell.style.cursor = 'pointer';
         tdCell.setAttribute('grade', item.name);
         tdCell.onclick = function() {
@@ -197,19 +192,19 @@ function updateSummaryTable(items) {
     });
 
 	var thTotalCell = document.createElement('th');
-	thTotalCell.className = 'small align-middle text-center vertical-gap';
+	thTotalCell.className = 'small text-center vertical-gap';
 	thTotalCell.style.fontWeight = 'bold';
 	thTotalCell.textContent = 'Total';
 	thRow.appendChild(thTotalCell);
 
     // Add the total cell
     var tdTotalCell = document.createElement('td');
-    tdTotalCell.className = 'small align-middle text-center vertical-gap text-primary';
+    tdTotalCell.className = 'small text-center vertical-gap text-primary';
     tdTotalCell.style.cursor = 'pointer';
     tdTotalCell.style.fontWeight = 'bold';
-    tdTotalCell.setAttribute('grade', '100');
+    tdTotalCell.setAttribute('grade', '0');
     tdTotalCell.onclick = function() {
-        showStudentList('100');
+        showStudentList('0');
     };
     tdTotalCell.textContent = total;
     tdRow.appendChild(tdTotalCell);
@@ -218,6 +213,8 @@ function updateSummaryTable(items) {
 	thead.appendChild(thRow);
     // Append the row to the tbody
     tbody.appendChild(tdRow);
+
+	listTable.clear().draw(); // Clear table if no data
 }
 
 
@@ -236,14 +233,16 @@ function showStudentList(grade) {
             if (items.length > 0) {
                 var rows = items.map(function(item) {
                     return [
-                        '<td><span class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent(\'' + item.id + '\')">' + item.id + '</span></td>',
-                        '<td><span class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.firstName + '</span></td>',
-                        '<td><span class="small align-middle ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.lastName + '</span></td>',
-                        '<td><span class="small align-middle text-center">' + gradeName(item.grade) + '</span></td>',
-                        '<td><span class="small align-middle text-center" style="text-transform: capitalize;">' + item.gender + '</span></td>',
-                        '<td><span class="small align-middle text-center">' + item.email1 + '</span></td>',
-                        '<td><span class="small align-middle text-center">' + item.contactNo1 + '</span></td>',
-                        '<td class="small align-middle text-center"><i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory(' + item.id + ')"></i>&nbsp;&nbsp;' +
+                        '<td><span class="small hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent(\'' + item.id + '\')">' + item.id + '</span></td>',
+                        '<td><span class="small ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.firstName + '</span></td>',
+                        '<td><span class="small ellipsis text-truncate ml-1" style="max-width: 0; overflow: hidden;">' + item.lastName + '</span></td>',
+                        '<td><span class="small text-center">' + gradeName(item.grade) + '</span></td>',
+                        '<td><span class="small">' + item.className + '</span></td>',
+                        '<td><span class="small text-center">' + item.startWeek + '</span></td>',
+                        '<td><span class="small text-center">' + item.endWeek + '</span></td>',
+                        '<td><span class="small text-center">' + item.email1 + '</span></td>',
+                        '<td><span class="small text-center">' + item.contactNo1 + '</span></td>',
+                        '<td class="small text-center"><i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory(' + item.id + ')"></i>&nbsp;&nbsp;' +
 							'<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo(' + item.id + ')"></i>&nbsp;&nbsp;' +
 							'<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal(' + item.id + ')"></i>' +
 						'</td>'
@@ -251,6 +250,10 @@ function showStudentList(grade) {
                 });
                 listTable.clear(); // Clear old data
                 listTable.rows.add(rows).draw(); // Add new data
+
+                // Initialize tooltips for dynamically added elements
+				$('[data-toggle="tooltip"]').tooltip();
+
             } else {
                 console.log("No data available");
                 listTable.clear().draw(); // Clear table if no data
@@ -561,200 +564,98 @@ function displayFullHistory(studentId) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<!-- <form id="studentList" method="get" action="${pageContext.request.contextPath}/student/gradeList"> -->
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-1">
-						<label for="listState" class="label-form">State</label> 
-						<select class="form-control" id="listState" name="listState" disabled>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listBranch" class="label-form">Branch</label> 
-						<select class="form-control" id="listBranch" name="listBranch">
-							<option value="0">All Branch</option>
-						</select>
-					</div>
-					<div class="col-md-2">
-						<label for="listYear" class="label-form">Academic Year</label> 
-						<select class="form-control" id="listYear" name="listYear">
-							<%
-								Calendar now = Calendar.getInstance();
-								int currentYear = now.get(Calendar.YEAR);
-							%>
-							<option value="<%= currentYear %>"><%= (currentYear%100) %>/<%= (currentYear%100)+1 %> Academic Year</option>
-							<%
-								// Adding the last five years
-								for (int i = currentYear - 1; i >= currentYear - 4; i--) {
-							%>
-								<option value="<%= i %>"><%= (i%100) %>/<%= (i%100)+1 %> Academic Year</option>
-							<%
-							}
-							%>
-						</select>
-					</div>
-					
-					<div class="col-md-1">
-						<label for="listWeek" class="label-form">Week</label>
-						<select class="form-control" id="listWeek" name="listWeek">
-						</select>
-						<script>
-							// Get a reference to the select element
-							var selectElement = document.getElementById("listWeek");
-							// Create a new option element for 'All'
-							var allOption = document.createElement("option");
-							for (var i = 1; i <= 50; i++) {
-								// Create a new option element
-								var option = document.createElement("option");
-								// Set the value and text content for the option
-								option.value = i;
-								option.textContent = i;
-								// Append the option to the select element
-								selectElement.appendChild(option);
-							}
-						</script>
-					</div>
-					<div class="col-md-2">
-						<label for="listActive" class="label-form">Student Condition</label> 
-						<select class="form-control" id="listActive" name="listActive">
-							<option value="0">All Students</option>
-							<option value="1">Current Students</option>
-							<option value="2">Stopped Students</option>
-						</select>
-					</div>
-					<div class="offset-md-2"></div>
-					<div class="col mx-auto">
-						<label class="label-form-white">Search</label> 
-						<button type="submit" class="btn btn-primary btn-block" onclick="searchSummaryInfo()"> <i class="bi bi-search"></i>&nbsp;Search</button>
+		<div class="form-group">
+			<div class="form-row">
+				<div class="col-md-1">
+					<label for="listState" class="label-form">State</label> 
+					<select class="form-control" id="listState" name="listState" disabled>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="listBranch" class="label-form">Branch</label> 
+					<select class="form-control" id="listBranch" name="listBranch">
+						<option value="0">All Branch</option>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<label for="listYear" class="label-form">Academic Year</label> 
+					<select class="form-control" id="listYear" name="listYear">
+						<%
+							Calendar now = Calendar.getInstance();
+							int currentYear = now.get(Calendar.YEAR);
+						%>
+						<option value="<%= currentYear %>"><%= (currentYear%100) %>/<%= (currentYear%100)+1 %> Academic Year</option>
+						<%
+							// Adding the last five years
+							for (int i = currentYear - 1; i >= currentYear - 4; i--) {
+						%>
+							<option value="<%= i %>"><%= (i%100) %>/<%= (i%100)+1 %> Academic Year</option>
+						<%
+						}
+						%>
+					</select>
+				</div>
+				
+				<div class="col-md-1">
+					<label for="listWeek" class="label-form">Week</label>
+					<select class="form-control" id="listWeek" name="listWeek">
+					</select>
+					<script>
+						// Get a reference to the select element
+						var selectElement = document.getElementById("listWeek");
+						// Create a new option element for 'All'
+						var allOption = document.createElement("option");
+						for (var i = 1; i <= 50; i++) {
+							// Create a new option element
+							var option = document.createElement("option");
+							// Set the value and text content for the option
+							option.value = i;
+							option.textContent = i;
+							// Append the option to the select element
+							selectElement.appendChild(option);
+						}
+					</script>
+				</div>
+				<div class="col-md-2">
+					<label for="listActive" class="label-form">Student Condition</label> 
+					<select class="form-control" id="listActive" name="listActive">
+						<option value="0">All Students</option>
+						<option value="1">Current Students</option>
+						<option value="2">Stopped Students</option>
+					</select>
+				</div>
+				<div class="offset-md-2"></div>
+				<div class="col mx-auto">
+					<label class="label-form-white">Search</label> 
+					<button type="submit" class="btn btn-primary btn-block" onclick="searchSummaryInfo()"> <i class="bi bi-search"></i>&nbsp;Search</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Summary Table -->
+		<div class="form-group pt-3">
+			<div id="summaryInfo" class="alert alert-info mt-2">
+				<table id="statTable" style="width: 100%;">
+					<thead></thead>
+					<tbody></tbody>
+				</table>
+			</div>	
+		</div>
+
+		<div class="form-group">
+			<div class="form-row">
+				<div class="col-md-12">
+					<div class="table-wrap">
+						<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
+							<thead class="table-primary">
+							</thead>
+							<tbody id="list-student-body">
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div id="summaryInfo" class="alert alert-info">
-	<table id="statTable" style="width: 100%;" border="1">
-		<thead></thead>
-		<tbody></tbody>
-	</table>
-</div>	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			<div class="form-group">
-				<div class="form-row">
-					<div class="col-md-12">
-						<div class="table-wrap">
-							<table id="studentListTable" class="table table-striped table-bordered" style="width: 100%;">
-								<thead class="table-primary">
-									<!-- <tr>
-										<th class="align-middle text-center" style="width: 10%">ID</th>
-										<th class="align-middle text-center" style="width: 10%">First Name</th>
-										<th class="align-middle text-center" style="width: 10%">Last Name</th>
-										<th class="align-middle text-center" style="width: 5%">Grade</th>
-										<th class="align-middle text-center" style="width: 5%">Gender</th>
-										<th class="align-middle text-center" style="width: 10%">Contact</th>
-										<th class="align-middle text-center" style="width: 10%">Email</th>
-										<th class="align-middle text-center" style="width: 30%">Address</th>
-										<th class="align-middle text-center" data-orderable="false" style="width: 10%">Action</th>
-									</tr> -->
-								</thead>
-								<tbody id="list-student-body">
-								<!-- <c:choose>
-									<c:when test="${StudentList != null}">
-										<c:forEach items="${StudentList}" var="student">
-											<tr>
-												<td class="small align-middle hand-cursor" data-toggle="tooltip" title="Link to Student Information" id="studentId" name="studentId" onclick="linkToStudent('${student.id}')">
-													<span class="ml-1"><c:out value="${student.id}" /></span>
-												</td>												
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.firstName}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
-												<td class="small align-middle text-center">
-													<span>
-														<c:choose>
-															<c:when test="${student.grade == '1'}">P2</c:when>
-															<c:when test="${student.grade == '2'}">P3</c:when>
-															<c:when test="${student.grade == '3'}">P4</c:when>
-															<c:when test="${student.grade == '4'}">P5</c:when>
-															<c:when test="${student.grade == '5'}">P6</c:when>
-															<c:when test="${student.grade == '6'}">S7</c:when>
-															<c:when test="${student.grade == '7'}">S8</c:when>
-															<c:when test="${student.grade == '8'}">S9</c:when>
-															<c:when test="${student.grade == '9'}">S10</c:when>
-															<c:when test="${student.grade == '10'}">S10E</c:when>
-															<c:when test="${student.grade == '11'}">TT6</c:when>
-															<c:when test="${student.grade == '12'}">TT8</c:when>
-															<c:when test="${student.grade == '13'}">TT8E</c:when>
-															<c:when test="${student.grade == '14'}">SRW4</c:when>
-															<c:when test="${student.grade == '15'}">SRW5</c:when>
-															<c:when test="${student.grade == '16'}">SRW6</c:when>
-															<c:when test="${student.grade == '17'}">SRW7</c:when>
-															<c:when test="${student.grade == '18'}">SRW8</c:when>
-															<c:when test="${student.grade == '19'}">JMSS</c:when>
-															<c:when test="${student.grade == '20'}">VCE</c:when>
-															<c:otherwise></c:otherwise>
-														</c:choose>
-													</span>
-												</td>
-												<td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
-													<c:out value="${student.contactNo1}" />
-												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"">
-													<c:out value="${student.email1}" />
-												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.address}" /></span></td>
-												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
-				 									<c:choose>
-														<c:when test="${student.active == 0}">
-															<i class="bi bi-pause-circle text-danger hand-cursor" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
-														</c:when>
-														<c:otherwise>
-															<i class="bi bi-arrow-clockwise text-success hand-cursor" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
-														</c:otherwise>
-													</c:choose>
-												</td>
-											</tr>
-										</c:forEach>
-									</c:when>
-								</c:choose> -->
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		<!-- </form> -->
+		</div>
 	</div>
 </div>
 

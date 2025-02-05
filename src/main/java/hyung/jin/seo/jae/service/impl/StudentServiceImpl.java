@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.repository.StudentRepository;
 import hyung.jin.seo.jae.service.StudentService;
@@ -275,7 +276,6 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDTO> listAllStudents(String state, String branch, String grade, String day, String active) {		
-
 		LocalDate weekDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		List<StudentDTO> dtos = null;
 		switch(active){
@@ -287,6 +287,23 @@ public class StudentServiceImpl implements StudentService {
 				break;
 			default:
 				dtos = studentRepository.listAllStudentByStateNBranchNGrade(state, branch, grade, weekDate);
+		}
+		return dtos;
+	}
+
+	@Override
+	public List<StudentWithEnrolmentDTO> overallStudentWithEnrolment(String state, String branch, String grade, String active, int year, int week, String day) {		
+		LocalDate weekDate = LocalDate.parse(day, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		List<StudentWithEnrolmentDTO> dtos = null;
+		switch(active){
+			case JaeConstants.CURRENT_STUDENT:
+				dtos = studentRepository.listActiveStudentsWithEnrolmentByGradeAndWeek(state, branch, grade, year, week, weekDate);
+				break;
+			case JaeConstants.STOPPED_STUDENT:
+				dtos = studentRepository.listInactiveStudentsWithEnrolmentByGradeAndWeek(state, branch, grade, year, week, weekDate);
+				break;
+			default:
+				dtos = studentRepository.listAllStudentsWithEnrolmentByGradeAndWeek(state, branch, grade, year, week, weekDate);
 		}
 		return dtos;
 	}

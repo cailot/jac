@@ -4,6 +4,7 @@ import java.util.List;
 
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO;
 import hyung.jin.seo.jae.model.Student;
 
 public interface StudentService {
@@ -81,4 +82,8 @@ public interface StudentService {
 
 	//get student name by id
 	String getStudentName(Long id);
+
+	// get student list with enrolment if exists in studentList.jsp
+	List<StudentWithEnrolmentDTO> overallStudentWithEnrolment(String state, String branch, String grade, String active, int year, int week, String day);		
+
 }
