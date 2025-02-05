@@ -1,7 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
+<!-- <%@page import="hyung.jin.seo.jae.dto.StudentDTO"%> -->
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
 <%@page import="java.util.Calendar"%>
 
@@ -528,61 +528,30 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.lastName}" /></span></td>
 												<td class="small align-middle text-center">
 													<span>
-														<c:choose>
-															<c:when test="${student.grade == '1'}">P2</c:when>
-															<c:when test="${student.grade == '2'}">P3</c:when>
-															<c:when test="${student.grade == '3'}">P4</c:when>
-															<c:when test="${student.grade == '4'}">P5</c:when>
-															<c:when test="${student.grade == '5'}">P6</c:when>
-															<c:when test="${student.grade == '6'}">S7</c:when>
-															<c:when test="${student.grade == '7'}">S8</c:when>
-															<c:when test="${student.grade == '8'}">S9</c:when>
-															<c:when test="${student.grade == '9'}">S10</c:when>
-															<c:when test="${student.grade == '10'}">S10E</c:when>
-															<c:when test="${student.grade == '11'}">TT6</c:when>
-															<c:when test="${student.grade == '12'}">TT8</c:when>
-															<c:when test="${student.grade == '13'}">TT8E</c:when>
-															<c:when test="${student.grade == '14'}">SRW4</c:when>
-															<c:when test="${student.grade == '15'}">SRW5</c:when>
-															<c:when test="${student.grade == '16'}">SRW6</c:when>
-															<c:when test="${student.grade == '17'}">SRW7</c:when>
-															<c:when test="${student.grade == '18'}">SRW8</c:when>
-															<c:when test="${student.grade == '19'}">JMSS</c:when>
-															<c:when test="${student.grade == '20'}">VCE</c:when>
-															<c:otherwise></c:otherwise>
-														</c:choose>
+														<script type="text/javascript">
+															document.write(gradeName('${student.grade}'));
+														</script>
 													</span>
 												</td>
-												<!-- <td class="small align-middle text-center"><span style="text-transform: capitalize;"><c:out value="${fn:toLowerCase(student.gender)}" /></span></td> -->
 												<td class="small align-middle text-left">
-													<c:out value="${student.contactNo2}" />
+													<c:out value="${student.className}" />
 												</td>
 												
 												<td class="small align-middle text-center"><span><c:out value="${student.startWeek}" /></span></td>
 												<td class="small align-middle text-center"><span><c:out value="${student.endWeek}" /></span></td>
 												<td class="small align-middle text-center">
 													<span>
-														<fmt:parseDate var="studentRegistrationDate" value="${student.password}" pattern="yyyy-MM-dd" />
-														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
+														<fmt:parseDate var="enrolRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
+														<fmt:formatDate value="${enrolRegistrationDate}" pattern="dd/MM/yyyy" />
 													</span>
 												</td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
-												<!-- <td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email2}" /></span></td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo2}" /></span></td> -->
 												<td class="text-center align-middle">
 													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
 													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>&nbsp;
-				 									<c:choose>
-														<c:when test="${empty student.endDate}">
-															<i class="bi bi-pause-circle text-danger hand-cursor" data-toggle="tooltip" title="Suspend" onclick="inactiveStudent('${student.id}')"></i>
-														</c:when>
-														<c:otherwise>
-															<i class="bi bi-arrow-clockwise text-success hand-cursor" data-toggle="tooltip" title="Activate" onclick="activateStudent('${student.id}')"></i>
-														</c:otherwise>
-													</c:choose>
-												</td>
+													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
+				 								</td>
 											</tr>
 										</c:forEach>
 									</c:when>
