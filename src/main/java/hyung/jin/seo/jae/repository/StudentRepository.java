@@ -198,10 +198,26 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "SELECT cyc.id FROM Cycle cyc WHERE cyc.year = :year))")
 	List<StudentDTO> listInactiveStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
         // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
-        @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
-        "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, " +
-        "s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
+        // @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
+        // "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, " +
+        // "s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO" +
+                "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, " +
+                "e.registerDate, s.email1, s.contactNo1, s.address, s.active, e.startWeek, e.endWeek, e.clazz.name) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "WHERE e.id = (" +
@@ -219,7 +235,24 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (:state = '0' OR s.state = :state) " +
         "AND (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade)")
-        List<StudentDTO> listEnroledStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year, @Param("week") int week);
+        List<StudentWithEnrolmentDTO> listEnroledStudent(@Param("state") String state, @Param("branch") String branch, @Param("grade") String grade, @Param("year") int year, @Param("week") int week);
+
+
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
         @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +

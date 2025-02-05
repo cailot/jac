@@ -331,8 +331,8 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week) {
-		List<StudentDTO> dtos = new ArrayList<>();
+	public List<StudentWithEnrolmentDTO> listEnrolmentStudents(String state, String branch, String grade, int year, int week) {
+		List<StudentWithEnrolmentDTO> dtos = new ArrayList<>();
 		try{
 			dtos = studentRepository.listEnroledStudent(state, branch, grade, year, week);
 		}catch(Exception e){
