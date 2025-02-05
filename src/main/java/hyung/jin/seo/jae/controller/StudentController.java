@@ -178,7 +178,7 @@ public class StudentController {
 	public String listStudents(@RequestParam(value="listState", required=false) String state, @RequestParam(value="listBranch", required=false) String branch, @RequestParam(value="listGrade", required=false) String grade, Model model) {
 		int year = cycleService.academicYear();;
 		int week = cycleService.academicWeeks();
-		List<StudentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, year, week);
+		List<StudentWithEnrolmentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, year, week);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "studentEnrolPage";
 	}

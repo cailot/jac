@@ -634,7 +634,7 @@ function displayFullHistory(studentId) {
 
 		<!-- Summary Table -->
 		<div class="form-group pt-3">
-			<div id="summaryInfo" class="alert alert-info mt-2">
+			<div id="summaryInfo" class="alert alert-info mt-2 jae-border-primary">
 				<table id="statTable" style="width: 100%;">
 					<thead></thead>
 					<tbody></tbody>

@@ -53,7 +53,7 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student (beta)</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student (beta)</a> -->
 			</div>
 		</li>
 		<!-- Class -->
