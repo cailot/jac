@@ -129,7 +129,7 @@ function displayGradeSummary(branch, year, week, active) {
 			academicYear = year;
 			academicWeek = week;
 			listActive = active;
-			console.log('Year : ' + academicYear + ' Week : ' + academicWeek + ' Active : ' + listActive);
+			// console.log('Year : ' + academicYear + ' Week : ' + academicWeek + ' Active : ' + listActive);
 			// save the response into the variable
 			updateSummaryTable(items);			
 		},

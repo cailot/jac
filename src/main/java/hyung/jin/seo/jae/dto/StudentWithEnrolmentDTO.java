@@ -31,12 +31,7 @@ public class StudentWithEnrolmentDTO implements Serializable{
     private Integer endWeek;
     private String className;
 
-
-
-// "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.state, s.branch, s.registerDate, s.email1, s.contactNo1, s.address, s.active, COALESCE(e.startWeek, 0), COALESCE(e.endWeek, 0), COALESCE(e.clazz.name, '')) " +
-           
-    public StudentWithEnrolmentDTO(Long id, String firstName, String lastName, String grade, String gender, String state, String branch, 
-	LocalDate registerDate, String email1, String contactNo1, String address, Integer active, Integer startWeek, Integer endWeek, String className) {
+    public StudentWithEnrolmentDTO(Long id, String firstName, String lastName, String grade, String gender, String state, String branch, LocalDate registerDate, String email1, String contactNo1, String address, Integer active, Integer startWeek, Integer endWeek, String className) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
