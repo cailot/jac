@@ -329,7 +329,7 @@ function linkToStudent(studentId) {
 			</div>
 			<!-- Search Criteria Info-->
 			<c:if test="${criteriaInfo != null}">
-				<div id="criteriaInfo" class="alert alert-info">
+				<div id="criteriaInfo" class="alert alert-info jae-border-info">
 					<c:set var="criteria" value="${criteriaInfo}" />
 					<c:set var="criteriaState" value="${criteria.state}" />
 					<c:choose>
