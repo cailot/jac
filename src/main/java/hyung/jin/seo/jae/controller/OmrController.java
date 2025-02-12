@@ -135,34 +135,23 @@ public class OmrController {
 		return results;
 	}
 
+    // Save the OMR results
 	@PostMapping("/saveResult")
     @ResponseBody
 	public ResponseEntity<String> saveResults(@RequestBody SaveResultsRequest payload) {
-    // public ResponseEntity<String> saveResults(@RequestBody Map<String, Object> payload) {
-        // Extract metaDto and omrDtos from the request
+        // 1. Extract metaDto and omrDtos from the request
         OmrUploadDTO metaDto = payload.getMetaDto();
         List<StudentTestDTO> omrDtos = payload.getOmrDtos();
 
-        // Save to the database
+        // 2. Save to the database
+        boolean isSaved = omrService.saveOmr(metaDto, omrDtos);
 
-        // Delete image files under the temp directory
-        String branch = metaDto.getBranch();        
-        System.out.println("Deleting image files under the temp directory for branch: " + branch);
-
-
-        // Log the received data for debugging
-        System.out.println("Received metaDto: " + metaDto);
-        System.out.println("Received omrDtos: " + omrDtos);
-
-
-
-		// Return a failed response
-		// return new ResponseEntity<>("OMR data successfully saved", HttpStatus.EXPECTATION_FAILED);
-
-
-        // Return a success response
-        return new ResponseEntity<>("OMR data successfully saved", HttpStatus.OK);
-		
+        // 3. Return a success response
+        if(isSaved) {
+            return new ResponseEntity<>("OMR data successfully saved", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("OMR data failed to save", HttpStatus.EXPECTATION_FAILED);
+        }		
     }
 
 	// DTO class to handle the request

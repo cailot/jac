@@ -131,9 +131,26 @@ public class OmrServiceImpl implements OmrService {
 	}
 
 	@Override
-	public void saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'saveOmr'");
+	public boolean saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs) {
+		boolean isSaved = false;
+		// 1. save test results into database
+		for(StudentTestDTO dto : studentTestDTOs) {
+			System.out.println("Saved: " + dto);
+		}
+
+
+		// 2. remove all files of which file name starts with 'branch' in the output directory
+		String branch = meta.getBranch();
+		File outputDirFile = new File(outputDir);
+		File[] files = outputDirFile.listFiles();
+		for(File file : files) {
+			if(file.getName().startsWith(branch+"_")) {
+				file.delete();
+			}
+		}
+		isSaved = true;
+
+		return isSaved;
 	}
 
 	

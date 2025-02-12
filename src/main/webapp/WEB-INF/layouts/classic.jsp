@@ -163,7 +163,7 @@
     <div id="validation-alert" class="modal fade">
         <div class="modal-dialog">
             <div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
-                <i class="bi bi-exclamation-circle h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+                <i class="bi bi-exclamation-circle-fill h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             </div>
         </div>
