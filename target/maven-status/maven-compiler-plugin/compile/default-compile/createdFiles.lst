@@ -9,6 +9,7 @@ hyung/jin/seo/jae/dto/OnlineActivityDTO.class
 hyung/jin/seo/jae/model/LoginActivity.class
 hyung/jin/seo/jae/service/impl/MaterialServiceImpl.class
 hyung/jin/seo/jae/service/StudentService.class
+hyung/jin/seo/jae/dto/StudentWithEnrolmentDTO.class
 hyung/jin/seo/jae/dto/SubjectDTO.class
 hyung/jin/seo/jae/dto/OnlineSessionDTO.class
 hyung/jin/seo/jae/dto/GradeDTO.class
@@ -100,6 +101,7 @@ hyung/jin/seo/jae/service/impl/StudentServiceImpl.class
 hyung/jin/seo/jae/model/Enrolment.class
 hyung/jin/seo/jae/dto/TestAnswerDTO.class
 hyung/jin/seo/jae/repository/NoticeEmailRepository.class
+hyung/jin/seo/jae/controller/StudentController$1.class
 hyung/jin/seo/jae/model/Payment.class
 hyung/jin/seo/jae/service/impl/TeacherServiceImpl.class
 hyung/jin/seo/jae/dto/CourseDTO.class

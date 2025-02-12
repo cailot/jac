@@ -710,10 +710,10 @@ function export2Excel(){
 <div class="row max-auto p-5" id="searchCriteria" style="width: 80%;">
 	<div class="col-md-2">
 		<label for="fromDate" class="label-form">From Date</label>
-		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" required>
+		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" autocomplete="off" required>
 	</div>
 	<div class="col-md-2">
-		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" required>
+		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" autocomplete="off" required>
 	</div>
 	<!-- put blank col-md-1 -->
 	<div class="offset-md-5"></div>

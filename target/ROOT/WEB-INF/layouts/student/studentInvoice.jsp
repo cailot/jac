@@ -299,7 +299,7 @@ function clearStudentInfo() {
 			</div>
 			<!-- Student Info-->
 			<c:if test="${studentInfo != null}">
-				<div id="studentInfo" class="alert alert-info">
+				<div id="studentInfo" class="alert alert-info jae-border-info">
 					<c:set var="student" value="${studentInfo}" />
 					<c:set var="studentId" value="${student.id}" />
 					<c:set var="studentFirstName" value="${student.firstName}" />
