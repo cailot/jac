@@ -80,10 +80,27 @@ $(document).ready(function () {
 		document.getElementById("listBranch").disabled = false;
     });
 
+	// set current year & week
+	$.ajax({
+		url : '${pageContext.request.contextPath}/class/academy',
+		method: "GET",
+		success: function(response) {
+			// save the response into the variable
+			const academicYear = response[0];
+			const academicWeek = response[1];
+			// console.log('Academic Year : ' + academicYear);
+			// console.log('Academic Week : ' + academicWeek);
+			$("#listYear").val(academicYear);
+			$("#listWeek").val(academicWeek);
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log('Error : ' + errorThrown);
+		}
+	});
+
 });
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Update Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Student
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -519,7 +536,7 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
 													<c:out value="${student.contactNo1}" />
 												</td>
-												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"">
+												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;">
 													<c:out value="${student.email1}" />
 												</td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.address}" /></span></td>

@@ -794,7 +794,7 @@ function deleteOnline(id) {
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
+		<div class="alert alert-block alert-success alert-dialog-display jae-border-success">
 			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
@@ -804,8 +804,8 @@ function deleteOnline(id) {
 <!-- Warning Alert -->
 <div id="warning-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
+			<i class="fa fa-exclamation-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
@@ -814,7 +814,7 @@ function deleteOnline(id) {
 <!-- Error Alert -->
 <div id="error-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger alert-dialog-display">
+		<div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
 			<i class="fa fa-times-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
