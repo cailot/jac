@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
 import hyung.jin.seo.jae.service.ConnectedService;
+import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -34,6 +36,9 @@ public class OmrController {
 
 	@Autowired
 	private ConnectedService connectedService;
+
+    @Autowired
+    private OmrService omrService;
 
 	/**
      * Display the OMR upload form
@@ -67,16 +72,21 @@ public class OmrController {
         }
 		String fileName = file.getOriginalFilename();
 		String fileExtension =  fileName !=null ?  fileName.substring(fileName.lastIndexOf(".") + 1) : "";
-		// validate file extension is jpg or jpeg
-		if (!JaeConstants.OMR_FILE_JPG.equalsIgnoreCase(fileExtension) && !JaeConstants.OMR_FILE_JPEG.equalsIgnoreCase(fileExtension)) {
-			redirectAttributes.addFlashAttribute("error", "Only JPG and JPEG files are allowed.");
+		// validate file extension is pdf
+		if (!JaeConstants.OMR_FILE_PDF.equalsIgnoreCase(fileExtension)) {
+			redirectAttributes.addFlashAttribute("error", "Only PDF file is allowed.");
 			return "redirect:/omr/upload";
 		}
 	
 		// process omr image
 
-        
 
+        try {
+            omrService.previewOmr(branch, file);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
 
 
@@ -119,6 +129,7 @@ public class OmrController {
 				int radom = new Random().nextInt(5);
 				result.addAnswer(radom);
 			}
+            result.setFileName(new Random().nextInt(1000) + ".jpg");
 			results.add(result);
 		}
 		return results;
@@ -133,6 +144,11 @@ public class OmrController {
         List<StudentTestDTO> omrDtos = payload.getOmrDtos();
 
         // Save to the database
+
+        // Delete image files under the temp directory
+        String branch = metaDto.getBranch();        
+        System.out.println("Deleting image files under the temp directory for branch: " + branch);
+
 
         // Log the received data for debugging
         System.out.println("Received metaDto: " + metaDto);

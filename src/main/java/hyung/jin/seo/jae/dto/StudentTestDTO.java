@@ -33,6 +33,8 @@ public class StudentTestDTO{
 
 	private String testName;
 
+	private String fileName;
+
 	public StudentTestDTO(Long id, LocalDate registerDate, double score, Long studentId, Long testId, Collection<Integer> answers) {
         this.id = id;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));

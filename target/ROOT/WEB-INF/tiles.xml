@@ -30,6 +30,11 @@
 		<put-attribute name="title" value="Student List" />
 		<put-attribute name="body" value="/WEB-INF/layouts/student/studentList.jsp" />
 	</definition>
+	<definition name="studentBranchListPage" extends="base.definition">
+		<put-attribute name="title" value="Student Branch List" />
+		<put-attribute name="body" value="/WEB-INF/layouts/student/studentBranchList.jsp" />
+	</definition>
+
 
 	<!--Course -->
 	<definition name="courseListPage" extends="base.definition">

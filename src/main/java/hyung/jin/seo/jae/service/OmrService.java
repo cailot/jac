@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
 
 public interface OmrService {
@@ -15,7 +16,10 @@ public interface OmrService {
 	// recongnise image
 	void recogniseImage(String template, String image);
 
-	// process the OMR form
-	List<StudentTestDTO> processOmrForm(MultipartFile file) throws IOException;
+	// preview the OMR
+	List<StudentTestDTO> previewOmr(String branch, MultipartFile file) throws IOException;
+
+	// save the OMR
+	void saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs);
 
 }

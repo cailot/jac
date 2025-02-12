@@ -120,12 +120,19 @@
             <version>7.0.4</version>
             <type>pom</type>
         </dependency>
-        <!--OMR -->
+        <!-- OMR -->
         <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-omr</artifactId>
             <version>24.5</version>
         </dependency>
+        <!--PDF Box -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.24</version>
+        </dependency>
+
     </dependencies>
     <!-- Aspose Repository -->
     <repositories>

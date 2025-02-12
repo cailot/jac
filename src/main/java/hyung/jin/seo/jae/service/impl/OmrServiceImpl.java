@@ -1,13 +1,22 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.Buffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +26,10 @@ import com.aspose.omr.OmrEngine;
 import com.aspose.omr.RecognitionResult;
 import com.aspose.omr.TemplateProcessor;
 
+import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
 import hyung.jin.seo.jae.service.OmrService;
+import javassist.bytecode.ByteArray;
 
 @Service
 public class OmrServiceImpl implements OmrService {
@@ -26,6 +37,9 @@ public class OmrServiceImpl implements OmrService {
 	private OmrEngine engine;
 
 	private License omrLicense;
+
+	@Value("${output.directory}")
+    private String outputDir;
 
 	public OmrServiceImpl() {
 		// omrLicense = new License();
@@ -75,55 +89,52 @@ public class OmrServiceImpl implements OmrService {
 	}
 
 	@Override
-	public List<StudentTestDTO> processOmrForm(MultipartFile file) throws IOException {
+	public List<StudentTestDTO> previewOmr(String branch, MultipartFile file) throws IOException {
 		// 1. create List
-		List<StudentTestDTO> saved = new ArrayList<>();
+		List<StudentTestDTO> processed = new ArrayList<>();
 		
-		// 2. convert MultipartFile to Stream
-		BufferedImage image = ImageIO.read(file.getInputStream());
+		// 2. split pages
+		PDDocument document = PDDocument.load(file.getInputStream());
+		PDFRenderer renderer = new PDFRenderer(document);
+		int numPages = document.getNumberOfPages();
 
-		// 3. check if it's a single page or multiple pages
-		if(isSinglePage(image)) {
-			// 4. if it's a single page, process the single page
-			StudentTestDTO student = new StudentTestDTO();
-			// student.setStudentId("1234");
-			// student.setStudentName("John Doe");
-			// student.setScore(100);
-			saved.add(student);
-		} else {
-			// 5. if it's multiple pages, process the multiple pages
-			List<BufferedImage> pages = splitPages(image);
-			for(BufferedImage page : pages) {
-				StudentTestDTO student = new StudentTestDTO();
-				// student.setStudentId("1234");
-				// student.setStudentName("John Doe");
-				// student.setScore(100);
-				saved.add(student);
-			}			
+		// Path tempDir = Files.createTempDirectory("omr_jpg_");
+		Path tempDirPath = Path.of(outputDir);
+
+
+		for(int i=0; i<numPages; i++) {
+			// render the PDF page to an image with 100 DPI JPG format
+			BufferedImage image = renderer.renderImageWithDPI(i, 100, ImageType.RGB);
+			// process the image
+
+
+
+
+
+
+
+			// save the result into temp folder
+			File tempFile = Files.createTempFile(tempDirPath, branch + "_" + (i + 1) + "_", ".jpg").toFile();
+
+			ImageIO.write(image, "jpg", tempFile);
+			StudentTestDTO dto = new StudentTestDTO();
+			dto.setFileName(tempFile.getName());
+			System.out.println("Saved: " + tempFile.getName() + " , size : " + tempFile.length());
+
 		}
-		// 4. return the list
-		return saved;
+		document.close();
+
+
+
+		// 3. return the list
+		return processed;
 	}
 
-	// check if it's a single page
-	private boolean isSinglePage(BufferedImage image) {
-		// 1. check if it's a single page
-
-		return true;
+	@Override
+	public void saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'saveOmr'");
 	}
-
-	// split pages
-	private List<BufferedImage> splitPages(BufferedImage image) {
-        List<BufferedImage> pages = new ArrayList<>();
-        int pageHeight = image.getWidth(); // Assuming square pages
-        int numPages = image.getHeight() / pageHeight;
-
-        for (int i = 0; i < numPages; i++) {
-            pages.add(image.getSubimage(0, i * pageHeight, image.getWidth(), pageHeight));
-        }
-
-        return pages;
-    }
 
 	
 }

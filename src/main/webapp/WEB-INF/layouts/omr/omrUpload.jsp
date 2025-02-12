@@ -35,6 +35,15 @@ $(document).ready(function () {
 			}
 		});
 	}
+
+	// spinner
+	$("#uploadForm").on("submit", function () {
+        // Show the spinner modal only when the form is submitted
+        $("#loadingModal").fadeIn();
+
+        // Disable the submit button to prevent multiple submissions
+        $("#file-upload").prop("disabled", true);
+    });
 });
 
 
@@ -92,7 +101,7 @@ function updateFileName(input) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Edit Answer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function editAnswer(tableIndex, data) {
+function editAnswer(tableIndex, fileName, data) {
 	console.log('Table Index:', tableIndex);
 	// set table index to hidden input
 	document.getElementById("tableIndex").value = tableIndex;
@@ -103,7 +112,7 @@ function editAnswer(tableIndex, data) {
 		success: function (answer) {
 			// console.log(answer);
 
-			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/test/temp.jpg" alt="Logo" class="img-fluid full-fill">');				
+			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/12_1_2398405781226010335.jpg" alt="Logo" class="img-fluid full-fill">');				
 			// Create an editable table with Bootstrap styling and load it into #answerTable
 			const cols = 10; // Number of columns per row
 			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
@@ -441,13 +450,55 @@ function proceedNext() {
 	display: none;
 }
 
+
+#loadingModal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .spinner {
+        font-size: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+
+
 </style>
+
+
+<!-- Loading Spinner Modal -->
+<div id="loadingModal" style="display: none;">
+    <div class="spinner-container">
+		<img src="${pageContext.request.contextPath}/image/processing.gif" alt="Processing..." class="loading-image">
+		<br><br>
+        <p>Processing file, please wait...</p>
+    </div>
+</div>
+
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
-			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+		<div class="alert alert-block alert-success alert-dialog-display jae-border-success">
+			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
@@ -459,7 +510,7 @@ function proceedNext() {
 	<div class="row m-3 pt-5 justify-content-center">
 		<div class="upload-section col-md-8">
 	    <h2 class="text-center">Upload Scanned OMR Image</h2>
-	    <form method="post" action="${pageContext.request.contextPath}/omr/upload" enctype="multipart/form-data">
+	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/omr/upload" enctype="multipart/form-data">
 	    	<div class="form-row p-4">
 				<div class="col-md-3">
 					<label for="state" class="label-form">State</label> 
@@ -532,7 +583,9 @@ function proceedNext() {
 				$('#success-alert .modal-body').html('<c:out value="${success}" />');
 				$('#success-alert').modal('show');
 				// disable selection criteria - branch, testGroup, grade, volume dropdown list & upload button
-				$('#branch, #testGroup, #grade, #volume, #file-input, #file-upload').prop('disabled', true);       
+				$('#branch, #testGroup, #grade, #volume, #file-input, #file-upload').prop('disabled', true); 
+				// disable loading spinner
+				// $('#loadingModal').hide();      
 			</script>
 				<!-- Display OMR Scan Results -->
 				<c:if test="${not empty results}">
@@ -581,8 +634,7 @@ function proceedNext() {
 															<script>
 																const resultData${status.index} = JSON.parse("${result.answers}");
 															</script>		
-															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, resultData${status.index})"></i>
-															</h3>	
+															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${result.fileName}', resultData${status.index})"></i></h3>
 														</div>		
 													</div>
 													<div class="col-10" id="resultTable${status.index}">
