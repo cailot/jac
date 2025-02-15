@@ -11,7 +11,6 @@ import javax.persistence.Embeddable;
 @Setter
 @ToString
 @NoArgsConstructor
-//@AllArgsConstructor
 @Embeddable
 public class TestAnswerItem {
     

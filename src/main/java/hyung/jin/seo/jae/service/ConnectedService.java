@@ -197,6 +197,9 @@ public interface ConnectedService {
 	// retrieve TestAnswer by Id
 	TestAnswer getTestAnswer(Long id);
 
+	// get TestAnswer only by Test
+	List<TestAnswerItem> getTestAnswerOnlyByTest(Long testId);
+
 	// retrieve TestAnswer by Test
 	TestAnswerDTO findTestAnswerByTest(Long id);
 

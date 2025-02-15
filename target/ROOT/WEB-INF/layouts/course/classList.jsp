@@ -816,7 +816,7 @@ function deleteClass(id) {
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
+		<div class="alert alert-block alert-success alert-dialog-display jae-border-success">
 			<i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>

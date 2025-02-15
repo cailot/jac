@@ -977,7 +977,7 @@ function updateAnswerCount() {
 								<div class="col-md-3">
 									<label for="answerQuestionNumber" class="label-form">Number</label>
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
+										<c:forEach var="i" begin="1" end="60">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>
@@ -1012,7 +1012,7 @@ function updateAnswerCount() {
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
+		<div class="alert alert-block alert-success alert-dialog-display jae-border-success">
 			<i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
@@ -1022,7 +1022,7 @@ function updateAnswerCount() {
 <!-- Warning Alert -->
 <div id="warning-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
 			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
@@ -1032,7 +1032,7 @@ function updateAnswerCount() {
 <!-- Error Alert -->
 <div id="error-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger alert-dialog-display">
+		<div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
 			<i class="fa fa-times-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>

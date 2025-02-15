@@ -977,7 +977,7 @@ function updateAnswerCount() {
 								<div class="col-md-3">
 									<label for="answerQuestionNumber" class="label-form">Number</label>
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
+										<c:forEach var="i" begin="1" end="60">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>

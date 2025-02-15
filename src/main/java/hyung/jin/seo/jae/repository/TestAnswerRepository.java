@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
 import hyung.jin.seo.jae.model.TestAnswer;
 
 public interface TestAnswerRepository extends JpaRepository<TestAnswer, Long>{  

@@ -1,10 +1,8 @@
 package hyung.jin.seo.jae.service.impl;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +25,9 @@ import com.aspose.omr.TemplateProcessor;
 
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.model.TestAnswer;
+import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.service.OmrService;
-import javassist.bytecode.ByteArray;
 
 @Service
 public class OmrServiceImpl implements OmrService {
@@ -129,29 +127,5 @@ public class OmrServiceImpl implements OmrService {
 		// 3. return the list
 		return processed;
 	}
-
-	@Override
-	public boolean saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs) {
-		boolean isSaved = false;
-		// 1. save test results into database
-		for(StudentTestDTO dto : studentTestDTOs) {
-			System.out.println("Saved: " + dto);
-		}
-
-
-		// 2. remove all files of which file name starts with 'branch' in the output directory
-		String branch = meta.getBranch();
-		File outputDirFile = new File(outputDir);
-		File[] files = outputDirFile.listFiles();
-		for(File file : files) {
-			if(file.getName().startsWith(branch+"_")) {
-				file.delete();
-			}
-		}
-		isSaved = true;
-
-		return isSaved;
-	}
-
 	
 }
