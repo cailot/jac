@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import hyung.jin.seo.jae.model.TestAnswer;
@@ -38,6 +40,16 @@ public class TestAnswerDTO implements Serializable {
 		this.answerCount = work.getAnswerCount();
 		this.testId = work.getTest().getId();
 		this.answers = work.getAnswers();
+	}
+
+	public TestAnswerDTO(Long id, Collection<TestAnswerItem> answers){
+		this.id = String.valueOf(id);
+		this.answers = new ArrayList<>(answers);
+	}
+
+	public TestAnswerDTO(Object[] obj){
+		this.id = obj[0].toString();
+		this.answers = obj[1] == null ? new ArrayList<>() : (List<TestAnswerItem>) obj[1];
 	}
 
 }

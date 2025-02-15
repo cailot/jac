@@ -449,7 +449,7 @@ lessonVideo.addEventListener("timeupdate", function() {
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-success alert-dialog-display">
+		<div class="alert alert-block alert-success alert-dialog-display jae-border-success">
 			<i class="fa fa-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
@@ -459,7 +459,7 @@ lessonVideo.addEventListener("timeupdate", function() {
 <!-- Warning Alert -->
 <div id="warning-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
 			<i class="fa fa-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>

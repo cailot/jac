@@ -119,7 +119,7 @@
         <footer class="mt-auto">
             <div class="row" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.2</span></div>
+                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.3</span></div>
             </div>
         </footer>	
     </div>
@@ -127,8 +127,8 @@
     <!-- Success Alert -->
     <div id="success-alert" class="modal fade">
         <div class="modal-dialog">
-            <div class="alert alert-block alert-success alert-dialog-display">
-                <i class="bi bi-check-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <div class="alert alert-block alert-success alert-dialog-display jae-border-success">
+                <i class="bi bi-check-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             </div>
         </div>
@@ -137,8 +137,8 @@
     <!-- Warning Alert -->
     <div id="warning-alert" class="modal fade">
         <div class="modal-dialog">
-            <div class="alert alert-block alert-warning alert-dialog-display">
-                <i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
+                <i class="bi bi-exclamation-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             </div>
         </div>
@@ -162,8 +162,8 @@
     <!-- Validation Alert -->
     <div id="validation-alert" class="modal fade">
         <div class="modal-dialog">
-            <div class="alert alert-block alert-danger alert-dialog-display">
-                <i class="bi bi-exclamation-circle h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
+                <i class="bi bi-exclamation-circle-fill h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             </div>
         </div>

@@ -2,6 +2,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib  prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="container-fluid jae-header">
 <c:set var="isAdmin" value="${false}" />
 <c:set var="role" value="" />
@@ -53,7 +54,7 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student (beta)</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student (beta)</a> -->
 			</div>
 		</li>
 		<!-- Class -->
@@ -186,11 +187,22 @@
 		<sec:authorize access="isAuthenticated()">
 		<div class="card-body jae-background-color text-right" style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px;">
 			<div style="display: flex; align-items: center; margin-top: 5px;">
-				<span class="card-text text-warning font-weight-bold font-italic h6" style="margin-left: 5px;"><c:out value="${firstName}"/> <c:out value="${lastName}"/></span>
-				<span class="h6" style="color: white;">&nbsp;<c:out value="${role}"/></span>
+				<table>
+					<tr>
+						<td><span class="card-text text-warning font-weight-bold font-italic h6" style="margin-left: 5px;"><c:out value="${firstName}"/> <c:out value="${lastName}"/></span></td>
+						<td><span class="h6" style="color: white;">&nbsp;<c:out value="${role}"/></span></td>
+					</tr>
+					<tr>
+						<td colspan="2" class="text-center"><span class="small" style="color: white;">
+							<c:set var="now" value="<%= new java.util.Date() %>" />
+							Logged at <fmt:formatDate value="${now}" pattern="dd/MM/yyyy HH:mm" />
+						</span>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<form:form action="${pageContext.request.contextPath}/logout" method="POST" id="logout" style="margin-bottom: 0px;">
-				<button class="btn mr-1"><i class="bi bi-box-arrow-right custom-icon text-warning" title="Log Out"></i></button>
+				<button class="btn mr-1"><i class="bi bi-power custom-icon text-warning" title="Log Out"></i></button>
 			</form:form>
 		</div>
 		</sec:authorize> 

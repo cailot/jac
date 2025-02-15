@@ -954,7 +954,7 @@ function updateRadioButtons() {
 							<div class="form-row d-flex align-items-center" style="border: 2px solid #28a745; padding: 10px; border-radius: 10px; margin-left: 10px; margin-right: 10px;">
 								<div class="col-md-3">
 									<select class="form-control" id="answerQuestionNumber" name="answerQuestionNumber">
-										<c:forEach var="i" begin="1" end="50">
+										<c:forEach var="i" begin="1" end="60">
 											<option value="${i}">${i}</option>
 										</c:forEach>
 									</select>

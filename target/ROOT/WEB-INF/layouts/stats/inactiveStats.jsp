@@ -804,8 +804,8 @@ function export2Excel(){
 <!-- Warning Alert -->
 <div id="warning-alert" class="modal fade">
 	<div class="modal-dialog">
-		<div class="alert alert-block alert-warning alert-dialog-display">
-			<i class="bi bi-exclamation-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
+			<i class="bi bi-exclamation-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>

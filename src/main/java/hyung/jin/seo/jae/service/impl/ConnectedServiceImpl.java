@@ -921,6 +921,16 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public List<TestAnswerItem> getTestAnswerOnlyByTest(Long testId) {
+		Optional<TestAnswer> answer = testAnswerRepository.findByTestId(testId);
+		if(answer.isPresent()){
+			return answer.get().getAnswers();
+		}else{
+			return null;
+		}
+	}
+
+	@Override
 	public boolean isStudentPracticeExist(Long studentId, Long practiceId) {
 		Optional<StudentPractice> sp = studentPracticeRepository.findByStudentIdAndPracticeId(studentId, practiceId);
 		if(sp.isPresent()){
@@ -1049,5 +1059,6 @@ public class ConnectedServiceImpl implements ConnectedService {
         Test updated = testRepository.save(existing);
 		return updated;
 	}
+
 
 }
