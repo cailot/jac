@@ -242,8 +242,14 @@ public interface ConnectedService {
 	// get TestType name by test id
 	String getTestTypeName(Long id);
 
-	// process Test result
-	Test processTestResult(Long testId);
+	// get average score of Test
+	double getAverageScoreByTest(Long testId, String from, String to);
+
+	// upgdate average score of Test
+	void updateTestAverage(Long id, double score);
+
+	// get student list who took the test
+	List<Long> getStudentListByTest(Long testId, String from, String to);
 
 	/////////////////////////////////////////////////////////
 	//
