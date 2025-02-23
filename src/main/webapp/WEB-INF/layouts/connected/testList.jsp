@@ -780,8 +780,6 @@ function updateAnswerCount() {
 														</i>&nbsp;
 														<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
 														</i>&nbsp;
-														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${testItem.id}')">
-														</i>&nbsp;
 														<!-- Result Batch Process -->
 														<c:set var="processed" value="${testItem.processed}" />
 														<c:choose>
@@ -794,6 +792,9 @@ function updateAnswerCount() {
 																</i>
 															</c:otherwise>
 														</c:choose>
+														&nbsp;
+														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${testItem.id}')">
+														</i>
 													</td>
 												</tr>
 											</c:forEach>
@@ -1067,7 +1068,12 @@ function updateAnswerCount() {
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to run processing Test result?</p>	
+                <p> Are you sure to run processing Test result?</p>
+				<p>It will perform the follwoing actions and can't be reverted.</p>
+				<ol class="text-info font-weight-bold">
+					<li>Calculate the average</li>
+					<li>Send emails to all students</li>
+				</ol>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-info" id="processConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>

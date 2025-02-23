@@ -23,11 +23,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.service.ConnectedService;
+import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
@@ -121,7 +123,7 @@ public class OmrController {
             int testId = new Random().nextInt(4) + 3;
             result.setTestId((long)testId);
             result.setTestName("Mega Test");
-            Long studentId = 11301581L;//(long)new Random().nextInt(50000);
+            Long studentId = 11301580L;//(long)new Random().nextInt(50000);
             result.setStudentId(studentId);
             
             // String studentName = studentService.getStudentName(studentId);

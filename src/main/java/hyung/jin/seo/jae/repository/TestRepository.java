@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import hyung.jin.seo.jae.dto.TestDTO;
@@ -36,4 +37,9 @@ public interface TestRepository extends JpaRepository<Test, Long>{
 	// get Test name by id
 	@Query("SELECT t.testType.name FROM Test t WHERE t.id = ?1")
 	String getTestTypeName(Long id);
+
+	// update average score by id
+	@Modifying
+	@Query("UPDATE Test t SET t.average = ?2 WHERE t.id = ?1")	
+	void updateAverageScore(Long id, Double average);
 }

@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,5 +41,13 @@ public interface StudentTestRepository extends JpaRepository<StudentTest, Long> 
 	// delete existing record in StudentTest table by studentId and testId
         @Modifying
 	void deleteByStudentIdAndTestId(Long studentId, Long testId);
+
+        //SELECT AVG(score) AS average_score FROM jac.StudentTest GROUP BY testId;
+        @Query("SELECT AVG(score) FROM StudentTest WHERE test.id = :testId AND registerDate BETWEEN :fromTime AND :toTime")
+        Double getAverageScoreByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
+
+        // get student list who took the test
+        @Query("SELECT st.student.id FROM StudentTest st WHERE st.test.id = :testId AND registerDate BETWEEN :fromTime AND :toTime")
+        List<Long> getStudentListByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
 }
