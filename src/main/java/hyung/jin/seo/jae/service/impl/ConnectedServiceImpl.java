@@ -1,7 +1,9 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +90,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 	@Autowired
 	private HomeworkProgressRepository homeworkProgressRepository;
 
+	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
 	@Override
 	public List<Homework> allHomeworks() {
 		List<Homework> dtos = new ArrayList<>();
@@ -1047,17 +1051,40 @@ public class ConnectedServiceImpl implements ConnectedService {
 
 	@Override
 	@Transactional
-	public Test processTestResult(Long id) {
-		// search by getId
-		Test existing = testRepository.findById(id).get();
-        // process test result
-		// 1. update test average
-		// 2. send email to all students who tested
-		// 3. update the existing record
-		existing.setProcessed(true);
-		// existing.setActive(newActive);
-        Test updated = testRepository.save(existing);
-		return updated;
+	public void updateTestAverage(Long id, double score) {
+		try{
+			testRepository.updateAverageScore(id, score);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+	}
+
+	@Override
+	public double getAverageScoreByTest(Long testId, String from, String to) {
+		Double score = 0.0;
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);			
+		try{
+			score = studentTestRepository.getAverageScoreByTestId(testId, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return score!= null ? score : 0.0;
+	}
+
+	@Override
+	public List<Long> getStudentListByTest(Long testId, String from, String to) {
+		List<Long> students = new ArrayList<>();
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);
+		try{
+			students = studentTestRepository.getStudentListByTestId(testId, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return students;
 	}
 
 

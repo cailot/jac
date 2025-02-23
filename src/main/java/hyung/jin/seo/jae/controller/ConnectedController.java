@@ -39,6 +39,7 @@ import hyung.jin.seo.jae.dto.SimpleBasketDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
+import hyung.jin.seo.jae.model.Cycle;
 import hyung.jin.seo.jae.model.Extrawork;
 import hyung.jin.seo.jae.model.Grade;
 import hyung.jin.seo.jae.model.Homework;
@@ -708,7 +709,20 @@ public class ConnectedController {
 	@ResponseBody
     public ResponseEntity<String> processTestResult(@PathVariable String testId) {
         Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
-		connectedService.processTestResult(id);
+		// connectedService.processTestResult(id);
+		// 1. get current year 
+		int currentYear = cycleService.academicYear();
+		CycleDTO cycle = cycleService.listCycles(currentYear);
+		// 2. get average score
+		double average = connectedService.getAverageScoreByTest(id, cycle.getStartDate(), cycle.getEndDate());
+		// 3. update average score
+		connectedService.updateTestAverage(id, average);
+		// 4. get student id who took the test
+		List<Long> studentList = connectedService.getStudentListByTest(id, cycle.getStartDate(), cycle.getEndDate());
+		// 5. send email ???	
+		
+		
+		// 6. return flag
 		return ResponseEntity.ok("\"Test Result processed successfully\"");
     }
 
