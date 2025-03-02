@@ -243,7 +243,18 @@ public interface ConnectedService {
 	String getTestTypeName(Long id);
 
 	// get average score of Test
+	// double getAverageScoreByTest(Long testId, String from, String to);
+
+	// get registerDate by studentId and testId
+	String getRegDateforStudentTest(Long studentId, Long test, String from, String to);
+	
 	double getAverageScoreByTest(Long testId, String from, String to);
+
+	double getHighestScoreByTest(Long testId, String from, String to);
+
+	double getLowestScoreByTest(Long testId, String from, String to);
+
+	String getScoreCategory(double studentScore, Long testId, String from, String to);
 
 	// upgdate average score of Test
 	void updateTestAverage(Long id, double score);
