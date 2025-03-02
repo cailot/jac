@@ -88,11 +88,14 @@ hyung/jin/seo/jae/dto/HomeworkDTO.class
 hyung/jin/seo/jae/repository/BookRepository.class
 hyung/jin/seo/jae/repository/StudentTestRepository.class
 hyung/jin/seo/jae/repository/PracticeAnswerRepository.class
+hyung/jin/seo/jae/service/impl/PdfServiceImpl$1.class
 hyung/jin/seo/jae/repository/HomeworkProgressRepository.class
 hyung/jin/seo/jae/controller/EnrolmentController.class
 hyung/jin/seo/jae/utils/JaeUtils.class
 hyung/jin/seo/jae/service/LoginActivityService.class
+hyung/jin/seo/jae/service/impl/PdfServiceImpl$4.class
 hyung/jin/seo/jae/model/StudentTest.class
+hyung/jin/seo/jae/dto/TestResultHistoryDTO.class
 hyung/jin/seo/jae/service/TeacherService.class
 hyung/jin/seo/jae/controller/AssessmentController$1.class
 hyung/jin/seo/jae/dto/OmrScanResultDTO.class
@@ -117,6 +120,7 @@ hyung/jin/seo/jae/service/impl/OnlineSessionServiceImpl.class
 hyung/jin/seo/jae/repository/PaymentRepository.class
 hyung/jin/seo/jae/dto/PracticeScheduleDTO.class
 hyung/jin/seo/jae/service/CourseService.class
+hyung/jin/seo/jae/service/impl/PdfServiceImpl$2.class
 hyung/jin/seo/jae/repository/JaeMySQLDialect.class
 hyung/jin/seo/jae/model/InvoiceHistory.class
 hyung/jin/seo/jae/model/PracticeType.class
@@ -124,6 +128,7 @@ hyung/jin/seo/jae/model/Course.class
 hyung/jin/seo/jae/dto/GuestStudentDTO.class
 hyung/jin/seo/jae/repository/HomeworkRepository.class
 hyung/jin/seo/jae/repository/InvoiceHistoryRepository.class
+hyung/jin/seo/jae/service/impl/PdfServiceImpl$3.class
 hyung/jin/seo/jae/service/impl/EnrolmentServiceImpl.class
 hyung/jin/seo/jae/dto/ExtraworkDTO.class
 hyung/jin/seo/jae/controller/AssessmentController.class
@@ -162,6 +167,7 @@ hyung/jin/seo/jae/model/Assessment.class
 hyung/jin/seo/jae/repository/EnrolmentRepository.class
 hyung/jin/seo/jae/utils/UsernameGenerator.class
 hyung/jin/seo/jae/repository/TestTypeRepository.class
+hyung/jin/seo/jae/dto/GuestStudentAssessmentDTO.class
 hyung/jin/seo/jae/service/impl/StatsServiceImpl.class
 hyung/jin/seo/jae/controller/InvoiceController.class
 hyung/jin/seo/jae/model/TestSchedule.class

@@ -49,6 +49,26 @@ $(document).ready(function () {
 		}
 	});
 
+	$("#addResultDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        autoclose: true,
+        todayHighlight: true
+    }).datepicker("setDate", new Date()); // Set the default date format
+
+	$("#editResultDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        autoclose: true,
+        todayHighlight: true
+    }).datepicker("setDate", new Date()); // Set the default date format
+
+	// Add event listener to the icon
+	 $('#adddatepicker .input-group-text').on('click', function () {
+        $('#addResultDate').datepicker('show');
+    });
+	$('#editdatepicker .input-group-text').on('click', function () {
+        $('#editResultDate').datepicker('show');
+    });
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,16 +121,22 @@ function addTest(action) {
 //		Register Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerSchedule() {
+
+	// check if addResultDate is choosen
+	if($('#addResultDate').val() == ''){
+		$('#validation-alert .modal-body').text(
+		'Please select schedule date');
+		$('#validation-alert').modal('show');
+		$('#validation-alert').on('hidden.bs.modal', function () {
+			$('#addResultDate').focus();
+		});
+		return false;
+	}
 	// Collect the values of the selected grade checkboxes
 	var selectedGrades = [];
-	// var allGradesChecked = $('#addGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
-	// if (allGradesChecked) {
-	// 	selectedGrades.push('0');
-	// } else {
-		$('#addGradeCheckbox input[name="grades"]:checked').each(function() {
-			selectedGrades.push($(this).val());
-		});
-	// }
+	$('#addGradeCheckbox input[name="grades"]:checked').each(function() {
+		selectedGrades.push($(this).val());
+	});
 	// check if no grade is selected
 	if(selectedGrades.length == 0){
 		$('#validation-alert .modal-body').text(
@@ -139,6 +165,7 @@ function registerSchedule() {
 	var schedule = {
 		from: $("#addFrom").val(),
 		to: $("#addTo").val(),
+		resultDate: $("#addResultDate").val(),
 		info: $("#addInfo").val(),
 		grade : selectedGrades,
 		testGroup: testGroups,
@@ -188,6 +215,7 @@ function retrieveScheduleInfo(id) {
 			$("#editFrom").val(fromDateTime);
 			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
+			$("#editResultDate").val(scheduleItem.resultDate);
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
@@ -381,6 +409,7 @@ function updateScheduleInfo() {
 		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
+		resultDate: $("#editResultDate").val(),
 		grade : selectedGrades,
 		testGroup: testGroups,
 		week: weeks
@@ -610,10 +639,11 @@ function updateVolumeOptions(action) {
 										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
 										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">Start</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">End</th>
-										<th class="text-center align-middle" style="width: 20%">Test Type</th>
-										<th class="text-center align-middle" style="width: 15%">Grade</th>
-										<th class="text-center align-middle" style="width: 10%">Week</th>
+										<th class="text-center align-middle" style="width: 15%">Test Type</th>
+										<th class="text-center align-middle" style="width: 12.5%">Grade</th>
+										<th class="text-center align-middle" style="width: 7.5%">Week</th>
 										<th class="text-center align-middle" style="width: 20%">Information</th>
+										<th class="text-center align-middle" style="width: 10%">Schedule</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 6%">Action</th>
 									</tr>
@@ -681,6 +711,11 @@ function updateVolumeOptions(action) {
 															<c:out value="${scheduleItem.info}" />
 														</span>
 													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${scheduleItem.resultDate}" />
+														</span>
+													</td>
 													<c:set var="active" value="${scheduleItem.active}" />
 													<c:choose>
 														<c:when test="${active == true}">
@@ -740,6 +775,25 @@ function updateVolumeOptions(action) {
 								<div class="col-md-12">
 									<label for="addInfo" class="label-form">Information</label>
 									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
+								</div>
+							</div>
+						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="adddatepicker">
+											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
 								</div>
 							</div>
 						</div>
@@ -900,6 +954,26 @@ function updateVolumeOptions(action) {
 								</div>
 							</div>
 						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Result Schedule</label>									
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="editdatepicker">
+											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
