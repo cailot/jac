@@ -310,6 +310,7 @@ function proceedNext() {
 		// create omrScanResultDTO object
 		const omrScanResultDTO = {
 			studentId: document.getElementById('studentId'+i).textContent,
+			testId: document.getElementById('testId'+i).textContent,
 			answers: answerData
 		};
 		omrDtos.push(omrScanResultDTO);
@@ -629,6 +630,7 @@ function proceedNext() {
 												<div class="row">
 													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
 														<div id="studentId${status.index}"><c:out value="${result.studentId}" /> </div>
+														<div id="testId${status.index}"><c:out value="${result.testId}" /> </div>
 														<div><c:out value="${result.studentName}" /> </div>
 														<div>
 															<script>

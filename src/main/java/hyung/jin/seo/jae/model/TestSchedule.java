@@ -53,4 +53,6 @@ public class TestSchedule {
     @CreationTimestamp
     private LocalDate registerDate;
 
+    private LocalDate resultDate;
+
 }

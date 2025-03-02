@@ -460,6 +460,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 		existing.setVolume(newVolume);
 		boolean newActive = newWork.isActive();
 		existing.setActive(newActive);
+		// update timestamp
+		existing.setRegisterDate(LocalDate.now());
         Test updated = testRepository.save(existing);
 		return updated;
 	}
@@ -567,6 +569,8 @@ public class ConnectedServiceImpl implements ConnectedService {
 		existing.setTestGroup(newTestGroup);
 		String newWeek = schedule.getWeek();
 		existing.setWeek(newWeek);
+		LocalDate newResultDate = schedule.getResultDate();
+		existing.setResultDate(newResultDate);
 		// update the existing record
 		TestSchedule updated = testScheduleRepository.save(existing);
 		return updated;	
@@ -1085,6 +1089,92 @@ public class ConnectedServiceImpl implements ConnectedService {
 			System.out.println("No Test found");
 		}
 		return students;
+	}
+
+	@Override
+	public String getRegDateforStudentTest(Long studentId, Long test, String from, String to) {
+		String regString = "";
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);
+		try{
+			LocalDate regDate = studentTestRepository.getRegisterDateByStudentIdAndTestId(studentId, test, fromDate, toDate);
+			regString = regDate.toString();
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		return regString;
+	}
+
+	@Override
+	public double getHighestScoreByTest(Long testId, String from, String to) {
+		double value = 0;
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);
+		try{
+			value = studentTestRepository.getHighestScoreByTestId(testId, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		return value;
+	}
+
+	@Override
+	public double getLowestScoreByTest(Long testId, String from, String to) {
+		double value = 0;
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);
+		try{
+			value = studentTestRepository.getLowestScoreByTestId(testId, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		return value;
+	}
+
+	@Override
+	public String getScoreCategory(double studentScore, Long testId, String from, String to) {
+		List<Double> scores = new ArrayList<>();
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);
+		try{
+			scores = studentTestRepository.getAllScoreByTestId(testId, fromDate, toDate);	
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		if (scores.isEmpty()) {
+			return "No";
+		}
+		int totalStudents = scores.size();
+		
+		int top10Index = (int) Math.ceil(totalStudents * 0.10) - 1;
+		int top21Index = (int) Math.ceil(totalStudents * 0.21) - 1;
+		int top39Index = (int) Math.ceil(totalStudents * 0.39) - 1;
+		int top60Index = (int) Math.ceil(totalStudents * 0.60) - 1;
+		int top79Index = (int) Math.ceil(totalStudents * 0.79) - 1;
+	
+		double top10Score = scores.get(top10Index);
+		double top21Score = scores.get(top21Index);
+		double top39Score = scores.get(top39Index);
+		double top60Score = scores.get(top60Index);
+		double top79Score = scores.get(top79Index);
+	
+		if (studentScore >= top10Score) {
+			return "Top";
+		} else if (studentScore >= top21Score) {
+			return "Above";
+		} else if (studentScore >= top39Score) {
+			return "Higher";
+		} else if (studentScore >= top60Score) {
+			return "Middle";
+		} else if (studentScore >= top79Score) {
+			return "Lower";
+		} else {
+			return "Lowest";
+		}
 	}
 
 

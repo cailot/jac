@@ -26,6 +26,8 @@ public class TestDTO implements Serializable {
 
 	private int questionCount;
 
+	private int answerCount;
+
 	private boolean active;
 
 	private boolean processed;
@@ -55,6 +57,14 @@ public class TestDTO implements Serializable {
 		this.testType = testType;
 		this.name = name;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+
+	public TestDTO(long id, int volume, double average, long testType, int answerCount){
+		this.id = String.valueOf(id);
+		this.volume = volume;
+		this.average = average;
+		this.testType = testType;
+		this.answerCount = answerCount;
 	}
 
 	public Test convertToTest() {

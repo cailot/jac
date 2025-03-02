@@ -19,7 +19,7 @@ public interface TestScheduleRepository extends JpaRepository<TestSchedule, Long
 	// List<TestScheduleDTO> filterTestScheduleByYearNWeek(int year, int week);
 
 	// filter TestScheduleDTO by time & testGroup
-	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate) " +
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate, t.resultDate) " +
 	"FROM TestSchedule t " +
 	"WHERE t.fromDatetime BETWEEN :from AND :to " +
 	"AND (:testGroup = '0' OR t.testGroup = :testGroup OR t.testGroup LIKE CONCAT('%,', :testGroup, ',%') OR t.testGroup LIKE CONCAT(:testGroup, ',%') OR t.testGroup LIKE CONCAT('%,', :testGroup))")

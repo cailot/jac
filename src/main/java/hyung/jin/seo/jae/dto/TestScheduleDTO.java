@@ -40,6 +40,8 @@ public class TestScheduleDTO implements Serializable {
 
 	private String registerDate;
 
+	private String resultDate;
+
 
 	public TestSchedule convertToTestSchedule() {
     	TestSchedule ts = new TestSchedule();
@@ -51,6 +53,7 @@ public class TestScheduleDTO implements Serializable {
 		ts.setGrade(JaeUtils.joinString(this.grade));
 		ts.setTestGroup(JaeUtils.joinString(this.testGroup));
 		ts.setWeek(JaeUtils.joinString(this.week));
+		ts.setResultDate(this.resultDate != null ? LocalDate.parse(this.resultDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
 		return ts;
 	}
 
@@ -64,6 +67,7 @@ public class TestScheduleDTO implements Serializable {
 		this.info = schedule.getInfo();
 		this.active = schedule.isActive();
 		this.registerDate = schedule.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.resultDate = (schedule.getResultDate() != null) ? schedule.getResultDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
 
 	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate){
@@ -76,6 +80,19 @@ public class TestScheduleDTO implements Serializable {
 		this.info = info;
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+
+	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate, LocalDate resultDate){
+		this.id = String.valueOf(id);
+		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
+		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
+		this.grade = JaeUtils.splitString(grade);
+		this.testGroup = JaeUtils.splitString(group);
+		this.week = JaeUtils.splitString(week);
+		this.info = info;
+		this.active = active;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.resultDate = (resultDate != null) ? resultDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
 
 
