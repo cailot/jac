@@ -92,16 +92,18 @@ public class OmrController {
     
         // process omr image
 
-
+        // create omr results 	
+        List<StudentTestDTO> results = new ArrayList<>();
+        
         try {
-            omrService.previewOmr(branch, file);
+            results = omrService.previewOmr(branch, file);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         // create omr results 	
-        List<StudentTestDTO> results = processOmrImage();
+        // List<StudentTestDTO> results = processOmrImage();
         // add the meta to flash attributes
         redirectAttributes.addFlashAttribute(JaeConstants.METADATA, omrUploadDto);
         // add the results to flash attributes

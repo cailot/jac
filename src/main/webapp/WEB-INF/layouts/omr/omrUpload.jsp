@@ -12,7 +12,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
-  
+
 <script>
 
 $(document).ready(function () {
@@ -112,7 +112,7 @@ function editAnswer(tableIndex, fileName, data) {
 		success: function (answer) {
 			// console.log(answer);
 
-			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/12_1_2398405781226010335.jpg" alt="Logo" class="img-fluid full-fill">');				
+			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/' + fileName + '" alt="Logo" class="img-fluid full-fill">');				
 			// Create an editable table with Bootstrap styling and load it into #answerTable
 			const cols = 10; // Number of columns per row
 			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
@@ -592,35 +592,98 @@ function proceedNext() {
 				<c:if test="${not empty results}">
 					<div class="row m-3 pt-5 justify-content-center">
 						<div class="col-md-12">
+							
 							<c:if test="${not empty meta}">
-								<h4>
-									<!-- save meta values -->
-									<span id="metaBranch" name="metaBranch" class="hidden">${meta.branch}</span><span id="metaTestGroup" name="metaTestGroup" class="hidden">${meta.testGroup}</span><span id="metaGrade" name="metaGrade" class="hidden">${meta.grade}</span><span id="metaVolume" name="metaVolume" class="hidden">${meta.volume}</span>
-									<script type="text/javascript">
-										document.write(
-											branchName('${meta.branch}') + ' '  + 
-											testGroupName('${meta.testGroup}') + ' ' + 
-											gradeName('${meta.grade}') + ' ');
-									</script>
-									Set : 
-									<c:choose>
-										<c:when test="${meta.testGroup=='1' || meta.testGroup=='2'}">
-											<c:choose>
-												<c:when test="${meta.volume == '1'}">Vol.1</c:when>
-												<c:when test="${meta.volume == '2'}">Vol.2</c:when>
-												<c:when test="${meta.volume == '3'}">Vol.3</c:when>
-												<c:when test="${meta.volume == '4'}">Vol.4</c:when>
-												<c:when test="${meta.volume == '5'}">Vol.5</c:when>
-												<c:otherwise></c:otherwise>
-											</c:choose>
-										</c:when>
-										<c:otherwise>
-											<c:out value="${meta.volume}" />
-										</c:otherwise>
-									</c:choose>
-									
-									- Number of results: ${fn:length(results)}</h4>
+								
+
+
+
+							<div class="d-flex justify-content-center mb-5">
+								<div class="card shadow-lg border-1 rounded-3 text-center" style="width: 80%;">
+									<div class="card-header text-white bg-primary">
+										<h4 class="mb-0">
+											<i class="bi bi-filetype-pdf"></i> Scanned OMR Summary
+										</h4>
+									</div>
+									<div class="card-body">
+										<!-- Hidden meta values -->
+										<span id="metaBranch" class="d-none">${meta.branch}</span>
+										<span id="metaTestGroup" class="d-none">${meta.testGroup}</span>
+										<span id="metaGrade" class="d-none">${meta.grade}</span>
+										<span id="metaVolume" class="d-none">${meta.volume}</span>
+							
+										<!-- Flex container for equal distribution -->
+										<div class="d-flex justify-content-around text-center flex-wrap">
+											
+											<div>
+												<i class="fas fa-map-marker-alt text-primary"></i> 
+												<strong>Branch</strong>
+												<p id="branchText" class="text-dark fw-bold">${meta.branch}</p>
+												<script>
+													document.getElementById("branchText").innerText = branchName("${meta.branch}");
+												</script>
+											</div>
+							
+											<div>
+												<i class="fas fa-book-open text-success"></i> 
+												<strong>Test Group</strong>
+												<p id="groupText" class="text-dark fw-bold">${meta.testGroup}</p>
+												<script>
+													document.getElementById("groupText").innerText = testGroupName("${meta.testGroup}");
+												</script>
+											</div>
+							
+											<div>
+												<i class="fas fa-graduation-cap text-warning"></i> 
+												<strong>Grade</strong>
+												<p id="gradeText" class="text-dark fw-bold">${meta.grade}</p>
+												<script>
+													document.getElementById("gradeText").innerText = gradeName("${meta.grade}");
+												</script>
+											</div>
+							
+											<div>
+												<i class="fas fa-layer-group text-info"></i> 
+												<strong>Set</strong>
+												<p class="text-dark fw-bold">
+													<c:choose>
+														<c:when test="${meta.testGroup=='1' || meta.testGroup=='2'}">
+															<c:choose>
+																<c:when test="${meta.volume == '1'}">Vol.1</c:when>
+																<c:when test="${meta.volume == '2'}">Vol.2</c:when>
+																<c:when test="${meta.volume == '3'}">Vol.3</c:when>
+																<c:when test="${meta.volume == '4'}">Vol.4</c:when>
+																<c:when test="${meta.volume == '5'}">Vol.5</c:when>
+																<c:otherwise>N/A</c:otherwise>
+															</c:choose>
+														</c:when>
+														<c:otherwise>
+															<c:out value="${meta.volume}" />
+														</c:otherwise>
+													</c:choose>
+												</p>
+											</div>
+							
+											<div>
+												<i class="fas fa-file-alt text-danger"></i> 
+												<strong>Number of Answer Sheets</strong>
+												<p class="text-dark fw-bold">${fn:length(results)}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+
+
+
+
+
+
+
+
 							</c:if>
+							
 							<div class="row justify-content-center">
 								<c:forEach items="${results}" var="result" varStatus="status">
 									<!-- Answer Sheet Card Section-->
