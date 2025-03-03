@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -113,10 +114,24 @@ public class OmrServiceImpl implements OmrService {
 
 			// save the result into temp folder
 			File tempFile = Files.createTempFile(tempDirPath, branch + "_" + (i + 1) + "_", ".jpg").toFile();
-
 			ImageIO.write(image, "jpg", tempFile);
 			StudentTestDTO dto = new StudentTestDTO();
 			dto.setFileName(tempFile.getName());
+			//////// dummy data
+			// 3~6 random number
+            int testId = new Random().nextInt(4) + 3;
+            dto.setTestId((long)testId);
+            dto.setTestName("Mega Test");
+            Long studentId = 11301580L;//(long)new Random().nextInt(50000);
+            dto.setStudentId(studentId);
+            dto.setStudentName("David Hwang");
+            for(int j=0; j<40; j++) {
+                // generate radom number from 0 to 4
+                int radom = new Random().nextInt(5);
+                dto.addAnswer(radom);
+            }
+			/// ////////////////////////////////
+			processed.add(dto);
 			System.out.println("Saved: " + tempFile.getName() + " , size : " + tempFile.length());
 
 		}
