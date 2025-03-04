@@ -42,10 +42,6 @@
     $(function() {
         // Enable Bootstrap tooltips
         $('[data-toggle="tooltip"]').tooltip();
-        // $('[data-toggle="tooltip"]').tooltip({
-        //     container: 'body',
-        //     placement: 'top' // or 'bottom', 'left', 'right'
-        // });
     });
 
     var sessionTimeout = 1000*60*30; // 30 mins for demonstration
