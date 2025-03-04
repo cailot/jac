@@ -109,7 +109,7 @@ public class OmrController {
         // add the results to flash attributes
         redirectAttributes.addFlashAttribute(JaeConstants.RESULTS, results);
         // set scuccess message
-        redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please click next button at the bottom to proceed scanned image result.");
+        redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please review answer sheets and click next button at the bottom to proceed scanned image result.");
         return "redirect:/omr/upload";
     }
 
@@ -204,7 +204,7 @@ public class OmrController {
 
         // 5. Return a success response
         if(isSaved) {
-            return new ResponseEntity<>("OMR data successfully saved", HttpStatus.OK);
+            return new ResponseEntity<>("OMR data successfully stored into database", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("OMR data failed to save", HttpStatus.EXPECTATION_FAILED);
         }		

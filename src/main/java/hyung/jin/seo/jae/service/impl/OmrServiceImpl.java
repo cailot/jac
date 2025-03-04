@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +27,11 @@ import com.aspose.omr.TemplateProcessor;
 
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.TestAnswer;
 import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.service.OmrService;
+import hyung.jin.seo.jae.service.StudentService;
 
 @Service
 public class OmrServiceImpl implements OmrService {
@@ -39,6 +42,9 @@ public class OmrServiceImpl implements OmrService {
 
 	@Value("${output.directory}")
     private String outputDir;
+
+	@Autowired
+	private StudentService studentService;
 
 	public OmrServiceImpl() {
 		// omrLicense = new License();
@@ -115,16 +121,18 @@ public class OmrServiceImpl implements OmrService {
 			// save the result into temp folder
 			File tempFile = Files.createTempFile(tempDirPath, branch + "_" + (i + 1) + "_", ".jpg").toFile();
 			ImageIO.write(image, "jpg", tempFile);
-			StudentTestDTO dto = new StudentTestDTO();
-			dto.setFileName(tempFile.getName());
 			//////// dummy data
 			// 3~6 random number
+			long stdTempId = 11200000 + (i+1);
+			Student stdTemp = studentService.getStudent(stdTempId);
+			StudentTestDTO dto = new StudentTestDTO();
+			dto.setFileName(tempFile.getName());
             int testId = new Random().nextInt(4) + 3;
             dto.setTestId((long)testId);
             dto.setTestName("Mega Test");
-            Long studentId = 11301580L;//(long)new Random().nextInt(50000);
-            dto.setStudentId(studentId);
-            dto.setStudentName("David Hwang");
+            // Long studentId = 11301580L;//(long)new Random().nextInt(50000);
+            dto.setStudentId(stdTempId);
+            dto.setStudentName(stdTemp.getFirstName() + " " + stdTemp.getLastName());
             for(int j=0; j<40; j++) {
                 // generate radom number from 0 to 4
                 int radom = new Random().nextInt(5);
