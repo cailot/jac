@@ -228,6 +228,11 @@ public class JaeController {
 		return "omrUploadPage";
 	}
 
+	@GetMapping("/omrStats")
+	public String omrStats(HttpSession session) {
+		return "omrStatPage";
+	}
+
 
 	//////////////////////////////////////////////////
 	// STATS

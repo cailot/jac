@@ -53,8 +53,8 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student (beta)</a> -->
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a> -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student</a>
 			</div>
 		</li>
 		<!-- Class -->
@@ -145,7 +145,8 @@
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
 				<!-- OMR -->
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrStats">OMR Statistics</a>
 			</div>
 		</li>
 		</c:if>

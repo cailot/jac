@@ -781,7 +781,7 @@ function updateVolumeOptions(action) {
 						<!-- Result Schedule -->
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="addResultDate" class="label-form h6 badge badge-primary">Result Schedule</label>
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
 								<div class="form-row">
 									<div class="col-md-7">
 										<span>The result will be processed at </span>
@@ -957,7 +957,7 @@ function updateVolumeOptions(action) {
 						<!-- Result Schedule -->
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="editResultDate" class="label-form h6 badge badge-primary">Result Schedule</label>									
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
 								<div class="form-row">
 									<div class="col-md-7">
 										<span>The result will be processed at </span>
