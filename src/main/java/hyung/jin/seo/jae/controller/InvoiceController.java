@@ -137,7 +137,7 @@ public class InvoiceController {
 		return info;
 	}
 
-	// payment history
+	// payment history 
 	@GetMapping("/history")
 	public String getPayments(@RequestParam("studentKeyword") String studentId, HttpSession session) {
 		// 1. flush session from previous payment
