@@ -455,6 +455,47 @@ function confirmDelete(testId) {
 //		Confirm before processing Test reuslt
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function confirmProcessResult(testId) {
+	// Get test stats by branch
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/getTestBranchStat/' + testId,
+		type: 'GET',
+		success: function (data) {
+			console.log(data);
+			// clean up existing table
+			$('#branchStats').empty();
+			var tableData = $("<table class='table table-striped table-bordered col-md-8'>");
+			tableData.append('<thead class="table-primary"><tr class="text-center"><th>Branch</th><th>Student Count</th></tr></thead>');
+			tableData.append('<tbody>');
+			var totalCount = 0;		
+			$.each(data, function(index, value) {
+				var row = $("<tr>");		
+				var branchText = branchName(value.branch+'');
+				row.append($('<td>').text(branchText));
+				row.append($('<td class="text-center">').text(value.count));
+				row.append($('</tr>'));
+				tableData.append(row);
+				totalCount += value.count;
+			});
+			// Append Total Row
+			var totalRow = $("<tr class='table-primary'>");
+			totalRow.append($('<td>').html('<strong>Total</strong>'));
+			totalRow.append($('<td class="text-center">').html('<strong>' + totalCount + '</strong>'));
+			tableData.append(totalRow);
+
+			tableData.append('</tbody></table>');
+			$('#branchStats').append(tableData);    
+
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+
+
+
+
+
     // Show the warning modal
     $('#processResultModal').modal('show');
 
@@ -494,7 +535,7 @@ function processTestResult(id) {
 		url: '${pageContext.request.contextPath}/connected/processTestResult/' + id,
 		type: 'PUT',
 		success: function (result) {
-			$('#success-alert .modal-body').text('Test Result proccessed successfully');
+			$('#success-alert .modal-body').text(result);
 			$('#success-alert').modal('show');
 			$('#success-alert').on('hidden.bs.modal', function (e) {
 				location.reload();
@@ -784,7 +825,7 @@ function updateAnswerCount() {
 														<c:set var="processed" value="${testItem.processed}" />
 														<c:choose>
 															<c:when test="${processed == false}">
-																<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="Process Test Result" onclick="confirmProcessResult('${testItem.id}')">
+																<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="Schedule Test Result Process" onclick="confirmProcessResult('${testItem.id}')">
 																</i>
 															</c:when>
 															<c:otherwise>
@@ -1064,12 +1105,13 @@ function updateAnswerCount() {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content jae-border-info">
             <div class="modal-header btn-info">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Process Test Result</h4>
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Schedule Test Result Process</h4>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <p> Are you sure to run processing Test result?</p>
-				<p>It will perform the follwoing actions and can't be reverted.</p>
+				<p> Are you sure to schedule processing Test result?</p>
+				<div id="branchStats" class="row mt-5 mb-5 justify-content-center"></div>
+                <p>It will perform the follwoing actions at 11:30 p.m. and <b>can't be reverted.</b></p>
 				<ol class="text-info font-weight-bold">
 					<li>Calculate the average</li>
 					<li>Send emails to all students</li>
