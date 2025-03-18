@@ -36,6 +36,7 @@ import hyung.jin.seo.jae.dto.PracticeAnswerDTO;
 import hyung.jin.seo.jae.dto.PracticeDTO;
 import hyung.jin.seo.jae.dto.PracticeScheduleDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
+import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.dto.TestAnswerDTO;
 import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
@@ -48,6 +49,7 @@ import hyung.jin.seo.jae.model.Practice;
 import hyung.jin.seo.jae.model.PracticeAnswer;
 import hyung.jin.seo.jae.model.PracticeSchedule;
 import hyung.jin.seo.jae.model.PracticeType;
+import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.Subject;
 import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswer;
@@ -57,6 +59,8 @@ import hyung.jin.seo.jae.model.TestType;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.StudentService;
+import hyung.jin.seo.jae.service.TestProcessService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Controller
@@ -73,6 +77,12 @@ public class ConnectedController {
 
 	@Autowired
 	private CycleService cycleService;
+
+	@Autowired
+	private TestProcessService testProcessService;
+
+	@Autowired
+	private StudentService studentService;
 	
 	// register homework
 	@PostMapping("/addHomework")
@@ -708,22 +718,46 @@ public class ConnectedController {
 	@PutMapping(value = "/processTestResult/{testId}")
 	@ResponseBody
     public ResponseEntity<String> processTestResult(@PathVariable String testId) {
-        Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
-		// connectedService.processTestResult(id);
-		// 1. get current year 
+        		
+		Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+
+		// schedule the process to 11:30 p.m. 
+		testProcessService.processTestScheduleAt11_30PM(id);
+
+		// 6. return flag
+		return ResponseEntity.ok("Processing Test scheduled successfully and Results will be emailed at 11:30 p.m. tonight");
+    }
+
+	@GetMapping(value = "/getTestBranchStat/{testId}")
+	@ResponseBody
+    public List<StatsDTO> getTestBranchStat(@PathVariable String testId) {        		
+		Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+		// 1. Get current year
 		int currentYear = cycleService.academicYear();
 		CycleDTO cycle = cycleService.listCycles(currentYear);
-		// 2. get average score
-		double average = connectedService.getAverageScoreByTest(id, cycle.getStartDate(), cycle.getEndDate());
-		// 3. update average score
-		connectedService.updateTestAverage(id, average);
-		// 4. get student id who took the test
+		// 2. Get student list
 		List<Long> studentList = connectedService.getStudentListByTest(id, cycle.getStartDate(), cycle.getEndDate());
-		// 5. send email ???	
-		
-		
-		// 6. return flag
-		return ResponseEntity.ok("\"Test Result processed successfully\"");
+		// 3. List of StatsDTO
+		List<StatsDTO> dtos = new ArrayList<>();
+		List<SimpleBasketDTO> branches = codeService.loadBranch();
+		for(SimpleBasketDTO branch : branches){
+			StatsDTO dto = new StatsDTO();
+			dto.setBranch(Integer.parseInt(branch.getValue()));
+			dtos.add(dto);
+		}
+		// 4. Iterate over studentList and count the students for each branch
+		for(Long studentId : studentList){
+			// 5. Get branch of the student
+			String branch = studentService.getBranch(studentId);
+			// 6. Iterate over dtos and increment the count for the branch
+			for(StatsDTO dto : dtos){
+				if(dto.getBranch() == Integer.parseInt(branch)){
+					dto.setCount(dto.getCount() + 1);
+				}
+			}
+		}
+		// 5. Return dtos
+		return dtos;
     }
 
 

@@ -449,4 +449,15 @@ public class StudentServiceImpl implements StudentService {
 		return name;
 	}
 
+	@Override
+	public String getBranch(Long id) {
+		String branch = "0";
+		try{
+			branch = studentRepository.findBranchById(id);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return branch;
+	}
+
 }
