@@ -86,4 +86,6 @@ public interface StudentService {
 	// get student list with enrolment if exists in studentList.jsp
 	List<StudentWithEnrolmentDTO> overallStudentWithEnrolment(String state, String branch, String grade, String active, int year, int week, String day);		
 
+	// get branch where student is registered
+	String getBranch(Long id);
 }

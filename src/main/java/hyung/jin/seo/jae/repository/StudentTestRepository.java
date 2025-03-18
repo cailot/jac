@@ -67,7 +67,7 @@ public interface StudentTestRepository extends JpaRepository<StudentTest, Long> 
         List<Double> getAllScoreByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // get student list who took the test
-        @Query("SELECT st.student.id FROM StudentTest st WHERE st.test.id = :testId AND registerDate BETWEEN :fromTime AND :toTime")
+        @Query("SELECT DISTINCT(st.student.id) FROM StudentTest st WHERE st.test.id = :testId AND registerDate BETWEEN :fromTime AND :toTime")
         List<Long> getStudentListByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
 }

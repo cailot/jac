@@ -2,8 +2,6 @@ package hyung.jin.seo.jae.repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -388,5 +386,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 @Param("weekDate") LocalDate weekDate);
         ///
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        
+        // get branch by student id
+        @Query(value = "SELECT s.branch FROM Student s WHERE s.id = ?1", nativeQuery = true)
+        String findBranchById(Long id);
 }
