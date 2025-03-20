@@ -742,6 +742,10 @@ public class ConnectedController {
 		List<SimpleBasketDTO> branches = codeService.loadBranch();
 		for(SimpleBasketDTO branch : branches){
 			StatsDTO dto = new StatsDTO();
+			// exclude 90, 99 - test /head office
+			if(branch.getValue().equals(JaeConstants.HEAD_OFFICE_CODE) || branch.getValue().equals(JaeConstants.TEST_CODE)){
+				continue;
+			}
 			dto.setBranch(Integer.parseInt(branch.getValue()));
 			dtos.add(dto);
 		}

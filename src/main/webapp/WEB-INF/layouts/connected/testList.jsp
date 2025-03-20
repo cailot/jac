@@ -460,38 +460,48 @@ function confirmProcessResult(testId) {
 		url: '${pageContext.request.contextPath}/connected/getTestBranchStat/' + testId,
 		type: 'GET',
 		success: function (data) {
-			console.log(data);
-			// clean up existing table
 			$('#branchStats').empty();
-			var tableData = $("<table class='table table-striped table-bordered col-md-8'>");
-			tableData.append('<thead class="table-primary"><tr class="text-center"><th>Branch</th><th>Student Count</th></tr></thead>');
+			var tableData = $("<table class='table table-striped table-bordered col-md-10'>");
+			tableData.append('<thead class="table-primary text-center"><tr><th>Branch</th><th>Count</th><th>Branch</th><th>Count</th></tr></thead>');
 			tableData.append('<tbody>');
-			var totalCount = 0;		
-			$.each(data, function(index, value) {
-				var row = $("<tr>");		
-				var branchText = branchName(value.branch+'');
-				row.append($('<td>').text(branchText));
-				row.append($('<td class="text-center">').text(value.count));
-				row.append($('</tr>'));
+			var totalCount = 0;
+			for (var i = 0; i < data.length; i += 2) {
+				var row = $("<tr>");
+				// First column set
+				var branch1 = data[i];
+				var branch1Name = branchName(branch1.branch + '');
+				row.append($('<td class="nowrap-cell">').text(branch1Name));
+				row.append($('<td class="text-center">').text(branch1.count));
+				totalCount += branch1.count;
+
+				// Second column set (check if exists)
+				if (i + 1 < data.length) {
+					var branch2 = data[i + 1];
+					var branch2Name = branchName(branch2.branch + '');
+					row.append($('<td class="nowrap-cell">').text(branch2Name));
+					row.append($('<td class="text-center">').text(branch2.count));
+					totalCount += branch2.count;
+				} else {
+					// Fill empty cells if odd number of branches
+					row.append('<td></td><td></td>');
+				}
+
 				tableData.append(row);
-				totalCount += value.count;
-			});
+			}
+
 			// Append Total Row
 			var totalRow = $("<tr class='table-primary'>");
-			totalRow.append($('<td>').html('<strong>Total</strong>'));
+			totalRow.append('<td colspan="3" class="text-right"><strong>Total</strong></td>');
 			totalRow.append($('<td class="text-center">').html('<strong>' + totalCount + '</strong>'));
 			tableData.append(totalRow);
 
 			tableData.append('</tbody></table>');
-			$('#branchStats').append(tableData);    
-
+			$('#branchStats').append(tableData);
 		},
 		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
-    });
-
+			console.error(error);
+		}
+	});
 
 
 
@@ -649,6 +659,12 @@ function updateAnswerCount() {
 		height: 45px 	
 	} 
 
+    .nowrap-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* adjust based on your layout */
+    }
 </style>
 
 <!-- List Body -->
@@ -1110,7 +1126,7 @@ function updateAnswerCount() {
             </div>
             <div class="modal-body">
 				<p> Are you sure to schedule processing Test result?</p>
-				<div id="branchStats" class="row mt-5 mb-5 justify-content-center"></div>
+				<div id="branchStats" class="row mt-2 mb-2 justify-content-center"></div>
                 <p>It will perform the follwoing actions at 11:30 p.m. and <b>can't be reverted.</b></p>
 				<ol class="text-info font-weight-bold">
 					<li>Calculate the average</li>

@@ -23,7 +23,9 @@ public interface JaeConstants {
 	String VICTORIA_CODE = "1";
 
 	String HEAD_OFFICE_CODE = "90";
-	
+
+	String TEST_CODE = "99";
+
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	DAY LIST
