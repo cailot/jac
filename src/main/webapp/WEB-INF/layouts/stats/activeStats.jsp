@@ -50,12 +50,12 @@ function searchStats() {
 			// flush tbody
 			var tbody = document.querySelector('#regStatTable tbody');
 			tbody.innerHTML = "";
-			// initialise tbody
+			// initialise tbody			
 			addRows();		
 			$.each(items, function (index, item) {
-				// console.log(item);
-				 // get branch value for x axis
-				 var branchCode = item.branch;
+				console.log(item);
+				// get branch value for x axis
+				var branchCode = item.branch;
 				// Find the th element with the corresponding code
 				var th = $('#regStatTable th[code="' + branchCode + '"]');
 				if (th.length > 0) {
@@ -327,7 +327,7 @@ function addRows(){
 		{ id: 'vceRow', text: 'VCE' }
 	];
 	// Get the tbody element
-	var tbody = document.querySelector('tbody');
+	var tbody = document.querySelector('#regStatTable tbody');
 	// Iterate over the rows data
 	rowsData.forEach(function(rowData) {
 		// Create a new row and cell

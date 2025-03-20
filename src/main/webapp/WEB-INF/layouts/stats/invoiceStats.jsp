@@ -327,7 +327,7 @@ function addRows(){
 		{ id: 'vceRow', text: 'VCE' }
 	];
 	// Get the tbody element
-	var tbody = document.querySelector('tbody');
+	var tbody = document.querySelector('#regStatTable tbody');
 	// Iterate over the rows data
 	rowsData.forEach(function(rowData) {
 		// Create a new row and cell
