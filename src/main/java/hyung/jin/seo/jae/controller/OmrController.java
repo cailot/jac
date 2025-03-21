@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,25 +16,32 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
-import hyung.jin.seo.jae.model.Cycle;
+import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswerItem;
+import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
-import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.StudentService;
+import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.OmrStatsDTO;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
+import hyung.jin.seo.jae.dto.SimpleBasketDTO;
+import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("omr")
@@ -47,6 +55,9 @@ public class OmrController {
 
     @Autowired
     private OmrService omrService;
+
+    @Autowired
+    private CodeService codeService;
 
     @Value("${output.directory}")
     private String outputDir;
@@ -209,6 +220,66 @@ public class OmrController {
             return new ResponseEntity<>("OMR data failed to save", HttpStatus.EXPECTATION_FAILED);
         }		
     }
+
+    // get all branch list
+    @GetMapping("/listBranch")
+	@ResponseBody
+	public List<SimpleBasketDTO> getBranchList() {
+		List<SimpleBasketDTO> dtos = new ArrayList<>();
+        try{
+            dtos = codeService.loadBranch();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+		return dtos;
+	}
+
+    // search omr stats per branch
+	@PostMapping("/branchStats")
+	@ResponseBody
+	public List<OmrStatsDTO> searchActiveStats(@RequestParam String fromDate, @RequestParam String toDate) {
+		// 1. get convert date format
+		String start = null;
+		try {
+			start = JaeUtils.convertToyyyyMMddFormat(fromDate);
+		} catch (ParseException e) {			
+			start = "2000-01-01";
+		}
+		String end = null;
+		try {
+			end = JaeUtils.convertToyyyyMMddFormat(toDate);
+		} catch (ParseException e){
+			end = "2099-12-31";
+		}
+		// 2. get Stats
+		List<OmrStatsDTO> dtos = dummy();//statsService.getActiveStats(start, end, branch);
+
+		// 3. return dtos
+		return dtos;
+	}
+
+
+    private List<OmrStatsDTO> dummy() {
+        List<OmrStatsDTO> dtos = new ArrayList<>();
+        for(int i=12; i<=34; i++) {
+            OmrStatsDTO dto = new OmrStatsDTO();
+            dto.setBranch("" + i);
+            // random number
+            int ran1 = (new Random().nextInt(1) + 10);
+            int ran2 = (new Random().nextInt(1) + 15);
+            int ran3 = (new Random().nextInt(1) + 20);
+            int ran4 = (new Random().nextInt(1) + 25);
+            dto.setMega(ran1);
+            dto.setRevision(ran2);
+            dto.setAcer(ran3);
+            dto.setEdu(ran4);
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+
+
 
 	// DTO class to handle the request
     public static class SaveResultsRequest {

@@ -47,7 +47,7 @@ function searchStats() {
 	var start = document.getElementById("fromDate").value;
 	var end = document.getElementById("toDate").value;
 	if (start == "" || end == "") {
-		$('#warning-alert .modal-body').text('Please select date range beforel your search');
+		$('#warning-alert .modal-body').text('Please select date range before your search');
 		$('#warning-alert').modal('toggle');
 		return;
 	}
@@ -135,7 +135,7 @@ function studentList(branch, grade){
 	var start = document.getElementById("fromDate").value;
 	var end = document.getElementById("toDate").value;
 	if (start == "" || end == "") {
-		$('#warning-alert .modal-body').text('Please select date range beforel your search');
+		$('#warning-alert .modal-body').text('Please select date range before your search');
 		$('#warning-alert').modal('toggle');
 		return;
 	}

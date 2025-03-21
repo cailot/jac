@@ -94,7 +94,6 @@ public interface JaeConstants {
 
 	String NO_PREVIOUS_GRADE = "0";
 	
-	
 	String STUDENT_LIST = "StudentList";
 	
 	String UPGRADE_LIST = "UpgradeList";
@@ -411,4 +410,19 @@ public interface JaeConstants {
 	String OMR_FILE_JPEG = "jpeg";
 
 	String OMR_FILE_PDF = "pdf";
+
+	////////////////////////////////////
+	//
+	//	TEST GROUP
+	//
+	////////////////////////////////////
+	int TEST_GROUP_MEGA = 1;
+
+	int TEST_GROUP_REVISION = 2;
+
+	int TEST_GROUP_EDU = 3;
+
+	int TEST_GROUP_ACER = 4;
+
+	int TEST_GROUP_MOCK = 5;
 }
