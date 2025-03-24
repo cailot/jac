@@ -1054,6 +1054,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public int getTestGroup(Long id) {
+		int testGroup = 0;
+		try{
+			testGroup = testRepository.getTestGroup(id);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return testGroup;	
+	}
+
+	@Override
 	@Transactional
 	public void updateTestAverage(Long id, double score) {
 		try{

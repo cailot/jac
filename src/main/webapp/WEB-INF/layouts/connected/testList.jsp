@@ -593,6 +593,17 @@ function updateVolumeOptions(action) {
 			// Set the value and text content for the option
 			option.value = i;
 			option.textContent = i;
+			if(option.value == 36){
+				option.textContent = "SIM 1";
+			}else if(option.value == 37){
+				option.textContent = "SIM 2";
+			}else if(option.value == 38){
+				option.textContent = "SIM 3";
+			}else if(option.value == 39){
+				option.textContent = "SIM 4";
+			}else if(option.value == 40){
+				option.textContent = "SIM 5";
+			}
 			// Append the option to the select element
 			selectElement.appendChild(option);
 		}
@@ -790,6 +801,7 @@ function updateAnswerCount() {
 															</c:choose>
 														</span>
 													</td>
+
 													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
@@ -804,11 +816,21 @@ function updateAnswerCount() {
 																	</c:choose>
 																</c:when>
 																<c:otherwise>
-																	<c:out value="${testItem.volume}" />
+																	<c:choose>
+																		<c:when test="${testItem.volume == '36'}">SIM1</c:when>
+																		<c:when test="${testItem.volume == '37'}">SIM2</c:when>
+																		<c:when test="${testItem.volume == '38'}">SIM3</c:when>
+																		<c:when test="${testItem.volume == '39'}">SIM4</c:when>
+																		<c:when test="${testItem.volume == '40'}">SIM5</c:when>
+																		<c:otherwise>
+																			<c:out value="${testItem.volume}" />
+																		</c:otherwise>
+																	</c:choose>
 																</c:otherwise>
 															</c:choose>
 														</span>
 													</td>
+
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
 														<span data-toggle="tooltip" title="${testItem.pdfPath}">
 															<c:out value="${testItem.pdfPath}" />

@@ -537,6 +537,17 @@ function updateVolumeOptions(action) {
 			// Set the value and text content for the option
 			option.value = i;
 			option.textContent = i;
+			if(option.value == 36){
+				option.textContent = "SIM 1";
+			}else if(option.value == 37){
+				option.textContent = "SIM 2";
+			}else if(option.value == 38){
+				option.textContent = "SIM 3";
+			}else if(option.value == 39){
+				option.textContent = "SIM 4";
+			}else if(option.value == 40){
+				option.textContent = "SIM 5";
+			}
 			// Append the option to the select element
 			selectElement.appendChild(option);
 		}
@@ -699,7 +710,16 @@ function updateVolumeOptions(action) {
 																		</c:choose>
 																	</c:when>
 																	<c:otherwise>
-																		<c:out value="${week}" />
+																		<c:choose>
+																		<c:when test="${week == '36'}">SIM1</c:when>
+																		<c:when test="${week == '37'}">SIM2</c:when>
+																		<c:when test="${week == '38'}">SIM3</c:when>
+																		<c:when test="${week == '39'}">SIM4</c:when>
+																		<c:when test="${week == '40'}">SIM5</c:when>
+																		<c:otherwise>
+																			<c:out value="${week}" />
+																		</c:otherwise>
+																		</c:choose>
 																	</c:otherwise>
 																</c:choose>
 																<c:if test="${!weekStatus.last}">, </c:if>
