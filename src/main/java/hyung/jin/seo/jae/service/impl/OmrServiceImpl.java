@@ -17,6 +17,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aspose.omr.GenerationResult;
@@ -25,11 +26,14 @@ import com.aspose.omr.OmrEngine;
 import com.aspose.omr.RecognitionResult;
 import com.aspose.omr.TemplateProcessor;
 
+import hyung.jin.seo.jae.dto.OmrStatsDTO;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.model.OmrScanHistory;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.TestAnswer;
 import hyung.jin.seo.jae.model.TestAnswerItem;
+import hyung.jin.seo.jae.repository.OmrScanHistoryRepository;
 import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.StudentService;
 
@@ -45,6 +49,9 @@ public class OmrServiceImpl implements OmrService {
 
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private OmrScanHistoryRepository omrScanHistoryRepository;
 
 	public OmrServiceImpl() {
 		// omrLicense = new License();
@@ -145,10 +152,27 @@ public class OmrServiceImpl implements OmrService {
 		}
 		document.close();
 
-
-
 		// 3. return the list
 		return processed;
+	}
+
+	@Override
+	@Transactional
+	public OmrScanHistory recordOmr(OmrScanHistory omr) {
+		OmrScanHistory saved = omrScanHistoryRepository.save(omr);
+		return saved;
+	}
+
+	@Override
+	public List<OmrStatsDTO> getOmrStats(String from, String to) {
+		List<OmrStatsDTO> stats = new ArrayList<>();
+		// convert result to StatsDTO
+		List<Object[]> objects = omrScanHistoryRepository.getOmrStats(from, to);
+		for(Object[] object : objects){
+			OmrStatsDTO dto = new OmrStatsDTO(object);
+			stats.add(dto);
+		}
+		return stats;
 	}
 	
 }

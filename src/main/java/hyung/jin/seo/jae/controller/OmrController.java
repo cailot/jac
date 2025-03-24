@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
 import hyung.jin.seo.jae.model.Homework;
+import hyung.jin.seo.jae.model.OmrScanHistory;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.StudentTest;
 import hyung.jin.seo.jae.model.Test;
@@ -198,6 +199,15 @@ public class OmrController {
             // StudentTestAnswer save
             studentTest.setAnswers(studentAnswers);    
             connectedService.addStudentTest(studentTest);
+            // Save scanned sheet
+            OmrScanHistory history = new OmrScanHistory();
+            history.setStudentId(dto.getStudentId());
+            history.setTestId(testId);
+            history.setBranch(student.getBranch());
+            int testGroup = connectedService.getTestGroup(testId);
+            history.setTestGroup(testGroup);
+            omrService.recordOmr(history);
+
         }
         
         // 4. remove all files of which file name starts with 'branch' in the output directory
@@ -252,8 +262,7 @@ public class OmrController {
 			end = "2099-12-31";
 		}
 		// 2. get Stats
-		List<OmrStatsDTO> dtos = dummy();//statsService.getActiveStats(start, end, branch);
-
+		List<OmrStatsDTO> dtos = omrService.getOmrStats(start, end);
 		// 3. return dtos
 		return dtos;
 	}

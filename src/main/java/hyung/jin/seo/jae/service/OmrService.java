@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import hyung.jin.seo.jae.dto.OmrUploadDTO;
+import hyung.jin.seo.jae.dto.OmrStatsDTO;
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.model.OmrScanHistory;
 
 public interface OmrService {
 
@@ -19,7 +20,11 @@ public interface OmrService {
 	// preview the OMR
 	List<StudentTestDTO> previewOmr(String branch, MultipartFile file) throws IOException;
 
-	// save the OMR
+	// record OMR scan
+	OmrScanHistory recordOmr(OmrScanHistory omrScan);	
+
+	// get OMR scan stats
+	List<OmrStatsDTO> getOmrStats(String from, String to);
 	// boolean saveOmr(OmrUploadDTO meta, List<StudentTestDTO> studentTestDTOs);
 
 }

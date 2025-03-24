@@ -5,7 +5,6 @@
 <script>
 
 $(document).ready(function () {
-
 	$("#fromDate").datepicker({
 		dateFormat: 'dd/mm/yy',
 		onClose: function (selectedDate) {
@@ -18,51 +17,9 @@ $(document).ready(function () {
 			$("#fromDate").datepicker("option", "maxDate", selectedDate);
 		}
 	});
-
 	// initialise table
-	initialiseTable();
-	
+	initialiseTable();	
 });
-
-
-function initialiseTable(){
-	$('#omrStatTable tbody').empty();
-	$.ajax({
-		url : '${pageContext.request.contextPath}/omr/listBranch',
-		type : 'GET',
-		success : function(data) {
-			$.each(data, function(index, value) {
-				// console.log(value);
-				if(value.value >= 90){ // skip branch with code 90, 99
-					return;
-				}
-				var row = $("<tr code='" + value.value + "'>");		
-				row.append($('<td class="">').text(value.name));
-				row.append($('<td>'));
-				row.append($('<td>'));
-				row.append($('<td>'));
-				row.append($('<td>'));
-				row.append($('<td>'));
-				row.append($('<td>'));
-				$('#omrStatTable > tbody').append(row);
-			});
-			var totalRow = $("<tr>");
-			totalRow.append($('<td class="text-center font-weight-bold">TOTAL</td>'));
-			totalRow.append($('<td>'));
-			totalRow.append($('<td>'));
-			totalRow.append($('<td>'));
-			totalRow.append($('<td>'));
-			totalRow.append($('<td>'));
-			totalRow.append($('<td>'));
-			$('#omrStatTable > tbody').append(totalRow);
-		},
-		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
-		}
-	});
-}
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Search Info	
@@ -83,38 +40,47 @@ function searchStats() {
 			toDate: end
 		},
 		success: function (items) {
-			// initialise tbody
-			initialiseTable();		
+			// Initialise the table
+			clearTableColumnsExceptBranch();
+			// Keep track of branches that have been updated
+			const updatedBranches = new Set();
 			$.each(items, function (index, item) {
 				console.log(item);
-				//  // get branch value for x axis
-				//  var branchCode = item.branch;
-				// // Find the th element with the corresponding code
-				// var th = $('#omrStatTable th[code="' + branchCode + '"]');
-				// if (th.length > 0) {
-				// 	// Get the column index of the cell
-				// 	var cellIndex = th.index();
-				// 	// Get the row index (assuming it's stored in item.grade)
-				// 	var rowIndex = item.grade;
-				// 	// Get the corresponding cell in the table body
-				// 	var cell = $('#omrStatTable tbody tr:nth-child(' + rowIndex + ') td:nth-child(' + (cellIndex+1) + ')');
-				// 	// Update the cell content
-				// 	cell.text(item.count);
-				// 	cell.addClass('text-primary');
-				// 	// Add branch and grade as attributes to the cell
-				// 	cell.attr('branch', branchCode);
-				// 	cell.attr('grade', rowIndex);
-				// 	 // Add click event to call studentList function
-				// 	cell.click(function() {
-				// 		studentList(branchCode, rowIndex);
-				// 	});
-				// 	// Change cursor to hand pointer on hover
-    			// 	cell.css('cursor', 'pointer');
-    
-				// } else {
-				// 	console.error('No th element found with code ' + branchCode);
-				// }
+				// Skip branches with code >= 90
+				if (item.branch >= 90) {
+					return;
+				}
+				// Convert branch to string and trim whitespace
+				var branchCode = item.branch;
+				// Search for the <tr> with the matching code attribute
+				var row = $('#omrStatTable > tbody tr[code="' + branchCode + '"]');		
+				if (row.length > 0) {
+					// Update the row's cells
+					row.find('td').eq(1).text(item.mega);
+					row.find('td').eq(2).text(item.revision);
+					row.find('td').eq(3).text(item.acer);
+					row.find('td').eq(4).text(item.edu);
+					row.find('td').eq(5).text(item.mega + item.revision + item.acer + item.edu).addClass('text-primary');
+					// Mark this branch as updated
+					updatedBranches.add(branchCode);
+				} else {
+					console.log('Row with branch code ' + branchCode + ' does not exist.');
+				}
 			});
+
+			// Fill rows with 0 for branches that were not updated
+			$('#omrStatTable > tbody tr').each(function () {
+                var branchCode = $(this).attr('code');
+                if (branchCode !== 'total' && !updatedBranches.has(branchCode)) {
+                    $(this).find('td').eq(1).text(0); // Mega
+                    $(this).find('td').eq(2).text(0); // Revision
+                    $(this).find('td').eq(3).text(0); // Acer
+                    $(this).find('td').eq(4).text(0); // Edu
+                    $(this).find('td').eq(5).text(0).addClass('text-primary'); // Sum
+                }
+            });
+			// Update the TOTAL row
+			populateTotals();
 		},
 		error: function (xhr, status, error) {
 			console.log('Error : ' + error);
@@ -122,89 +88,126 @@ function searchStats() {
 	});
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Initialise omrStatTable	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function initialiseTable(){
+	$('#omrStatTable tbody').empty();
+	$.ajax({
+		url : '${pageContext.request.contextPath}/omr/listBranch',
+		type : 'GET',
+		success : function(data) {
+			$.each(data, function(index, value) {
+				// console.log(value);
+				if(value.value >= 90){ // skip branch with code 90, 99
+					return;
+				}
+				var row = $("<tr code='" + value.value + "'>");		
+				row.append($('<td class="">').text(value.name));
+				row.append($('<td class="text-center">'));
+				row.append($('<td class="text-center">'));
+				row.append($('<td class="text-center">'));
+				row.append($('<td class="text-center">'));
+				row.append($('<td class="text-center">'));
+				row.append($('<td>'));
+				$('#omrStatTable > tbody').append(row);
+			});
+			var totalRow = $("<tr class='header' code='total'>");
+			totalRow.append($('<td class="text-center font-weight-bold">TOTAL</td>'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
+			totalRow.append($('<td>'));
+			$('#omrStatTable > tbody').append(totalRow);
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+	});
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Clear exisiting values in omrStatTable	
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function clearTableColumnsExceptBranch() {
+    // Select all rows in the table body
+    $('#omrStatTable > tbody tr').each(function () {
+        // Iterate through all <td> elements in the row
+        $(this).find('td').each(function (index) {
+            // Skip the first column (branch column)
+            if (index !== 0) {
+                $(this).text(''); // Clear the content of the cell
+            }
+        });
+    });
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clear Search Info	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearSearchCriteria() {
 	document.getElementById("fromDate").value = "";
 	document.getElementById("toDate").value = "";
-	// Hide the stats div
-	var statDiv = document.getElementById("stats");
-	statDiv.style.display = 'none';
-	var instDiv = document.getElementById("instruction");
-	instDiv.style.display = 'block';
-
+	
 	// flush tbody
-	var tbody = document.querySelector('#omrStatTable tbody');
-	tbody.innerHTML = "";
+	// var tbody = document.querySelector('#omrStatTable tbody');
+	// tbody.innerHTML = "";
 	// initialise tbody
-	addRows();		
+	clearTableColumnsExceptBranch();		
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Populate Total	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-function populateTotals(){
-	// Assuming you have a table with id 'omrStatTable'
-	var table = document.getElementById('omrStatTable');
-	// Create an array to store the sum of each column
-	var columnSums = Array(table.rows[0].cells.length).fill(0);
-	// Iterate over each row in the table, starting from the second row
-	for (var i = 1; i < table.rows.length; i++) {
-		var row = table.rows[i];
-		var rowSum = 0;
-		// Iterate over each cell in the row
-		for (var j = 0; j < row.cells.length; j++) { // j=0 is the first column
-			var cell = row.cells[j];
-			// Check if the cell's content can be converted to a number
-			var cellValue = Number(cell.textContent);
-			if (!isNaN(cellValue)) {
-				// Add the cell's numeric value to the row sum and the column sum
-				rowSum += cellValue;
-				columnSums[j] += cellValue;
-			}
-		}
-		// Create a new cell at the end of the row for the row sum
-		var sumCell = row.insertCell(-1);
-		sumCell.textContent = rowSum;
-		sumCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold');
-	}
-	// Create a new row at the bottom of the table
-	var newRow = table.insertRow(-1);
-	// Create a new cell in the new row for each column
-	for (var j = 0; j < columnSums.length; j++) {
-		var newCell = newRow.insertCell(-1);
-		// Set the cell's text to the column sum, or 'Total' for the first column
-		newCell.textContent = j === 0 ? 'Total' : columnSums[j];
-		// Set the cell's text to bold and blue
-		newCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold');
-		// newCell.style.fontWeight = 'bold';
-		// newCell.style.color = 'blue';
-	}
-	// Iterate over each row in the table, starting from the second row
-	var lastRow = table.rows[table.rows.length-1];
-	var lastRowSum = 0;
-	// Iterate over each cell in the row
-	for (var j = 0; j < lastRow.cells.length; j++) { // j=0 is the first column
-		var cell = lastRow.cells[j];
-		// Check if the cell's content can be converted to a number
-		var cellValue = Number(cell.textContent);
-		if (!isNaN(cellValue)) {
-			// Add the cell's numeric value to the row sum and the column sum
-			lastRowSum += cellValue;
-		}
-	}
-	//get first cell
-	var firstCell = lastRow.cells[0];
-	firstCell.classList.add("header");
-	firstCell.style.color = 'black';
-	// get last cell
-	var sumCell = lastRow.cells[lastRow.cells.length-1];
-	sumCell.textContent = lastRowSum;
-	// sumCell.style.fontWeight = 'bold';
-	// sumCell.style.color = 'red';
-	sumCell.classList.add('small', 'align-middle', 'text-center', 'font-weight-bold', 'text-primary');
+function populateTotals() {
+    // Initialize totals for each column
+    let megaTotal = 0;
+    let revisionTotal = 0;
+    let acerTotal = 0;
+    let eduTotal = 0;
+
+    // Iterate through all rows in the table body (excluding the TOTAL row)
+    $('#omrStatTable > tbody tr').each(function () {
+        // Skip the TOTAL row (if it has a specific identifier or class)
+        if ($(this).attr('code') === 'total') {
+            return;
+        }
+
+        // Parse and sum up the values for each column
+        megaTotal += parseInt($(this).find('td').eq(1).text()) || 0;
+        revisionTotal += parseInt($(this).find('td').eq(2).text()) || 0;
+        acerTotal += parseInt($(this).find('td').eq(3).text()) || 0;
+        eduTotal += parseInt($(this).find('td').eq(4).text()) || 0;
+    });
+
+    // Calculate the total sum of all columns
+    const totalSum = megaTotal + revisionTotal + acerTotal + eduTotal;
+
+    // Find or create the TOTAL row
+    let totalRow = $('#omrStatTable > tbody tr[code="total"]');
+    if (totalRow.length === 0) {
+        // If the TOTAL row doesn't exist, create it
+        totalRow = $('<tr code="total" class="font-weight-bold text-center">');
+        totalRow.append('<td class="text-center">TOTAL</td>'); // First column for "TOTAL" label
+        totalRow.append('<td></td>'); // Placeholder for mega total
+        totalRow.append('<td></td>'); // Placeholder for revision total
+        totalRow.append('<td></td>'); // Placeholder for acer total
+        totalRow.append('<td></td>'); // Placeholder for edu total
+        totalRow.append('<td></td>'); // Placeholder for total sum
+        $('#omrStatTable > tbody').append(totalRow);
+    }
+
+    // Update the TOTAL row with calculated values
+    totalRow.find('td').eq(1).text(megaTotal); // Mega total
+    totalRow.find('td').eq(2).text(revisionTotal); // Revision total
+    totalRow.find('td').eq(3).text(acerTotal); // Acer total
+    totalRow.find('td').eq(4).text(eduTotal); // Edu total
+    totalRow.find('td').eq(5).text(totalSum).addClass('text-primary'); // Total sum
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +234,7 @@ function export2Excel(){
 	// Download link
 	var downloadLink = document.createElement("a");
 	// File name
-	downloadLink.download = 'jac-statistics.csv';
+	downloadLink.download = 'omr-statistics.csv';
 	// Create a link to the file
 	downloadLink.href = window.URL.createObjectURL(csvFile);
 	// Hide download link
@@ -245,6 +248,7 @@ function export2Excel(){
 </script>
 
 <style>
+
 #omrStatTable tr {
 	padding: 15px;
 }
@@ -261,7 +265,7 @@ function export2Excel(){
 }
 
 .header {
-    font-size: small;
+    font-size: large;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
@@ -275,6 +279,7 @@ function export2Excel(){
 .header:hover {
     overflow: visible;
 }
+
 </style>
 
 <!-- List Body -->
@@ -310,7 +315,7 @@ function export2Excel(){
 			<thead class="table-primary">
 				<tr>
 					<th class="header">Branch</th>
-					<th class="header">MEGA</th>
+					<th class="header">Mega</th>
 					<th class="header">Revision</th>
 					<th class="header">Acer</th>
 					<th class="header">Edu</th>

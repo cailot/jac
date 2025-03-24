@@ -38,8 +38,13 @@ public interface TestRepository extends JpaRepository<Test, Long>{
 	@Query("SELECT t.testType.name FROM Test t WHERE t.id = ?1")
 	String getTestTypeName(Long id);
 
+	// get test group by id
+	@Query("SELECT t.testType.testGroup FROM Test t WHERE t.id = ?1")
+	int getTestGroup(Long id);
+
 	// update average score by id
 	@Modifying
 	@Query("UPDATE Test t SET t.average = ?2 WHERE t.id = ?1")	
 	void updateAverageScore(Long id, Double average);
+	
 }

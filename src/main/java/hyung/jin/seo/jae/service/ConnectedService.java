@@ -242,6 +242,9 @@ public interface ConnectedService {
 	// get TestType name by test id
 	String getTestTypeName(Long id);
 
+	// get test group by id
+	int getTestGroup(Long id);
+
 	// get average score of Test
 	// double getAverageScoreByTest(Long testId, String from, String to);
 
