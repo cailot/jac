@@ -452,71 +452,6 @@ function confirmDelete(testId) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before processing Test reuslt
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmProcessResult(testId) {
-	// Get test stats by branch
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getTestBranchStat/' + testId,
-		type: 'GET',
-		success: function (data) {
-			$('#branchStats').empty();
-			var tableData = $("<table class='table table-striped table-bordered col-md-10'>");
-			tableData.append('<thead class="table-primary text-center"><tr><th>Branch</th><th>Count</th><th>Branch</th><th>Count</th></tr></thead>');
-			tableData.append('<tbody>');
-			var totalCount = 0;
-			for (var i = 0; i < data.length; i += 2) {
-				var row = $("<tr>");
-				// First column set
-				var branch1 = data[i];
-				var branch1Name = branchName(branch1.branch + '');
-				row.append($('<td class="nowrap-cell">').text(branch1Name));
-				row.append($('<td class="text-center">').text(branch1.count));
-				totalCount += branch1.count;
-
-				// Second column set (check if exists)
-				if (i + 1 < data.length) {
-					var branch2 = data[i + 1];
-					var branch2Name = branchName(branch2.branch + '');
-					row.append($('<td class="nowrap-cell">').text(branch2Name));
-					row.append($('<td class="text-center">').text(branch2.count));
-					totalCount += branch2.count;
-				} else {
-					// Fill empty cells if odd number of branches
-					row.append('<td></td><td></td>');
-				}
-
-				tableData.append(row);
-			}
-
-			// Append Total Row
-			var totalRow = $("<tr class='table-primary'>");
-			totalRow.append('<td colspan="3" class="text-right"><strong>Total</strong></td>');
-			totalRow.append($('<td class="text-center">').html('<strong>' + totalCount + '</strong>'));
-			tableData.append(totalRow);
-
-			tableData.append('</tbody></table>');
-			$('#branchStats').append(tableData);
-		},
-		error: function (error) {
-			console.error(error);
-		}
-	});
-
-
-
-
-    // Show the warning modal
-    $('#processResultModal').modal('show');
-
-    // Attach the click event handler to the "I agree" button
-    $('#processConfirmation').one('click', function() {
-		processTestResult(testId);
-		$('#processResultModal').modal('hide');
-    });
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Delete Test
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function deleteTest(id) {
@@ -536,28 +471,6 @@ function deleteTest(id) {
         }
     });
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Process Test Result
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function processTestResult(id) {
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/processTestResult/' + id,
-		type: 'PUT',
-		success: function (result) {
-			$('#success-alert .modal-body').text(result);
-			$('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.reload();
-			});
-		},
-		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
-    });
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Volume Options
@@ -859,19 +772,6 @@ function updateAnswerCount() {
 														</i>&nbsp;
 														<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
 														</i>&nbsp;
-														<!-- Result Batch Process -->
-														<c:set var="processed" value="${testItem.processed}" />
-														<c:choose>
-															<c:when test="${processed == false}">
-																<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="Schedule Test Result Process" onclick="confirmProcessResult('${testItem.id}')">
-																</i>
-															</c:when>
-															<c:otherwise>
-																<i class="bi bi-check2-square text-secondary fa-lg" data-toggle="tooltip" title="Result Already Processed">
-																</i>
-															</c:otherwise>
-														</c:choose>
-														&nbsp;
 														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${testItem.id}')">
 														</i>
 													</td>
@@ -1138,27 +1038,3 @@ function updateAnswerCount() {
 	</div>
 </div>
 
-<!--Process Result Modal -->
-<div class="modal fade" id="processResultModal" tabindex="-1" role="dialog" aria-labelledby="processResultModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content jae-border-info">
-            <div class="modal-header btn-info">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Schedule Test Result Process</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-				<p> Are you sure to schedule processing Test result?</p>
-				<div id="branchStats" class="row mt-2 mb-2 justify-content-center"></div>
-                <p>It will perform the follwoing actions at 11:30 p.m. and <b>can't be reverted.</b></p>
-				<ol class="text-info font-weight-bold">
-					<li>Calculate the average</li>
-					<li>Send emails to all students</li>
-				</ol>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-info" id="processConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
-            </div>
-    	</div>
-	</div>
-</div>
