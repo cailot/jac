@@ -375,8 +375,9 @@ public class ConnectedController {
 	@GetMapping("/getTestSchedule/{id}")
 	@ResponseBody
 	public TestScheduleDTO getTestSchedule(@PathVariable Long id) {
-		TestSchedule work = connectedService.getTestSchedule(id);
-		TestScheduleDTO dto = new TestScheduleDTO(work);
+		// TestSchedule work = connectedService.getTestSchedule(id);
+		// TestScheduleDTO dto = new TestScheduleDTO(work);
+		TestScheduleDTO dto = connectedService.getTestSchedule(id);
 		return dto;
 	}
 
@@ -730,7 +731,39 @@ public class ConnectedController {
 	@ResponseBody
     public List<StatsDTO> getTestBranchStat(@PathVariable String testId) {        		
 		Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
-		// 1. Get current year
+		
+		// 1. Get TestSchedule
+		TestScheduleDTO test = connectedService.getTestSchedule(id);
+		String grade = test.getGrade();
+		String[] groups = test.getTestGroup();
+		int groupSize = groups.length;
+		String[] weeks = test.getWeek();
+		// int weekSize = weeks.length;
+		
+		// 2. Get Test
+		List<TestDTO> tests = new ArrayList<>();
+		for(int i = 0; i < groupSize; i++){
+			List<TestDTO> temp = connectedService.getTestByGroup(Integer.parseInt(groups[i]), grade, Integer.parseInt(weeks[i]));
+			for(TestDTO t : temp){
+				tests.add(t);
+			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// 2. Get current year
 		int currentYear = cycleService.academicYear();
 		CycleDTO cycle = cycleService.listCycles(currentYear);
 		// 2. Get student list

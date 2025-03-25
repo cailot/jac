@@ -186,8 +186,11 @@ public interface ConnectedService {
 	void deleteTest(Long id);
 
 	// get Test by type, grade & volume
-	TestDTO getTestInfo(int type, String grade, int volume);
+	TestDTO getTestByType(int type, String grade, int volume);
 
+	// get Test by testGroup, grade & volume
+	List<TestDTO> getTestByGroup(int group, String grade, int volume);
+	
 	// list Test by type, grade & volume
 	List<TestDTO> listTest(int type, String grade, int volume);
 
@@ -327,8 +330,8 @@ public interface ConnectedService {
 	// List<TestScheduleDTO> listTestSchedule(int year, int week);
 	List<TestScheduleDTO> listTestSchedule(LocalDateTime from, LocalDateTime to, int group);
 
-	// retrieve Practice Schedule by Id
-	TestSchedule getTestSchedule(Long id);
+	// retrieve Test Schedule by Id
+	TestScheduleDTO getTestSchedule(Long id);
 	
 	// register Practice Schedule
 	TestSchedule addTestSchedule(TestSchedule ps);
