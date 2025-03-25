@@ -28,7 +28,8 @@ public class TestScheduleDTO implements Serializable {
 
 	private String to;
 
-	private String[] grade;
+	//private String[] grade;
+	private String grade;
 
 	private String[] testGroup;
 
@@ -50,7 +51,7 @@ public class TestScheduleDTO implements Serializable {
 		ts.setToDatetime(LocalDateTime.parse(this.to, DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		ts.setActive(this.active);
 		ts.setInfo(this.info);
-		ts.setGrade(JaeUtils.joinString(this.grade));
+		ts.setGrade(this.grade);
 		ts.setTestGroup(JaeUtils.joinString(this.testGroup));
 		ts.setWeek(JaeUtils.joinString(this.week));
 		ts.setResultDate(this.resultDate != null ? LocalDate.parse(this.resultDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
@@ -61,7 +62,7 @@ public class TestScheduleDTO implements Serializable {
 		this.id = String.valueOf(schedule.getId());
 		this.from = schedule.getFromDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
 		this.to = schedule.getToDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
-		this.grade = JaeUtils.splitString(schedule.getGrade());
+		this.grade = schedule.getGrade();
 		this.testGroup = JaeUtils.splitString(schedule.getTestGroup());
 		this.week = JaeUtils.splitString(schedule.getWeek());
 		this.info = schedule.getInfo();
@@ -74,7 +75,7 @@ public class TestScheduleDTO implements Serializable {
 		this.id = String.valueOf(id);
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
-		this.grade = JaeUtils.splitString(grade);
+		this.grade = grade;
 		this.testGroup = JaeUtils.splitString(group);
 		this.week = JaeUtils.splitString(week);
 		this.info = info;
@@ -86,7 +87,7 @@ public class TestScheduleDTO implements Serializable {
 		this.id = String.valueOf(id);
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
-		this.grade = JaeUtils.splitString(grade);
+		this.grade = grade;
 		this.testGroup = JaeUtils.splitString(group);
 		this.week = JaeUtils.splitString(week);
 		this.info = info;

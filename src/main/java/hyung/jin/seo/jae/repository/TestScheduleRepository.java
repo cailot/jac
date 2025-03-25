@@ -25,5 +25,8 @@ public interface TestScheduleRepository extends JpaRepository<TestSchedule, Long
 	"AND (:testGroup = '0' OR t.testGroup = :testGroup OR t.testGroup LIKE CONCAT('%,', :testGroup, ',%') OR t.testGroup LIKE CONCAT(:testGroup, ',%') OR t.testGroup LIKE CONCAT('%,', :testGroup))")
 	List<TestScheduleDTO> filterTestScheduleByTimeNGroup(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("testGroup") String testGroup);
 
+	// get TestScheduleDTO by id
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate, t.resultDate) FROM TestSchedule t WHERE t.id = ?1")
+	TestScheduleDTO getTestScheduleById(Long id);
 }
 

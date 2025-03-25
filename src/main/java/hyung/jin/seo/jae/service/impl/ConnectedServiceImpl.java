@@ -240,10 +240,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public TestSchedule getTestSchedule(Long id) {
-		Optional<TestSchedule> test = testScheduleRepository.findById(id);
-		if(!test.isPresent()) return null;
-		return test.get();
+	public TestScheduleDTO getTestSchedule(Long id) {
+		// Optional<TestSchedule> test = testScheduleRepository.findById(id);
+		// if(!test.isPresent()) return null;
+		// return test.get();
+		TestScheduleDTO dto = null;
+		try{
+			dto = testScheduleRepository.getTestScheduleById(id);
+		}catch(Exception e){
+			System.out.println("No TestSchedule found");
+		}
+		return dto;
 	}
 
 	@SuppressWarnings("null")
@@ -731,14 +738,25 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
-	public TestDTO getTestInfo(int type, String grade, int volume) {
+	public TestDTO getTestByType(int type, String grade, int volume) {
 		TestDTO dto = null;
 		try{
-			dto = testRepository.findTest(type, grade, volume);
+			dto = testRepository.findTestByType(type, grade, volume);
 		}catch(Exception e){
 			System.out.println("No Test found");
 		}
 		return dto;
+	}
+
+	@Override
+	public List<TestDTO> getTestByGroup(int group, String grade, int volume) {
+		List<TestDTO> dtos = new ArrayList<>();
+		try{
+			dtos = testRepository.findTestByGroup(group, grade, volume);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return dtos;
 	}
 
 	@Override
