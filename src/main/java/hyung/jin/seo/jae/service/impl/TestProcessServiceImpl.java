@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.CycleDTO;
+import hyung.jin.seo.jae.dto.TestDTO;
+import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.dto.TestSummaryDTO;
-import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.model.TestSchedule;
+import hyung.jin.seo.jae.repository.AssessmentAnswerRepository;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.service.CycleService;
@@ -24,6 +27,8 @@ import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Service
 public class TestProcessServiceImpl implements TestProcessService {
+
+    private final AssessmentAnswerRepository assessmentAnswerRepository;
 
 	@Autowired
 	private CycleService cycleService;
@@ -39,51 +44,69 @@ public class TestProcessServiceImpl implements TestProcessService {
 
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+    TestProcessServiceImpl(AssessmentAnswerRepository assessmentAnswerRepository) {
+        this.assessmentAnswerRepository = assessmentAnswerRepository;
+    }
+
 	@Override
-	public void processTestScheduleAt11_30PM(Long testId) {
+	public void processTestScheduleAt11_30PM(Long testScheduleId) {
 		long delay = calculateDelayUntil11_30PM();
 
         scheduler.schedule(() -> {
             // Step 1: Get current year
             int currentYear = cycleService.academicYear();
             CycleDTO cycle = cycleService.listCycles(currentYear);
-            // Step 2: Get average score
-            double average = connectedService.getAverageScoreByTest(testId, cycle.getStartDate(), cycle.getEndDate());
-            // Step 3: Update average score
-            connectedService.updateTestAverage(testId, average);
-            // Step 4: Get student list
-            List<Long> studentList = connectedService.getStudentListByTest(testId, cycle.getStartDate(), cycle.getEndDate());
-			// Step 5: Make TestSummaryDTO list
-			List<TestSummaryDTO> summaries = new ArrayList<>();
-			for (Long studentId : studentList) {
-				TestSummaryDTO summary = new TestSummaryDTO();
-				summary.setId(studentId.toString());
-				String studentName = studentService.getStudentName(studentId);
-				summary.setName(studentName);
-				String studentBranch = studentService.getBranch(studentId);
-				summary.setBranch(studentBranch);
-				summaries.add(summary);
-			}
-
-            // Step 5: Send email to all students
-			System.out.println("✅ Scheduled process student count : " + studentList.size());
-			for (Long studentId : studentList) {
-                // Replace with actual email logic (JavaMailSender or other service)
-                System.out.println("Sending email to student ID: " + studentId + " for Test ID: " + testId);
-            }
-			// Step 6: Send summary email to branch
-			List<BranchDTO> branches = codeService.allBranches();
-			for (BranchDTO branch : branches) {
-				if(branch.getCode().equals(JaeConstants.HEAD_OFFICE_CODE) || branch.getCode().equals(JaeConstants.TEST_CODE)) {
-					continue;
+			// Step 2: Get test by shedule ID
+			TestScheduleDTO schedule = connectedService.getTestSchedule(testScheduleId);
+			String grade = schedule.getGrade();
+			String[] groups = schedule.getTestGroup();
+			int groupSize = groups.length;
+			String[] weeks = schedule.getWeek();
+			// Step 3: Get test list by grade, group and week
+			List<TestDTO> tests = new ArrayList<>();
+			for (int i = 0; i < groupSize; i++) {
+				List<TestDTO> temp = connectedService.getTestByGroup(Integer.parseInt(groups[i]), grade, Integer.parseInt(weeks[i]));
+				for(TestDTO t : temp){
+					tests.add(t);
 				}
-				String branchCode = branch.getCode();
-				String branchEmail = branch.getEmail();
-				System.out.println("Sending summary email to branch: " + branchCode + " to email: " + branchEmail);
 			}
-			
-            System.out.println("✅ Scheduled process completed for Test ID: " + testId);
-
+			for(TestDTO test : tests){
+				// Step 4: Get average score
+				double average = connectedService.getAverageScoreByTest(Long.parseLong(test.getId()), cycle.getStartDate(), cycle.getEndDate());
+				// Step 5: Update average score
+				connectedService.updateTestAverage(Long.parseLong(test.getId()), average);
+				// Step 6: Get student list
+				List<Long> studentList = connectedService.getStudentListByTest(Long.parseLong(test.getId()), cycle.getStartDate(), cycle.getEndDate());
+				// Step 7: Make TestSummaryDTO list
+				List<TestSummaryDTO> summaries = new ArrayList<>();
+				for (Long studentId : studentList) {
+					TestSummaryDTO summary = new TestSummaryDTO();
+					summary.setId(studentId.toString());
+					String studentName = studentService.getStudentName(studentId);
+					summary.setName(studentName);
+					String studentBranch = studentService.getBranch(studentId);
+					summary.setBranch(studentBranch);
+					summaries.add(summary);
+				}
+				// Step 8: Send email to all students
+				System.out.println("Scheduled process student count : " + studentList.size());
+				for (Long studentId : studentList) {
+					// Replace with actual email logic (JavaMailSender or other service)
+					System.out.println("Sending email to student ID: " + studentId + " for Test ID: " + test.getId());
+				}
+				// Step 9: Send summary email to branch
+				List<BranchDTO> branches = codeService.allBranches();
+				for (BranchDTO branch : branches) {
+					if(branch.getCode().equals(JaeConstants.HEAD_OFFICE_CODE) || branch.getCode().equals(JaeConstants.TEST_CODE)) {
+						continue;
+					}
+					String branchCode = branch.getCode();
+					String branchEmail = branch.getEmail();
+					System.out.println("Sending summary email to branch: " + branchCode + " to email: " + branchEmail);
+				}				
+				System.out.println("Scheduled process completed for Test ID: " + test.getId());
+			}
+            
         }, delay, TimeUnit.MILLISECONDS);
 	}
 

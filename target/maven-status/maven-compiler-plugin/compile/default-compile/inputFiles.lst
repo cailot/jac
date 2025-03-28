@@ -8,6 +8,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Test.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/HomeworkScheduleRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/AssessmentServiceImpl.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OmrScanHistoryDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/ClazzController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeTypeRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/JaeUtils.java
@@ -27,6 +28,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TestDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/LoginActivityDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/AssessmentAnswerRepository.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/TestProcessService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/TeacherService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/PracticeDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Cycle.java
@@ -64,6 +66,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/BatchController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/PracticeSchedule.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/StatisticController.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OmrStatsDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/GuestStudentDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/OnlineSession.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/AssessmentAnswerItem.java
@@ -122,7 +125,6 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/JaeApplication.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/CourseDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/TestAnswer.java
-/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Score.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/PaymentService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/CycleService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/InvoiceRepository.java
@@ -134,6 +136,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Book.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/utils/UsernameGenerator.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/ConnectedController.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/OmrScanHistory.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeScheduleRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/OnlineActivityController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/OnlineActivityDTO.java
@@ -184,6 +187,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/OnlineSessionService.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/HomeworkRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/config/JaeSecurityConfig.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/TestSummaryDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/PracticeAnswer.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/BookController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/MoneyDTO.java
@@ -191,6 +195,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/HomeworkDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/StateDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/StudentTest.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/TestProcessServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/TestAnswerRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/dto/SubjectDTO.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/PracticeAnswerRepository.java
@@ -204,6 +209,7 @@
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/Subject.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/InvoiceController.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/OnlineSessionServiceImpl.java
+/Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/repository/OmrScanHistoryRepository.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/model/DaySchedule.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/service/impl/StudentServiceImpl.java
 /Users/javacoffee/dev/workspace/jac/src/main/java/hyung/jin/seo/jae/controller/rest/JaeRestController.java

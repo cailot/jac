@@ -38,6 +38,7 @@ $(document).ready(function () {
 	listPracticeType('#addPracticeType');
 	listPracticeType('#editPracticeType');
 
+	/*
 	// set current year & week
 	$.ajax({
 		url : '${pageContext.request.contextPath}/class/academy',
@@ -56,6 +57,7 @@ $(document).ready(function () {
 			console.log('Error : ' + errorThrown);
 		}
 	});
+	*/
 
 });
 

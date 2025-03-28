@@ -452,20 +452,6 @@ function confirmDelete(testId) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Confirm before processing Test reuslt
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function confirmProcessResult(testId) {
-    // Show the warning modal
-    $('#processResultModal').modal('show');
-
-    // Attach the click event handler to the "I agree" button
-    $('#processConfirmation').one('click', function() {
-		processTestResult(testId);
-		$('#processResultModal').modal('hide');
-    });
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Delete Test
 /////////////////////////////////////////////////////////////////////////////////////////////////////////	
 function deleteTest(id) {
@@ -485,28 +471,6 @@ function deleteTest(id) {
         }
     });
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//		Process Test Result
-/////////////////////////////////////////////////////////////////////////////////////////////////////////	
-function processTestResult(id) {
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/processTestResult/' + id,
-		type: 'PUT',
-		success: function (result) {
-			$('#success-alert .modal-body').text('Test Result proccessed successfully');
-			$('#success-alert').modal('show');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.reload();
-			});
-		},
-		error: function (error) {
-            // Handle error response
-            console.error(error);
-        }
-    });
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Volume Options
@@ -542,6 +506,17 @@ function updateVolumeOptions(action) {
 			// Set the value and text content for the option
 			option.value = i;
 			option.textContent = i;
+			if(option.value == 36){
+				option.textContent = "SIM 1";
+			}else if(option.value == 37){
+				option.textContent = "SIM 2";
+			}else if(option.value == 38){
+				option.textContent = "SIM 3";
+			}else if(option.value == 39){
+				option.textContent = "SIM 4";
+			}else if(option.value == 40){
+				option.textContent = "SIM 5";
+			}
 			// Append the option to the select element
 			selectElement.appendChild(option);
 		}
@@ -608,6 +583,12 @@ function updateAnswerCount() {
 		height: 45px 	
 	} 
 
+    .nowrap-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px; /* adjust based on your layout */
+    }
 </style>
 
 <!-- List Body -->
@@ -695,13 +676,18 @@ function updateAnswerCount() {
 																<c:when test="${testItem.testType == '4'}">Revision English</c:when>
 																<c:when test="${testItem.testType == '5'}">Revision Mathematics</c:when>
 																<c:when test="${testItem.testType == '6'}">Revision Science</c:when>
-																<c:when test="${testItem.testType == '7'}">Reeading Comprehension (EDU)</c:when>
+																<c:when test="${testItem.testType == '7'}">Reading Comprehension (EDU)</c:when>
 																<c:when test="${testItem.testType == '8'}">Verbal Reasoning (EDU)</c:when>
 																<c:when test="${testItem.testType == '9'}">Mathematics (EDU)</c:when>
 																<c:when test="${testItem.testType == '10'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${testItem.testType == '11'}">Humanities (ACER)</c:when>
-																<c:when test="${testItem.testType == '12'}">Mathematics (ACER)</c:when>
-																<c:when test="${testItem.testType == '13'}">Mock Test</c:when>
+																<c:when test="${testItem.testType == '11'}">Science (EDU)</c:when>
+																<c:when test="${testItem.testType == '12'}">Humanities (ACER)</c:when>
+																<c:when test="${testItem.testType == '13'}">Mathematics (ACER)</c:when>
+																<c:when test="${testItem.testType == '14'}">Abstract Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '15'}">Reading Comprehension (ACER)</c:when>
+																<c:when test="${testItem.testType == '16'}">Verbal Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '17'}">Quantitative Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '18'}">Mock Test</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>
@@ -733,6 +719,7 @@ function updateAnswerCount() {
 															</c:choose>
 														</span>
 													</td>
+
 													<td class="small align-middle text-center">
 														<span>
 															<c:choose>
@@ -747,11 +734,21 @@ function updateAnswerCount() {
 																	</c:choose>
 																</c:when>
 																<c:otherwise>
-																	<c:out value="${testItem.volume}" />
+																	<c:choose>
+																		<c:when test="${testItem.volume == '36'}">SIM1</c:when>
+																		<c:when test="${testItem.volume == '37'}">SIM2</c:when>
+																		<c:when test="${testItem.volume == '38'}">SIM3</c:when>
+																		<c:when test="${testItem.volume == '39'}">SIM4</c:when>
+																		<c:when test="${testItem.volume == '40'}">SIM5</c:when>
+																		<c:otherwise>
+																			<c:out value="${testItem.volume}" />
+																		</c:otherwise>
+																	</c:choose>
 																</c:otherwise>
 															</c:choose>
 														</span>
 													</td>
+
 													<td class="small align-middle text-truncate" style="max-width: 250px;">
 														<span data-toggle="tooltip" title="${testItem.pdfPath}">
 															<c:out value="${testItem.pdfPath}" />
@@ -780,19 +777,6 @@ function updateAnswerCount() {
 														</i>&nbsp;
 														<i class="bi bi-paperclip text-success fa-lg hand-cursor" data-toggle="tooltip" title="Answer Sheet" onclick="displayAnswerSheet('${testItem.id}')">
 														</i>&nbsp;
-														<!-- Result Batch Process -->
-														<c:set var="processed" value="${testItem.processed}" />
-														<c:choose>
-															<c:when test="${processed == false}">
-																<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="Process Test Result" onclick="confirmProcessResult('${testItem.id}')">
-																</i>
-															</c:when>
-															<c:otherwise>
-																<i class="bi bi-check2-square text-secondary fa-lg" data-toggle="tooltip" title="Result Already Processed">
-																</i>
-															</c:otherwise>
-														</c:choose>
-														&nbsp;
 														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${testItem.id}')">
 														</i>
 													</td>
@@ -1059,26 +1043,3 @@ function updateAnswerCount() {
 	</div>
 </div>
 
-<!--Process Result Modal -->
-<div class="modal fade" id="processResultModal" tabindex="-1" role="dialog" aria-labelledby="processResultModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content jae-border-info">
-            <div class="modal-header btn-info">
-               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Process Test Result</h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p> Are you sure to run processing Test result?</p>
-				<p>It will perform the follwoing actions and can't be reverted.</p>
-				<ol class="text-info font-weight-bold">
-					<li>Calculate the average</li>
-					<li>Send emails to all students</li>
-				</ol>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-info" id="processConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
-            </div>
-    	</div>
-	</div>
-</div>

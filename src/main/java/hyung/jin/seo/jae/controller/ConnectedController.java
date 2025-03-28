@@ -716,9 +716,9 @@ public class ConnectedController {
 
 	@PutMapping(value = "/processTestResult/{testId}")
 	@ResponseBody
-    public ResponseEntity<String> processTestResult(@PathVariable String testId) {
+    public ResponseEntity<String> processTestResult(@PathVariable String testScheudleId) {
         		
-		Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+		Long id = Long.parseLong(StringUtils.defaultString(testScheudleId, "0"));
 
 		// schedule the process to 11:30 p.m. 
 		testProcessService.processTestScheduleAt11_30PM(id);
@@ -749,26 +749,11 @@ public class ConnectedController {
 			}
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		// 2. Get current year
+		// 3. Get current year
 		int currentYear = cycleService.academicYear();
 		CycleDTO cycle = cycleService.listCycles(currentYear);
-		// 2. Get student list
-		List<Long> studentList = connectedService.getStudentListByTest(id, cycle.getStartDate(), cycle.getEndDate());
-		// 3. List of StatsDTO
+		
+		// 4. List of StatsDTO
 		List<StatsDTO> dtos = new ArrayList<>();
 		List<SimpleBasketDTO> branches = codeService.loadBranch();
 		for(SimpleBasketDTO branch : branches){
@@ -780,18 +765,24 @@ public class ConnectedController {
 			dto.setBranch(Integer.parseInt(branch.getValue()));
 			dtos.add(dto);
 		}
-		// 4. Iterate over studentList and count the students for each branch
-		for(Long studentId : studentList){
-			// 5. Get branch of the student
-			String branch = studentService.getBranch(studentId);
-			// 6. Iterate over dtos and increment the count for the branch
-			for(StatsDTO dto : dtos){
-				if(dto.getBranch() == Integer.parseInt(branch)){
-					dto.setCount(dto.getCount() + 1);
+		
+		for(TestDTO t : tests){
+			// 5. Get student list
+			List<Long> studentList = connectedService.getStudentListByTest(Long.parseLong(t.getId()), cycle.getStartDate(), cycle.getEndDate());
+			// 6. Iterate over studentList and count the students for each branch
+			for(Long studentId : studentList){
+				// 7. Get branch of the student
+				String branch = studentService.getBranch(studentId);
+				// 8. Iterate over dtos and increment the count for the branch
+				for(StatsDTO dto : dtos){
+					if(dto.getBranch() == Integer.parseInt(branch)){
+						dto.setCount(dto.getCount() + 1);
+					}
 				}
 			}
 		}
-		// 5. Return dtos
+
+		// 9. Return dtos
 		return dtos;
     }
 

@@ -12,7 +12,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
  
-  
+
 <script>
 
 $(document).ready(function () {
@@ -112,7 +112,7 @@ function editAnswer(tableIndex, fileName, data) {
 		success: function (answer) {
 			// console.log(answer);
 
-			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/12_1_2398405781226010335.jpg" alt="Logo" class="img-fluid full-fill">');				
+			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/' + fileName + '" alt="Logo" class="img-fluid full-fill">');				
 			// Create an editable table with Bootstrap styling and load it into #answerTable
 			const cols = 10; // Number of columns per row
 			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
@@ -258,6 +258,22 @@ function updateTestAnswer(){
 	// Hide the modal
 	$('#editModal').modal('hide');
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Confirm Proceed Answer Sheets
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function confirmProceed() {
+    // Show the warning modal
+    $('#proceedWarningModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#agreeProceedWarning').one('click', function() {
+        $('#proceedWarningModal').modal('hide');
+		proceedNext();
+    });
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Proceed Save Data
@@ -563,8 +579,6 @@ function proceedNext() {
 	    </form>
 		</div>
 	</div>
-
-
 	<!-- Result/Error display -->
 	<c:choose>
 		<c:when test="${error != null}">
@@ -591,52 +605,98 @@ function proceedNext() {
 				<!-- Display OMR Scan Results -->
 				<c:if test="${not empty results}">
 					<div class="row m-3 pt-5 justify-content-center">
-						<div class="col-md-12">
+						<div class="col-md-8">
 							<c:if test="${not empty meta}">
-								<h4>
-									<!-- save meta values -->
-									<span id="metaBranch" name="metaBranch" class="hidden">${meta.branch}</span><span id="metaTestGroup" name="metaTestGroup" class="hidden">${meta.testGroup}</span><span id="metaGrade" name="metaGrade" class="hidden">${meta.grade}</span><span id="metaVolume" name="metaVolume" class="hidden">${meta.volume}</span>
-									<script type="text/javascript">
-										document.write(
-											branchName('${meta.branch}') + ' '  + 
-											testGroupName('${meta.testGroup}') + ' ' + 
-											gradeName('${meta.grade}') + ' ');
-									</script>
-									Set : 
-									<c:choose>
-										<c:when test="${meta.testGroup=='1' || meta.testGroup=='2'}">
-											<c:choose>
-												<c:when test="${meta.volume == '1'}">Vol.1</c:when>
-												<c:when test="${meta.volume == '2'}">Vol.2</c:when>
-												<c:when test="${meta.volume == '3'}">Vol.3</c:when>
-												<c:when test="${meta.volume == '4'}">Vol.4</c:when>
-												<c:when test="${meta.volume == '5'}">Vol.5</c:when>
-												<c:otherwise></c:otherwise>
-											</c:choose>
-										</c:when>
-										<c:otherwise>
-											<c:out value="${meta.volume}" />
-										</c:otherwise>
-									</c:choose>
-									
-									- Number of results: ${fn:length(results)}</h4>
+							<div class="mb-5">
+								<div class="card shadow border-1 rounded-3 text-center jae-border-primary">
+									<div class="card-header text-white bg-primary">
+										<h4 class="mb-0">
+											<i class="bi bi-filetype-pdf h2 mr-2"></i> Scanned OMR Summary
+										</h4>
+									</div>
+									<div class="card-body">
+										<!-- Hidden meta values -->
+										<span id="metaBranch" class="d-none">${meta.branch}</span>
+										<span id="metaTestGroup" class="d-none">${meta.testGroup}</span>
+										<span id="metaGrade" class="d-none">${meta.grade}</span>
+										<span id="metaVolume" class="d-none">${meta.volume}</span>
+										<!-- Flex container for equal distribution -->
+										<div class="d-flex justify-content-around text-center flex-wrap">											
+											<div>
+												<i class="fas fa-map-marker-alt text-primary"></i> 
+												<strong>Branch</strong>
+												<p id="branchText" class="text-dark fw-bold">${meta.branch}</p>
+												<script>
+													document.getElementById("branchText").innerText = branchName("${meta.branch}");
+												</script>
+											</div>
+							
+											<div>
+												<i class="fas fa-book-open text-success"></i> 
+												<strong>Test Group</strong>
+												<p id="groupText" class="text-dark fw-bold">${meta.testGroup}</p>
+												<script>
+													document.getElementById("groupText").innerText = testGroupName("${meta.testGroup}");
+												</script>
+											</div>
+							
+											<div>
+												<i class="fas fa-graduation-cap text-warning"></i> 
+												<strong>Grade</strong>
+												<p id="gradeText" class="text-dark fw-bold">${meta.grade}</p>
+												<script>
+													document.getElementById("gradeText").innerText = gradeName("${meta.grade}");
+												</script>
+											</div>
+											<div>
+												<i class="fas fa-layer-group text-info"></i> 
+												<strong>Set</strong>
+												<p class="text-dark fw-bold">
+													<c:choose>
+														<c:when test="${meta.testGroup=='1' || meta.testGroup=='2'}">
+															<c:choose>
+																<c:when test="${meta.volume == '1'}">Vol.1</c:when>
+																<c:when test="${meta.volume == '2'}">Vol.2</c:when>
+																<c:when test="${meta.volume == '3'}">Vol.3</c:when>
+																<c:when test="${meta.volume == '4'}">Vol.4</c:when>
+																<c:when test="${meta.volume == '5'}">Vol.5</c:when>
+																<c:otherwise>N/A</c:otherwise>
+															</c:choose>
+														</c:when>
+														<c:otherwise>
+															<c:out value="${meta.volume}" />
+														</c:otherwise>
+													</c:choose>
+												</p>
+											</div>
+											<div>
+												<i class="fas fa-file-alt text-danger"></i> 
+												<strong>Number of Answer Sheets</strong>
+												<p class="text-dark fw-bold">${fn:length(results)}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 							</c:if>
 							<div class="row justify-content-center">
 								<c:forEach items="${results}" var="result" varStatus="status">
 									<!-- Answer Sheet Card Section-->
-									<div class="col-md-10 mb-4">
-										<div class="card h-100">
+									<div class="col-md-12 mb-4">
+										<div class="card h-100 shadow border-1 rounded-3">
 											<div class="card-body">
 												<div class="row">
 													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
 														<div id="studentId${status.index}"><c:out value="${result.studentId}" /> </div>
-														<div id="testId${status.index}"><c:out value="${result.testId}" /> </div>
+														<div id="testId${status.index}" class="d-none">
+															<c:out value="${result.testId}" />	
+														</div>
 														<div><c:out value="${result.studentName}" /> </div>
 														<div>
 															<script>
 																const resultData${status.index} = JSON.parse("${result.answers}");
 															</script>		
-															<h3><i class="bi bi-file-earmark-text text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${result.fileName}', resultData${status.index})"></i></h3>
+															<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${result.fileName}', resultData${status.index})"></i></h3>
 														</div>		
 													</div>
 													<div class="col-10" id="resultTable${status.index}">
@@ -653,21 +713,17 @@ function proceedNext() {
 							</div>
 							<!-- Optional: Next Button if needed -->
 							<div class="text-center mt-4">
-								<button class="btn btn-success" onclick="proceedNext()">Confirm to Save</button>
+								<button class="btn btn-success" onclick="confirmProceed()">Confirm to Save</button>
 							</div>
 						</div>
 					</div>
 				</c:if>
-
-
-			<!-- </div> -->
 		</c:when>
 		<c:otherwise>
 			<!-- Other content -->
 		</c:otherwise>
 	</c:choose>
 </div>
-
 
 <!-- Pop up Edit modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
@@ -704,4 +760,25 @@ function proceedNext() {
     </div>
 </div>
 
-
+<!-- Proceed Warning Modal -->
+<div class="modal fade" id="proceedWarningModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border: 2px solid #ffc107; border-radius: 10px; max-width: 500px; max-height: 400px; overflow-y: auto;">
+            <div class="modal-header bg-warning text-center">
+                <h6 class="modal-title w-100 font-weight-bold">Finalised Answer Sheets Submission</h6>
+            </div>
+            <div class="modal-body text-center bg-light p-3">
+                <img src="${pageContext.request.contextPath}/image/submit.png" class="mb-3" style="width: 80px; height: 80px;">
+                <p class="h6 mb-3">Please review all answers carefully before proceeding.</p>
+                <p class="h6">
+                    Once stored in the database, the answer sheets <br> <span class="text-danger font-weight-bold text-uppercase">cannot be modified or changed.</span>
+                </p>
+                <p class="h6 font-weight-bold mt-3">Are you sure you want to continue?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary btn-sm" id="agreeProceedWarning">Yes, Proceed</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">No, Submit Later</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -38,6 +38,7 @@ $(document).ready(function () {
 	listTestType('#addTestType');
 	listTestType('#editTestType');
 
+	/*
 	// set current year & week
 	$.ajax({
 		url : '${pageContext.request.contextPath}/class/academy',
@@ -46,16 +47,15 @@ $(document).ready(function () {
 			// save the response into the variable
 			const academicYear = response[0];
 			const academicWeek = response[1];
-			// console.log('Academic Year : ' + academicYear);
-			// console.log('Academic Week : ' + academicWeek);
 			// $("#listYear").val(academicYear);
-			$("#listVolume").val(academicWeek);
+			//$("#listVolume").val(academicWeek);
 
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Error : ' + errorThrown);
 		}
 	});
+	*/
 
 });
 
@@ -582,7 +582,6 @@ function updateAnswerCount() {
 		vertical-align: middle;
 		height: 45px 	
 	} 
-
     .nowrap-cell {
         white-space: nowrap;
         overflow: hidden;
@@ -624,12 +623,24 @@ function updateAnswerCount() {
 							// Append the 'All' option to the select element
 							selectElement.appendChild(allOption);
 							// Loop to add options from 1 to 50
-							for (var i = 1; i <= 50; i++) {
+							for (var i = 1; i <= 40; i++) {
 								// Create a new option element
 								var option = document.createElement("option");
 								// Set the value and text content for the option
 								option.value = i;
 								option.textContent = i;
+								// SIM 1~5
+								if(option.value == 36){
+									option.textContent = "SIM 1";
+								}else if(option.value == 37){
+									option.textContent = "SIM 2";
+								}else if(option.value == 38){
+									option.textContent = "SIM 3";
+								}else if(option.value == 39){
+									option.textContent = "SIM 4";
+								}else if(option.value == 40){
+									option.textContent = "SIM 5";
+								}
 								// Append the option to the select element
 								selectElement.appendChild(option);
 							}
@@ -676,13 +687,18 @@ function updateAnswerCount() {
 																<c:when test="${testItem.testType == '4'}">Revision English</c:when>
 																<c:when test="${testItem.testType == '5'}">Revision Mathematics</c:when>
 																<c:when test="${testItem.testType == '6'}">Revision Science</c:when>
-																<c:when test="${testItem.testType == '7'}">Reeading Comprehension (EDU)</c:when>
+																<c:when test="${testItem.testType == '7'}">Reading Comprehension (EDU)</c:when>
 																<c:when test="${testItem.testType == '8'}">Verbal Reasoning (EDU)</c:when>
 																<c:when test="${testItem.testType == '9'}">Mathematics (EDU)</c:when>
 																<c:when test="${testItem.testType == '10'}">Numerical Reasoning (EDU)</c:when>
-																<c:when test="${testItem.testType == '11'}">Humanities (ACER)</c:when>
-																<c:when test="${testItem.testType == '12'}">Mathematics (ACER)</c:when>
-																<c:when test="${testItem.testType == '13'}">Mock Test</c:when>
+																<c:when test="${testItem.testType == '11'}">Science (EDU)</c:when>
+																<c:when test="${testItem.testType == '12'}">Humanities (ACER)</c:when>
+																<c:when test="${testItem.testType == '13'}">Mathematics (ACER)</c:when>
+																<c:when test="${testItem.testType == '14'}">Abstract Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '15'}">Reading Comprehension (ACER)</c:when>
+																<c:when test="${testItem.testType == '16'}">Verbal Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '17'}">Quantitative Reasoning (ACER)</c:when>
+																<c:when test="${testItem.testType == '18'}">Mock Test</c:when>
 																<c:otherwise></c:otherwise>
 															</c:choose>
 														</span>

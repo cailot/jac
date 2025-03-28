@@ -16,7 +16,9 @@
 <script src="${pageContext.request.contextPath}/js/bootstrap.bundle-4.5.3.min.js"></script>	
 
 <!-- Bootstrap Icons -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/>
+<!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.min.css"/> -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-icons.css"></link>
+
 <!-- Google Icons -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -40,10 +42,6 @@
     $(function() {
         // Enable Bootstrap tooltips
         $('[data-toggle="tooltip"]').tooltip();
-        // $('[data-toggle="tooltip"]').tooltip({
-        //     container: 'body',
-        //     placement: 'top' // or 'bottom', 'left', 'right'
-        // });
     });
 
     var sessionTimeout = 1000*60*30; // 30 mins for demonstration
@@ -119,7 +117,7 @@
         <footer class="mt-auto">
             <div class="row" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.3</span></div>
+                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.4</span></div>
             </div>
         </footer>	
     </div>

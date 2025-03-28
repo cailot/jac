@@ -34,7 +34,7 @@ function searchStats() {
 	var start = document.getElementById("fromDate").value;
 	var end = document.getElementById("toDate").value;
 	if (start == "" || end == "") {
-		$('#warning-alert .modal-body').text('Please select date range beforel your search');
+		$('#warning-alert .modal-body').text('Please select date range before your search');
 		$('#warning-alert').modal('toggle');
 		return;
 	}
@@ -50,12 +50,12 @@ function searchStats() {
 			// flush tbody
 			var tbody = document.querySelector('#regStatTable tbody');
 			tbody.innerHTML = "";
-			// initialise tbody
+			// initialise tbody			
 			addRows();		
 			$.each(items, function (index, item) {
-				// console.log(item);
-				 // get branch value for x axis
-				 var branchCode = item.branch;
+				console.log(item);
+				// get branch value for x axis
+				var branchCode = item.branch;
 				// Find the th element with the corresponding code
 				var th = $('#regStatTable th[code="' + branchCode + '"]');
 				if (th.length > 0) {
@@ -108,7 +108,7 @@ function studentList(branch, grade){
 	var start = document.getElementById("fromDate").value;
 	var end = document.getElementById("toDate").value;
 	if (start == "" || end == "") {
-		$('#warning-alert .modal-body').text('Please select date range beforel your search');
+		$('#warning-alert .modal-body').text('Please select date range before your search');
 		$('#warning-alert').modal('toggle');
 		return;
 	}
@@ -327,7 +327,7 @@ function addRows(){
 		{ id: 'vceRow', text: 'VCE' }
 	];
 	// Get the tbody element
-	var tbody = document.querySelector('tbody');
+	var tbody = document.querySelector('#regStatTable tbody');
 	// Iterate over the rows data
 	rowsData.forEach(function(rowData) {
 		// Create a new row and cell
@@ -713,7 +713,8 @@ function export2Excel(){
 		<input type="text" class="form-control datepicker" id="fromDate" name="fromDate" placeholder="From" autocomplete="off" required>
 	</div>
 	<div class="col-md-2">
-		<label for="toDate" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" autocomplete="off" required>
+		<label for="toDate" class="label-form">To Date</label> 
+		<input type="text" class="form-control datepicker" id="toDate" name="toDate" placeholder="To" autocomplete="off" required>
 	</div>
 	<!-- put blank col-md-1 -->
 	<div class="offset-md-5"></div>
