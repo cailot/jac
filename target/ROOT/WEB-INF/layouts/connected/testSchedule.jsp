@@ -49,6 +49,26 @@ $(document).ready(function () {
 		}
 	});
 
+	$("#addResultDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        autoclose: true,
+        todayHighlight: true
+    }).datepicker("setDate", new Date()); // Set the default date format
+
+	$("#editResultDate").datepicker({
+        dateFormat: 'dd/mm/yy',
+        autoclose: true,
+        todayHighlight: true
+    }).datepicker("setDate", new Date()); // Set the default date format
+
+	// Add event listener to the icon
+	 $('#adddatepicker .input-group-text').on('click', function () {
+        $('#addResultDate').datepicker('show');
+    });
+	$('#editdatepicker .input-group-text').on('click', function () {
+        $('#editResultDate').datepicker('show');
+    });
+
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,27 +121,17 @@ function addTest(action) {
 //		Register Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function registerSchedule() {
-	// Collect the values of the selected grade checkboxes
-	var selectedGrades = [];
-	// var allGradesChecked = $('#addGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
-	// if (allGradesChecked) {
-	// 	selectedGrades.push('0');
-	// } else {
-		$('#addGradeCheckbox input[name="grades"]:checked').each(function() {
-			selectedGrades.push($(this).val());
-		});
-	// }
-	// check if no grade is selected
-	if(selectedGrades.length == 0){
+	// check if addResultDate is choosen
+	if($('#addResultDate').val() == ''){
 		$('#validation-alert .modal-body').text(
-		'Please select grade');
+		'Please select schedule date');
 		$('#validation-alert').modal('show');
 		$('#validation-alert').on('hidden.bs.modal', function () {
-			$('#addGrade').focus();
+			$('#addResultDate').focus();
 		});
 		return false;
 	}
-
+	//var selectedGrade = $('#addGradeRadio').val();
 	// Get testTypeGroup & set form addScheduleTable
 	var testGroups = [];
 	var weeks = [];
@@ -139,13 +149,14 @@ function registerSchedule() {
 	var schedule = {
 		from: $("#addFrom").val(),
 		to: $("#addTo").val(),
+		resultDate: $("#addResultDate").val(),
 		info: $("#addInfo").val(),
-		grade : selectedGrades,
+		// grade : $('#addGradeRadio').val(),
+		grade: $('#addGradeRadio input[name="grades"]:checked').val(),
 		testGroup: testGroups,
 		week: weeks
 	}
 
-	//console.log(schedule);
 	// Send AJAX to server
 	$.ajax({
 		url: '${pageContext.request.contextPath}/connected/addTestSchedule',
@@ -188,23 +199,17 @@ function retrieveScheduleInfo(id) {
 			$("#editFrom").val(fromDateTime);
 			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
+			$("#editResultDate").val(scheduleItem.resultDate);
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
 			}
-			// Check the corresponding grade checkboxes
-			$('#editGradeCheckbox input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes first
-			if(scheduleItem.grade.includes('0')) {
-				$('#editGradeAll').prop('checked', true);
-				$('#editGradeCheckbox input[type="checkbox"]').prop('checked', true);
-			}else{
-				scheduleItem.grade.forEach(function(grade) {
-					$('#editGradeCheckbox input[type="checkbox"][value="' + grade + '"]').prop('checked', true);
-				});
-			}
-
+			// Uncheck all radio buttons first
+			$('#editGradeRadio input[type="radio"]').prop('checked', false);
+			// Check the radio button that matches the scheduleItem.grade value
+			$('#editGradeRadio input[type="radio"][value="' + scheduleItem.grade + '"]').prop('checked', true);
 			// add rows to the table
 			// clear all rows on editScheduleTable
 			$("#editScheduleTable").find("tr:gt(0)").remove();
@@ -340,27 +345,6 @@ function updateEditActiveValue(checkbox) {
 //		Update Test Schedule
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
-	// Collect the values of the selected grade checkboxes
-	var selectedGrades = [];
-	// var allGradesChecked = $('#editGradeCheckbox input[name="grades"]').length === $('#addGradeCheckbox input[name="grades"]:checked').length;
-	// if (allGradesChecked) {
-	// 	selectedGrades.push('0');
-	// } else {
-		$('#editGradeCheckbox input[name="grades"]:checked').each(function() {
-			selectedGrades.push($(this).val());
-		});
-	// }
-	// check if no grade is selected
-	if(selectedGrades.length == 0){
-		$('#validation-alert .modal-body').text(
-		'Please select grade');
-		$('#validation-alert').modal('show');
-		$('#validation-alert').on('hidden.bs.modal', function () {
-			$('#editGrade').focus();
-		});
-		return false;
-	}
-
 	// Get testTypeGroup & set form editScheduleTable
 	var testGroups = [];
 	var weeks = [];
@@ -374,14 +358,14 @@ function updateScheduleInfo() {
 			weeks.push(testSet);
 		}
 	});
-
 	var schedule = {
 		id: $("#editId").val(),
 		from: $("#editFrom").val(),
 		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
-		grade : selectedGrades,
+		resultDate: $("#editResultDate").val(),
+		grade: $('#editGradeRadio input[name="grades"]:checked').val(), // Get the selected grade
 		testGroup: testGroups,
 		week: weeks
 	}
@@ -508,11 +492,106 @@ function updateVolumeOptions(action) {
 			// Set the value and text content for the option
 			option.value = i;
 			option.textContent = i;
+			if(option.value == 36){
+				option.textContent = "SIM 1";
+			}else if(option.value == 37){
+				option.textContent = "SIM 2";
+			}else if(option.value == 38){
+				option.textContent = "SIM 3";
+			}else if(option.value == 39){
+				option.textContent = "SIM 4";
+			}else if(option.value == 40){
+				option.textContent = "SIM 5";
+			}
 			// Append the option to the select element
 			selectElement.appendChild(option);
 		}
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Confirm before processing Test reuslt
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function confirmProcessResult(scheduleId) {
+	// Get test stats by branch
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/getTestBranchStat/' + scheduleId,
+		type: 'GET',
+		success: function (data) {
+			$('#branchStats').empty();
+			var tableData = $("<table class='table table-striped table-bordered col-md-10'>");
+			tableData.append('<thead class="table-primary text-center"><tr><th>Branch</th><th>Count</th><th>Branch</th><th>Count</th></tr></thead>');
+			tableData.append('<tbody>');
+			var totalCount = 0;
+			for (var i = 0; i < data.length; i += 2) {
+				var row = $("<tr>");
+				// First column set
+				var branch1 = data[i];
+				var branch1Name = branchName(branch1.branch + '');
+				row.append($('<td class="nowrap-cell">').text(branch1Name));
+				row.append($('<td class="text-center">').text(branch1.count));
+				totalCount += branch1.count;
+
+				// Second column set (check if exists)
+				if (i + 1 < data.length) {
+					var branch2 = data[i + 1];
+					var branch2Name = branchName(branch2.branch + '');
+					row.append($('<td class="nowrap-cell">').text(branch2Name));
+					row.append($('<td class="text-center">').text(branch2.count));
+					totalCount += branch2.count;
+				} else {
+					// Fill empty cells if odd number of branches
+					row.append('<td></td><td></td>');
+				}
+
+				tableData.append(row);
+			}
+
+			// Append Total Row
+			var totalRow = $("<tr class='table-primary'>");
+			totalRow.append('<td colspan="3" class="text-right"><strong>Total</strong></td>');
+			totalRow.append($('<td class="text-center">').html('<strong>' + totalCount + '</strong>'));
+			tableData.append(totalRow);
+
+			tableData.append('</tbody></table>');
+			$('#branchStats').append(tableData);
+		},
+		error: function (error) {
+			console.error(error);
+		}
+	});
+
+    // Show the warning modal
+    $('#processResultModal').modal('show');
+
+    // Attach the click event handler to the "I agree" button
+    $('#processConfirmation').one('click', function() {
+		processTestResult(scheduleId);
+		$('#processResultModal').modal('hide');
+    });
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Process Test Result
+/////////////////////////////////////////////////////////////////////////////////////////////////////////	
+function processTestResult(id) {
+	$.ajax({
+		url: '${pageContext.request.contextPath}/connected/processTestResult/' + id,
+		type: 'PUT',
+		success: function (result) {
+			$('#success-alert .modal-body').text(result);
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function (e) {
+				location.reload();
+			});
+		},
+		error: function (error) {
+            // Handle error response
+            console.error(error);
+        }
+    });
+}
+
 
 </script>
 
@@ -538,7 +617,7 @@ function updateVolumeOptions(action) {
 		height: 45px 	
 	} 
 
-	.checkbox-container {
+	.radio-container {
 		display: flex;
 		flex-wrap: nowrap; /* Prevents wrapping to the next line */
 		gap: 10px; /* Adjusts spacing between checkboxes */
@@ -608,14 +687,15 @@ function updateVolumeOptions(action) {
 								<thead class="table-primary">
 									<tr>
 										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
-										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">Start</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 12.5%">End</th>
-										<th class="text-center align-middle" style="width: 20%">Test Type</th>
-										<th class="text-center align-middle" style="width: 15%">Grade</th>
-										<th class="text-center align-middle" style="width: 10%">Week</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End</th>
+										<th class="text-center align-middle" style="width: 15%">Test Type</th>
+										<th class="text-center align-middle" style="width: 12.5%">Grade</th>
+										<th class="text-center align-middle" style="width: 8.5%">Week</th>
 										<th class="text-center align-middle" style="width: 20%">Information</th>
+										<th class="text-center align-middle" style="width: 10%">Schedule</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 6%">Action</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
 								</thead>
 								<tbody id="list-class-body">
@@ -669,7 +749,16 @@ function updateVolumeOptions(action) {
 																		</c:choose>
 																	</c:when>
 																	<c:otherwise>
-																		<c:out value="${week}" />
+																		<c:choose>
+																		<c:when test="${week == '36'}">SIM1</c:when>
+																		<c:when test="${week == '37'}">SIM2</c:when>
+																		<c:when test="${week == '38'}">SIM3</c:when>
+																		<c:when test="${week == '39'}">SIM4</c:when>
+																		<c:when test="${week == '40'}">SIM5</c:when>
+																		<c:otherwise>
+																			<c:out value="${week}" />
+																		</c:otherwise>
+																		</c:choose>
 																	</c:otherwise>
 																</c:choose>
 																<c:if test="${!weekStatus.last}">, </c:if>
@@ -679,6 +768,11 @@ function updateVolumeOptions(action) {
 													<td class="small align-middle text-truncate" style="min-width: 300px;">
 														<span>
 															<c:out value="${scheduleItem.info}" />
+														</span>
+													</td>
+													<td class="small align-middle">
+														<span>
+															<c:out value="${scheduleItem.resultDate}" />
 														</span>
 													</td>
 													<c:set var="active" value="${scheduleItem.active}" />
@@ -696,6 +790,9 @@ function updateVolumeOptions(action) {
 													</c:choose>
 													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit Test Schedule" onclick="retrieveScheduleInfo('${scheduleItem.id}')">
+														</i>
+														&nbsp;&nbsp;
+														<i class="bi bi-check2-square text-info fa-lg hand-cursor" data-toggle="tooltip" title="" onclick="confirmProcessResult('${scheduleItem.id}')" data-original-title="Schedule Test Result Process">
 														</i>
 														&nbsp;&nbsp;
 														<i class="bi bi-trash text-danger fa-lg hand-cursor" data-toggle="tooltip" title="Delete Test Schedule" onclick="confirmDelete('${scheduleItem.id}')">
@@ -743,6 +840,25 @@ function updateVolumeOptions(action) {
 								</div>
 							</div>
 						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="adddatepicker">
+											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
@@ -750,56 +866,56 @@ function updateVolumeOptions(action) {
 										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
 										<div id="addGrade" name="addGrade">
 											<!-- First Row -->
-											<div id="addGradeCheckbox" class="checkbox-container">
+											<div id="addGradeRadio" class="radio-container">
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="1" id="addP2" name="grades">
+													<input class="form-check-input" type="radio" value="1" id="addP2" name="grades" checked>
 													<label class="form-check-label" for="addP2">P2</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="2" id="addP3" name="grades">
+													<input class="form-check-input" type="radio" value="2" id="addP3" name="grades">
 													<label class="form-check-label" for="addP3">P3</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="3" id="addP4" name="grades">
+													<input class="form-check-input" type="radio" value="3" id="addP4" name="grades">
 													<label class="form-check-label" for="addP4">P4</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="4" id="addP5" name="grades">
+													<input class="form-check-input" type="radio" value="4" id="addP5" name="grades">
 													<label class="form-check-label" for="addP5">P5</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="5" id="addP6" name="grades">
+													<input class="form-check-input" type="radio" value="5" id="addP6" name="grades">
 													<label class="form-check-label" for="addP6">P6</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="11" id="addTT6" name="grades">
+													<input class="form-check-input" type="radio" value="11" id="addTT6" name="grades">
 													<label class="form-check-label" for="addTT6">TT6</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="12" id="addTT8" name="grades">
+													<input class="form-check-input" type="radio" value="12" id="addTT8" name="grades">
 													<label class="form-check-label" for="addTT8">TT8</label>
 												</div>
 											</div>
 											<!-- Second Row -->
-											<div id="addGradeCheckbox" class="checkbox-container">
+											<div id="addGradeRadio" class="radio-container">
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="6" id="addS7" name="grades">
+													<input class="form-check-input" type="radio" value="6" id="addS7" name="grades">
 													<label class="form-check-label" for="addS7">S7</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="7" id="addS8" name="grades">
+													<input class="form-check-input" type="radio" value="7" id="addS8" name="grades">
 													<label class="form-check-label" for="addS8">S8</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="8" id="addS9" name="grades">
+													<input class="form-check-input" type="radio" value="8" id="addS9" name="grades">
 													<label class="form-check-label" for="addS9">S9</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="9" id="addS10" name="grades">
+													<input class="form-check-input" type="radio" value="9" id="addS10" name="grades">
 													<label class="form-check-label" for="addS10">S10</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="19" id="addJMSS" name="grades">
+													<input class="form-check-input" type="radio" value="19" id="addJMSS" name="grades">
 													<label class="form-check-label" for="addJMSS">JMSS</label>
 												</div>
 											</div>
@@ -900,6 +1016,26 @@ function updateVolumeOptions(action) {
 								</div>
 							</div>
 						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="editdatepicker">
+											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
@@ -907,56 +1043,56 @@ function updateVolumeOptions(action) {
 										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
 										<div id="editGrade" name="editGrade">
 											<!-- First Row -->
-											<div id="editGradeCheckbox" class="checkbox-container">
+											<div id="editGradeRadio" class="radio-container">
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="1" id="editP2" name="grades">
+													<input class="form-check-input" type="radio" value="1" id="editP2" name="grades">
 													<label class="form-check-label" for="editP2">P2</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="2" id="editP3" name="grades">
+													<input class="form-check-input" type="radio" value="2" id="editP3" name="grades">
 													<label class="form-check-label" for="editP3">P3</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="3" id="editP4" name="grades">
+													<input class="form-check-input" type="radio" value="3" id="editP4" name="grades">
 													<label class="form-check-label" for="editP4">P4</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="4" id="editP5" name="grades">
+													<input class="form-check-input" type="radio" value="4" id="editP5" name="grades">
 													<label class="form-check-label" for="editP5">P5</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="5" id="editP6" name="grades">
+													<input class="form-check-input" type="radio" value="5" id="editP6" name="grades">
 													<label class="form-check-label" for="editP6">P6</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="11" id="editTT6" name="grades">
+													<input class="form-check-input" type="radio" value="11" id="editTT6" name="grades">
 													<label class="form-check-label" for="editTT6">TT6</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="12" id="editTT8" name="grades">
+													<input class="form-check-input" type="radio" value="12" id="editTT8" name="grades">
 													<label class="form-check-label" for="editTT8">TT8</label>
 												</div>
 											</div>
 											<!-- Second Row -->
-											<div id="editGradeCheckbox" class="checkbox-container">
+											<div id="editGradeRadio" class="radio-container">
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="6" id="editS7" name="grades">
+													<input class="form-check-input" type="radio" value="6" id="editS7" name="grades">
 													<label class="form-check-label" for="editS7">S7</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="7" id="editS8" name="grades">
+													<input class="form-check-input" type="radio" value="7" id="editS8" name="grades">
 													<label class="form-check-label" for="editS8">S8</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="8" id="editS9" name="grades">
+													<input class="form-check-input" type="radio" value="8" id="editS9" name="grades">
 													<label class="form-check-label" for="editS9">S9</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="9" id="editS10" name="grades">
+													<input class="form-check-input" type="radio" value="9" id="editS10" name="grades">
 													<label class="form-check-label" for="editS10">S10</label>
 												</div>
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="19" id="editJMSS" name="grades">
+													<input class="form-check-input" type="radio" value="19" id="editJMSS" name="grades">
 													<label class="form-check-label" for="editJMSS">JMSS</label>
 												</div>
 											</div>
@@ -1045,6 +1181,31 @@ function updateVolumeOptions(action) {
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger" id="agreeConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>
+
+<!--Process Result Modal -->
+<div class="modal fade" id="processResultModal" tabindex="-1" role="dialog" aria-labelledby="processResultModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-info">
+            <div class="modal-header btn-info">
+               <h4 class="modal-title text-white" id="myModalLabel"><i class="bi bi-play-circle"></i>&nbsp;&nbsp;Schedule Test Result Process</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+				<p> Are you sure to schedule processing Test result?</p>
+				<div id="branchStats" class="row mt-2 mb-2 justify-content-center"></div>
+                <p>It will perform the follwoing actions at 11:30 p.m. and <b>can't be reverted.</b></p>
+				<ol class="text-info font-weight-bold">
+					<li>Calculate the average</li>
+					<li>Send emails to all students</li>
+				</ol>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info" id="processConfirmation"><i class="bi bi-check-circle"></i> Yes, I am sure</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
             </div>
     	</div>
