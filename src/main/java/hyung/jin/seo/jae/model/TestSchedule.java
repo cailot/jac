@@ -35,20 +35,26 @@ public class TestSchedule {
     @Column(nullable = false)
     private LocalDateTime toDatetime;
 
-    @Column(length = 30, nullable = true)
+    @Column(length = 30, nullable = false)
     private String grade;
 
-    @Column(length = 30, nullable = true)
+    @Column(length = 30, nullable = false)
     private String testGroup;
    
-    @Column(length = 30, nullable = true)
+    @Column(length = 30, nullable = false)
     private String week;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, nullable = true)
     private String info;
 
     @Column
     private boolean active;
+
+    @Column(nullable = true)
+    private LocalDateTime explanationFromDatetime;
+
+    @Column(nullable = true)
+    private LocalDateTime explanationToDatetime;
     
     @CreationTimestamp
     private LocalDate registerDate;
