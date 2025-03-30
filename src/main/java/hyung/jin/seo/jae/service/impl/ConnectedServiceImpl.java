@@ -566,6 +566,14 @@ public class ConnectedServiceImpl implements ConnectedService {
 		existing.setFromDatetime(newFrom);
 		LocalDateTime newTo = schedule.getToDatetime();
 		existing.setToDatetime(newTo);
+		if(schedule.getExplanationFromDatetime() != null) {
+			LocalDateTime newExplanationFrom = schedule.getExplanationFromDatetime();
+			existing.setExplanationFromDatetime(newExplanationFrom);
+		}
+		if(schedule.getExplanationToDatetime() != null) {
+			LocalDateTime newExplanationTo = schedule.getExplanationToDatetime();
+			existing.setExplanationToDatetime(newExplanationTo);
+		}
 		boolean newActive = schedule.isActive();
 		existing.setActive(newActive);
 		String newInfo = schedule.getInfo();

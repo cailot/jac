@@ -5,6 +5,8 @@
 <html>
 <head>
 <title><tiles:getAsString name="title" /></title>
+<!-- Favicon -->
+<link rel="icon" href="${pageContext.request.contextPath}/image/favicon.ico" type="image/x-icon">
 <link href="${pageContext.request.contextPath}/css/jae.css" rel="stylesheet" type="text/css"/>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-4.3.1.min.css"/>	

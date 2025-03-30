@@ -101,6 +101,20 @@ function addTest(action) {
 		.attr("title", "Delete Test")
 		.click(function () {
 			row.remove();
+			// Recheck for Mega Test after deletion
+			let stillHasMega = false;
+			$("#" + action + "ScheduleTable tbody tr").each(function () {
+				const testName = $(this).find("td").eq(0).text().trim();
+				if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))) {
+					stillHasMega = true;
+				}
+			});
+			// Show or hide Explanation Schedule
+			if (stillHasMega) {
+				$("#" + action + "ExplanationSchedule").show();
+			} else {
+				$("#" + action + "ExplanationSchedule").hide();
+			}
 		});
 	binIconLink.append(binIcon);
 	var cell3 = $("<td>").addClass('text-center').append(binIconLink);
@@ -114,6 +128,23 @@ function addTest(action) {
 
 	// Append the row to the table
 	$("#"+ action +"ScheduleTable").append(row);
+
+	// === SHOW or HIDE Explanation Schedule ===
+	let hasMegaTest = false;
+	$("#" + action + "ScheduleTable tbody tr").each(function () {
+		const testName = $(this).find("td").eq(0).text().trim();
+		if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))) {
+			hasMegaTest = true;
+		}
+	});
+
+	if (hasMegaTest) {
+		$("#" + action + "ExplanationSchedule").show();
+	} else {
+		$("#" + action + "ExplanationSchedule").hide();
+	}	
+
+
 }
 
 
@@ -149,6 +180,8 @@ function registerSchedule() {
 	var schedule = {
 		from: $("#addFrom").val(),
 		to: $("#addTo").val(),
+		explanationFrom: $("#addExplanationFrom").val(),
+		explanationTo: $("#addExplanationTo").val(),
 		resultDate: $("#addResultDate").val(),
 		info: $("#addInfo").val(),
 		// grade : $('#addGradeRadio').val(),
@@ -200,6 +233,16 @@ function retrieveScheduleInfo(id) {
 			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
 			$("#editResultDate").val(scheduleItem.resultDate);
+
+			if(scheduleItem.explanationFrom != null && scheduleItem.explanationTo != null){
+				$("#editExplanationFrom").val(convertToDateTimeLocal(scheduleItem.explanationFrom));
+				$("#editExplanationTo").val(convertToDateTimeLocal(scheduleItem.explanationTo));
+				$("#editExplanationSchedule").show();
+			}else{
+				$("#editExplanationSchedule").hide();
+			}
+
+
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
@@ -361,6 +404,8 @@ function updateScheduleInfo() {
 	var schedule = {
 		id: $("#editId").val(),
 		from: $("#editFrom").val(),
+		explanationFrom: $("#editExplanationFrom").val(),
+		explanationTo: $("#editExplanationTo").val(),
 		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
@@ -687,13 +732,13 @@ function processTestResult(id) {
 								<thead class="table-primary">
 									<tr>
 										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 14%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 14%">End</th>
 										<th class="text-center align-middle" style="width: 15%">Test Type</th>
-										<th class="text-center align-middle" style="width: 12.5%">Grade</th>
+										<th class="text-center align-middle" style="width: 4.5%">Grade</th>
 										<th class="text-center align-middle" style="width: 8.5%">Week</th>
-										<th class="text-center align-middle" style="width: 20%">Information</th>
-										<th class="text-center align-middle" style="width: 10%">Schedule</th>
+										<th class="text-center align-middle" style="width: 18%">Information</th>
+										<th class="text-center align-middle" style="width: 12%">Online Schedule</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -840,25 +885,6 @@ function processTestResult(id) {
 								</div>
 							</div>
 						</div>
-						<!-- Result Schedule -->
-						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
-								<div class="form-row">
-									<div class="col-md-7">
-										<span>The result will be processed at </span>
-									</div>
-									<div class="col-md-5">
-										<div class="input-group date" id="adddatepicker">
-											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
-											<div class="input-group-append">
-												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
-											</div>
-										</div>	
-									</div>
-								</div>
-							</div>
-						</div>
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
@@ -969,6 +995,41 @@ function processTestResult(id) {
 								</table>
 							</div>
 						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="adddatepicker">
+											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Explanation Schedule -->
+						<div id="addExplanationSchedule" class="form-group" style="display: none;">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Explanation Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-6">
+										<label for="addExplanationFrom" class="label-form">From</label>
+										<input type="datetime-local" class="form-control datepicker" id="addExplanationFrom" name="addExplanationFrom" placeholder="From" required>
+									</div>
+									<div class="col-md-6">
+										<label for="addExplanationTo" class="label-form">To</label> 
+										<input type="datetime-local" class="form-control datepicker" id="addExplanationTo" name="addExplanationTo" placeholder="To" required>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-info" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
@@ -1016,26 +1077,6 @@ function processTestResult(id) {
 								</div>
 							</div>
 						</div>
-						<!-- Result Schedule -->
-						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
-								<div class="form-row">
-									<div class="col-md-7">
-										<span>The result will be processed at </span>
-									</div>
-									<div class="col-md-5">
-										<div class="input-group date" id="editdatepicker">
-											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
-											<div class="input-group-append">
-												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
-											</div>
-										</div>	
-									</div>
-								</div>
-							</div>
-						</div>
-						
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
@@ -1146,6 +1187,43 @@ function processTestResult(id) {
 								</table>
 							</div>
 						</div>
+
+
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="editdatepicker">
+											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Explanation Schedule -->
+						<div id="editExplanationSchedule" class="form-group" style="display: none;">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Explanation Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-6">
+										<label for="editExplanationFrom" class="label-form">From</label>
+										<input type="datetime-local" class="form-control datepicker" id="editExplanationFrom" name="editExplanationFrom" placeholder="From" required>
+									</div>
+									<div class="col-md-6">
+										<label for="editExplanationTo" class="label-form">To</label> 
+										<input type="datetime-local" class="form-control datepicker" id="editExplanationTo" name="editExplanationTo" placeholder="To" required>
+									</div>
+								</div>
+							</div>
+						</div> 						
 						<input type="hidden" id="editId" name="editId" />
 					</form>
 					<div class="d-flex justify-content-end">

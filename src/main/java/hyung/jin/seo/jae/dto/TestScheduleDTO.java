@@ -28,6 +28,10 @@ public class TestScheduleDTO implements Serializable {
 
 	private String to;
 
+	private String explanationFrom;
+
+	private String explanationTo;
+
 	//private String[] grade;
 	private String grade;
 
@@ -55,6 +59,8 @@ public class TestScheduleDTO implements Serializable {
 		ts.setTestGroup(JaeUtils.joinString(this.testGroup));
 		ts.setWeek(JaeUtils.joinString(this.week));
 		ts.setResultDate(this.resultDate != null ? LocalDate.parse(this.resultDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
+		ts.setExplanationFromDatetime(StringUtils.isNotBlank(explanationFrom) ? LocalDateTime.parse(this.explanationFrom, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
+		ts.setExplanationToDatetime(StringUtils.isNotBlank(explanationTo) ? LocalDateTime.parse(this.explanationTo, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);	
 		return ts;
 	}
 
@@ -69,9 +75,11 @@ public class TestScheduleDTO implements Serializable {
 		this.active = schedule.isActive();
 		this.registerDate = schedule.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.resultDate = (schedule.getResultDate() != null) ? schedule.getResultDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+		this.explanationFrom =   schedule.getExplanationFromDatetime()!= null ? schedule.getExplanationFromDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
+		this.explanationTo = schedule.getExplanationToDatetime() != null ? schedule.getExplanationToDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
 	}
 
-	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate){
+	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate, LocalDateTime explanationFrom, LocalDateTime explanationTo){
 		this.id = String.valueOf(id);
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
@@ -81,9 +89,11 @@ public class TestScheduleDTO implements Serializable {
 		this.info = info;
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.explanationFrom = (explanationFrom != null) ? explanationFrom.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
+		this.explanationTo = (explanationTo != null) ? explanationTo.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
 	}
 
-	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate, LocalDate resultDate){
+	public TestScheduleDTO(long id, LocalDateTime fromTime, LocalDateTime toTime, String grade, String group, String week, String info, boolean active, LocalDate registerDate, LocalDate resultDate, LocalDateTime explanationFrom, LocalDateTime explanationTo){
 		this.id = String.valueOf(id);
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
@@ -94,7 +104,8 @@ public class TestScheduleDTO implements Serializable {
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.resultDate = (resultDate != null) ? resultDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+		this.explanationFrom = (explanationFrom != null) ? explanationFrom.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
+		this.explanationTo = (explanationTo != null) ? explanationTo.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm")) : null;
 	}
-
 
 }
