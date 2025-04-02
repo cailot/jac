@@ -268,24 +268,24 @@ public class OmrController {
 	}
 
 
-    private List<OmrStatsDTO> dummy() {
-        List<OmrStatsDTO> dtos = new ArrayList<>();
-        for(int i=12; i<=34; i++) {
-            OmrStatsDTO dto = new OmrStatsDTO();
-            dto.setBranch("" + i);
-            // random number
-            int ran1 = (new Random().nextInt(1) + 10);
-            int ran2 = (new Random().nextInt(1) + 15);
-            int ran3 = (new Random().nextInt(1) + 20);
-            int ran4 = (new Random().nextInt(1) + 25);
-            dto.setMega(ran1);
-            dto.setRevision(ran2);
-            dto.setAcer(ran3);
-            dto.setEdu(ran4);
-            dtos.add(dto);
-        }
-        return dtos;
-    }
+    // private List<OmrStatsDTO> dummy() {
+    //     List<OmrStatsDTO> dtos = new ArrayList<>();
+    //     for(int i=12; i<=34; i++) {
+    //         OmrStatsDTO dto = new OmrStatsDTO();
+    //         dto.setBranch("" + i);
+    //         // random number
+    //         int ran1 = (new Random().nextInt(1) + 10);
+    //         int ran2 = (new Random().nextInt(1) + 15);
+    //         int ran3 = (new Random().nextInt(1) + 20);
+    //         int ran4 = (new Random().nextInt(1) + 25);
+    //         dto.setMega(ran1);
+    //         dto.setRevision(ran2);
+    //         dto.setAcer(ran3);
+    //         dto.setEdu(ran4);
+    //         dtos.add(dto);
+    //     }
+    //     return dtos;
+    // }
 
 
 
