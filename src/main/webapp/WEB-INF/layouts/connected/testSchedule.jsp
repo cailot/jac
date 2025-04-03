@@ -133,7 +133,7 @@ function addTest(action) {
 	let hasMegaTest = false;
 	$("#" + action + "ScheduleTable tbody tr").each(function () {
 		const testName = $(this).find("td").eq(0).text().trim();
-		if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))) {
+		if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))||(testName.startsWith("Mock"))) {
 			hasMegaTest = true;
 		}
 	});
