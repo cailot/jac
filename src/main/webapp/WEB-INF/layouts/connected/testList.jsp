@@ -426,7 +426,8 @@ function collectAndSubmitAnswers() {
 			// Attach an event listener to the success alert close event
 			$('#success-alert').on('hidden.bs.modal', function () {
 				// Reload the page after the success alert is closed
-				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+				//location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+				location.reload();
 			});
 
         },

@@ -187,11 +187,7 @@ function retrieveClassInfo(clazzId) {
 		url: '${pageContext.request.contextPath}/class/get/class/' + clazzId,
 		type: 'GET',
 		success: async function (clazz) {
-			console.log(clazz.startDate);
-			// Set date value
-			// var date = new Date(clazz.startDate); // Replace with your date value
-			// $("#editStartDate").datepicker('setDate', date);
-			
+			console.log(clazz.startDate);			
 			// firstly populate courses by grade then set the selected option
 			await editInitialiseCourseByGrade(clazz.grade, clazz.startDate, clazz.courseId);
 			$("#editId").val(clazz.id);
