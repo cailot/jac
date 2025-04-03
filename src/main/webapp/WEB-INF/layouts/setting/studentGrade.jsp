@@ -40,6 +40,7 @@ $(document).ready(function () {
 
     // Initialise state list when loading
     listGrade('#listToGrade');
+	listBranch('#listBranch');
 
     // When the "Select All" checkbox is checked or unchecked
     $('#select-all').change(function() {
@@ -168,19 +169,19 @@ function updateStudentInfo(){
 		<form id="studentList" method="get" action="${pageContext.request.contextPath}/student/upgrade">
 			<div class="form-group">
 				<div class="form-row">
+					<div class="col-md-2">
+						<label for="listState" class="label-form">State</label> 
+						<select class="form-control" id="listState" name="listState" disabled>
+							<option value="1">Victoria</option>
+						</select>
+					</div>
 					<c:choose>
 							<c:when test="${empty UpgradeList}">
-								<div class="col-md-2">
-									<label for="listState" class="label-form">State</label> 
-									<select class="form-control" id="listState" name="listState" disabled>
-										<option value="1">Victoria</option>
-									</select>
-								</div>
 								<div class="col-md-2">
 									<label for="listBranch" class="label-form">Branch</label> 
 									<select class="form-control" id="listBranch" name="listBranch">
 										<option value="0">All Branch</option>
-										<option value="12">Box Hill</option>
+										<!-- <option value="12">Box Hill</option>
 										<option value="13">Braybrook</option>
 										<option value="14">Chadstone</option>
 										<option value="15">Cranbourne</option>
@@ -202,7 +203,7 @@ function updateStudentInfo(){
 										<option value="31">Mernda</option>
 										<option value="32">Melton</option>
 										<option value="33">Glenroy</option>
-										<option value="34">Pakenham</option>
+										<option value="34">Pakenham</option> -->
 									</select>
 								</div>
 								<div class="col-md-1">
@@ -247,12 +248,6 @@ function updateStudentInfo(){
 								</div>
 							</c:when>
 							<c:otherwise>
-								<div class="col-md-2">
-									<label for="listState" class="label-form">State</label> 
-									<select class="form-control" id="listState" name="listState" disabled>
-										<option value="1">Victoria</option>
-									</select>
-								</div>
 								<div class="col-md-2">
 									<label for="listBranch" class="label-form">Branch</label> 
 									<select class="form-control" id="listBranch" name="listBranch" disabled>

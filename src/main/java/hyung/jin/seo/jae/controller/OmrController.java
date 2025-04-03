@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.controller;
 
 import java.io.File;
 import java.io.IOException;
+// import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,18 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -62,6 +72,12 @@ public class OmrController {
 
     @Value("${output.directory}")
     private String outputDir;
+
+    @Value("${jac.omr.endpoint}")
+    private String omrEndpoint;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     /**
@@ -108,10 +124,12 @@ public class OmrController {
         List<StudentTestDTO> results = new ArrayList<>();
         
         try {
-            results = omrService.previewOmr(branch, file);
+            //results = omrService.previewOmr(branch, file);
+            results = previewOmr(branch, file);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
+            redirectAttributes.addFlashAttribute(JaeConstants.ERROR, "Failed to process OMR file.");
+            return "redirect:/omr/upload";
         }
 
         // create omr results 	
@@ -125,6 +143,41 @@ public class OmrController {
         return "redirect:/omr/upload";
     }
 
+    // invoke omr preview api call to JAC-HUB server
+    private List<StudentTestDTO> previewOmr(String branch, MultipartFile file) throws IOException {
+        // 1. complete endpoint url
+        String url = omrEndpoint + "/preview";
+        // 2. create headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        // 3. crearte the file part
+        Resource fileResource = new ByteArrayResource(file.getBytes()){
+            @Override
+            public String getFilename() {
+                return file.getOriginalFilename();
+            }
+        };
+        // 4. create the request entity
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("branch", branch);
+        body.add("file", fileResource);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        // 5. send the request
+        List<StudentTestDTO> dtos = new ArrayList<>();
+        ResponseEntity<List> response = restTemplate.postForEntity(url, requestEntity, List.class);
+        // 6. parse and return the response
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            // Assuming the response body is a list of StudentTestDTO objects
+            dtos = (List<StudentTestDTO>) response.getBody();
+        } else {
+            System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
+            return new ArrayList<>();
+        }    
+        System.out.println(">>>>>>>>>>> " + dtos);
+        
+        // 7. return response;
+        return dtos; 
+    }
 
 
     ///////////// test......
