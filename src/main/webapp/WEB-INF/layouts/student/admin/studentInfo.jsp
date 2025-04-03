@@ -19,7 +19,7 @@ $(function() {
 	// initialise state, branch, grade list when loading
 	listState('#formState');
 	listState('#addState');
-	// listBranch('#formBranch');
+	listBranch('#formBranch');
 	listBranch('#addBranch');
 	// listGrade('#formGrade')
 	listGrade('#addGrade');
@@ -631,6 +631,7 @@ function searchStudentById(id){
 			<div class="col-md-4">
 				<label for="formBranch" class="label-form">Branch</label> 
 				<select class="form-control" id="formBranch" name="formBranch">
+					<!--
 					<option value="12">Box Hill</option>
 					<option value="13">Braybrook</option>
 					<option value="14">Chadstone</option>
@@ -656,6 +657,7 @@ function searchStudentById(id){
 					<option value="34">Pakenham</option>
 					<option value="90">JAC Head Office Vic</option>
 					<option value="99">Testing</option>
+				-->
 				</select>
 			</div>
 			<div class="col-md-4">
