@@ -15,6 +15,8 @@
 
 <script>
 
+const PDF_PREFIX = 'https://jacstorage.blob.core.windows.net/work/pdf/';
+
 $(document).ready(function () {
 	// initialise state list when loading
 	listState('#state');
@@ -40,7 +42,6 @@ $(document).ready(function () {
 	$("#uploadForm").on("submit", function () {
         // Show the spinner modal only when the form is submitted
         $("#loadingModal").fadeIn();
-
         // Disable the submit button to prevent multiple submissions
         $("#file-upload").prop("disabled", true);
     });
@@ -80,7 +81,20 @@ function updateVolumeOptions() {
 			var option = document.createElement("option");
 			// Set the value and text content for the option
 			option.value = i;
-			option.textContent = i;
+			if(option.value == 36){
+				option.textContent = "SIM 1";
+			} else if(option.value == 37){
+				option.textContent = "SIM 2";
+			} else if(option.value == 38){
+				option.textContent = "SIM 3";
+			} else if(option.value == 39){
+				option.textContent = "SIM 4";
+			} else if(option.value == 40){
+				option.textContent = "SIM 5";
+			} else {
+				option.textContent = i;
+			}
+			//option.textContent = i;
 			// Append the option to the select element
 			selectElement.appendChild(option);
 		}
@@ -107,12 +121,12 @@ function editAnswer(tableIndex, fileName, data) {
 	document.getElementById("tableIndex").value = tableIndex;
 	// send query to controller
 	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getPractice/1', //+ id,
+		url: '${pageContext.request.contextPath}/connected/getTest/1', //+ id,
 		type: 'GET',
 		success: function (answer) {
-			// console.log(answer);
+			console.log(answer);
 
-			$("#imageContainer").html('<img src="${pageContext.request.contextPath}/pdf/' + fileName + '" alt="Logo" class="img-fluid full-fill">');				
+			$("#imageContainer").html('<img src="' + PDF_PREFIX + fileName + '" alt="Logo" class="img-fluid full-fill">');				
 			// Create an editable table with Bootstrap styling and load it into #answerTable
 			const cols = 10; // Number of columns per row
 			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
@@ -541,7 +555,7 @@ function proceedNext() {
 					<select class="form-control" id="branch" name="branch">
 					</select>
 				</div>
-				<div class="col-md-3">
+				<div class="col-md-2">
 					<label for="testGroup" class="label-form">Test</label>
 					<select class="form-control" id="testGroup" name="testGroup" onchange="updateVolumeOptions()">
 						<option value="1">Mega Test</option>
@@ -551,7 +565,7 @@ function proceedNext() {
 						<option value="5">Mock Test</option>
 					</select>
 				</div>
-				<div class="col-md-1">
+				<div class="col-md-2">
 					<label for="grade" class="label-form">Grade</label>
 					<select class="form-control" id="grade" name="grade">
 					</select>
@@ -664,7 +678,16 @@ function proceedNext() {
 															</c:choose>
 														</c:when>
 														<c:otherwise>
-															<c:out value="${meta.volume}" />
+															<c:choose>
+																<c:when test="${meta.volume == '36'}">SIM 1</c:when>
+																<c:when test="${meta.volume == '37'}">SIM 2</c:when>
+																<c:when test="${meta.volume == '38'}">SIM 3</c:when>
+																<c:when test="${meta.volume == '39'}">SIM 4</c:when>
+																<c:when test="${meta.volume == '40'}">SIM 5</c:when>
+																<c:otherwise>
+																	<c:out value="${meta.volume}" />
+																</c:otherwise>
+															</c:choose>
 														</c:otherwise>
 													</c:choose>
 												</p>
