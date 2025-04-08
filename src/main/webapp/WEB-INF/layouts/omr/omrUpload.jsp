@@ -115,68 +115,82 @@ function updateFileName(input) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Edit Answer
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function editAnswer(tableIndex, fileName, data) {
-	console.log('Table Index:', tableIndex);
+function editAnswer(tableIndex, fileName) {
 	// set table index to hidden input
 	document.getElementById("tableIndex").value = tableIndex;
-	// send query to controller
-	$.ajax({
-		url: '${pageContext.request.contextPath}/connected/getTest/1', //+ id,
-		type: 'GET',
-		success: function (answer) {
-			console.log(answer);
 
-			$("#imageContainer").html('<img src="' + PDF_PREFIX + fileName + '" alt="Logo" class="img-fluid full-fill">');				
-			// Create an editable table with Bootstrap styling and load it into #answerTable
-			const cols = 10; // Number of columns per row
-			let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
-			// Generate rows dynamically
-			for (let row = 0; row < Math.ceil(data.length / cols); row++) {
-				// Add dynamic serial numbers as header for each row
-				tableHTML += "<tr>";
-				for (let col = 1; col <= cols; col++) {
-					const serialNumber = row * cols + col;
-					if (serialNumber <= data.length) {
-						tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
-					}
-				}
-				tableHTML += "</tr>";
-				// Add data cells for the row
-				tableHTML += "<tr>";
-				for (let col = 1; col <= cols; col++) {
-					const index = row * cols + (col - 1);
-					if (index < data.length) {
+	$("#imageContainer").html('<img src="' + PDF_PREFIX + fileName + '" class="img-fluid full-fill">');		
+	$("#answerTable").empty();		
+			
+	// Count how many answer tables are related to this data (e.g., resultData0_0, resultData0_1, ...)
+	const tableCount = document.querySelectorAll('[id^="resultTable' + tableIndex + '_"]').length;
+	
+	// console.log('Table Count:', tableCount);
 
-						if(data[index]===0){ // make backgound color yellow for wrong answers
-							tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center; background-color: yellow;"></td>`;
-						} else {
-							tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;">`+ answerName(data[index]) +`</td>`;
-						}
-
-					} else {
-						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;"></td>`;
-						console.log('Never happens');
-					}
-				}
-				tableHTML += "</tr>";
-			}
-			tableHTML += "</table>";
-			$("#answerTable").html(tableHTML);
-			// Show the modal
-			$('#editModal').modal('show');
-		},
-		error: function (xhr, status, error) {
-			console.log('Error : ' + error);
+	// Loop through each table
+	for (let i = 0; i < tableCount; i++) {
+		const resultTableId = 'resultTable' + tableIndex + '_' + i;
+		// console.log('Result Table ID:', resultTableId);
+		const resultTable = document.getElementById(resultTableId);
+		if (!resultTable) {
+			console.warn(`Missing table or data for: ${resultTableId}`);
+			continue;
 		}
-	});
+		const cells = resultTable.querySelectorAll('td');
+		// Convert NodeList to Array and map to text content
+		const cellValues = Array.from(cells).map(cell => cell.textContent.trim());
+		console.log('Cells in ' + i + ':', cellValues);
+	
+		// Create an editable table with Bootstrap styling and load it into #answerTable
+		const cols = 10; // Number of columns per row
+		let tableHTML = "<table border='1' style='width: 100%; border-collapse: collapse;'>";
+		// Generate rows dynamically
+		for (let row = 0; row < Math.ceil(cellValues.length / cols); row++) {
+			// Add dynamic serial numbers as header for each row
+			tableHTML += "<tr>";
+			for (let col = 1; col <= cols; col++) {
+				const serialNumber = row * cols + col;
+				if (serialNumber <= cellValues.length) {
+					tableHTML += `<th style="background-color: #f0f0f0; color: #333; padding: 8px; text-align: center;">`+serialNumber+`</th>`;
+				}
+			}
+			tableHTML += "</tr>";
+			// Add data cells for the row
+			tableHTML += "<tr>";
+			for (let col = 1; col <= cols; col++) {
+				const index = row * cols + (col - 1);
+				if (index < cellValues.length) {
+
+					if(cellValues[index]===''){ // make backgound color yellow for wrong answers
+						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center; background-color: yellow;"></td>`;
+					} else {
+						tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;">`+ cellValues[index] +`</td>`;
+					}
+
+				} else {
+					tableHTML += `<td contenteditable="true" style="padding: 8px; text-align: center;"></td>`;
+					console.log('Never happens');
+				}
+			}
+			tableHTML += "</tr>";
+		}
+		tableHTML += "</table>";
+
+		// append each table as a section
+		$("#answerTable").append('<div class="mb-4">' + tableHTML + '</div>');
+			
+	}// end of loop - each table (for example, resultTable0_0, resultTable0_1, ...)
+	// Show the modal
+	$('#editModal').modal('show');
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Generate Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function generateTableData(elementId, data) {
-    // console.log('Element ID:', elementId);
-    // console.log('Data:', data);
+    console.log('Element ID:', elementId);
+    console.log('Data:', data);
     const target = document.getElementById('resultTable'+elementId);
     if (!target) {
         console.error(`Element with ID ${elementId} not found.`);
@@ -368,11 +382,7 @@ function proceedNext() {
 	        $('#validation-alert').modal('show');
         }
     });
-
-
-
 	console.log(metaDto, omrDtos);
-
 }
 
 </script> 
@@ -510,7 +520,10 @@ function proceedNext() {
         100% { transform: rotate(360deg); }
     }
 
-
+	
+	#file-upload:disabled {
+		cursor: not-allowed;
+	}
 
 </style>
 
@@ -582,12 +595,12 @@ function proceedNext() {
 	                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	                <div class="input-group">
 	                    <input type="file" name="file" class="file-input form-control" id="file-input" onchange="updateFileName(this)">
-	                    <label for="file-input" class="upload-label input-group-text">Choose File</label>
+	                    <label for="file-input" class="upload-label input-group-text bg-info text-white" id="upload-label">Choose File</label>
 	                </div>
 	                <div id="file-name-container"></div>
 	            </div>
 	            <div class="col-md-4 text-right">
-	                <button type="submit" id="file-upload" class="upload-button btn btn-primary">Upload</button>
+	                <button type="submit" id="file-upload" class="upload-button btn btn-primary"><i class="bi bi-file-earmark-arrow-up"></i>&nbsp;Upload</button>
 	            </div>
 	        </div>
 	    </form>
@@ -613,16 +626,22 @@ function proceedNext() {
 				$('#success-alert').modal('show');
 				// disable selection criteria - branch, testGroup, grade, volume dropdown list & upload button
 				$('#branch, #testGroup, #grade, #volume, #file-input, #file-upload').prop('disabled', true); 
+				$('#upload-label').removeClass('bg-info');
+				$('#upload-label').removeClass('text-white');
+				$('#upload-label').addClass('bg-mute');
+				$('#upload-label').addClass('text-secondary');
+				$('#upload-label').text('File Uploaded');
+				$('#upload-label').css('cursor', 'not-allowed');
 				// disable loading spinner
 				// $('#loadingModal').hide();      
 			</script>
 				<!-- Display OMR Scan Results -->
 				<c:if test="${not empty results}">
 					<div class="row m-3 pt-5 justify-content-center">
-						<div class="col-md-8">
+						<div class="col-md-12">
 							<c:if test="${not empty meta}">
 							<div class="mb-5">
-								<div class="card shadow border-1 rounded-3 text-center jae-border-primary">
+								<div class="card shadow border-1 rounded-3 text-center jae-border-primary w-75 mx-auto">
 									<div class="card-header text-white bg-primary">
 										<h4 class="mb-0">
 											<i class="bi bi-filetype-pdf h2 mr-2"></i> Scanned OMR Summary
@@ -703,35 +722,60 @@ function proceedNext() {
 							</div>
 							</c:if>
 							<div class="row justify-content-center">
-								<c:forEach items="${results}" var="result" varStatus="status">
-									<!-- Answer Sheet Card Section-->
+								<c:forEach items="${results}" var="omrSheet" varStatus="status">
+									<!-- Answer Omr Sheet Card Section-->
+
+
+
+
+									<!-- Display OmrSheetDTO details -->
+										<!-- <c:out value="${omrSheet}" /> -->
 									<div class="col-md-12 mb-4">
 										<div class="card h-100 shadow border-1 rounded-3">
 											<div class="card-body">
 												<div class="row">
+													<!-- Display Student ID and Name once per OmrSheetDTO -->
 													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
-														<div id="studentId${status.index}"><c:out value="${result.studentId}" /> </div>
-														<div id="testId${status.index}" class="d-none">
-															<c:out value="${result.testId}" />	
-														</div>
-														<div><c:out value="${result.studentName}" /> </div>
 														<div>
-															<script>
-																const resultData${status.index} = JSON.parse("${result.answers}");
-															</script>		
-															<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${result.fileName}', resultData${status.index})"></i></h3>
-														</div>		
+															<strong><c:out value="${omrSheet.studentTest[0].testName}" /></strong>
+														</div>
+														<div id="studentId${sheetStatus.index}">
+															<strong>Student ID:</strong> <c:out value="${omrSheet.studentTest[0].studentId}" />
+														</div>
+														<div>
+															<strong>Name:</strong> <c:out value="${omrSheet.studentTest[0].studentName}" />
+														</div>
+														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
 													</div>
-													<div class="col-10" id="resultTable${status.index}">
-														<!-- generate table with result -->	
-														<script>
-															generateTableData(${status.index}, resultData${status.index});
-														</script>
+													
+													<!-- Display Answer Sheets -->
+													<div class="col-10">
+														<div class="row">
+															<c:forEach items="${omrSheet.studentTest}" var="studentTest" varStatus="testStatus">
+																	<!-- Dynamically set column width based on studentTest size -->
+																<div class="<c:choose>
+																	<c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when>
+																	<c:otherwise>col-md-4</c:otherwise>
+																</c:choose> mb-4">
+																	<div id="resultTable${status.index}_${testStatus.index}">
+																		<!-- Generate table with result -->
+																		<script>
+																			const resultData${status.index}_${testStatus.index} = JSON.parse("${studentTest.answers}");
+																			generateTableData('${status.index}_${testStatus.index}', resultData${status.index}_${testStatus.index});
+																		</script>
+																	</div>
+																</div>
+															</c:forEach>
+														</div>
 													</div>
+
 												</div>
 											</div>
 										</div>
 									</div>
+
+
+
 								</c:forEach>
 							</div>
 							<!-- Optional: Next Button if needed -->

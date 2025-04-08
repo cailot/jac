@@ -44,8 +44,8 @@ public class OmrServiceImpl implements OmrService {
 
 	private License omrLicense;
 
-	@Value("${output.directory}")
-    private String outputDir;
+	// @Value("${output.directory}")
+    // private String outputDir;
 
 	@Autowired
 	private StudentService studentService;
@@ -111,7 +111,7 @@ public class OmrServiceImpl implements OmrService {
 		int numPages = document.getNumberOfPages();
 
 		// Path tempDir = Files.createTempDirectory("omr_jpg_");
-		Path tempDirPath = Path.of(outputDir);
+		Path tempDirPath = Path.of("outputDir");
 
 
 		for(int i=0; i<numPages; i++) {
