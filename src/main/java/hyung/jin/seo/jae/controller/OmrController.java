@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
+import hyung.jin.seo.jae.dto.TestDTO;
 import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.OmrScanHistory;
 import hyung.jin.seo.jae.model.Student;
@@ -47,6 +48,7 @@ import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.service.OmrService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.dto.HomeworkDTO;
+import hyung.jin.seo.jae.dto.OmrSheetDTO;
 import hyung.jin.seo.jae.dto.OmrStatsDTO;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
@@ -70,8 +72,8 @@ public class OmrController {
     @Autowired
     private CodeService codeService;
 
-    @Value("${output.directory}")
-    private String outputDir;
+    // @Value("${output.directory}")
+    // private String outputDir;
 
     @Value("${jac.omr.endpoint}")
     private String omrEndpoint;
@@ -118,10 +120,13 @@ public class OmrController {
             return "redirect:/omr/upload";
         }
     
+
+
+
         // process omr image
 
         // create omr results 	
-        List<StudentTestDTO> results = new ArrayList<>();
+        List<OmrSheetDTO> results = new ArrayList<>();
         
         try {
             //results = omrService.previewOmr(branch, file);
@@ -144,7 +149,7 @@ public class OmrController {
     }
 
     // invoke omr preview api call to JAC-HUB server
-    private List<StudentTestDTO> previewOmr(String branch, MultipartFile file) throws IOException {
+    private List<OmrSheetDTO> previewOmr(String branch, MultipartFile file) throws IOException {
         // 1. complete endpoint url
         String url = omrEndpoint + "/preview";
         // 2. create headers
@@ -163,12 +168,12 @@ public class OmrController {
         body.add("file", fileResource);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         // 5. send the request
-        List<StudentTestDTO> dtos = new ArrayList<>();
+        List<OmrSheetDTO> dtos = new ArrayList<>();
         ResponseEntity<List> response = restTemplate.postForEntity(url, requestEntity, List.class);
         // 6. parse and return the response
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
             // Assuming the response body is a list of StudentTestDTO objects
-            dtos = (List<StudentTestDTO>) response.getBody();
+            dtos = (List<OmrSheetDTO>) response.getBody();
         } else {
             System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
             return new ArrayList<>();
@@ -177,34 +182,6 @@ public class OmrController {
         
         // 7. return response;
         return dtos; 
-    }
-
-
-    ///////////// test......
-    private List<StudentTestDTO> processOmrImage() {
-        
-        List<StudentTestDTO> results = new ArrayList<>();
-        for(int i=1; i<=2; i++) {
-            StudentTestDTO result = new StudentTestDTO();
-            // 3~6 random number
-            int testId = new Random().nextInt(4) + 3;
-            result.setTestId((long)testId);
-            result.setTestName("Mega Test");
-            Long studentId = 11301580L;//(long)new Random().nextInt(50000);
-            result.setStudentId(studentId);
-            
-            // String studentName = studentService.getStudentName(studentId);
-            
-            result.setStudentName("David Hwang");
-            for(int j=0; j<40; j++) {
-                // generate radom number from 0 to 4
-                int radom = new Random().nextInt(5);
-                result.addAnswer(radom);
-            }
-            result.setFileName(new Random().nextInt(1000) + ".jpg");
-            results.add(result);
-        }
-        return results;
     }
 
     // Save the OMR results
@@ -265,14 +242,14 @@ public class OmrController {
         
         // 4. remove all files of which file name starts with 'branch' in the output directory
         boolean isSaved = false;
-        String branch = metaDto.getBranch();
-        File outputDirFile = new File(outputDir);
-		File[] files = outputDirFile.listFiles();
-		for(File file : files) {
-			if(file.getName().startsWith(branch+"_")) {
-				file.delete();
-			}
-		}
+        // String branch = metaDto.getBranch();
+        // File outputDirFile = new File(outputDir);
+		// File[] files = outputDirFile.listFiles();
+		// for(File file : files) {
+		// 	if(file.getName().startsWith(branch+"_")) {
+		// 		file.delete();
+		// 	}
+		// }
 		isSaved = true;
 
 
@@ -319,29 +296,6 @@ public class OmrController {
 		// 3. return dtos
 		return dtos;
 	}
-
-
-    // private List<OmrStatsDTO> dummy() {
-    //     List<OmrStatsDTO> dtos = new ArrayList<>();
-    //     for(int i=12; i<=34; i++) {
-    //         OmrStatsDTO dto = new OmrStatsDTO();
-    //         dto.setBranch("" + i);
-    //         // random number
-    //         int ran1 = (new Random().nextInt(1) + 10);
-    //         int ran2 = (new Random().nextInt(1) + 15);
-    //         int ran3 = (new Random().nextInt(1) + 20);
-    //         int ran4 = (new Random().nextInt(1) + 25);
-    //         dto.setMega(ran1);
-    //         dto.setRevision(ran2);
-    //         dto.setAcer(ran3);
-    //         dto.setEdu(ran4);
-    //         dtos.add(dto);
-    //     }
-    //     return dtos;
-    // }
-
-
-
 
 	// DTO class to handle the request
     public static class SaveResultsRequest {
