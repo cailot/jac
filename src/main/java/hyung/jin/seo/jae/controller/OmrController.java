@@ -1,18 +1,13 @@
 package hyung.jin.seo.jae.controller;
 
-import java.io.File;
 import java.io.IOException;
-// import java.net.http.HttpHeaders;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +20,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hyung.jin.seo.jae.dto.StudentTestDTO;
-import hyung.jin.seo.jae.dto.TestDTO;
-import hyung.jin.seo.jae.model.Homework;
 import hyung.jin.seo.jae.model.OmrScanHistory;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.StudentTest;
@@ -45,14 +37,12 @@ import hyung.jin.seo.jae.model.Test;
 import hyung.jin.seo.jae.model.TestAnswerItem;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
-import hyung.jin.seo.jae.service.OmrService;
+import hyung.jin.seo.jae.service.OmrManagementService;
 import hyung.jin.seo.jae.service.StudentService;
-import hyung.jin.seo.jae.dto.HomeworkDTO;
 import hyung.jin.seo.jae.dto.OmrSheetDTO;
 import hyung.jin.seo.jae.dto.OmrStatsDTO;
 import hyung.jin.seo.jae.dto.OmrUploadDTO;
 import hyung.jin.seo.jae.dto.SimpleBasketDTO;
-import hyung.jin.seo.jae.dto.StatsDTO;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
@@ -67,20 +57,16 @@ public class OmrController {
     private ConnectedService connectedService;
 
     @Autowired
-    private OmrService omrService;
+    private OmrManagementService omrManagementService;
 
     @Autowired
     private CodeService codeService;
-
-    // @Value("${output.directory}")
-    // private String outputDir;
 
     @Value("${jac.omr.endpoint}")
     private String omrEndpoint;
 
     @Autowired
     private RestTemplate restTemplate;
-
 
     /**
      * Display the OMR upload form
@@ -236,29 +222,16 @@ public class OmrController {
             history.setBranch(student.getBranch());
             int testGroup = connectedService.getTestGroup(testId);
             history.setTestGroup(testGroup);
-            omrService.recordOmr(history);
+            omrManagementService.recordOmr(history);
 
         }
         
-        // 4. remove all files of which file name starts with 'branch' in the output directory
-        boolean isSaved = false;
-        // String branch = metaDto.getBranch();
-        // File outputDirFile = new File(outputDir);
-		// File[] files = outputDirFile.listFiles();
-		// for(File file : files) {
-		// 	if(file.getName().startsWith(branch+"_")) {
-		// 		file.delete();
-		// 	}
-		// }
-		isSaved = true;
-
-
         // 5. Return a success response
-        if(isSaved) {
+        // if(isSaved) {
             return new ResponseEntity<>("OMR data successfully stored into database", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("OMR data failed to save", HttpStatus.EXPECTATION_FAILED);
-        }		
+        // } else {
+        //     return new ResponseEntity<>("OMR data failed to save", HttpStatus.EXPECTATION_FAILED);
+        // }	
     }
 
     // get all branch list
@@ -292,7 +265,7 @@ public class OmrController {
 			end = "2099-12-31";
 		}
 		// 2. get Stats
-		List<OmrStatsDTO> dtos = omrService.getOmrStats(start, end);
+		List<OmrStatsDTO> dtos = omrManagementService.getOmrStats(start, end);
 		// 3. return dtos
 		return dtos;
 	}

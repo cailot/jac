@@ -2,22 +2,13 @@ package hyung.jin.seo.jae;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import hyung.jin.seo.jae.dto.CycleDTO;
-import hyung.jin.seo.jae.dto.OnlineActivityDTO;
-import hyung.jin.seo.jae.dto.StudentDTO;
-import hyung.jin.seo.jae.model.OnlineActivity;
 import hyung.jin.seo.jae.service.CycleService;
-import hyung.jin.seo.jae.service.EmailService;
-import hyung.jin.seo.jae.service.OmrService;
-import hyung.jin.seo.jae.service.OnlineActivityService;
-import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.service.PropertiesService;
-import hyung.jin.seo.jae.service.StatsService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import java.util.List;
 

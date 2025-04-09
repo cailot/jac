@@ -139,7 +139,7 @@ function editAnswer(tableIndex, fileName) {
 		const cells = resultTable.querySelectorAll('td');
 		// Convert NodeList to Array and map to text content
 		const cellValues = Array.from(cells).map(cell => cell.textContent.trim());
-		console.log('Cells in ' + i + ':', cellValues);
+		// console.log('Cells in ' + i + ':', cellValues);
 	
 		// Create an editable table with Bootstrap styling and load it into #answerTable
 		const cols = 10; // Number of columns per row
@@ -176,8 +176,13 @@ function editAnswer(tableIndex, fileName) {
 		}
 		tableHTML += "</table>";
 
-		// append each table as a section
-		$("#answerTable").append('<div class="mb-4">' + tableHTML + '</div>');
+		// if tableCount = 3, div class = col-4; otherwise col-6
+		if (tableCount == 3) {
+			tableHTML = '<div class="col-4 mb-4">' + tableHTML + '</div>';
+		} else {
+			tableHTML = '<div class="col-6 mb-4">' + tableHTML + '</div>';
+		}
+		$("#answerTable").append(tableHTML);
 			
 	}// end of loop - each table (for example, resultTable0_0, resultTable0_1, ...)
 	// Show the modal
@@ -189,8 +194,8 @@ function editAnswer(tableIndex, fileName) {
 //		Generate Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function generateTableData(elementId, data) {
-    console.log('Element ID:', elementId);
-    console.log('Data:', data);
+    //console.log('Element ID:', elementId);
+    //console.log('Data:', data);
     const target = document.getElementById('resultTable'+elementId);
     if (!target) {
         console.error(`Element with ID ${elementId} not found.`);
@@ -235,56 +240,64 @@ function generateTableData(elementId, data) {
 //		Update Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateTestAnswer(){
+	//debugger;
 	// Get the table element
 	const table = document.getElementById("answerTable");
 	// Get table index
 	const tableIndex = document.getElementById("tableIndex").value;
-	// Get all the rows in the table
-	const rows = table.getElementsByTagName("tr");
-	const updatedAnswers = [];
-	// Define a mapping from letters to numbers
-	const letterToNumber = {
-		'A': 1,
-		'B': 2,
-		'C': 3,
-		'D': 4,
-		'E': 5
-		// Extend this mapping if you have more letters
-	}
-	// Loop through each row (assuming the first row is the header)
-	for (let i = 1; i < rows.length; i++) {
-		// Get all the cells in the current row
-		const cells = rows[i].getElementsByTagName("td");
-		
-		// Loop through each cell in the row
-		for (let j = 0; j < cells.length; j++) {
-			// Get the content of the cell, trim whitespace, and convert to uppercase
-			const content = cells[j].textContent.trim().toUpperCase();
-			let value;
+	// check how many tables are in the answerTable, can you search by table rather than id as table does not have id
+	const tableCount = table.getElementsByTagName("table").length;
+	// console.log('Table Count:', tableCount);
 
-			if (content === '' || content === null) {
-				// Assign 0 for empty, null, or empty string values
-				value = 0;
-			} else if (letterToNumber.hasOwnProperty(content)) {
-				// Map letters 'A' to 'E' to numbers 1 to 5
-				value = letterToNumber[content];
-			} else {
-				// Handle unexpected values by assigning 0 or any default value
-				console.warn(`Unexpected value "${content}" found in cell (${i}, ${j}). Assigning 0.`);
-				value = 0;
-			}
-
-			// Add the numerical value to the updatedAnswers array
-			updatedAnswers.push(value);
+	for(let i=0; i<tableCount; i++){
+		// Get the table element
+		const table = document.getElementById("answerTable").getElementsByTagName("table")[i];
+		// Get all the rows in the table
+		const rows = table.getElementsByTagName("tr");
+		const updatedAnswers = [];
+		// Define a mapping from letters to numbers
+		const letterToNumber = {
+			'A': 1,
+			'B': 2,
+			'C': 3,
+			'D': 4,
+			'E': 5
+			// Extend this mapping if you have more letters
 		}
+		// Loop through each row (assuming the first row is the header)
+		for (let i = 1; i < rows.length; i++) {
+			// Get all the cells in the current row
+			const cells = rows[i].getElementsByTagName("td");			
+			// Loop through each cell in the row
+			for (let j = 0; j < cells.length; j++) {
+				// Get the content of the cell, trim whitespace, and convert to uppercase
+				const content = cells[j].textContent.trim().toUpperCase();
+				let value;
+				if (content === '' || content === null) {
+					// Assign 0 for empty, null, or empty string values
+					value = 0;
+				} else if (letterToNumber.hasOwnProperty(content)) {
+					// Map letters 'A' to 'E' to numbers 1 to 5
+					value = letterToNumber[content];
+				} else {
+					// Handle unexpected values by assigning 0 or any default value
+					console.warn('Unexpected value ' + content+ ' found in cell (' + i + ', ' + j + '). Assigning 0.');
+					value = 0;
+				}
+				// Add the numerical value to the updatedAnswers array
+				updatedAnswers.push(value);
+			}
+		}
+		console.log('Updated Answers:', updatedAnswers);
+		// apply the updated answers to the original data
+		generateTableData(tableIndex + '_' + i, updatedAnswers);
+
 	}
-	console.log(tableIndex);
-	// apply the updated answers to the original data
-	generateTableData(tableIndex, updatedAnswers);
 	// reset the table index
 	document.getElementById("tableIndex").value = '';
 	// Hide the modal
 	$('#editModal').modal('hide');
+
 }
 
 
@@ -302,10 +315,10 @@ function confirmProceed() {
     });
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Proceed Save Data
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
 function proceedNext() {
 	// Get the meta values
 	const branch = document.getElementById('metaBranch').textContent;
@@ -320,8 +333,16 @@ function proceedNext() {
 	};
 	// scan all the table data
 	const omrDtos = [];
-	const tableCount = document.querySelectorAll('[id^="resultTable"]').length;
-	for (let i = 0; i < tableCount; i++) {
+	const tableGroups = countTablesByGroup;
+	console.log('Table Count:', tableGroups);
+	for (let i = 0; i < Object.keys(tableGroups).length; i++) {
+
+		// To get the count for a specific group (e.g., resultTable0_)
+		const countForGroup0 = tableGroups[i] || 0;
+		console.log('Number of tables for resultTable'+ i + '_:', countForGroup0);
+
+	}
+		/*
 		const table = document.getElementById('resultTable'+i);
 		const rows = table.getElementsByTagName("tr");
 		// student answer data as int[]
@@ -383,6 +404,130 @@ function proceedNext() {
         }
     });
 	console.log(metaDto, omrDtos);
+	
+}
+*/
+
+function proceedNext() {
+    // Get the meta values
+    const branch = document.getElementById('metaBranch').textContent.trim();
+    const testGroup = document.getElementById('metaTestGroup').textContent.trim();
+    const grade = document.getElementById('metaGrade').textContent.trim();
+    const volume = document.getElementById('metaVolume').textContent.trim();
+    const metaDto = {
+        branch: branch,
+        testGroup: testGroup,
+        grade: grade,
+        volume: volume
+    };
+    // Scan all the table data
+    const omrDtos = [];
+    const tableGroups = countTablesByGroup();
+    // console.log('Table Count:', tableGroups);
+    // Iterate through each group (e.g., resultTable0_, resultTable1_, etc.)
+    Object.keys(tableGroups).forEach(groupNumber => {
+		const tableCount = tableGroups[groupNumber];
+		// console.log('Number of tables for resultTable' + groupNumber + '_:', tableCount);
+		for (let i = 0; i < tableCount; i++) {
+    		const tableId = 'resultTable' + groupNumber + '_' + i;
+    		const table = document.getElementById(tableId);
+    		if (!table) {
+        		console.warn('Table with ID ' + tableId + ' not found.');
+        		continue;
+    		}
+			// Extract data from the table
+			const rows = table.getElementsByTagName('tr');
+			const answerData = [];
+			for (let j = 1; j < rows.length; j++) { // Skip the header row
+				const cells = rows[j].getElementsByTagName('td');
+				for (let k = 0; k < cells.length; k++) {
+					const cell = cells[k];
+					if (!cell) {
+						console.warn('Cell ('+j+', '+k+') not found in table '+ tableId + '. Skipping.');
+						continue;
+					}
+					const content = cell.textContent.trim().toUpperCase();
+					let value;
+					if (content === '' || content === null) {
+						value = 0; // Empty cells are treated as 0
+					} else if (content === 'A') {
+						value = 1;
+					} else if (content === 'B') {
+						value = 2;
+					} else if (content === 'C') {
+						value = 3;
+					} else if (content === 'D') {
+						value = 4;
+					} else if (content === 'E') {
+						value = 5;
+					} else {
+						console.warn('Unexpected value "' + content + '" found in cell (' + j + ', ' + k + '). Assigning 0.');
+						value = 0;
+					}
+					answerData.push(value);
+				}
+			}
+			// console.log('Extracted Answer Data for Table ' + tableId + ':', answerData);		
+            // Create OMR Scan Result DTO
+            const omrScanResultDTO = {
+                studentId: document.getElementById('studentId'+groupNumber).textContent.trim(),
+                testId: document.getElementById('testId'+groupNumber+'_'+i).value,
+                answers: answerData
+            };
+			// Save final result to omrDtos
+            omrDtos.push(omrScanResultDTO);
+        }
+    });
+
+	// Send the data to the server
+    $.ajax({
+        url: '${pageContext.request.contextPath}/omr/saveResult', // Adjust the URL to match your controller's endpoint
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ metaDto: metaDto, omrDtos: omrDtos }),
+        success: function(response) {
+            console.log('Data successfully sent to the server:', response);
+            // Handle success response
+            $('#success-alert .modal-body').html(response);
+            $('#success-alert').modal('show');
+            // Reload the page after the success alert is closed
+            $('#success-alert').on('hidden.bs.modal', function () {
+                location.href = window.location.pathname; // Reload the page
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error sending data to the server:', textStatus, errorThrown);
+            $('#validation-alert .modal-body').html('Failed to save data. Please try again later.');
+            $('#validation-alert').modal('show');
+        }
+    });
+
+    // console.log('Meta DTO:', metaDto);
+    // console.log('OMR DTOs:', omrDtos);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Count Tables by Group (resultTableN_M)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function countTablesByGroup() {
+    // Use querySelectorAll to find all elements with IDs starting with 'resultTable'
+    const tables = document.querySelectorAll('[id^="resultTable"]');
+    const tableGroups = {};
+    // Iterate through the matched elements
+    tables.forEach(table => {
+        const id = table.id;
+        const match = id.match(/^resultTable(\d+)_/); // Extract the group number (N) from the ID
+        if (match) {
+            const groupNumber = match[1]; // Get the group number (N)
+            if (!tableGroups[groupNumber]) {
+                tableGroups[groupNumber] = 0; // Initialize the count for this group
+            }
+            tableGroups[groupNumber]++; // Increment the count for this group
+        }
+    });
+	// for example, return { '0': 2, '1': 2, '2': 2 .....} 
+    return tableGroups; 
 }
 
 </script> 
@@ -729,7 +874,6 @@ function proceedNext() {
 
 
 									<!-- Display OmrSheetDTO details -->
-										<!-- <c:out value="${omrSheet}" /> -->
 									<div class="col-md-12 mb-4">
 										<div class="card h-100 shadow border-1 rounded-3">
 											<div class="card-body">
@@ -739,12 +883,15 @@ function proceedNext() {
 														<div>
 															<strong><c:out value="${omrSheet.studentTest[0].testName}" /></strong>
 														</div>
-														<div id="studentId${sheetStatus.index}">
-															<strong>Student ID:</strong> <c:out value="${omrSheet.studentTest[0].studentId}" />
+														<div>
+															<strong>Student ID:</strong>
+															<span id="studentId${status.index}">
+																<c:out value="${omrSheet.studentTest[0].studentId}" />
+															</span>
 														</div>
 														<div>
 															<strong>Name:</strong> <c:out value="${omrSheet.studentTest[0].studentName}" />
-														</div>
+														</div>														
 														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
 													</div>
 													
@@ -752,11 +899,11 @@ function proceedNext() {
 													<div class="col-10">
 														<div class="row">
 															<c:forEach items="${omrSheet.studentTest}" var="studentTest" varStatus="testStatus">
-																	<!-- Dynamically set column width based on studentTest size -->
-																<div class="<c:choose>
-																	<c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when>
-																	<c:otherwise>col-md-4</c:otherwise>
-																</c:choose> mb-4">
+																<!-- hide testId -->
+																<input type="hidden" id="testId${status.index}_${testStatus.index}" value="${studentTest.testId}" />
+																	
+																<!-- Dynamically set column width based on studentTest size -->
+																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose> mb-4'>
 																	<div id="resultTable${status.index}_${testStatus.index}">
 																		<!-- Generate table with result -->
 																		<script>
@@ -813,7 +960,7 @@ function proceedNext() {
 				<!-- 30% Height Section -->
 				<div class="row" style="flex: 3;">
 					<div class="col-12 bg-white p-1 border">
-						<div id="answerTable">	
+						<div id="answerTable" class="row">	
 						</div>
 					</div>
 				</div>
