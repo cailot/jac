@@ -476,7 +476,7 @@ function confirmDelete(practiceId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteTestSchedule(practiceId);
         $('#deleteConfirmModal').modal('hide');
     });
@@ -610,7 +610,7 @@ function confirmProcessResult(scheduleId) {
     $('#processResultModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#processConfirmation').one('click', function() {
+    $('#processConfirmation').off('click').on('click', function() {
 		processTestResult(scheduleId);
 		$('#processResultModal').modal('hide');
     });

@@ -11,7 +11,7 @@ import hyung.jin.seo.jae.repository.OmrScanHistoryRepository;
 import hyung.jin.seo.jae.service.OmrManagementService;
 
 @Service
-public class OmrServiceImpl implements OmrManagementService {
+public class OmrManagementServiceImpl implements OmrManagementService {
 
 	@Autowired
 	private OmrScanHistoryRepository omrScanHistoryRepository;
