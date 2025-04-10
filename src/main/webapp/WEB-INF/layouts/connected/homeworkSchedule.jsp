@@ -450,7 +450,7 @@ function confirmDelete(scheduleId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteHomeworkSchedule(scheduleId);
         $('#deleteConfirmModal').modal('hide');
     });

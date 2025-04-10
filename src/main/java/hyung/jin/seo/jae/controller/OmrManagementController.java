@@ -48,7 +48,7 @@ import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("omr")
-public class OmrController {
+public class OmrManagementController {
 
     @Autowired
     private StudentService studentService;
