@@ -309,7 +309,7 @@ function confirmProceed() {
     $('#proceedWarningModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeProceedWarning').one('click', function() {
+    $('#agreeProceedWarning').off('click').on('click', function() {
         $('#proceedWarningModal').modal('hide');
 		proceedNext();
     });
@@ -318,96 +318,6 @@ function confirmProceed() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Proceed Save Data
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-function proceedNext() {
-	// Get the meta values
-	const branch = document.getElementById('metaBranch').textContent;
-	const testGroup = document.getElementById('metaTestGroup').textContent;
-	const grade = document.getElementById('metaGrade').textContent;
-	const volume = document.getElementById('metaVolume').textContent;
-	const metaDto = {
-		branch: branch,
-		testGroup: testGroup,
-		grade: grade,
-		volume: volume
-	};
-	// scan all the table data
-	const omrDtos = [];
-	const tableGroups = countTablesByGroup;
-	console.log('Table Count:', tableGroups);
-	for (let i = 0; i < Object.keys(tableGroups).length; i++) {
-
-		// To get the count for a specific group (e.g., resultTable0_)
-		const countForGroup0 = tableGroups[i] || 0;
-		console.log('Number of tables for resultTable'+ i + '_:', countForGroup0);
-
-	}
-		/*
-		const table = document.getElementById('resultTable'+i);
-		const rows = table.getElementsByTagName("tr");
-		// student answer data as int[]
-		const answerData = [];		
-		// int[] answerData = [];
-		for (let j = 1; j < rows.length; j++) {
-			const cells = rows[j].getElementsByTagName("td");
-			for (let k = 0; k < cells.length; k++) {
-				const content = cells[k].textContent.trim().toUpperCase();
-				let value;
-				if (content === '' || content === null) {
-					value = 0;
-				} else if (content === 'A') {
-					value = 1;
-				} else if (content === 'B') {
-					value = 2;
-				} else if (content === 'C') {
-					value = 3;
-				} else if (content === 'D') {
-					value = 4;
-				} else if (content === 'E') {
-					value = 5;
-				} else {
-					console.warn(`Unexpected value "${content}" found in cell (${j}, ${k}). Assigning 0.`);
-					value = 0;
-				}
-				answerData.push(value);
-			}
-		}
-		// create omrScanResultDTO object
-		const omrScanResultDTO = {
-			studentId: document.getElementById('studentId'+i).textContent,
-			testId: document.getElementById('testId'+i).textContent,
-			answers: answerData
-		};
-		omrDtos.push(omrScanResultDTO);
-	}
-	// send the data to the controller
-	$.ajax({
-        url: '${pageContext.request.contextPath}/omr/saveResult', // Adjust the URL to match your controller's endpoint
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ metaDto: metaDto, omrDtos: omrDtos }),
-        success: function(response) {
-            // console.log('Data successfully sent to the server:', response);
-            // Handle success response
-			$('#success-alert .modal-body').html(response);
-	        $('#success-alert').modal('show');
-			// Attach an event listener to the success alert close event
-			$('#success-alert').on('hidden.bs.modal', function () {
-				// Reload the page after the success alert is closed
-				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
-			});
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error sending data to the server:', textStatus, errorThrown);
-			$('#validation-alert .modal-body').html('Failed to save data. Please try again later.');
-	        $('#validation-alert').modal('show');
-        }
-    });
-	console.log(metaDto, omrDtos);
-	
-}
-*/
-
 function proceedNext() {
     // Get the meta values
     const branch = document.getElementById('metaBranch').textContent.trim();
@@ -485,6 +395,10 @@ function proceedNext() {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({ metaDto: metaDto, omrDtos: omrDtos }),
+		beforeSend: function() {
+			// Show the loading modal before sending the request
+			$('#loadingModal').fadeIn();
+    	},
         success: function(response) {
             console.log('Data successfully sent to the server:', response);
             // Handle success response
@@ -499,7 +413,11 @@ function proceedNext() {
             console.error('Error sending data to the server:', textStatus, errorThrown);
             $('#validation-alert .modal-body').html('Failed to save data. Please try again later.');
             $('#validation-alert').modal('show');
-        }
+        },
+		complete: function() {
+			// Hide the loading modal after the request is complete
+			$('#loadingModal').fadeOut();
+    	}
     });
 
     // console.log('Meta DTO:', metaDto);

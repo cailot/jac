@@ -227,7 +227,7 @@ window.showWarning = function(id) {
     // Show the warning modal
     $('#deleteModal').modal('show');
     // Attach the click event handler to the "Delete" button
-    $('#agreeDelete').one('click', function() {
+    $('#agreeDelete').off('click').on('click', function() {
         deleteCycle(id);
         $('#deleteModal').modal('hide');
     });
