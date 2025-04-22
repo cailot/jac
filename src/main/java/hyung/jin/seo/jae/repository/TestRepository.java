@@ -50,5 +50,14 @@ public interface TestRepository extends JpaRepository<Test, Long>{
 	@Modifying
 	@Query("UPDATE Test t SET t.average = ?2 WHERE t.id = ?1")	
 	void updateAverageScore(Long id, Double average);
+
+	// get test volume by id
+	@Query("SELECT t.volume FROM Test t WHERE t.id = ?1")
+	int getTestVolume(Long id);
+
+	// get test grade by id
+	@Query("SELECT t.grade.code FROM Test t WHERE t.id = ?1")
+	String getTestGrade(Long id);
+	
 	
 }

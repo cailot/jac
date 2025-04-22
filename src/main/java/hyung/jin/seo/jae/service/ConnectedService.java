@@ -248,12 +248,27 @@ public interface ConnectedService {
 	// get test group by id
 	int getTestGroup(Long id);
 
+	// get test grade by id
+	String getTestGrade(Long id);
+
+	// get test volume by id
+	int getTestVolume(Long id);
+	
+	// get Student's answer by Student & Test
+	List<Integer> getStudentTestAnswer(Long studentId, Long  testId, String from, String to);	
+
+	// retrieve TestAnswer by Test
+	StudentTestDTO findStudentTestByStudentNTest(Long studentId, Long testId, String from, String to);
+
 	// get average score of Test
 	// double getAverageScoreByTest(Long testId, String from, String to);
 
 	// get registerDate by studentId and testId
 	String getRegDateforStudentTest(Long studentId, Long test, String from, String to);
 	
+	// get student score by studentId and testId
+	double getStudentScoreByTest(Long studentId, Long testId);
+
 	double getAverageScoreByTest(Long testId, String from, String to);
 
 	double getHighestScoreByTest(Long testId, String from, String to);
@@ -341,5 +356,9 @@ public interface ConnectedService {
 	
 	// delete Practice Schedule
 	void deleteTestSchedule(Long id);
+
+	// get most recent Test Schedule by testGroup & grade & week
+	TestScheduleDTO getMostRecentTestSchedule(String testGroup, String grade, String week);
+
 
 }

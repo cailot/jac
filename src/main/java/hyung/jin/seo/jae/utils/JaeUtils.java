@@ -14,6 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 
+import hyung.jin.seo.jae.model.TestAnswerItem;
+
 public class JaeUtils {
 	
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -247,4 +249,37 @@ public class JaeUtils {
 		}
 	}
 
+	// return test group name
+	public static String getTestGroup(int value) {
+		String answer = "";
+		switch(value) {
+			case 1: answer = "Mega Test"; break;
+			case 2: answer = "Revision Test"; break;
+			case 3: answer = "Edu Test"; break;
+			case 4: answer = "Acer Test"; break;
+			case 5: answer = "Mock Test"; break;
+		}
+		return answer;
+	}
+
+	// count test score by comparing student answers and answer sheet
+	public static int countTestScore(List<Integer> studentAnswers, List<TestAnswerItem> answerSheet) {
+		// Check if both lists have the same size
+        if ((studentAnswers==null) || (answerSheet==null) || (studentAnswers.size() != answerSheet.size())) {
+            return 0;
+        }
+        int totalQuestions = answerSheet.size();
+        // Iterate through the lists and compare corresponding elements
+        int correctAnswers = 0;
+        for (int i = 0; i < totalQuestions; i++) {
+            int studentAnswer = studentAnswers.get(i);
+            int correctAnswer = answerSheet.get(i).getAnswer();
+
+            if (studentAnswer == correctAnswer) {
+                correctAnswers++;
+            }
+        }
+        // Return the count of correct answers
+        return correctAnswers;
+	}
 }

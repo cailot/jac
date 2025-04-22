@@ -22,11 +22,21 @@ public interface TestScheduleRepository extends JpaRepository<TestSchedule, Long
 	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate, t.resultDate, t.explanationFromDatetime, t.explanationToDatetime) " +
 	"FROM TestSchedule t " +
 	"WHERE t.fromDatetime BETWEEN :from AND :to " +
-	"AND (:testGroup = '0' OR t.testGroup = :testGroup OR t.testGroup LIKE CONCAT('%,', :testGroup, ',%') OR t.testGroup LIKE CONCAT(:testGroup, ',%') OR t.testGroup LIKE CONCAT('%,', :testGroup))")
+	"AND (:testGroup = '0' OR t.testGroup = :testGroup)")
 	List<TestScheduleDTO> filterTestScheduleByTimeNGroup(@Param("from") LocalDateTime from, @Param("to") LocalDateTime to, @Param("testGroup") String testGroup);
 
 	// get TestScheduleDTO by id
 	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate, t.resultDate, t.explanationFromDatetime, t.explanationToDatetime) FROM TestSchedule t WHERE t.id = ?1")
 	TestScheduleDTO getTestScheduleById(Long id);
+
+	// Bring TestScheduleDTO by grade, week & testGroup - recent top 1 only
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestScheduleDTO(t.id, t.fromDatetime, t.toDatetime, t.grade, t.testGroup, t.week, t.info, t.active, t.registerDate, t.explanationFromDatetime, t.explanationToDatetime) " +
+	"FROM TestSchedule t WHERE (t.testGroup = '0' OR t.testGroup LIKE CONCAT('%,', :testGroup, ',%') OR t.testGroup LIKE CONCAT(:testGroup, ',%') OR t.testGroup LIKE CONCAT('%,', :testGroup) OR t.testGroup = :testGroup) " +
+	"AND (t.grade = :grade) " +
+	"AND (t.week = '0' OR t.week LIKE CONCAT('%,', :week, ',%') OR t.week LIKE CONCAT(:week, ',%') OR t.week LIKE CONCAT('%,', :week) OR t.week = :week) " +
+	"AND (t.active = true) " +
+	"ORDER BY t.registerDate DESC")
+	TestScheduleDTO getTestScheduleByGroupNGradeNWeekTop1(@Param("testGroup") String testGroup, @Param("grade") String grade, @Param("week") String week);
+
 }
 

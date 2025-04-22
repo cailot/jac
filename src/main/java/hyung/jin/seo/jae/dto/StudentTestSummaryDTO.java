@@ -1,6 +1,9 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestSummaryDTO implements Serializable {
+public class StudentTestSummaryDTO implements Serializable {
 
 	private String id;
 
@@ -22,10 +25,10 @@ public class TestSummaryDTO implements Serializable {
 
 	private String branch;
 
-	private double score1;
+	private List<Double> scores = new ArrayList<>();
 
-	private double score2;
+	public void addScore(double score) {
+		this.scores.add(score);
+	}
 
-	private double score3;
-	
 }
