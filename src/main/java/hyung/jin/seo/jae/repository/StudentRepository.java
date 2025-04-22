@@ -296,6 +296,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         @Query(value = "SELECT CONCAT(s.firstName, ' ', s.lastName) FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findStudentNameById(Long id);
 
+        // get main email by studentId
+        @Query(value = "SELECT s.email1 FROM Student s WHERE s.id = ?1", nativeQuery = true)
+        String findStudentEmailById(Long id);
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// count summary by State, Branch, Grade, Active, Date - studentBranchList.jsp 
         @Query("SELECT s.grade, COUNT(s) " +

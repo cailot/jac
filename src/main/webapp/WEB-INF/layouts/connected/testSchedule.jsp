@@ -75,6 +75,14 @@ $(document).ready(function () {
 //		Add Test into Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addTest(action) {
+	// Check if table already has a row
+	var table = document.getElementById(action + "ScheduleTable");
+	if (table.getElementsByTagName('tbody')[0].getElementsByTagName('tr').length > 0) {
+		$('#validation-alert .modal-body').text('Only one test can be added at a time.');
+		$('#validation-alert').modal('show');
+		return;
+	}
+
 	// Get the values from the select elements
 	var testTypeSelect = document.getElementById(action + "TestType");
 	var testTypeGroup = testTypeSelect.options[testTypeSelect.selectedIndex].value;
@@ -84,10 +92,7 @@ function addTest(action) {
 	var set = setSelect.options[setSelect.selectedIndex].text;
 	var testTypeWeek = document.getElementById(action + "Volume").value;
 
-	// Get a reference to the table
-	var table = document.getElementById(action + "ScheduleTable");
-
-	/// Create a new row
+	// Create a new row
 	var row = $("<tr>");
 
 	// Create the cells for the row
@@ -143,8 +148,6 @@ function addTest(action) {
 	} else {
 		$("#" + action + "ExplanationSchedule").hide();
 	}	
-
-
 }
 
 

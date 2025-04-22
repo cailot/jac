@@ -1115,6 +1115,17 @@ public class ConnectedServiceImpl implements ConnectedService {
 	}
 
 	@Override
+	public double getStudentScoreByTest(Long studentId, Long testId) {
+		Double score = 0.0;
+		try{
+			score = studentTestRepository.getScoreByStudentIdAndTestId(studentId, testId);
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		return score!= null ? score : 0.0;
+	}
+
+	@Override
 	public List<Long> getStudentListByTest(Long testId, String from, String to) {
 		List<Long> students = new ArrayList<>();
 		// convert String to LocalDate
@@ -1212,6 +1223,65 @@ public class ConnectedServiceImpl implements ConnectedService {
 		} else {
 			return "Lowest";
 		}
+	}
+
+	@Override
+	public String getTestGrade(Long id) {
+		String testGrade = "";
+		try{
+			testGrade = testRepository.getTestGrade(id);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return testGrade;
+	}
+
+	@Override
+	public int getTestVolume(Long id) {
+		int testVolume = 0;
+		try{
+			testVolume = testRepository.getTestVolume(id);
+		}catch(Exception e){
+			System.out.println("No Test found");
+		}
+		return testVolume;	
+	}
+
+	@Override
+	public List<Integer> getStudentTestAnswer(Long studentId, Long testId, String from, String to) {
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);				
+		Optional<StudentTest> answer = studentTestRepository.findByStudentIdAndTestIdWithYear(studentId, testId, fromDate, toDate);
+		if(answer.isPresent()){
+			return answer.get().getAnswers();
+		}else{
+			return null;
+		}
+	}
+
+	@Override
+	public StudentTestDTO findStudentTestByStudentNTest(Long studentId, Long testId, String from, String to) {
+		StudentTestDTO dto = null;
+		// convert String to LocalDate
+		LocalDate fromDate = LocalDate.parse(from, DATE_FORMATTER);
+		LocalDate toDate = LocalDate.parse(to, DATE_FORMATTER);			
+		try{
+			dto =  studentTestRepository.findStudentTest(studentId, testId, fromDate, toDate);
+		}catch(Exception e){
+			System.out.println("No StudentTest found");
+		}
+		return dto;
+	}
+
+	@Override
+	public TestScheduleDTO getMostRecentTestSchedule(String testGroup, String grade, String week) {
+		TestScheduleDTO dto = new TestScheduleDTO();
+		try{
+			dto = testScheduleRepository.getTestScheduleByGroupNGradeNWeekTop1(testGroup, grade, week);
+		}catch(Exception e){
+			System.out.println("No Test Schedule found");
+		}
+		return dto;
 	}
 
 

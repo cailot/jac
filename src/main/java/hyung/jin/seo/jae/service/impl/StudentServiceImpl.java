@@ -450,6 +450,17 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public String getStudentEmail(Long id) {
+		String email = "";
+		try{
+			email = studentRepository.findStudentEmailById(id);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return email;
+	}
+
+	@Override
 	public String getBranch(Long id) {
 		String branch = "0";
 		try{

@@ -425,4 +425,35 @@ public interface JaeConstants {
 	int TEST_GROUP_ACER = 4;
 
 	int TEST_GROUP_MOCK = 5;
+
+	String TEST_RESULT_INFO = "testResultInfo";
+
+	String TEST_GROUP_INFO = "testGroupInfo";
+
+	String TEST_TITLE_INFO = "testTitleInfo";
+
+	String BRANCH_INFO = "branchInfo";
+
+	String VOLUME_INFO = "volumeInfo";
+
+	String STUDENT_ANSWER_CORRECT_COUNT = "studentAnswerCorrectCount";
+
+	String TEST_ANSWER_TOTAL_COUNT = "testAnswerTotalCount";
+
+	String STUDENT_SCORE = "studentScore";
+
+	String TEST_ANSWERS = "testAnswers";
+
+	String STUDENT_ANSWERS = "studentAnswers";
+
+	String STUDENT_TEST_SCORE = "studentTestScore";
+
+	String TEST_HIGHEST_SCORE = "testHighestScore";
+
+	String TEST_LOWEST_SCORE = "testLowestScore";
+
+	String TEST_AVERAGE_SCORE = "testAverageScore";
+
+	String TEST_RESULT_HISTORY = "testResultHistory";
+
 }

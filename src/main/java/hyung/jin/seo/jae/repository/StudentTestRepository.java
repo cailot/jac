@@ -50,7 +50,12 @@ public interface StudentTestRepository extends JpaRepository<StudentTest, Long> 
         @Query("SELECT st.registerDate FROM StudentTest st WHERE st.student.id = :studentId AND st.test.id = :testId AND st.registerDate BETWEEN :fromTime AND :toTime")
         LocalDate getRegisterDateByStudentIdAndTestId(@Param("studentId") Long studentId, @Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
-         // Get average score by testId and date range (fromTime, toTime)
+
+        // Get score by studentId and testId
+        @Query("SELECT st.score FROM StudentTest st WHERE st.student.id = :studentId AND st.test.id = :testId")
+        Double getScoreByStudentIdAndTestId(@Param("studentId") Long studentId, @Param("testId") Long testId);
+
+        // Get average score by testId and date range (fromTime, toTime)
         @Query("SELECT AVG(st.score) FROM StudentTest st WHERE st.test.id = :testId AND st.registerDate BETWEEN :fromTime AND :toTime")
         Double getAverageScoreByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
@@ -69,5 +74,24 @@ public interface StudentTestRepository extends JpaRepository<StudentTest, Long> 
         // get student list who took the test
         @Query("SELECT DISTINCT(st.student.id) FROM StudentTest st WHERE st.test.id = :testId AND registerDate BETWEEN :fromTime AND :toTime")
         List<Long> getStudentListByTestId(@Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
+
+        @Query("SELECT new hyung.jin.seo.jae.dto.StudentTestDTO(" +
+                "st.id, " +
+                "st.registerDate, " +
+                "st.score, " +
+                "st.student.id, " +
+                "st.test.id) " +                
+                // "st.test.id, " +
+                // "st.answers) " +
+                "FROM StudentTest st " +
+                "WHERE st.student.id = :studentId AND st.test.id = :testId " +
+                "AND st.registerDate BETWEEN :fromTime AND :toTime")
+        StudentTestDTO findStudentTest(@Param("studentId") Long studentId, @Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);	// // bring latest EnrolmentDTO by student id, called from retrieveEnrolment() in
+
+        // check whether there is a record in StudentTest table by studentId and testId
+        @Query("SELECT st FROM StudentTest st WHERE st.student.id = :studentId AND st.test.id = :testId AND st.registerDate BETWEEN :fromTime AND :toTime")
+	Optional<StudentTest> findByStudentIdAndTestIdWithYear(@Param("studentId") Long studentId, @Param("testId") Long testId, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
+	
+	
 
 }

@@ -35,9 +35,9 @@ public class TestScheduleDTO implements Serializable {
 	//private String[] grade;
 	private String grade;
 
-	private String[] testGroup;
+	private String testGroup;
 
-	private String[] week;
+	private String week;
 
 	private String info;
 
@@ -56,8 +56,8 @@ public class TestScheduleDTO implements Serializable {
 		ts.setActive(this.active);
 		ts.setInfo(this.info);
 		ts.setGrade(this.grade);
-		ts.setTestGroup(JaeUtils.joinString(this.testGroup));
-		ts.setWeek(JaeUtils.joinString(this.week));
+		ts.setTestGroup(this.testGroup);
+		ts.setWeek(this.week);
 		ts.setResultDate(this.resultDate != null ? LocalDate.parse(this.resultDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null);
 		ts.setExplanationFromDatetime(StringUtils.isNotBlank(explanationFrom) ? LocalDateTime.parse(this.explanationFrom, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
 		ts.setExplanationToDatetime(StringUtils.isNotBlank(explanationTo) ? LocalDateTime.parse(this.explanationTo, DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);	
@@ -69,8 +69,8 @@ public class TestScheduleDTO implements Serializable {
 		this.from = schedule.getFromDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
 		this.to = schedule.getToDatetime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
 		this.grade = schedule.getGrade();
-		this.testGroup = JaeUtils.splitString(schedule.getTestGroup());
-		this.week = JaeUtils.splitString(schedule.getWeek());
+		this.testGroup = schedule.getTestGroup();
+		this.week = schedule.getWeek();
 		this.info = schedule.getInfo();
 		this.active = schedule.isActive();
 		this.registerDate = schedule.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -84,8 +84,8 @@ public class TestScheduleDTO implements Serializable {
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
 		this.grade = grade;
-		this.testGroup = JaeUtils.splitString(group);
-		this.week = JaeUtils.splitString(week);
+		this.testGroup = group;
+		this.week = week;
 		this.info = info;
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -98,8 +98,8 @@ public class TestScheduleDTO implements Serializable {
 		this.from = fromTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));;
 		this.to = toTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm"));
 		this.grade = grade;
-		this.testGroup = JaeUtils.splitString(group);
-		this.week = JaeUtils.splitString(week);
+		this.testGroup = group;
+		this.week = week;
 		this.info = info;
 		this.active = active;
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));

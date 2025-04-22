@@ -29,11 +29,20 @@ public class StudentTestDTO{
 
 	private List<Integer> answers = new ArrayList<>();
 
-	private String studentName;
+	// private String studentName;
 
-	private String testName;
+	// private String testName;
 
-	private String fileName;
+	// private String fileName;
+
+	// additional info
+	private int volume;
+
+	private Long testTypeId;
+
+	private String gradeCode;
+
+	private String testTypeName;
 
 	public StudentTestDTO(Long id, LocalDate registerDate, double score, Long studentId, Long testId, Collection<Integer> answers) {
         this.id = id;
@@ -42,6 +51,24 @@ public class StudentTestDTO{
         this.studentId = studentId;
         this.testId = testId;
         this.answers = new ArrayList<>(answers);
+    }
+
+	public StudentTestDTO(Long id, Long studentId, Long testId, int volume, String gradeCode, Long testTypeId, String testTypeName) {
+        this.id = id;
+		this.studentId = studentId;
+        this.testId = testId;
+		this.volume = volume;
+		this.gradeCode = gradeCode;
+		this.testTypeId = testTypeId;
+		this.testTypeName = testTypeName;
+    }
+
+	public StudentTestDTO(Long id, LocalDate registerDate, double score, Long studentId, Long testId) {
+        this.id = id;
+		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        this.score = score;
+        this.studentId = studentId;
+        this.testId = testId;
     }
 
 	public void addAnswer(int answer) {

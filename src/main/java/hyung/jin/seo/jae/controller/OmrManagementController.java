@@ -107,8 +107,6 @@ public class OmrManagementController {
         }
     
 
-
-
         // process omr image
 
         // create omr results 	

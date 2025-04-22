@@ -727,28 +727,21 @@ public class ConnectedController {
 		return ResponseEntity.ok("Processing Test scheduled successfully and Results will be emailed at 11:30 p.m. tonight");
     }
 
-	@GetMapping(value = "/getTestBranchStat/{testId}")
+	@GetMapping(value = "/getTestBranchStat/{scheduleId}")
 	@ResponseBody
-    public List<StatsDTO> getTestBranchStat(@PathVariable String testId) {        		
-		Long id = Long.parseLong(StringUtils.defaultString(testId, "0"));
+    public List<StatsDTO> getTestBranchStat(@PathVariable String scheduleId) {        		
+		Long id = Long.parseLong(StringUtils.defaultString(scheduleId, "0"));
 		
 		// 1. Get TestSchedule
 		TestScheduleDTO test = connectedService.getTestSchedule(id);
 		String grade = test.getGrade();
-		String[] groups = test.getTestGroup();
-		int groupSize = groups.length;
-		String[] weeks = test.getWeek();
+		String group = test.getTestGroup();
+		String week = test.getWeek();
 		// int weekSize = weeks.length;
 		
 		// 2. Get Test
-		List<TestDTO> tests = new ArrayList<>();
-		for(int i = 0; i < groupSize; i++){
-			List<TestDTO> temp = connectedService.getTestByGroup(Integer.parseInt(groups[i]), grade, Integer.parseInt(weeks[i]));
-			for(TestDTO t : temp){
-				tests.add(t);
-			}
-		}
-
+		List<TestDTO> tests = connectedService.getTestByGroup(Integer.parseInt(group), grade, Integer.parseInt(week));
+			
 		// 3. Get current year
 		int currentYear = cycleService.academicYear();
 		CycleDTO cycle = cycleService.listCycles(currentYear);
