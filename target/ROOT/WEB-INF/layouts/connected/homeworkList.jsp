@@ -35,6 +35,7 @@ $(document).ready(function () {
 	listGrade('#addGrade');
 	listGrade('#editGrade');
 
+	/*
 	// set current year & week
 	$.ajax({
 		url : '${pageContext.request.contextPath}/class/academy',
@@ -53,6 +54,7 @@ $(document).ready(function () {
 			console.log('Error : ' + errorThrown);
 		}
 	});
+	*/
 
 });
 
@@ -214,7 +216,7 @@ function confirmDelete(testId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteHomework(testId);
         $('#deleteConfirmModal').modal('hide');
     });

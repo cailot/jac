@@ -352,7 +352,7 @@ function inactiveStudent(id) {
     // Show the warning modal
     $('#deactivateModal').modal('show');
     // Attach the click event handler to the "I agree" button
-    $('#agreeInactive').one('click', function() {
+    $('#agreeInactive').off('click').on('click', function() {
         inactivateStudent(id);
         $('#deactivateModal').modal('hide');
     });

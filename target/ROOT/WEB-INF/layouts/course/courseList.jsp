@@ -293,7 +293,7 @@ function confirmDeactivate(testId) {
     $('#deactivateConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeDeactivate').one('click', function() {
+    $('#agreeDeactivate').off('click').on('click', function() {
         deactivateCourse(testId);
         $('#deactivateConfirmModal').modal('hide');
     });
@@ -307,7 +307,7 @@ function confirmReactivate(testId) {
     $('#reactivateConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeReactivate').one('click', function() {
+    $('#agreeReactivate').off('click').on('click', function() {
         reactivateCourse(testId);
         $('#reactivateConfirmModal').modal('hide');
     });

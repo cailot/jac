@@ -411,20 +411,26 @@ public interface JaeConstants {
 
 	String OMR_FILE_PDF = "pdf";
 
+	String OMR_FOLDER = "omr";
+
+	String TEST_FOLDER = "test";
+
+	String WORK_FOLDER = "work";
+	
 	////////////////////////////////////
 	//
 	//	TEST GROUP
 	//
 	////////////////////////////////////
-	int TEST_GROUP_MEGA = 1;
+	int MEGA_TEST = 1;
 
-	int TEST_GROUP_REVISION = 2;
+	int REVISION_TEST = 2;
 
-	int TEST_GROUP_EDU = 3;
+	int EDU_TEST = 3;
 
-	int TEST_GROUP_ACER = 4;
+	int ACER_TEST = 4;
 
-	int TEST_GROUP_MOCK = 5;
+	int MOCK_TEST = 5;
 
 	String TEST_RESULT_INFO = "testResultInfo";
 

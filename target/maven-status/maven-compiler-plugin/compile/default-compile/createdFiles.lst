@@ -3,7 +3,6 @@ hyung/jin/seo/jae/dto/SimpleBasketDTO.class
 hyung/jin/seo/jae/service/AttendanceService.class
 hyung/jin/seo/jae/service/CodeService.class
 hyung/jin/seo/jae/repository/PracticeRepository.class
-hyung/jin/seo/jae/service/OmrService.class
 hyung/jin/seo/jae/service/impl/ClazzServiceImpl.class
 hyung/jin/seo/jae/dto/OnlineActivityDTO.class
 hyung/jin/seo/jae/model/LoginActivity.class
@@ -42,7 +41,6 @@ hyung/jin/seo/jae/repository/HomeworkScheduleRepository.class
 hyung/jin/seo/jae/repository/AssessmentRepository.class
 hyung/jin/seo/jae/model/StudentPractice.class
 hyung/jin/seo/jae/SqlScriptRunner.class
-hyung/jin/seo/jae/service/impl/OmrServiceImpl.class
 hyung/jin/seo/jae/dto/TestDTO.class
 hyung/jin/seo/jae/repository/TestRepository.class
 hyung/jin/seo/jae/controller/TeacherController.class
@@ -64,6 +62,7 @@ hyung/jin/seo/jae/service/ConnectedService.class
 hyung/jin/seo/jae/dto/StudentDTO.class
 hyung/jin/seo/jae/service/EmailService.class
 hyung/jin/seo/jae/repository/StudentPracticeRepository.class
+hyung/jin/seo/jae/controller/OmrManagementController$SaveResultsRequest.class
 hyung/jin/seo/jae/dto/SearchCriteriaDTO.class
 hyung/jin/seo/jae/dto/EnrolmentDTO.class
 hyung/jin/seo/jae/model/OmrScanHistory.class
@@ -71,15 +70,14 @@ hyung/jin/seo/jae/service/OnlineSessionService.class
 hyung/jin/seo/jae/service/impl/CycleServiceImpl.class
 hyung/jin/seo/jae/model/OnlineActivity.class
 hyung/jin/seo/jae/controller/StudentController.class
-hyung/jin/seo/jae/controller/OmrController$SaveResultsRequest.class
-hyung/jin/seo/jae/dto/TestSummaryDTO.class
+hyung/jin/seo/jae/controller/OmrManagementController.class
 hyung/jin/seo/jae/dto/OmrStatsDTO.class
 hyung/jin/seo/jae/service/BookService.class
 hyung/jin/seo/jae/service/UserService.class
+hyung/jin/seo/jae/dto/StudentTestSummaryDTO.class
 hyung/jin/seo/jae/utils/StudentIdGenerator.class
 hyung/jin/seo/jae/dto/LoginActivityDTO.class
 hyung/jin/seo/jae/controller/LoginActivityController.class
-hyung/jin/seo/jae/controller/OmrController.class
 hyung/jin/seo/jae/repository/AssessmentAnswerRepository.class
 hyung/jin/seo/jae/dto/BookDTO.class
 hyung/jin/seo/jae/config/JaeSecurityConfig.class
@@ -127,6 +125,7 @@ hyung/jin/seo/jae/dto/PracticeScheduleDTO.class
 hyung/jin/seo/jae/service/CourseService.class
 hyung/jin/seo/jae/service/impl/PdfServiceImpl$2.class
 hyung/jin/seo/jae/repository/JaeMySQLDialect.class
+hyung/jin/seo/jae/service/OmrManagementService.class
 hyung/jin/seo/jae/model/InvoiceHistory.class
 hyung/jin/seo/jae/model/PracticeType.class
 hyung/jin/seo/jae/model/Course.class
@@ -134,7 +133,9 @@ hyung/jin/seo/jae/dto/GuestStudentDTO.class
 hyung/jin/seo/jae/repository/HomeworkRepository.class
 hyung/jin/seo/jae/repository/InvoiceHistoryRepository.class
 hyung/jin/seo/jae/service/impl/PdfServiceImpl$3.class
+hyung/jin/seo/jae/service/impl/ExcelServiceImpl.class
 hyung/jin/seo/jae/service/impl/EnrolmentServiceImpl.class
+hyung/jin/seo/jae/service/impl/OmrManagementServiceImpl.class
 hyung/jin/seo/jae/dto/ExtraworkDTO.class
 hyung/jin/seo/jae/controller/AssessmentController.class
 hyung/jin/seo/jae/service/impl/TestProcessServiceImpl.class
@@ -148,6 +149,7 @@ hyung/jin/seo/jae/controller/JaeController.class
 hyung/jin/seo/jae/model/OnlineSession.class
 hyung/jin/seo/jae/controller/BatchController.class
 hyung/jin/seo/jae/service/OnlineActivityService.class
+hyung/jin/seo/jae/dto/OmrSheetDTO.class
 hyung/jin/seo/jae/dto/mobile/AttendanceRollTeacherDTO.class
 hyung/jin/seo/jae/dto/AssessmentDTO.class
 hyung/jin/seo/jae/controller/ConnectedController$1.class
@@ -159,6 +161,7 @@ hyung/jin/seo/jae/service/MaterialService.class
 hyung/jin/seo/jae/repository/StateRepository.class
 hyung/jin/seo/jae/dto/BranchDTO.class
 hyung/jin/seo/jae/service/EnrolmentService.class
+hyung/jin/seo/jae/service/ExcelService.class
 hyung/jin/seo/jae/utils/JaeConstants.class
 hyung/jin/seo/jae/repository/StudentRepository.class
 hyung/jin/seo/jae/dto/MoneyDTO.class
@@ -187,8 +190,10 @@ hyung/jin/seo/jae/controller/PropertiesController.class
 hyung/jin/seo/jae/repository/GuestStudentRepository.class
 hyung/jin/seo/jae/model/Teacher.class
 hyung/jin/seo/jae/repository/BranchRepository.class
+hyung/jin/seo/jae/config/JaeApiConfig.class
 hyung/jin/seo/jae/service/impl/OnlineActivityServiceImpl.class
 hyung/jin/seo/jae/repository/SubjectRepository.class
+hyung/jin/seo/jae/controller/OmrManagementController$1.class
 hyung/jin/seo/jae/repository/TeacherRepository.class
 hyung/jin/seo/jae/repository/OmrScanHistoryRepository.class
 hyung/jin/seo/jae/dto/AssessmentAnswerDTO.class
@@ -223,4 +228,5 @@ hyung/jin/seo/jae/model/Material.class
 hyung/jin/seo/jae/controller/ConnectedController.class
 hyung/jin/seo/jae/dto/HomeworkProgressDTO.class
 hyung/jin/seo/jae/controller/StatisticController.class
+hyung/jin/seo/jae/service/impl/PdfServiceImpl$Band.class
 hyung/jin/seo/jae/service/AssessmentService.class

@@ -162,8 +162,7 @@ public class OmrManagementController {
             System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
             return new ArrayList<>();
         }    
-        System.out.println(">>>>>>>>>>> " + dtos);
-        
+        // System.out.println(">>>>>>>>>>> " + dtos);
         // 7. return response;
         return dtos; 
     }

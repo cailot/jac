@@ -11,9 +11,30 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.azure.core.util.Context;
+import com.azure.storage.blob.BlobClient;
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.models.BlobHttpHeaders;
+import com.azure.storage.blob.options.BlobParallelUploadOptions;
 
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.CycleDTO;
@@ -25,11 +46,12 @@ import hyung.jin.seo.jae.dto.TestResultHistoryDTO;
 import hyung.jin.seo.jae.dto.TestScheduleDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.model.TestAnswerItem;
-import hyung.jin.seo.jae.model.TestSchedule;
-import hyung.jin.seo.jae.repository.AssessmentAnswerRepository;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.ConnectedService;
 import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.EmailService;
+import hyung.jin.seo.jae.service.ExcelService;
+import hyung.jin.seo.jae.service.PdfService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.service.TestProcessService;
 import hyung.jin.seo.jae.utils.JaeConstants;
@@ -37,8 +59,6 @@ import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Service
 public class TestProcessServiceImpl implements TestProcessService {
-
-    private final AssessmentAnswerRepository assessmentAnswerRepository;
 
 	@Autowired
 	private CycleService cycleService;
@@ -52,155 +72,156 @@ public class TestProcessServiceImpl implements TestProcessService {
 	@Autowired
 	private StudentService studentService;
 
-	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+	@Autowired
+	private EmailService emailService;
 
-    TestProcessServiceImpl(AssessmentAnswerRepository assessmentAnswerRepository) {
-        this.assessmentAnswerRepository = assessmentAnswerRepository;
-    }
+	@Autowired
+	private PdfService pdfService;
+
+	@Autowired
+	private ExcelService excelService;
+
+	@Value("${spring.sender.result}")
+    private String emailSender;
+
+	@Value("${azure.storage.connection}")
+	private String azureConnection;
+
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
 	@Override
 	public void processTestScheduleAt11_30PM(Long testScheduleId) {
 		long delay = calculateDelayUntil11_30PM();
-
         scheduler.schedule(() -> {
-            // Step 1: Get current year
-            int currentYear = cycleService.academicYear();
-            CycleDTO cycle = cycleService.listCycles(currentYear);
-			String startDate = cycle.getStartDate();
-			String endDate = cycle.getEndDate();
-			// Step 2: Get test by shedule ID
-			TestScheduleDTO schedule = connectedService.getTestSchedule(testScheduleId);
-			String grade = schedule.getGrade();
-			String group = schedule.getTestGroup();
-			String week = schedule.getWeek();
-			// Step 3: Get test list by grade, group and week
-			List<TestDTO> tests = connectedService.getTestByGroup(Integer.parseInt(group), grade, Integer.parseInt(week));
-			// student list
-			List<Long> studentList = new ArrayList<>();
-			for(TestDTO test : tests){
-				// Step 5: Get average score
-				double average = connectedService.getAverageScoreByTest(Long.parseLong(test.getId()), startDate, endDate);
-				// Step 6: Update average score
-				connectedService.updateTestAverage(Long.parseLong(test.getId()), average);
-				// Step 7: Get student list by test
-				List<Long> newStudents = connectedService.getStudentListByTest(Long.parseLong(test.getId()), startDate, endDate);
-				for (Long studentId : newStudents) {
-					if (!studentList.contains(studentId)) {
-						studentList.add(studentId);
-					}
-				}
-			}
-
-			// student test summary list
-			List<StudentTestSummaryDTO> studentTestSummaryList = new ArrayList<>();
-			String emailTemplate = "Dear %s (%s),\n\n"
-					+ "Your test results for recent Test are now available.\n" 
-					+ "Please check the attached file for your test results.\n" 
-					+ "Best regards,\n"
-					+ "James An College Victoria";
-			for(Long studentId : studentList){
-				Student st = studentService.getStudent(studentId);
-				StudentTestSummaryDTO summary = new StudentTestSummaryDTO();
-				summary.setId(studentId.toString());
-				String studentName = st.getFirstName() + " " + st.getLastName();
-				summary.setName(studentName);
-				summary.setBranch(st.getBranch());
-
-				// student test list
-				List<StudentTestDTO> studentTests = new ArrayList<>();
-				// get student test list
-				for(TestDTO test : tests){
-					// get student score by studentId and testId
-					double score = connectedService.getStudentScoreByTest(studentId, Long.parseLong(test.getId()));
-					summary.addScore(score);
-					// get student test list
-					StudentTestDTO studentTest = connectedService.findStudentTestByStudentNTest(studentId, Long.parseLong(test.getId()), startDate, endDate);
-					if(studentTest != null){
-						studentTests.add(studentTest);
-					}
-				}
-
-				// prepare pdf data
-				Map<String, Object> pdfData = preparePdfData(studentId, studentTests);
-				String studentEmail = st.getEmail1();
-				String emailContent = String.format(emailTemplate, studentName, studentId);
-				//  Step 8: Send email to all students using template
-
-
-
-
-
-				
-				
-
-
-
-				// add to list
-				studentTestSummaryList.add(summary);
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			for(TestDTO test : tests){
-				
-				
-				// Step 9: Send summary email to branch
-				List<BranchDTO> branches = codeService.allBranches();
-				for (BranchDTO branch : branches) {
-					if(branch.getCode().equals(JaeConstants.HEAD_OFFICE_CODE) || branch.getCode().equals(JaeConstants.TEST_CODE)) {
-						continue;
-					}
-					String branchCode = branch.getCode();
-					String branchEmail = branch.getEmail();
-					System.out.println("Sending summary email to branch: " + branchCode + " to email: " + branchEmail);
-				}				
-				System.out.println("Scheduled process completed for Test ID: " + test.getId());
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+			// process time consuming task
+			processTestSchedule(testScheduleId);
         }, delay, TimeUnit.MILLISECONDS);
 	}
 
-	// Calculate delay until 11:30 PM, if current time is after 11:30 PM, schedule for next day
-	private long calculateDelayUntil11_30PM() {
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime targetTime = now.withHour(6).withMinute(30).withSecond(0).withNano(0);
-		if (now.isAfter(targetTime)) {
-			targetTime = targetTime.plusDays(1); // schedule for next day if missed
+	@Override
+	public void processTestSchedule(Long testScheduleId) {
+		// Step 1: Get current year
+		int currentYear = cycleService.academicYear();
+		CycleDTO cycle = cycleService.listCycles(currentYear);
+		String startDate = cycle.getStartDate();
+		String endDate = cycle.getEndDate();
+		// Step 2: Get test by shedule ID
+		TestScheduleDTO schedule = connectedService.getTestSchedule(testScheduleId);
+		String grade = schedule.getGrade();
+		String group = schedule.getTestGroup();
+		String week = schedule.getWeek();
+		// Step 3: Get test list by grade, group and week
+		List<TestDTO> tests = connectedService.getTestByGroup(Integer.parseInt(group), grade, Integer.parseInt(week));
+		// student list
+		List<Long> studentList = new ArrayList<>();
+		for(TestDTO test : tests){
+			// Step 5: Get average score
+			double average = connectedService.getAverageScoreByTest(Long.parseLong(test.getId()), startDate, endDate);
+			// Step 6: Update average score
+			connectedService.updateTestAverage(Long.parseLong(test.getId()), average);
+			// Step 7: Get student list by test
+			List<Long> newStudents = connectedService.getStudentListByTest(Long.parseLong(test.getId()), startDate, endDate);
+			for (Long studentId : newStudents) {
+				if (!studentList.contains(studentId)) {
+					studentList.add(studentId);
+				}
+			}
 		}
-		Duration duration = Duration.between(now, targetTime);
-		return duration.toMillis();
-	}
+
+		// student test summary list
+		List<StudentTestSummaryDTO> studentTestSummaryList = new ArrayList<>();
+		String emailTemplate = "Dear %s (%s),\n\n"
+				+ "Your test results for recent Test are now available.\n" 
+				+ "Please check the attached file for your test results.\n" 
+				+ "Best regards,\n"
+				+ "James An College Victoria";
+		// handlinge each student
+		// 1. send email to student
+		// 2. upload pdf to azure blob storage
+		String emailSubject = "James An College Victoria test results are now available.";
+		for(Long studentId : studentList){
+			Student st = studentService.getStudent(studentId);
+			StudentTestSummaryDTO summary = new StudentTestSummaryDTO();
+			summary.setId(studentId.toString());
+			String studentName = st.getFirstName() + " " + st.getLastName();
+			summary.setName(studentName);
+			summary.setBranch(st.getBranch());
+
+			// student test list
+			List<StudentTestDTO> studentTests = new ArrayList<>();
+			// get student test list
+			for(TestDTO test : tests){
+				// get student score by studentId and testId
+				double score = connectedService.getStudentScoreByTest(studentId, Long.parseLong(test.getId()));
+				summary.addScore(score);
+				// get student test list
+				StudentTestDTO studentTest = connectedService.findStudentTestByStudentNTest(studentId, Long.parseLong(test.getId()), startDate, endDate);
+				if(studentTest != null){
+					studentTests.add(studentTest);
+				}
+			}
+
+			// prepare pdf data
+			Map<String, Object> pdfData = preparePdfData(studentId, studentTests);
+			byte[] pdfBytes = pdfService.generateTestResultPdf(pdfData);
+			// String studentEmail = st.getEmail1();
+			String studentEmail ="jh05052008@gmail.com";
+			String emailContent = String.format(emailTemplate, studentName, studentId);
+			//  Step 8: Send email to all students using template
+			try {
+				// Add debug logging
+				System.out.println("Attempting to send email to: " + studentEmail);
+				System.out.println("From: " + emailSender);
+				System.out.println("Subject: " + emailSubject);
+				emailService.sendResultWithAttachment(emailSender, studentEmail, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
+				// emailService.sendEmail(emailSender, studentEmail, emailSubject, emailContent);				
+				System.out.println("Email sent successfully");
+			} catch (Exception e) {
+				System.out.println("Failed to send email: " + e.getMessage());
+				e.printStackTrace();
+			}
+			// Step 9: Upload pdf to azure blob storage
+			String blobName = studentId + ".pdf";
+			uploadPdfToAzureBlob(blobName, pdfBytes);
+			// add to list
+			studentTestSummaryList.add(summary);
+		}
+		
+		// get branch list
+		List<BranchDTO> branchList = codeService.allBranches();
+		for(BranchDTO branchDTO : branchList){
+			String branchCode = branchDTO.getCode();
+			List<byte[]> attachments = new ArrayList<>();
+			List<String> fileNames = new ArrayList<>();
+			List<StudentTestSummaryDTO> branchSummaryList = new ArrayList<>();
+			// Step 10: Send email to branch with summary	
+			for(StudentTestSummaryDTO summary : studentTestSummaryList){
+				if(StringUtils.equalsIgnoreCase(branchCode, summary.getBranch())){
+					// download PDF from Azure Blob Storage
+					String blobName = summary.getId() + ".pdf";
+					byte[] pdfBytes = downloadPdfFromAzureBlob(blobName);
+					attachments.add(pdfBytes);
+					fileNames.add(summary.getId() + ".pdf");
+					branchSummaryList.add(summary);
+				}
+			}
+			// send email to branch
+			if(branchSummaryList.size() > 0){
+				String emailReceipient = "cailot@naver.com";//branchDTO.getEmail();
+				String emailContent = "Please find the attached excel file for the test results of the students in " + branchDTO.getName() + " branch.";
+				byte[] excelBytes = excelService.generateTestSummaryExcel(branchSummaryList);
+				attachments.add(excelBytes);
+				fileNames.add("summary.xlsx");
+				emailService.sendResultWithAttachments(emailSender, emailReceipient, emailSubject, emailContent, attachments, fileNames);
+			}
+	
+		}// end of branch list
+
+		
+
+
+	   
+	}	   
 
 	// prepare pdf data
 	private Map<String, Object> preparePdfData(Long studentId, List<StudentTestDTO> studentTests) {
@@ -375,5 +396,54 @@ public class TestProcessServiceImpl implements TestProcessService {
 		return data;
 	}
 
-	
+	// Calculate delay until 11:30 PM, if current time is after 11:30 PM, schedule for next day
+	private long calculateDelayUntil11_30PM() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime targetTime = now.withHour(6).withMinute(30).withSecond(0).withNano(0);
+		if (now.isAfter(targetTime)) {
+			targetTime = targetTime.plusDays(1); // schedule for next day if missed
+		}
+		Duration duration = Duration.between(now, targetTime);
+		return duration.toMillis();
+	}
+
+	// Create file in Azure Blob Storage for PDF files
+	private void uploadPdfToAzureBlob(String fileName, byte[] fileData) {
+		// Create a BlobServiceClient
+		BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+		.connectionString(azureConnection)
+		.buildClient();
+		// Access the container: work
+		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(JaeConstants.WORK_FOLDER);
+		// Define the full path inside the container (folder structure emulated using slashes)
+		String blobPath = JaeConstants.TEST_FOLDER + "/" + fileName;
+		// Get a blob client
+		BlobClient blobClient = containerClient.getBlobClient(blobPath);
+		// Set content-type for PDF
+		BlobHttpHeaders headers = new BlobHttpHeaders().setContentType("application/pdf");
+		// Upload the file
+		BlobParallelUploadOptions options = new BlobParallelUploadOptions(new ByteArrayInputStream(fileData))
+			.setHeaders(headers);
+		blobClient.uploadWithResponse(options, null, Context.NONE);
+
+		System.out.println("PDF file uploaded to Azure >>> " + fileName);
+	}
+
+	// Download PDF from Azure Blob Storage
+	private byte[] downloadPdfFromAzureBlob(String fileName) {
+		// Create a BlobServiceClient
+		BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
+			.connectionString(azureConnection)
+			.buildClient();
+		// Access the container: work
+		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(JaeConstants.WORK_FOLDER);
+		// Define the full path inside the container (folder structure emulated using slashes)
+		String blobPath = JaeConstants.TEST_FOLDER + "/" + fileName;
+		// Get a blob client
+		BlobClient blobClient = containerClient.getBlobClient(blobPath);
+		// Download the file
+		return blobClient.downloadContent().toBytes();
+	}
+
+
 }

@@ -174,6 +174,24 @@ public class JaeUtils {
 		return gradeText;
 	}
 
+	// return grade year name
+	public static String getGradeYearName(String value) {
+		String gradeText = "";
+		switch(value) {
+			case "1": gradeText = "Year 2"; break;
+			case "2": gradeText = "Year 3"; break;
+			case "3": gradeText = "Year 4"; break;
+			case "4": gradeText = "Year 5"; break;
+			case "5": gradeText = "Year 6"; break;
+			case "6": gradeText = "Year 7"; break;
+			case "7": gradeText = "Year 8"; break;
+			case "8": gradeText = "Year 9"; break;
+			case "9": gradeText = "Year 10"; break;
+			case "10": gradeText = "Year 1"; 
+		}
+		return gradeText;
+	}
+
 	// return grade name
 	public static String getGradeCode(String value) {
 		String gradeText = "";
@@ -281,5 +299,30 @@ public class JaeUtils {
         }
         // Return the count of correct answers
         return correctAnswers;
+	}
+
+	// format answer
+	public static String formatAnswer(int num){
+		String answer = "";
+		switch(num){
+			case 1:
+				answer = "A";
+				break;
+			case 2:
+				answer = "B";
+				break;
+			case 3:
+				answer = "C";
+				break;
+			case 4:
+				answer = "D";
+				break;
+			case 5:
+				answer = "E";
+				break;
+			default:
+				answer = "";
+		}
+		return answer;
 	}
 }

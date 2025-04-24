@@ -714,14 +714,15 @@ public class ConnectedController {
 		return ResponseEntity.ok("\"Test deleted successfully\"");
     }
 
-	@PutMapping(value = "/processTestResult/{testId}")
+	@PutMapping(value = "/processTestResult/{testScheduleId}")
 	@ResponseBody
-    public ResponseEntity<String> processTestResult(@PathVariable String testScheudleId) {
+    public ResponseEntity<String> processTestResult(@PathVariable String testScheduleId) {
         		
-		Long id = Long.parseLong(StringUtils.defaultString(testScheudleId, "0"));
+		Long id = Long.parseLong(StringUtils.defaultString(testScheduleId, "0"));
 
 		// schedule the process to 11:30 p.m. 
-		testProcessService.processTestScheduleAt11_30PM(id);
+		// testProcessService.processTestScheduleAt11_30PM(id);
+		testProcessService.processTestSchedule(id);
 
 		// 6. return flag
 		return ResponseEntity.ok("Processing Test scheduled successfully and Results will be emailed at 11:30 p.m. tonight");

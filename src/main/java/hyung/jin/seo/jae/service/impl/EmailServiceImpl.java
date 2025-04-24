@@ -9,11 +9,13 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.core.io.ByteArrayResource;
 
 import hyung.jin.seo.jae.dto.NoticeEmailDTO;
 import hyung.jin.seo.jae.model.NoticeEmail;
@@ -29,7 +31,41 @@ public class EmailServiceImpl implements EmailService {
 
 	@Autowired
 	NoticeEmailRepository noticeEmailRepository;
-	
+
+	@Override
+	public void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName) {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setFrom(from);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(body);
+			helper.addAttachment(fileName, new ByteArrayResource(fileData));
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setFrom(from);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(body);
+			for (int i = 0; i < fileData.size(); i++) {
+				helper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+			}
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void sendEmail(String from, String to, String subject, String body) {
 		MimeMessage message = mailSender.createMimeMessage();

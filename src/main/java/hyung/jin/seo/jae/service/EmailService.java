@@ -27,4 +27,11 @@ public interface EmailService {
 
 	// bring email by id
 	NoticeEmailDTO getNoticeEmail(Long id);
+
+	// send email with attachment
+	void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName);
+
+	// send email with attachments
+	void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames);
+
 }
