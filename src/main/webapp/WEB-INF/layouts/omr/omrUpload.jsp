@@ -15,7 +15,7 @@
 
 <script>
 
-const PDF_PREFIX = 'https://jacstorage.blob.core.windows.net/work/pdf/';
+const PDF_PREFIX = 'https://jacstorage.blob.core.windows.net/work/omr/';
 
 $(document).ready(function () {
 	// initialise state list when loading
@@ -786,10 +786,6 @@ function countTablesByGroup() {
 							<div class="row justify-content-center">
 								<c:forEach items="${results}" var="omrSheet" varStatus="status">
 									<!-- Answer Omr Sheet Card Section-->
-
-
-
-
 									<!-- Display OmrSheetDTO details -->
 									<div class="col-md-12 mb-4">
 										<div class="card h-100 shadow border-1 rounded-3">

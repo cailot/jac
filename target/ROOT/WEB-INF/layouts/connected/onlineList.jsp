@@ -63,8 +63,7 @@ $(document).ready(function () {
 			// console.log('Academic Year : ' + academicYear);
 			// console.log('Academic Week : ' + academicWeek);
 			$("#listYear").val(academicYear);
-			$("#listSet").val(academicWeek);
-
+			//$("#listSet").val(academicWeek);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Error : ' + errorThrown);
@@ -186,7 +185,6 @@ function retrieveOnlineInfo(onlineId) {
 	});
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Online Session
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -294,7 +292,7 @@ function confirmDelete(testId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteOnline(testId);
         $('#deleteConfirmModal').modal('hide');
     });
@@ -324,6 +322,7 @@ function deleteOnline(id) {
 </script>
 
 <style>
+
 	div.dataTables_length{
 		padding-left: 50px;
 		padding-top: 40px;
@@ -345,12 +344,10 @@ function deleteOnline(id) {
 		height: 50px 	
 	} 
 
-
 	.tooltip-inner {
-  white-space:nowrap;
-  max-width:none;
-}
-
+		white-space:nowrap;
+		max-width:none;
+	}
 
 </style>
 
@@ -618,17 +615,14 @@ function deleteOnline(id) {
 									</select>
 									<script>
 										// Get a reference to the select element
-										var selectElement = document.getElementById("addWeek");
-									  
+										var selectElement = document.getElementById("addWeek");									  
 										// Loop to add options from 1 to 49
 										for (var i = 1; i <= 49; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
-									  
 										  // Set the value and text content for the option
 										  option.value = i;
 										  option.textContent = i;
-									  
 										  // Append the option to the select element
 										  selectElement.appendChild(option);
 										}
@@ -641,8 +635,7 @@ function deleteOnline(id) {
 								<div class="col-md-5">
 									<label for="addEndTime" class="label-form">End Time</label>
 									<input id="addEndTime" name="addEndTime" />
-								</div>
-								
+								</div>						
 							</div>
 						</div>
 						<div class="form-group">
@@ -786,10 +779,6 @@ function deleteOnline(id) {
 		</div>
 	</div>
 </div>
-
-
-
-
 
 <!-- Success Alert -->
 <div id="success-alert" class="modal fade">

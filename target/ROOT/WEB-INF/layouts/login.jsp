@@ -100,7 +100,7 @@ function resetPassword(){
 				<h6 class="text-secondary text-center mb-4" style="background: #ffffff !important;">Sign In To James An College</h6>
 				<div class="card-container">			
 					<div class="row h-100 justify-content-center align-items-center">						
-						<div class="card">
+						<div class="card" style="border: 3px solid #2d398e; border-radius: 10px;">
 							<h3 class="card-header text-white text-center" style="background: #2d398e !important;">Jac Manager</h3>
 							<div class="card-body">
 								<form:form  action="${pageContext.request.contextPath}/processLogin" method="POST">

@@ -38,6 +38,7 @@ $(document).ready(function () {
 	listTestType('#addTestType');
 	listTestType('#editTestType');
 
+	/*
 	// set current year & week
 	$.ajax({
 		url : '${pageContext.request.contextPath}/class/academy',
@@ -46,16 +47,15 @@ $(document).ready(function () {
 			// save the response into the variable
 			const academicYear = response[0];
 			const academicWeek = response[1];
-			// console.log('Academic Year : ' + academicYear);
-			// console.log('Academic Week : ' + academicWeek);
 			// $("#listYear").val(academicYear);
-			$("#listVolume").val(academicWeek);
+			//$("#listVolume").val(academicWeek);
 
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Error : ' + errorThrown);
 		}
 	});
+	*/
 
 });
 
@@ -426,7 +426,8 @@ function collectAndSubmitAnswers() {
 			// Attach an event listener to the success alert close event
 			$('#success-alert').on('hidden.bs.modal', function () {
 				// Reload the page after the success alert is closed
-				location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+				//location.href = window.location.pathname; // Passing true forces a reload from the server and not from the cache
+				location.reload();
 			});
 
         },
@@ -445,7 +446,7 @@ function confirmDelete(testId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteTest(testId);
         $('#deleteConfirmModal').modal('hide');
     });
@@ -582,7 +583,6 @@ function updateAnswerCount() {
 		vertical-align: middle;
 		height: 45px 	
 	} 
-
     .nowrap-cell {
         white-space: nowrap;
         overflow: hidden;
@@ -624,12 +624,24 @@ function updateAnswerCount() {
 							// Append the 'All' option to the select element
 							selectElement.appendChild(allOption);
 							// Loop to add options from 1 to 50
-							for (var i = 1; i <= 50; i++) {
+							for (var i = 1; i <= 40; i++) {
 								// Create a new option element
 								var option = document.createElement("option");
 								// Set the value and text content for the option
 								option.value = i;
 								option.textContent = i;
+								// SIM 1~5
+								if(option.value == 36){
+									option.textContent = "SIM 1";
+								}else if(option.value == 37){
+									option.textContent = "SIM 2";
+								}else if(option.value == 38){
+									option.textContent = "SIM 3";
+								}else if(option.value == 39){
+									option.textContent = "SIM 4";
+								}else if(option.value == 40){
+									option.textContent = "SIM 5";
+								}
 								// Append the option to the select element
 								selectElement.appendChild(option);
 							}

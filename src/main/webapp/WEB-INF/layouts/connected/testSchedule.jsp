@@ -167,16 +167,16 @@ function registerSchedule() {
 	}
 	//var selectedGrade = $('#addGradeRadio').val();
 	// Get testTypeGroup & set form addScheduleTable
-	var testGroups = [];
-	var weeks = [];
+	var testGroup = '';
+	var week = '';
 	$('#addScheduleTable tr').each(function () {
-		var testGroup = $(this).find('.testTypeGroup').text();
+		var group = $(this).find('.testTypeGroup').text();
 		var testSet = $(this).find('.testTypeWeek').text();
-		console.log(testGroup + ' set : ' + testSet);
-		if (testGroup != '') {
+		console.log(group + ' set : ' + testSet);
+		if (group != '') {
 			//practiceDtos.push({group : testGroup, week : testSet});
-			testGroups.push(testGroup);
-			weeks.push(testSet);
+			testGroup = group; // Just take the first/last group
+			week = testSet; // Just take the first/last week
 		}
 	});
 
@@ -189,8 +189,8 @@ function registerSchedule() {
 		info: $("#addInfo").val(),
 		// grade : $('#addGradeRadio').val(),
 		grade: $('#addGradeRadio input[name="grades"]:checked').val(),
-		testGroup: testGroups,
-		week: weeks
+		testGroup: testGroup,
+		week: week
 	}
 
 	// Send AJAX to server
@@ -392,16 +392,16 @@ function updateEditActiveValue(checkbox) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
 	// Get testTypeGroup & set form editScheduleTable
-	var testGroups = [];
-	var weeks = [];
+	var testGroup = '';
+	var week = '';
 	$('#editScheduleTable tr').each(function () {
-		var testGroup = $(this).find('.testTypeGroup').text();
+		var group = $(this).find('.testTypeGroup').text();
 		var testSet = $(this).find('.testTypeWeek').text();
 		// console.log(testGroup + ' set : ' + testSet);
-		if (testGroup != '') {
+		if (group != '') {
 			//practiceDtos.push({group : testGroup, week : testSet});
-			testGroups.push(testGroup);
-			weeks.push(testSet);
+			testGroup = group; // Just take the first/last group
+			week = testSet; // Just take the first/last week
 		}
 	});
 	var schedule = {
@@ -414,10 +414,10 @@ function updateScheduleInfo() {
 		active: $("#editActive").val(),
 		resultDate: $("#editResultDate").val(),
 		grade: $('#editGradeRadio input[name="grades"]:checked').val(), // Get the selected grade
-		testGroup: testGroups,
-		week: weeks
+		testGroup: testGroup,
+		week: week
 	}
-
+	console.log(schedule);
 	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/connected/updateTestSchedule',
@@ -763,54 +763,44 @@ function processTestResult(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:forEach var="group" items="${scheduleItem.testGroup}" varStatus="status">
-																<script type="text/javascript">
-																	document.write(testGroupName('${group}'));
-																</script>
-																<c:if test="${!status.last}">, </c:if>
-															</c:forEach>
+															<!-- <c:out value="${scheduleItem.testGroup}" /> -->
+															<script type="text/javascript">
+																document.write(testGroupName('${scheduleItem.testGroup}'));
+															</script>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
-															<c:forEach var="grade" items="${scheduleItem.grade}" varStatus="status">
-																<script type="text/javascript">
-																	document.write(gradeName('${grade}'));
-																</script>
-																<c:if test="${!status.last}">, </c:if>
-															</c:forEach>
+															<script type="text/javascript">
+																document.write(gradeName('${scheduleItem.grade}'));
+															</script>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<!-- Display Weeks for Each Group -->
-															<c:forEach var="week" items="${scheduleItem.week}" varStatus="weekStatus">
-																<c:choose>
-																	<c:when test="${scheduleItem.testGroup[weekStatus.index] == 1 || scheduleItem.testGroup[weekStatus.index] == 2}">
-																		<c:choose>
-																			<c:when test="${week == '1'}">Vol 1</c:when>
-																			<c:when test="${week == '2'}">Vol 2</c:when>
-																			<c:when test="${week == '3'}">Vol 3</c:when>
-																			<c:when test="${week == '4'}">Vol 4</c:when>
-																			<c:when test="${week == '5'}">Vol 5</c:when>
-																			<c:otherwise><c:out value="${week}" /></c:otherwise>
-																		</c:choose>
-																	</c:when>
-																	<c:otherwise>
-																		<c:choose>
-																		<c:when test="${week == '36'}">SIM1</c:when>
-																		<c:when test="${week == '37'}">SIM2</c:when>
-																		<c:when test="${week == '38'}">SIM3</c:when>
-																		<c:when test="${week == '39'}">SIM4</c:when>
-																		<c:when test="${week == '40'}">SIM5</c:when>
-																		<c:otherwise>
-																			<c:out value="${week}" />
-																		</c:otherwise>
-																		</c:choose>
-																	</c:otherwise>
-																</c:choose>
-																<c:if test="${!weekStatus.last}">, </c:if>
-															</c:forEach>
+															<c:choose>
+																<c:when test="${scheduleItem.testGroup == '1' || scheduleItem.testGroup == '2'}">
+																	<c:choose>
+																		<c:when test="${scheduleItem.week == '1'}">Vol 1</c:when>
+																		<c:when test="${scheduleItem.week == '2'}">Vol 2</c:when>
+																		<c:when test="${scheduleItem.week == '3'}">Vol 3</c:when>
+																		<c:when test="${scheduleItem.week == '4'}">Vol 4</c:when>
+																		<c:when test="${scheduleItem.week == '5'}">Vol 5</c:when>
+																		<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<c:choose>
+																		<c:when test="${scheduleItem.week == '36'}">SIM 1</c:when>
+																		<c:when test="${scheduleItem.week == '37'}">SIM 2</c:when>
+																		<c:when test="${scheduleItem.week == '38'}">SIM 3</c:when>
+																		<c:when test="${scheduleItem.week == '39'}">SIM 4</c:when>
+																		<c:when test="${scheduleItem.week == '40'}">SIM 5</c:when>
+																		<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
+																	</c:choose>
+																</c:otherwise>
+															</c:choose>
 														</span>
 													</td>													
 													<td class="small align-middle text-truncate" style="min-width: 300px;">

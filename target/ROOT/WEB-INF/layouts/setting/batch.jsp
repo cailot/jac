@@ -133,7 +133,7 @@ function confirmInactiveStudent() {
     $('#inactiveStudentModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeInactiveStudent').one('click', function() {
+    $('#agreeInactiveStudent').off('click').on('click', function() {
         updateInactiveStudent();
         $('#inactiveStudentModal').modal('hide');
     });
@@ -147,7 +147,7 @@ function confirmCreateCourse() {
     $('#createCourseModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeCreateCourse').one('click', function() {
+    $('#agreeCreateCourse').off('click').on('click', function() {
         createCourseTemplate();
         $('#createCourseModal').modal('hide');
     });
@@ -161,7 +161,7 @@ function confirmCreateOnline() {
     $('#createOnlineModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeCreateOnline').one('click', function() {
+    $('#agreeCreateOnline').off('click').on('click', function() {
         createOnlineTemplate();
         $('#createOnlineModal').modal('hide');
     });

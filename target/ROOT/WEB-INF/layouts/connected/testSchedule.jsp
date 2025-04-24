@@ -75,6 +75,14 @@ $(document).ready(function () {
 //		Add Test into Table
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function addTest(action) {
+	// Check if table already has a row
+	var table = document.getElementById(action + "ScheduleTable");
+	if (table.getElementsByTagName('tbody')[0].getElementsByTagName('tr').length > 0) {
+		$('#validation-alert .modal-body').text('Only one test can be added at a time.');
+		$('#validation-alert').modal('show');
+		return;
+	}
+
 	// Get the values from the select elements
 	var testTypeSelect = document.getElementById(action + "TestType");
 	var testTypeGroup = testTypeSelect.options[testTypeSelect.selectedIndex].value;
@@ -84,10 +92,7 @@ function addTest(action) {
 	var set = setSelect.options[setSelect.selectedIndex].text;
 	var testTypeWeek = document.getElementById(action + "Volume").value;
 
-	// Get a reference to the table
-	var table = document.getElementById(action + "ScheduleTable");
-
-	/// Create a new row
+	// Create a new row
 	var row = $("<tr>");
 
 	// Create the cells for the row
@@ -101,6 +106,20 @@ function addTest(action) {
 		.attr("title", "Delete Test")
 		.click(function () {
 			row.remove();
+			// Recheck for Mega Test after deletion
+			let stillHasMega = false;
+			$("#" + action + "ScheduleTable tbody tr").each(function () {
+				const testName = $(this).find("td").eq(0).text().trim();
+				if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))) {
+					stillHasMega = true;
+				}
+			});
+			// Show or hide Explanation Schedule
+			if (stillHasMega) {
+				$("#" + action + "ExplanationSchedule").show();
+			} else {
+				$("#" + action + "ExplanationSchedule").hide();
+			}
 		});
 	binIconLink.append(binIcon);
 	var cell3 = $("<td>").addClass('text-center').append(binIconLink);
@@ -114,6 +133,21 @@ function addTest(action) {
 
 	// Append the row to the table
 	$("#"+ action +"ScheduleTable").append(row);
+
+	// === SHOW or HIDE Explanation Schedule ===
+	let hasMegaTest = false;
+	$("#" + action + "ScheduleTable tbody tr").each(function () {
+		const testName = $(this).find("td").eq(0).text().trim();
+		if ((testName.startsWith("Mega"))||(testName.startsWith("Revision"))||(testName.startsWith("Mock"))) {
+			hasMegaTest = true;
+		}
+	});
+
+	if (hasMegaTest) {
+		$("#" + action + "ExplanationSchedule").show();
+	} else {
+		$("#" + action + "ExplanationSchedule").hide();
+	}	
 }
 
 
@@ -133,28 +167,30 @@ function registerSchedule() {
 	}
 	//var selectedGrade = $('#addGradeRadio').val();
 	// Get testTypeGroup & set form addScheduleTable
-	var testGroups = [];
-	var weeks = [];
+	var testGroup = '';
+	var week = '';
 	$('#addScheduleTable tr').each(function () {
-		var testGroup = $(this).find('.testTypeGroup').text();
+		var group = $(this).find('.testTypeGroup').text();
 		var testSet = $(this).find('.testTypeWeek').text();
-		console.log(testGroup + ' set : ' + testSet);
-		if (testGroup != '') {
+		console.log(group + ' set : ' + testSet);
+		if (group != '') {
 			//practiceDtos.push({group : testGroup, week : testSet});
-			testGroups.push(testGroup);
-			weeks.push(testSet);
+			testGroup = group; // Just take the first/last group
+			week = testSet; // Just take the first/last week
 		}
 	});
 
 	var schedule = {
 		from: $("#addFrom").val(),
 		to: $("#addTo").val(),
+		explanationFrom: $("#addExplanationFrom").val(),
+		explanationTo: $("#addExplanationTo").val(),
 		resultDate: $("#addResultDate").val(),
 		info: $("#addInfo").val(),
 		// grade : $('#addGradeRadio').val(),
 		grade: $('#addGradeRadio input[name="grades"]:checked').val(),
-		testGroup: testGroups,
-		week: weeks
+		testGroup: testGroup,
+		week: week
 	}
 
 	// Send AJAX to server
@@ -200,6 +236,16 @@ function retrieveScheduleInfo(id) {
 			$("#editTo").val(toDateTime);
 			$("#editInfo").val(scheduleItem.info);
 			$("#editResultDate").val(scheduleItem.resultDate);
+
+			if(scheduleItem.explanationFrom != null && scheduleItem.explanationTo != null){
+				$("#editExplanationFrom").val(convertToDateTimeLocal(scheduleItem.explanationFrom));
+				$("#editExplanationTo").val(convertToDateTimeLocal(scheduleItem.explanationTo));
+				$("#editExplanationSchedule").show();
+			}else{
+				$("#editExplanationSchedule").hide();
+			}
+
+
 			$("#editActive").val(scheduleItem.active);
 			if (scheduleItem.active == true) {
 				$("#editActiveCheckbox").prop('checked', true);
@@ -346,30 +392,32 @@ function updateEditActiveValue(checkbox) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateScheduleInfo() {
 	// Get testTypeGroup & set form editScheduleTable
-	var testGroups = [];
-	var weeks = [];
+	var testGroup = '';
+	var week = '';
 	$('#editScheduleTable tr').each(function () {
-		var testGroup = $(this).find('.testTypeGroup').text();
+		var group = $(this).find('.testTypeGroup').text();
 		var testSet = $(this).find('.testTypeWeek').text();
 		// console.log(testGroup + ' set : ' + testSet);
-		if (testGroup != '') {
+		if (group != '') {
 			//practiceDtos.push({group : testGroup, week : testSet});
-			testGroups.push(testGroup);
-			weeks.push(testSet);
+			testGroup = group; // Just take the first/last group
+			week = testSet; // Just take the first/last week
 		}
 	});
 	var schedule = {
 		id: $("#editId").val(),
 		from: $("#editFrom").val(),
+		explanationFrom: $("#editExplanationFrom").val(),
+		explanationTo: $("#editExplanationTo").val(),
 		to: $("#editTo").val(),
 		info: $("#editInfo").val(),
 		active: $("#editActive").val(),
 		resultDate: $("#editResultDate").val(),
 		grade: $('#editGradeRadio input[name="grades"]:checked').val(), // Get the selected grade
-		testGroup: testGroups,
-		week: weeks
+		testGroup: testGroup,
+		week: week
 	}
-
+	console.log(schedule);
 	// send query to controller
 	$.ajax({
 		url: '${pageContext.request.contextPath}/connected/updateTestSchedule',
@@ -431,7 +479,7 @@ function confirmDelete(practiceId) {
     $('#deleteConfirmModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#agreeConfirmation').one('click', function() {
+    $('#agreeConfirmation').off('click').on('click', function() {
         deleteTestSchedule(practiceId);
         $('#deleteConfirmModal').modal('hide');
     });
@@ -565,7 +613,7 @@ function confirmProcessResult(scheduleId) {
     $('#processResultModal').modal('show');
 
     // Attach the click event handler to the "I agree" button
-    $('#processConfirmation').one('click', function() {
+    $('#processConfirmation').off('click').on('click', function() {
 		processTestResult(scheduleId);
 		$('#processResultModal').modal('hide');
     });
@@ -687,13 +735,13 @@ function processTestResult(id) {
 								<thead class="table-primary">
 									<tr>
 										<!-- <th class="text-center align-middle" style="width: 20%">Academic Year</th> -->
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Start</th>
-										<th class="text-center align-middle" data-orderable="false" style="width: 10%">End</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 14%">Start</th>
+										<th class="text-center align-middle" data-orderable="false" style="width: 14%">End</th>
 										<th class="text-center align-middle" style="width: 15%">Test Type</th>
-										<th class="text-center align-middle" style="width: 12.5%">Grade</th>
+										<th class="text-center align-middle" style="width: 4.5%">Grade</th>
 										<th class="text-center align-middle" style="width: 8.5%">Week</th>
-										<th class="text-center align-middle" style="width: 20%">Information</th>
-										<th class="text-center align-middle" style="width: 10%">Schedule</th>
+										<th class="text-center align-middle" style="width: 18%">Information</th>
+										<th class="text-center align-middle" style="width: 12%">Online Schedule</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 4%">Activated</th>
 										<th class="text-center align-middle" data-orderable="false" style="width: 10%">Action</th>
 									</tr>
@@ -715,54 +763,44 @@ function processTestResult(id) {
 													</td>
 													<td class="small align-middle">
 														<span>
-															<c:forEach var="group" items="${scheduleItem.testGroup}" varStatus="status">
-																<script type="text/javascript">
-																	document.write(testGroupName('${group}'));
-																</script>
-																<c:if test="${!status.last}">, </c:if>
-															</c:forEach>
+															<!-- <c:out value="${scheduleItem.testGroup}" /> -->
+															<script type="text/javascript">
+																document.write(testGroupName('${scheduleItem.testGroup}'));
+															</script>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
-															<c:forEach var="grade" items="${scheduleItem.grade}" varStatus="status">
-																<script type="text/javascript">
-																	document.write(gradeName('${grade}'));
-																</script>
-																<c:if test="${!status.last}">, </c:if>
-															</c:forEach>
+															<script type="text/javascript">
+																document.write(gradeName('${scheduleItem.grade}'));
+															</script>
 														</span>
 													</td>
-													<td class="small align-middle">
+													<td class="small align-middle text-center">
 														<span>
 															<!-- Display Weeks for Each Group -->
-															<c:forEach var="week" items="${scheduleItem.week}" varStatus="weekStatus">
-																<c:choose>
-																	<c:when test="${scheduleItem.testGroup[weekStatus.index] == 1 || scheduleItem.testGroup[weekStatus.index] == 2}">
-																		<c:choose>
-																			<c:when test="${week == '1'}">Vol 1</c:when>
-																			<c:when test="${week == '2'}">Vol 2</c:when>
-																			<c:when test="${week == '3'}">Vol 3</c:when>
-																			<c:when test="${week == '4'}">Vol 4</c:when>
-																			<c:when test="${week == '5'}">Vol 5</c:when>
-																			<c:otherwise><c:out value="${week}" /></c:otherwise>
-																		</c:choose>
-																	</c:when>
-																	<c:otherwise>
-																		<c:choose>
-																		<c:when test="${week == '36'}">SIM1</c:when>
-																		<c:when test="${week == '37'}">SIM2</c:when>
-																		<c:when test="${week == '38'}">SIM3</c:when>
-																		<c:when test="${week == '39'}">SIM4</c:when>
-																		<c:when test="${week == '40'}">SIM5</c:when>
-																		<c:otherwise>
-																			<c:out value="${week}" />
-																		</c:otherwise>
-																		</c:choose>
-																	</c:otherwise>
-																</c:choose>
-																<c:if test="${!weekStatus.last}">, </c:if>
-															</c:forEach>
+															<c:choose>
+																<c:when test="${scheduleItem.testGroup == '1' || scheduleItem.testGroup == '2'}">
+																	<c:choose>
+																		<c:when test="${scheduleItem.week == '1'}">Vol 1</c:when>
+																		<c:when test="${scheduleItem.week == '2'}">Vol 2</c:when>
+																		<c:when test="${scheduleItem.week == '3'}">Vol 3</c:when>
+																		<c:when test="${scheduleItem.week == '4'}">Vol 4</c:when>
+																		<c:when test="${scheduleItem.week == '5'}">Vol 5</c:when>
+																		<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
+																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<c:choose>
+																		<c:when test="${scheduleItem.week == '36'}">SIM 1</c:when>
+																		<c:when test="${scheduleItem.week == '37'}">SIM 2</c:when>
+																		<c:when test="${scheduleItem.week == '38'}">SIM 3</c:when>
+																		<c:when test="${scheduleItem.week == '39'}">SIM 4</c:when>
+																		<c:when test="${scheduleItem.week == '40'}">SIM 5</c:when>
+																		<c:otherwise><c:out value="${scheduleItem.week}" /></c:otherwise>
+																	</c:choose>
+																</c:otherwise>
+															</c:choose>
 														</span>
 													</td>													
 													<td class="small align-middle text-truncate" style="min-width: 300px;">
@@ -837,25 +875,6 @@ function processTestResult(id) {
 								<div class="col-md-12">
 									<label for="addInfo" class="label-form">Information</label>
 									<input type="text" class="form-control" id="addInfo" name="addInfo" title="Please enter additional information" />
-								</div>
-							</div>
-						</div>
-						<!-- Result Schedule -->
-						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
-								<div class="form-row">
-									<div class="col-md-7">
-										<span>The result will be processed at </span>
-									</div>
-									<div class="col-md-5">
-										<div class="input-group date" id="adddatepicker">
-											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
-											<div class="input-group-append">
-												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
-											</div>
-										</div>	
-									</div>
 								</div>
 							</div>
 						</div>
@@ -969,6 +988,41 @@ function processTestResult(id) {
 								</table>
 							</div>
 						</div>
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="adddatepicker">
+											<input type="text" class="form-control datepicker" id="addResultDate" name="addResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Explanation Schedule -->
+						<div id="addExplanationSchedule" class="form-group" style="display: none;">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="addResultDate" class="label-form h6 badge badge-primary">Explanation Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-6">
+										<label for="addExplanationFrom" class="label-form">From</label>
+										<input type="datetime-local" class="form-control datepicker" id="addExplanationFrom" name="addExplanationFrom" placeholder="From" required>
+									</div>
+									<div class="col-md-6">
+										<label for="addExplanationTo" class="label-form">To</label> 
+										<input type="datetime-local" class="form-control datepicker" id="addExplanationTo" name="addExplanationTo" placeholder="To" required>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
 					<div class="d-flex justify-content-end">
 						<button type="submit" class="btn btn-info" onclick="registerSchedule()">Create</button>&nbsp;&nbsp;
@@ -1016,26 +1070,6 @@ function processTestResult(id) {
 								</div>
 							</div>
 						</div>
-						<!-- Result Schedule -->
-						<div class="form-group">
-							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
-								<div class="form-row">
-									<div class="col-md-7">
-										<span>The result will be processed at </span>
-									</div>
-									<div class="col-md-5">
-										<div class="input-group date" id="editdatepicker">
-											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
-											<div class="input-group-append">
-												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
-											</div>
-										</div>	
-									</div>
-								</div>
-							</div>
-						</div>
-						
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
@@ -1146,6 +1180,43 @@ function processTestResult(id) {
 								</table>
 							</div>
 						</div>
+
+
+						<!-- Result Schedule -->
+						<div class="form-group">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
+								<div class="form-row">
+									<div class="col-md-7">
+										<span>The result will be processed at </span>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group date" id="editdatepicker">
+											<input type="text" class="form-control datepicker" id="editResultDate" name="editResultDate" placeholder="Schedule Date" autocomplete="off" required>
+											<div class="input-group-append">
+												<span class="input-group-text"><i class="bi bi-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Explanation Schedule -->
+						<div id="editExplanationSchedule" class="form-group" style="display: none;">
+							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
+								<label for="editResultDate" class="label-form h6 badge badge-primary">Explanation Result Schedule</label>
+								<div class="form-row">
+									<div class="col-md-6">
+										<label for="editExplanationFrom" class="label-form">From</label>
+										<input type="datetime-local" class="form-control datepicker" id="editExplanationFrom" name="editExplanationFrom" placeholder="From" required>
+									</div>
+									<div class="col-md-6">
+										<label for="editExplanationTo" class="label-form">To</label> 
+										<input type="datetime-local" class="form-control datepicker" id="editExplanationTo" name="editExplanationTo" placeholder="To" required>
+									</div>
+								</div>
+							</div>
+						</div> 						
 						<input type="hidden" id="editId" name="editId" />
 					</form>
 					<div class="d-flex justify-content-end">

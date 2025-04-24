@@ -58,9 +58,10 @@ function searchStats() {
 					// Update the row's cells
 					row.find('td').eq(1).text(item.mega);
 					row.find('td').eq(2).text(item.revision);
-					row.find('td').eq(3).text(item.acer);
-					row.find('td').eq(4).text(item.edu);
-					row.find('td').eq(5).text(item.mega + item.revision + item.acer + item.edu).addClass('text-primary');
+					row.find('td').eq(3).text(item.tt6);
+					row.find('td').eq(4).text(item.tt8);
+					row.find('td').eq(5).text(item.jmss);
+					row.find('td').eq(6).text(item.mega + item.revision + item.tt6 + item.tt8 + item.jmss).addClass('text-primary');
 					// Mark this branch as updated
 					updatedBranches.add(branchCode);
 				} else {
@@ -74,9 +75,10 @@ function searchStats() {
                 if (branchCode !== 'total' && !updatedBranches.has(branchCode)) {
                     $(this).find('td').eq(1).text(0); // Mega
                     $(this).find('td').eq(2).text(0); // Revision
-                    $(this).find('td').eq(3).text(0); // Acer
-                    $(this).find('td').eq(4).text(0); // Edu
-                    $(this).find('td').eq(5).text(0).addClass('text-primary'); // Sum
+                    $(this).find('td').eq(3).text(0); // TT6
+                    $(this).find('td').eq(4).text(0); // TT8
+					$(this).find('td').eq(5).text(0); // JMSS
+                    $(this).find('td').eq(6).text(0).addClass('text-primary'); // Sum
                 }
             });
 			// Update the TOTAL row
@@ -110,11 +112,13 @@ function initialiseTable(){
 				row.append($('<td class="text-center">'));
 				row.append($('<td class="text-center">'));
 				row.append($('<td class="text-center">'));
+				row.append($('<td class="text-center">'));
 				row.append($('<td>'));
 				$('#omrStatTable > tbody').append(row);
 			});
 			var totalRow = $("<tr class='header' code='total'>");
 			totalRow.append($('<td class="text-center font-weight-bold">TOTAL</td>'));
+			totalRow.append($('<td class="font-weight-bold text-center">'));
 			totalRow.append($('<td class="font-weight-bold text-center">'));
 			totalRow.append($('<td class="font-weight-bold text-center">'));
 			totalRow.append($('<td class="font-weight-bold text-center">'));
@@ -151,12 +155,8 @@ function clearTableColumnsExceptBranch() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearSearchCriteria() {
 	document.getElementById("fromDate").value = "";
-	document.getElementById("toDate").value = "";
-	
+	document.getElementById("toDate").value = "";	
 	// flush tbody
-	// var tbody = document.querySelector('#omrStatTable tbody');
-	// tbody.innerHTML = "";
-	// initialise tbody
 	clearTableColumnsExceptBranch();		
 }
 
@@ -168,8 +168,9 @@ function populateTotals() {
     // Initialize totals for each column
     let megaTotal = 0;
     let revisionTotal = 0;
-    let acerTotal = 0;
-    let eduTotal = 0;
+	let tt6Total = 0;
+	let tt8Total = 0;
+	let jmssTotal = 0;
 
     // Iterate through all rows in the table body (excluding the TOTAL row)
     $('#omrStatTable > tbody tr').each(function () {
@@ -181,12 +182,13 @@ function populateTotals() {
         // Parse and sum up the values for each column
         megaTotal += parseInt($(this).find('td').eq(1).text()) || 0;
         revisionTotal += parseInt($(this).find('td').eq(2).text()) || 0;
-        acerTotal += parseInt($(this).find('td').eq(3).text()) || 0;
-        eduTotal += parseInt($(this).find('td').eq(4).text()) || 0;
+        tt6Total += parseInt($(this).find('td').eq(3).text()) || 0;
+        tt8Total += parseInt($(this).find('td').eq(4).text()) || 0;
+		jmssTotal += parseInt($(this).find('td').eq(5).text()) || 0;
     });
 
     // Calculate the total sum of all columns
-    const totalSum = megaTotal + revisionTotal + acerTotal + eduTotal;
+    const totalSum = megaTotal + revisionTotal + tt6Total + tt8Total + jmssTotal;
 
     // Find or create the TOTAL row
     let totalRow = $('#omrStatTable > tbody tr[code="total"]');
@@ -196,8 +198,9 @@ function populateTotals() {
         totalRow.append('<td class="text-center">TOTAL</td>'); // First column for "TOTAL" label
         totalRow.append('<td></td>'); // Placeholder for mega total
         totalRow.append('<td></td>'); // Placeholder for revision total
-        totalRow.append('<td></td>'); // Placeholder for acer total
-        totalRow.append('<td></td>'); // Placeholder for edu total
+        totalRow.append('<td></td>'); // Placeholder for tt6 total
+        totalRow.append('<td></td>'); // Placeholder for tt8 total
+		totalRow.append('<td></td>'); // Placeholder for jmss total
         totalRow.append('<td></td>'); // Placeholder for total sum
         $('#omrStatTable > tbody').append(totalRow);
     }
@@ -205,9 +208,10 @@ function populateTotals() {
     // Update the TOTAL row with calculated values
     totalRow.find('td').eq(1).text(megaTotal); // Mega total
     totalRow.find('td').eq(2).text(revisionTotal); // Revision total
-    totalRow.find('td').eq(3).text(acerTotal); // Acer total
-    totalRow.find('td').eq(4).text(eduTotal); // Edu total
-    totalRow.find('td').eq(5).text(totalSum).addClass('text-primary'); // Total sum
+    totalRow.find('td').eq(3).text(tt6Total); // TT6 total
+    totalRow.find('td').eq(4).text(tt8Total); // TT8 total
+	totalRow.find('td').eq(5).text(jmssTotal); // JMSS total
+    totalRow.find('td').eq(6).text(totalSum).addClass('text-primary'); // Total sum
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -317,8 +321,9 @@ function export2Excel(){
 					<th class="header">Branch</th>
 					<th class="header">Mega</th>
 					<th class="header">Revision</th>
-					<th class="header">Acer</th>
-					<th class="header">Edu</th>
+					<th class="header">TT6</th>
+					<th class="header">TT8</th>
+					<th class="header">JMSS</th>
 					<th class="header">SUM</th>
 					<th class="header">Note</th>
 				</tr>

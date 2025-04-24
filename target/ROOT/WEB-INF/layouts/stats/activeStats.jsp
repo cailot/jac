@@ -4,7 +4,9 @@
 
 <script>
 
-var tableData =[];	
+var tableData =[];
+var branchList = [];
+
 $(document).ready(function () {
 
 	$("#fromDate").datepicker({
@@ -19,13 +21,43 @@ $(document).ready(function () {
 			$("#fromDate").datepicker("option", "maxDate", selectedDate);
 		}
 	});
+	// set up table <th> and branch list
+	fetchBranchListAndPopulateHeaders();
 
 	var statDiv = document.getElementById("stats");
 	statDiv.style.display = 'none';
-
-
-
 });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Function to fetch branch list and populate table headers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function fetchBranchListAndPopulateHeaders() {
+    $.ajax({
+        url: '${pageContext.request.contextPath}/code/branch', // Adjust the endpoint if needed
+        type: 'GET',
+        success: function (data) {
+            // Clear existing headers (except the first and last ones)
+            const headerRow = $('#regStatTable thead tr');
+            headerRow.empty();
+            // Add the first empty header
+            headerRow.append('<th class="header" data-toggle="tooltip" title="" code="0"></th>');
+            // Dynamically add headers for each branch
+            $.each(data, function (index, branch) {
+				if(branch.value < 90){
+					//console.log(branch);
+					const th = `<th class="header" data-toggle="tooltip" title=`+ branch.name + `" code="`+branch.value+`">`+branch.name+`</th>`;
+					headerRow.append(th);
+					branchList.push(branch.name); // Store the branch name
+				}
+			});
+            // Add the "Total" header
+            headerRow.append('<th class="header" data-toggle="tooltip" title="Total" code="100">Total</th>');
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching branch list:', error);
+        }
+    });
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Search Info	
@@ -342,7 +374,7 @@ function addRows(){
 		// Add the row to the tbody
 		tbody.appendChild(row);
 		// Add additional cells to the row using the generateTableCells function
-		row.innerHTML += generateTableCells(23);
+		row.innerHTML += generateTableCells(branchList.length);
 	});
 }
 
@@ -360,7 +392,7 @@ function updateChart(){
 	new Chart(bar, {
 	  type: 'bar',
 	  data: {
-		labels: ['Box Hill', 'Braybrook', 'Chadstone', 'Cranbourne', 'Epping', 'Glen Waverley', 'Narre Warren', 'Micham', 'Preston', 'Richmond', 'Springvale', 'St.Albans', 'Werribee', 'Balwyn', 'Rowville', 'Caroline Springs', 'Bayswater', 'Point Cook', 'Craigieburn', 'Mernda', 'Melton', 'Glenroy', 'Pakenham'],
+		labels: branchList, 
 		datasets: [
 		 {
 		  label: 'P2',
@@ -773,33 +805,7 @@ function export2Excel(){
 		</div>
 		<table id="regStatTable" class="table table-bordered">
 			<thead class="table-primary">
-				<tr>
-					<th class="header" data-toggle="tooltip" title="" code="0"></th>
-					<th class="header" data-toggle="tooltip" title="Box Hill" code="12">Box Hill</th>
-					<th class="header" data-toggle="tooltip" title="Braybrook" code="13">Braybrook</th>
-					<th class="header" data-toggle="tooltip" title="Chadstone" code="14">Chadstone</th>
-					<th class="header" data-toggle="tooltip" title="Crandbourne" code="15">Crandbourne</th>
-					<th class="header" data-toggle="tooltip" title="Epping" code="16">Epping</th>
-					<th class="header" data-toggle="tooltip" title="Glen Waverley" code="17">Glen Waverley</th>
-					<th class="header" data-toggle="tooltip" title="Narre Warren" code="18">Narre Warren</th>
-					<th class="header" data-toggle="tooltip" title="Mitcham" code="19">Mitcham</th>
-					<th class="header" data-toggle="tooltip" title="Preston" code="20">Preston</th>
-					<th class="header" data-toggle="tooltip" title="Richmond" code="21">Richmond</th>
-					<th class="header" data-toggle="tooltip" title="Springvale" code="22">Springvale</th>
-					<th class="header" data-toggle="tooltip" title="St.Albans" code="23">St.Albans</th>
-					<th class="header" data-toggle="tooltip" title="Werribee" code="24">Werribee</th>
-					<th class="header" data-toggle="tooltip" title="Balwyn" code="25">Balwyn</th>
-					<th class="header" data-toggle="tooltip" title="Rowville" code="26">Rowville</th>
-					<th class="header" data-toggle="tooltip" title="Caroline Springs" code="27">Caroline Springs</th>
-					<th class="header" data-toggle="tooltip" title="Bayswater" code="28">Bayswater</th>
-					<th class="header" data-toggle="tooltip" title="Point Cook" code="29">Point Cook</th>
-					<th class="header" data-toggle="tooltip" title="Craigieburn" code="30">Craigieburn</th>
-					<th class="header" data-toggle="tooltip" title="Mernda" code="31">Mernda</th>
-					<th class="header" data-toggle="tooltip" title="Melton" code="32">Melton</th>
-					<th class="header" data-toggle="tooltip" title="Glenroy" code="33">Glenroy</th>
-					<th class="header" data-toggle="tooltip" title="Pakenham" code="34">Pakenham</th>
-					<th class="header" data-toggle="tooltip" title="Total" code="100">Total</th>
-				</tr>
+				<tr></tr>
 			</thead>
 			<tbody>
 			</tbody>
