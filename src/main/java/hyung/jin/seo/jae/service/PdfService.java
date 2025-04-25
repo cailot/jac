@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PdfService {
@@ -15,4 +16,8 @@ public interface PdfService {
 
 	// generate test result pdf file
 	byte[] generateTestResultPdf(Map<String, Object> data);
+
+	// Merge multiple PDF files into a single PDF file
+	byte[] mergePdfFiles(List<byte[]> pdfList);
+
 }

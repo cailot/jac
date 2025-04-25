@@ -34,16 +34,22 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName) {
-		try {
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setFrom(from);
-			helper.setTo(to);
-			helper.setSubject(subject);
-			helper.setText(body);
-			helper.addAttachment(fileName, new ByteArrayResource(fileData));
-			mailSender.send(message);
-		} catch (MessagingException e) {
+		// html email
+		try{
+			MimeMessagePreparator preparator = mimeMessage -> {
+				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+				messageHelper.setFrom(from);
+				messageHelper.setTo(to);
+				messageHelper.setSubject(subject);
+				messageHelper.setText(body, true);
+
+				if (fileData != null && fileData.length > 0) {
+					ByteArrayDataSource dataSource = new ByteArrayDataSource(fileData, "application/octet-stream");
+					messageHelper.addAttachment(fileName, dataSource);
+				}
+			};
+			mailSender.send(preparator);
+		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -51,17 +57,29 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	public void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
 		try {
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setFrom(from);
-			helper.setTo(to);
-			helper.setSubject(subject);
-			helper.setText(body);
-			for (int i = 0; i < fileData.size(); i++) {
-				helper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
-			}
-			mailSender.send(message);
-		} catch (MessagingException e) {
+			// MimeMessage message = mailSender.createMimeMessage();
+			// MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			// helper.setFrom(from);
+			// helper.setTo(to);
+			// helper.setSubject(subject);
+			// helper.setText(body);
+			// for (int i = 0; i < fileData.size(); i++) {
+			// 	helper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+			// }
+			// mailSender.send(message);
+			MimeMessagePreparator preparator = mimeMessage -> {
+				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+				messageHelper.setFrom(from);
+				messageHelper.setTo(to);
+				messageHelper.setSubject(subject);
+				messageHelper.setText(body, true);
+
+				for (int i = 0; i < fileData.size(); i++) {
+					messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+				}
+			};
+			mailSender.send(preparator);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
