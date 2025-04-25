@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 import hyung.jin.seo.jae.dto.StudentTestSummaryDTO;
 import hyung.jin.seo.jae.service.ExcelService;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Service
 public class ExcelServiceImpl implements ExcelService {
@@ -36,11 +37,11 @@ public class ExcelServiceImpl implements ExcelService {
 				row.createCell(0).setCellValue(summary.getName());
 				row.createCell(1).setCellValue(summary.getId());
 				row.createCell(2).setCellValue(summary.getCourse()); // Assuming this is constant for now
-				row.createCell(3).setCellValue(summary.getBranch());
+				row.createCell(3).setCellValue(JaeUtils.getBranchName(summary.getBranch()));
 				
 				// Add test scores if available
 				List<Double> scores = summary.getScores();
-				for (int i = 0; i < scores.size() && i < 6; i++) {
+				for (int i = 0; i < scores.size(); i++) {
 					row.createCell(i + 4).setCellValue(scores.get(i));
 				}
 			}

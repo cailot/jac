@@ -86,6 +86,21 @@ public class TestProcessServiceImpl implements TestProcessService {
         }, delay, TimeUnit.MILLISECONDS);
 	}
 
+	// process test schedule
+	// 1. get current year
+	// 2. get test schedule
+	// 3. get test list
+	// 4. get average score
+	// 5. update average score
+	// 6. get student list by test
+	// 7. get student test list
+	// 8. prepare pdf data
+	// 9. generate pdf
+	// 10. send email to student
+	// 11. upload pdf to azure blob storage
+	// 12. send email to branch
+	// 13. generate summary excel
+	// 14. send email to branch with summary
 	@Override
 	public void processTestSchedule(Long testScheduleId) {
 		// Step 1: Get current year
@@ -103,11 +118,11 @@ public class TestProcessServiceImpl implements TestProcessService {
 		// student list
 		List<Long> studentList = new ArrayList<>();
 		for(TestDTO test : tests){
-			// Step 5: Get average score
+			// Step 4: Get average score
 			double average = connectedService.getAverageScoreByTest(Long.parseLong(test.getId()), startDate, endDate);
-			// Step 6: Update average score
+			// Step 5: Update average score
 			connectedService.updateTestAverage(Long.parseLong(test.getId()), average);
-			// Step 7: Get student list by test
+			// Step 6: Get student list by test
 			List<Long> newStudents = connectedService.getStudentListByTest(Long.parseLong(test.getId()), startDate, endDate);
 			for (Long studentId : newStudents) {
 				if (!studentList.contains(studentId)) {
@@ -147,6 +162,8 @@ public class TestProcessServiceImpl implements TestProcessService {
 			String studentName = st.getFirstName() + " " + st.getLastName();
 			summary.setName(studentName);
 			summary.setBranch(st.getBranch());
+			// summary.setBranch(JaeUtils.getBranchName(st.getBranch()));
+			summary.setCourse(JaeUtils.getGradeName(grade));
 
 			// student test list
 			List<StudentTestDTO> studentTests = new ArrayList<>();
@@ -166,11 +183,12 @@ public class TestProcessServiceImpl implements TestProcessService {
 			}
 			// prepare pdf data
 			Map<String, Object> pdfData = preparePdfData(studentId, studentTests);
+			// Step 8: Generate pdf
 			byte[] pdfBytes = pdfService.generateTestResultPdf(pdfData);
 			// String studentEmail = st.getEmail1();
 			String studentEmail ="jh05052008@gmail.com";
 			String emailContent = String.format(emailTemplate, studentName, studentId);
-			//  Step 8: Send email to all students using template
+			//  Step 9: Send email to all students using template
 			try {
 				// Add debug logging
 				System.out.println("Attempting to send email to: " + studentEmail + " Id :" + studentId);
@@ -183,7 +201,7 @@ public class TestProcessServiceImpl implements TestProcessService {
 				System.out.println("Failed to send email: " + e.getMessage());
 				e.printStackTrace();
 			}
-			// Step 9: Upload pdf to azure blob storage
+			// Step 10: Upload pdf to azure blob storage
 			String blobName = studentId + ".pdf";
 			uploadPdfToAzureBlob(blobName, pdfBytes);
 			// add to list
@@ -197,7 +215,7 @@ public class TestProcessServiceImpl implements TestProcessService {
 			List<byte[]> attachments = new ArrayList<>();
 			List<String> fileNames = new ArrayList<>();
 			List<StudentTestSummaryDTO> branchSummaryList = new ArrayList<>();
-			// Step 10: Send email to branch with summary	
+			// prepare branch summary list
 			for(StudentTestSummaryDTO summary : studentTestSummaryList){
 				if(StringUtils.equalsIgnoreCase(branchCode, summary.getBranch())){
 					// download PDF from Azure Blob Storage
@@ -226,8 +244,8 @@ public class TestProcessServiceImpl implements TestProcessService {
 					.append("</body>")
 					.append("</html>");	
 				String emailContent = branchEmailBodyBuilder.toString();		
+				// Step 11: Generate summary excel
 				byte[] excelBytes = excelService.generateTestSummaryExcel(branchSummaryList);
-
 				if(attachments.size() > 1){
 					// merge pdf files
 					byte[] mergedPdfBytes = pdfService.mergePdfFiles(attachments);
@@ -243,6 +261,7 @@ public class TestProcessServiceImpl implements TestProcessService {
 
 				attachments.add(excelBytes);
 				fileNames.add("summary.xlsx");
+				// Step 12: Send email to branch with summary	
 				emailService.sendResultWithAttachments(emailSender, emailReceipient, emailSubject, emailContent, attachments, fileNames);
 			}
 	

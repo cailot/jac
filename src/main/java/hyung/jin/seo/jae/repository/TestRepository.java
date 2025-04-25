@@ -23,7 +23,7 @@ public interface TestRepository extends JpaRepository<Test, Long>{
 	TestDTO findTestByType(int type, String grade, int volume);
 
 	// bring TestDTO by testGroup, grade & volume
-	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.processed, t.average, t.info, t.grade.code, t.testType.id, t.testType.name, t.registerDate) FROM Test t WHERE (t.testType.testGroup = ?1) AND (t.grade.code = ?2) AND (t.volume = ?3)")
+	@Query("SELECT new hyung.jin.seo.jae.dto.TestDTO(t.id, t.pdfPath, t.volume, t.active, t.processed, t.average, t.info, t.grade.code, t.testType.id, t.testType.name, t.registerDate) FROM Test t WHERE (t.testType.testGroup = ?1) AND (t.grade.code = ?2) AND (t.volume = ?3) AND (t.active = 1)")
 	List<TestDTO> findTestByGroup(int group, String grade, int volume);
 
 	// filter TestDTO by type, grade & volume
