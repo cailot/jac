@@ -11,19 +11,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +24,6 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
-
 import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
@@ -130,17 +118,30 @@ public class TestProcessServiceImpl implements TestProcessService {
 
 		// student test summary list
 		List<StudentTestSummaryDTO> studentTestSummaryList = new ArrayList<>();
-		String emailTemplate = "Dear %s (%s),\n\n"
-				+ "Your test results for recent Test are now available.\n" 
-				+ "Please check the attached file for your test results.\n" 
-				+ "Best regards,\n"
-				+ "James An College Victoria";
+		StringBuilder emailBodyBuilder = new StringBuilder();
+		emailBodyBuilder.append("<html>")
+            .append("<head>")
+            .append("</head>")
+            .append("<body>")
+			.append("<p style='color: red; font-weight: bold;'>Please Do Not Reply to This Email. This email is intended for sending purposes only</p><br>")
+            .append("<p style='font-family: Arial, sans-serif; font-size: 15px; color: #333; font-weight: bold;'>Dear %s (%s),</p>")
+            .append("<br>")
+			.append("<span style='color: #333; font-size: 14px; font-family: Arial, sans-serif;'>Your test results for the recent Test are now available.</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Please check the attached file for your test results.</span><br><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Best regards,</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px; font-style: italic;'>James An College Victoria Head Office</span>")
+			.append("</body>")
+			.append("</html>");	
+		String emailTemplate = emailBodyBuilder.toString();
 		// handlinge each student
 		// 1. send email to student
 		// 2. upload pdf to azure blob storage
-		String emailSubject = "James An College Victoria test results are now available.";
+		String emailSubject = "James An College Victoria Test Results are now available.";
 		for(Long studentId : studentList){
 			Student st = studentService.getStudent(studentId);
+			if (st == null) {
+				continue; // Skip if no student found
+			}
 			StudentTestSummaryDTO summary = new StudentTestSummaryDTO();
 			summary.setId(studentId.toString());
 			String studentName = st.getFirstName() + " " + st.getLastName();
@@ -160,7 +161,9 @@ public class TestProcessServiceImpl implements TestProcessService {
 					studentTests.add(studentTest);
 				}
 			}
-
+			if(studentTests.size() == 0){
+				continue; // Skip if no student test found
+			}
 			// prepare pdf data
 			Map<String, Object> pdfData = preparePdfData(studentId, studentTests);
 			byte[] pdfBytes = pdfService.generateTestResultPdf(pdfData);
@@ -170,7 +173,7 @@ public class TestProcessServiceImpl implements TestProcessService {
 			//  Step 8: Send email to all students using template
 			try {
 				// Add debug logging
-				System.out.println("Attempting to send email to: " + studentEmail);
+				System.out.println("Attempting to send email to: " + studentEmail + " Id :" + studentId);
 				System.out.println("From: " + emailSender);
 				System.out.println("Subject: " + emailSubject);
 				emailService.sendResultWithAttachment(emailSender, studentEmail, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
@@ -208,8 +211,36 @@ public class TestProcessServiceImpl implements TestProcessService {
 			// send email to branch
 			if(branchSummaryList.size() > 0){
 				String emailReceipient = "cailot@naver.com";//branchDTO.getEmail();
-				String emailContent = "Please find the attached excel file for the test results of the students in " + branchDTO.getName() + " branch.";
+				StringBuilder branchEmailBodyBuilder = new StringBuilder();
+				branchEmailBodyBuilder.append("<html>")
+					.append("<head>")
+					.append("</head>")
+					.append("<body>")
+					.append("<p style='color: red; font-weight: bold;'>Please Do Not Reply to This Email. This email is intended for sending purposes only</p><br>")
+					.append("<p style='font-family: Arial, sans-serif; font-size: 15px; color: #333; font-weight: bold;'>Dear " + branchDTO.getName() + " Branch,</p>")
+					.append("<br>")
+					.append("<span style='color: #333; font-size: 14px; font-family: Arial, sans-serif;'>Recent test results are now available.</span><br>")
+					.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Please check the attached file for your test results at your branch.</span><br><br>")
+					.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Best regards,</span><br>")
+					.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px; font-style: italic;'>James An College Victoria Head Office</span>")
+					.append("</body>")
+					.append("</html>");	
+				String emailContent = branchEmailBodyBuilder.toString();		
 				byte[] excelBytes = excelService.generateTestSummaryExcel(branchSummaryList);
+
+				if(attachments.size() > 1){
+					// merge pdf files
+					byte[] mergedPdfBytes = pdfService.mergePdfFiles(attachments);
+					if(mergedPdfBytes == null){
+						// skip merge pdf files and handle next branch
+						continue;
+					}
+					attachments.clear();
+					attachments.add(mergedPdfBytes);
+					fileNames.clear();
+					fileNames.add(branchDTO.getName() + ".pdf");										
+				}
+
 				attachments.add(excelBytes);
 				fileNames.add("summary.xlsx");
 				emailService.sendResultWithAttachments(emailSender, emailReceipient, emailSubject, emailContent, attachments, fileNames);

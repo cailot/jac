@@ -45,6 +45,7 @@ import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.color.DeviceRgb;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.border.Border;
@@ -69,6 +70,8 @@ import hyung.jin.seo.jae.dto.InvoiceDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
+import java.io.ByteArrayInputStream;
+
 
 @Service
 public class PdfServiceImpl implements PdfService {
@@ -1399,7 +1402,29 @@ public class PdfServiceImpl implements PdfService {
 		return chartImage;
 	}
 
-
+	// Merge multiple PDF files into a single PDF file
+	@Override
+	public byte[] mergePdfFiles(List<byte[]> pdfList) {
+		try {
+			ByteArrayOutputStream mergedOutputStream = new ByteArrayOutputStream();
+			PdfWriter pdfWriter = new PdfWriter(mergedOutputStream);
+			PdfDocument mergedPdfDocument = new PdfDocument(pdfWriter);
+			
+			for (byte[] pdfBytes : pdfList) {
+				PdfDocument sourcePdf = new PdfDocument(new PdfReader(new ByteArrayInputStream(pdfBytes)));
+				sourcePdf.copyPagesTo(1, sourcePdf.getNumberOfPages(), mergedPdfDocument);
+				sourcePdf.close();
+			}
+			
+			mergedPdfDocument.close();
+			return mergedOutputStream.toByteArray();
+		} catch (Exception e) {
+			System.out.println("Error merging PDF files: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 /////////////////// Calculate band category ///////////////////////
 public static class Band {
@@ -1452,34 +1477,6 @@ private String getBandForScore(double studentScore, double lowest, double highes
 	}
 	return "Top"; // If it's >= highest
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
