@@ -164,7 +164,9 @@ function studentList(branch, grade){
 			}
 			$.each(data, function(index, value) {
 				var row = $("<tr>");		
-				row.append($('<td>').text(value.id));
+				// Make student ID clickable
+				var idCell = $('<td>').html('<span class="hand-cursor" onclick="linkToStudent(\'' + value.id + '\')" data-toggle="tooltip" title="Link to Student Information">' + value.id + '</span>');
+				row.append(idCell);
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
 				var gradeText = gradeName(value.grade);
@@ -172,10 +174,26 @@ function studentList(branch, grade){
 				row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
 				row.append($('<td>').text(formatDate(value.registerDate)));
 				row.append($('<td>').text(formatDate(value.endDate)));
-				row.append($('<td>').text(value.email1));
-				row.append($('<td>').text(value.contactNo1));
+				
+				// Add title attribute to email cell for tooltip
+				var emailCell = $('<td>').text(value.email1);
+				emailCell.attr('title', value.email1);
+				row.append(emailCell);
+				
+				// Add title attribute to contact cell for tooltip
+				var contactCell = $('<td>').text(value.contactNo1);
+				contactCell.attr('title', value.contactNo1);
+				row.append(contactCell);
+				
 				$('#studentListResultTable > tbody').append(row);
 			});
+			
+			// Initialize Bootstrap tooltips after loading data
+			$('#studentListResultTable td').tooltip({
+				container: 'body',
+				placement: 'top'
+			});
+			
 			$('#studentListResult').modal('show');
 		},
 		error : function(xhr, status, error) {
@@ -607,6 +625,16 @@ function export2Excel(){
 	downloadLink.click();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Link To Student Admin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function linkToStudent(studentId) {
+    //window.location.href = '/studentAdmin?id=' + studentId;
+	var url = '/studentAdmin?id=' + studentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
 </script>
 
 <style>
@@ -670,6 +698,91 @@ function export2Excel(){
 	}
 }
 
+.table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+#studentListResultTable {
+  table-layout: fixed;
+}
+
+#studentListResultTable th, 
+#studentListResultTable td { 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* Specific widths for email and contact columns */
+.email-column,
+#studentListResultTable td:nth-child(8) {
+  max-width: 180px;
+  width: 180px;
+}
+
+.contact-column,
+#studentListResultTable td:nth-child(9) {
+  max-width: 120px;
+  width: 120px;
+}
+
+/* Other columns with specific widths */
+#studentListResultTable th:first-child,
+#studentListResultTable td:first-child {
+  width: 80px;
+}
+
+#studentListResultTable th:nth-child(2),
+#studentListResultTable td:nth-child(2),
+#studentListResultTable th:nth-child(3),
+#studentListResultTable td:nth-child(3) {
+  width: 100px;
+}
+
+#studentListResultTable th:nth-child(4),
+#studentListResultTable td:nth-child(4),
+#studentListResultTable th:nth-child(5),
+#studentListResultTable td:nth-child(5) {
+  width: 70px;
+}
+
+#studentListResultTable th:nth-child(6),
+#studentListResultTable td:nth-child(6),
+#studentListResultTable th:nth-child(7),
+#studentListResultTable td:nth-child(7) {
+  width: 90px;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+div.dataTables_length{
+	padding-left: 50px;
+	padding-top: 40px;
+	padding-bottom: 10px;
+}
+
+div.dt-buttons {
+	padding-top: 35px;
+	padding-bottom: 10px;
+}
+
+div.dataTables_filter {
+	padding-top: 35px;
+	padding-bottom: 35px;
+}
+
+#studentListTable tr { 
+	vertical-align: middle;
+	height: 45px 	
+}
+	
+.hand-cursor {
+    cursor: pointer;
+}
 </style>
 
 <!-- List Body -->
@@ -782,26 +895,26 @@ function export2Excel(){
 <!-- Search Result Dialog -->
 <div class="modal fade" id="studentListResult">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+      <div class="modal-content jae-border-primary">
+        <div class="modal-header bg-primary text-white rounded-top">
           <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
         </div>
         <div class="modal-body table-wrap">
-          <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
+          <table class="table table-striped table-bordered table-responsive-sm" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller; width: 100%;">
             <thead class="thead-light">
               <tr>
                 <th data-field="id">ID</th>
                 <th data-field="firstname">First Name</th>
                 <th data-field="lastname">Last Name</th>
                 <th data-field="grade">Grade</th>
-                <th data-field="grade">Gender</th>
+                <th data-field="gender">Gender</th>
                 <th data-field="startdate">Start Date</th>
                 <th data-field="enddate">End Date</th>
-                <th data-field="email">Main Email</th>
-                <th data-field="contact1">Main Contact</th>
+                <th data-field="email" class="email-column">Main Email</th>
+                <th data-field="contact1" class="contact-column">Main Contact</th>
               </tr>
             </thead>
             <tbody>
@@ -819,8 +932,25 @@ function export2Excel(){
     .table-wrap {
       overflow-x: auto;
     }
-    #studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .form-group{
+    #studentListResultTable th, #studentListResultTable td { 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+      max-width: 150px; /* Set a reasonable max width for all cells */
+    }
+    
+    /* Specific widths for email and contact columns */
+    #studentListResultTable th:nth-child(8),
+    #studentListResultTable td:nth-child(8) {
+      max-width: 180px;
+    }
+    
+    #studentListResultTable th:nth-child(9),
+    #studentListResultTable td:nth-child(9) {
+      max-width: 120px;
+    }
+    
+    .form-group {
         margin-bottom: 30px;
     }
 </style>
