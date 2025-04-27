@@ -557,13 +557,19 @@ function updatePassword() {
 					<td id="bsb" class="left-cell" style="vertical-align: middle; width: 15%;"></td>
 				</tr>
 				<tr height="80px">
-					<td class="left-cell text-primary" colspan="1" style="vertical-align: middle; width: 20%;"><b>Account #</b></td>
-					<td id="accountNumber" colspan="2" class="text-center" style="vertical-align: middle; width: 20%;"></td>
+					<td class="left-cell text-primary" colspan="1" style="vertical-align: middle; width: 15%;"><b>Account #</b></td>
+					<td id="accountNumber" colspan="1" style="vertical-align: middle; width: 20%;"></td>
 					<td class="left-cell text-primary" style="vertical-align: middle; width: 20%;"><b>Account Name</b></td>
-					<td id="accountName" colspan="2" class="left-cell" style="vertical-align: middle; width: 40%;"></td>
+					<td id="accountName" colspan="3" class="left-cell" style="vertical-align: middle; width: 45%;"></td>
 				</tr>
 				<tr height="80px">
-					<td class="left-cell text-primary" style="vertical-align: middle;"><b>Information</b></td>
+					<td class="left-cell text-primary" style="vertical-align: middle;">
+						<b>Information</b>
+						<br><br>
+						<span class="text-muted small" style="display: block; margin-top: 5px; font-style: italic; border-left: 3px solid #ccc; padding-left: 8px; line-height: 1.4;">
+							The information provided here may be included in official documents such as receipts and invoices.
+						</span>
+					</td>
 					<td id="information" class="left-cell p-5" colspan="5" style="line-height: 1.8;"></td>
 				</tr>
 				<tr height="80px" style="display: none;">

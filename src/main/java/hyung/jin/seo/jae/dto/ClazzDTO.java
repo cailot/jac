@@ -58,6 +58,7 @@ public class ClazzDTO implements Serializable{
 		this.active = active;
 		this.courseId = Long.toString(courseId);
 		this.grade = grade;
+		this.online = online;
 		this.description = description;	
 		this.year = Integer.toString(year);
 	}

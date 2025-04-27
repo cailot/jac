@@ -59,6 +59,18 @@ $(document).ready(function () {
 		getCoursesByGrade(grade, '#addCourse', addDay);
 	});
 
+	// when addStartDate changes, get courses by grade
+	$('#addStartDate').change(function () {
+		var grade = $('#addGrade').val();
+		var addDay = $(this).val();
+		// change format as 'yyyy-mm-dd'
+		var date = addDay.split("/");
+		addDay = date[2] + '-' + date[1] + '-' + date[0];
+		getCoursesByGrade(grade, '#addCourse', addDay);
+	});
+
+
+
 	// initialise state list when loading
 	listState('#listState');
 	listState('#addState');
@@ -187,7 +199,7 @@ function retrieveClassInfo(clazzId) {
 		url: '${pageContext.request.contextPath}/class/get/class/' + clazzId,
 		type: 'GET',
 		success: async function (clazz) {
-			console.log(clazz.startDate);			
+			// console.log(clazz.startDate);			
 			// firstly populate courses by grade then set the selected option
 			await editInitialiseCourseByGrade(clazz.grade, clazz.startDate, clazz.courseId);
 			$("#editId").val(clazz.id);
@@ -195,6 +207,7 @@ function retrieveClassInfo(clazzId) {
 			$("#editBranch").val(clazz.branch);
 			// Set date value
 			var date = new Date(clazz.startDate); // Replace with your date value
+			$("#editStartDate").prop('disabled', true);
 			$("#editStartDate").datepicker('setDate', date);
 			$("#editGrade").val(clazz.grade);
 			$("#editDay").val(clazz.day);
@@ -292,7 +305,7 @@ function getCoursesByGrade(grade, toWhere, today) {
 			$(toWhere).empty(); // clear the previous options
 			$.each(data, function (index, value) {
 				const cleaned = cleanUpJson(value);
-				//console.log(cleaned);
+				console.log(cleaned);
 				$(toWhere).append($("<option value='" + value.id + "'>").text(value.description).val(value.id)); // add new option
 			});
 		},
@@ -454,7 +467,7 @@ function deleteClass(id) {
 					<div class="col-md-1">
 						<label for="listType" class="label-form">Type</label>
 						<select class="form-control" id="listType" name="listType">
-							<option value="0">All</option>
+							<!-- <option value="0">All</option> -->
 							<option value="Onsite">Onsite</option>
 							<option value="Online">Online</option>
 						</select>
@@ -634,9 +647,19 @@ function deleteClass(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
+														
+														<c:choose>
+															<c:when test="${clazz.online == true}">
+																<i class="bi bi-pencil-square text-secondary fa-lg" data-toggle="tooltip" title="Edit Disabled for Online Classes"></i>
+															</c:when>
+															<c:otherwise>
+																<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')"></i>
+															</c:otherwise>
+														</c:choose>
+														<%-- too dangerous as related to many tables
+														<c:out value="${clazz}" />														
 														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
 														</i>
-														<%-- too dangerous as related to many tables
 														&nbsp;
 														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${clazz.id}')"></i>
 														--%>
@@ -728,6 +751,11 @@ function deleteClass(id) {
 		var year = today.getFullYear();
 		var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
 		document.getElementById('addStartDate').value = formattedDate;
+		
+		// Set branch value for staff users (non-admin)
+		if(!JSON.parse(window.isAdmin)){
+			$("#addBranch").val(window.branch);
+		}
 	});
 </script>
 

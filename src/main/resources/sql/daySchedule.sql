@@ -1,6 +1,6 @@
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('0', 'All', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('1', 'Monday', CURDATE());
-INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('2', 'Tudesday', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('2', 'Tuesday', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('3', 'Wednesday', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('4', 'Thursday', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('5', 'Friday', CURDATE());

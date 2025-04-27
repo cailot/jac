@@ -181,6 +181,8 @@ public class ClazzController {
 		int year = cycleService.academicYear(formatted);
 		// search active Course by grade & year
 		List<CourseDTO> dtos = courseService.findActiveByGradeNYear(grade, year);
+		// if online is true or active is false, remove it
+		dtos.removeIf(dto -> dto.isOnline() == true || dto.isActive() == false);
 		return dtos;
 	}
 
