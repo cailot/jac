@@ -275,6 +275,11 @@ function linkToStudent(studentId) {
 	#attendanceTable .th-background {
 		background-color: #007bff !important;
 	}
+	
+	/* Fix for datepicker appearing behind table */
+	.ui-datepicker, .datepicker {
+		z-index: 9999 !important;
+	}
 
 </style>
 

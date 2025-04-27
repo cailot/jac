@@ -442,8 +442,8 @@ window.showWarning = function(id) {
 								<thead class="table-primary">
 									<tr>
 										<th class="align-middle text-center" style="width: 10%">Username</th>
-										<th class="align-middle text-center" style="width: 12.5%">Last Name</th>
 										<th class="align-middle text-center" style="width: 12.5%">First Name</th>
+										<th class="align-middle text-center" style="width: 12.5%">Last Name</th>
 										<th class="align-middle text-center" style="width: 10%">Role</th>
 										<th class="align-middle text-center" style="width: 10%">Phone</th>
 										<th class="align-middle text-center" style="width: 15%">Email</th>
@@ -465,12 +465,12 @@ window.showWarning = function(id) {
 													</td>
 													<td class="small align-middle ml-1">
 														<span>
-															<c:out value="${user.lastName}" />
+															<c:out value="${user.firstName}" />
 														</span>
 													</td>
 													<td class="small align-middle ml-1">
 														<span>
-															<c:out value="${user.firstName}" />
+															<c:out value="${user.lastName}" />
 														</span>
 													</td>
 													<td class="small align-middle ml-1">
@@ -552,7 +552,7 @@ window.showWarning = function(id) {
 													<td class="text-center align-middle">
 														<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retreiveUserInfo('${user.username}')"></i>&nbsp;
 														<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${user.username}')"></i>&nbsp;
-														<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Suspend" onclick="showWarning('${user.username}')"></i>
+														<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete User" onclick="showWarning('${user.username}')"></i>
 													</td>
 												</tr>
 											</c:forEach>
