@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -100,6 +101,10 @@ public class InvoiceController {
 
 	@Autowired
 	private BookService bookService;
+
+	@Value("${spring.sender.result}")
+    private String emailSender;
+
 
 	// count records number in database
 	@GetMapping("/count")
@@ -646,14 +651,35 @@ public class InvoiceController {
 	@ResponseBody
     public ResponseEntity<String> emailInvoice(@RequestParam String studentId, @RequestParam String branchCode){
 		try{
+			Student student = studentService.getStudent(Long.parseLong(studentId));
+			String studentName = student.getFirstName() + " " + student.getLastName();
+			String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());
 			Map<String, Object> data = invoicePdfIngredients(Long.parseLong(studentId), branchCode);
-			String fromEmail = codeService.getBranchEmail(branchCode);
+			String fromEmail = emailSender; //codeService.getBranchEmail(branchCode);
+			StringBuilder emailBodyBuilder = new StringBuilder();
+			emailBodyBuilder.append("<html>")
+            .append("<head>")
+            .append("</head>")
+            .append("<body>")
+			.append("<p style='color: red; font-weight: bold;'>Please Do Not Reply to This Email. This email is intended for sending purposes only</p><br>")
+            .append("<p style='font-family: Arial, sans-serif; font-size: 15px; color: #333; font-weight: bold;'>Dear %s (%s),</p>")
+            .append("<br>")
+			.append("<span style='color: #333; font-size: 14px; font-family: Arial, sans-serif;'>Your invoice is now available.</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Please check the attached file for your invoice.</span><br><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Best regards,</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px; font-style: italic;'>James An College Victoria Head Office</span>")
+			.append("</body>")
+			.append("</html>");	
+			String emailTemplate = emailBodyBuilder.toString();
+			String emailContent = String.format(emailTemplate, studentName, studentId);
+			String subject = "Invoice for " + studentName;
 			byte[] pdfData = pdfService.generateInvoicePdf(data);
-			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "invoice.pdf", pdfData);
-			return ResponseEntity.ok("ok");
+			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "invoice.pdf", pdfData);
+			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
-			String message = "\"Error sending email : " + e.getMessage() + "\"";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							   .body("{\"status\": \"error\", \"message\": \"" + errorMessage.replace("\"", "'") + "\"}");
 		}
     }
 
@@ -661,13 +687,35 @@ public class InvoiceController {
 	@ResponseBody
     public ResponseEntity<String> emailReceipt(@RequestParam String studentId, @RequestParam String invoiceId, @RequestParam String invoiceHistoryId, @RequestParam String paymentId, @RequestParam String branchCode){
 		try{
+			Student student = studentService.getStudent(Long.parseLong(studentId));
+			String studentName = student.getFirstName() + " " + student.getLastName();
+			String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());			
 			Map<String, Object> data = receiptPdfIngredients(Long.parseLong(studentId), Long.parseLong(invoiceId), Long.parseLong(invoiceHistoryId), Long.parseLong(paymentId), branchCode);
+			String fromEmail = emailSender;
+			StringBuilder emailBodyBuilder = new StringBuilder();
+			emailBodyBuilder.append("<html>")
+            .append("<head>")
+            .append("</head>")
+            .append("<body>")
+			.append("<p style='color: red; font-weight: bold;'>Please Do Not Reply to This Email. This email is intended for sending purposes only</p><br>")
+            .append("<p style='font-family: Arial, sans-serif; font-size: 15px; color: #333; font-weight: bold;'>Dear %s (%s),</p>")
+            .append("<br>")
+			.append("<span style='color: #333; font-size: 14px; font-family: Arial, sans-serif;'>Your receipt is now available.</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Please check the attached file for your receipt.</span><br><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px;'>Best regards,</span><br>")
+			.append("<span style='color: #333; font-family: Arial, sans-serif; font-size: 14px; font-style: italic;'>James An College Victoria Head Office</span>")
+			.append("</body>")
+			.append("</html>");	
+			String emailTemplate = emailBodyBuilder.toString();
+			String emailContent = String.format(emailTemplate, studentName, studentId);
+			String subject = "Receipt for " + studentName;			
 			byte[] pdfData = pdfService.generateReceiptPdf(data);
-			emailService.sendEmailWithAttachment("jin@gmail.com", "cailot@naver.com", "Sending from Spring Boot", "This is a test messasge", "receipt.pdf", pdfData);
-			return ResponseEntity.ok("ok");
+			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "receipt.pdf", pdfData);
+			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
-			String message = "\"Error sending email : " + e.getMessage() + "\"";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							   .body("{\"status\": \"error\", \"message\": \"" + errorMessage.replace("\"", "'") + "\"}");
 		}
     }
 
@@ -910,13 +958,6 @@ public class InvoiceController {
 		// 3. return info
 		return fullPaid;
 	}
-
-
-
-
-
-
-
 
 	// set invoice info into session
 	private void setInvoiceSession(Long studentId, String branchCode, String info, HttpSession session){

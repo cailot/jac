@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -134,37 +136,41 @@ public class OmrManagementController {
 
     // invoke omr preview api call to JAC-HUB server
     private List<OmrSheetDTO> previewOmr(String branch, MultipartFile file) throws IOException {
-        // 1. complete endpoint url
-        String url = omrEndpoint + "/preview";
-        // 2. create headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        // 3. crearte the file part
-        Resource fileResource = new ByteArrayResource(file.getBytes()){
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        };
-        // 4. create the request entity
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("branch", branch);
-        body.add("file", fileResource);
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-        // 5. send the request
-        List<OmrSheetDTO> dtos = new ArrayList<>();
-        ResponseEntity<List> response = restTemplate.postForEntity(url, requestEntity, List.class);
-        // 6. parse and return the response
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            // Assuming the response body is a list of StudentTestDTO objects
-            dtos = (List<OmrSheetDTO>) response.getBody();
-        } else {
-            System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
-            return new ArrayList<>();
-        }    
-        // System.out.println(">>>>>>>>>>> " + dtos);
-        // 7. return response;
-        return dtos; 
+         // 1. complete endpoint url
+         String url = omrEndpoint + "/preview";
+         // 2. create headers
+         HttpHeaders headers = new HttpHeaders();
+         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+         // 3. crearte the file part
+         Resource fileResource = new ByteArrayResource(file.getBytes()){
+             @Override
+             public String getFilename() {
+                 return file.getOriginalFilename();
+             }
+         };
+         // 4. create the request entity
+         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+         body.add("branch", branch);
+         body.add("file", fileResource);
+         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+         // 5. send the request
+         List<OmrSheetDTO> dtos = new ArrayList<>();
+         ResponseEntity<List<OmrSheetDTO>> response = restTemplate.exchange(
+             url,
+             HttpMethod.POST,
+             requestEntity,
+             new ParameterizedTypeReference<List<OmrSheetDTO>>() {}
+         );
+         // 6. parse and return the response
+         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+             dtos = response.getBody();
+         } else {
+             System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
+             return new ArrayList<>();
+         }    
+         // System.out.println(">>>>>>>>>>> " + dtos);
+         // 7. return response;
+         return dtos;  
     }
 
     // Save the OMR results

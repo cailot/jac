@@ -357,4 +357,42 @@ public class JaeUtils {
 		}
 		return answer;
 	}
+
+	/**
+	 * Removes all whitespace characters and converts the string to lowercase.
+	 *
+	 * @param value the input string
+	 * @return the processed string with no spaces and all characters in lowercase
+	 */
+	public static String removeAllSpacesAndLowerCase(String value) {
+		if (value == null || value.isEmpty()) {
+			return "";
+		}
+		return value.replaceAll("\\s+", "").toLowerCase();
+	}
+
+	// extract student main email from email string
+	// for example, cailot@naver.com will return cailot@naver.com
+	// cailot@naver.com, cailot@gmail.com will return cailot@naver.com
+	// cailot@naver.com,cailot@gmail.com will return cailot@naver.com
+	// cailot@naver.com; cailot@gmail.com will return cailot@naver.com
+	// cailot@naver.com;cailot@gmail.com, cailot@hotmail.com will return cailot@naver.com
+	// cailot@naver.com-cailot@gmail.com; cailot@hotmail.com will return cailot@naver.com
+	public static String extractMainEmail(String email) {
+		if (email == null || email.isEmpty()) {
+			return "";
+		}
+		// Split the email string by common delimiters: comma, semicolon, and hyphen
+		String[] emails = email.split("[,;\\-]");
+		// Return the first non-empty trimmed email
+		for (String e : emails) {
+			String trimmedEmail = e.trim();
+			if (!trimmedEmail.isEmpty()) {
+				return trimmedEmail;
+			}
+		}
+		return "";
+	}
+
+
 }

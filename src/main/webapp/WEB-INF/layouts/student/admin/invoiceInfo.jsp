@@ -651,7 +651,49 @@ function addInformation(){
 		}
 	});						
 }
-  
+ 
+///////////////////////////////////////////////////////////////////////////
+// 		Send Invoice Email
+///////////////////////////////////////////////////////////////////////////
+function sendInvoiceEmail() {
+	var studentId = $('#formId').val();
+	var branch = window.branch;
+	if(branch === '0'){
+		branch = '90'; // head office
+	}	
+    $.ajax({
+		url : '${pageContext.request.contextPath}/invoice/emailInvoice?studentId='+ studentId +'&branchCode=' + branch,
+		type : 'GET',
+        dataType: 'json',
+        success : function(response) {
+            if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
+        }        
+    });            
+} 
 </script>
 <style>
 	/* Adjust column sizes for the table */
@@ -711,7 +753,7 @@ function addInformation(){
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm"
-						onclick="alert('test...')">Email</button>
+						onclick="sendInvoiceEmail()">Email</button>
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				

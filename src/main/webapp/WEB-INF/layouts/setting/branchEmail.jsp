@@ -209,9 +209,6 @@ function sendEmail() {
 	var subject = $('#emailSubject').val();
 	var body = quill.root.innerHTML; // Get the content from Quill editor
 
-	// console.log('Subject:', subject);
-	// console.log('Body:', body);
-
 	if ((subject == '') || (body == '')) {
 		$('#warning-alert .modal-body').text('Please fill in Subject & Message');
 		$('#warning-alert').modal('toggle');
@@ -222,6 +219,7 @@ function sendEmail() {
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
 		type : 'GET',
+		dataType: 'json',
 		data : {
 			state : $('#listState').val(),
 			branch : $('#addBranch').val(),
@@ -230,17 +228,36 @@ function sendEmail() {
 			subject : subject,
 			body : body
 		},
-		success : function(count) {
+		success : function(response) {
 			// Display success alert
-			$('#success-alert .modal-body').html('Email sent to <b>' + count + '</b> recepients successfully.');
-			$('#success-alert').modal('toggle');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.reload();
-			});
-			
+			if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+				$('#success-alert').on('hidden.bs.modal', function (e) {
+					location.reload();
+				});			
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
 		}
 	});
 
@@ -258,6 +275,7 @@ function ReSendEmail() {
 
 	var subject = $('#editSubject').val();
 	var body = editQuill.root.innerHTML; // Get the content from Quill editor
+	var state = $('#editState').val(); // Get the state value
 
 	if ((subject == '') || (body == '')) {
 		$('#warning-alert .modal-body').text('Please fill in Subject & Message');
@@ -269,28 +287,48 @@ function ReSendEmail() {
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
 		type : 'GET',
+		dataType: 'json',
 		data : {
-			state : $('#editState').val(),
+			state : state, // Make sure state is included here
 			branch : $('#editBranch').val(),
 			grade : $('#editGrade').val(),
 			sender : JSON.parse(window.isAdmin)? HEAD_OFFICE : window.branch,
 			subject : subject,
 			body : body
 		},
-		success : function(count) {
+		success : function(response) {
 			// Display success alert
-			$('#success-alert .modal-body').html('Email sent to <b>' + count + '</b> recepients successfully.');
-			$('#success-alert').modal('toggle');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.href = window.location.href;
-			});
-			
+			if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+				$('#success-alert').on('hidden.bs.modal', function (e) {
+					location.reload();
+				});			
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
 		}
 	});
-
+	
 	// Close the modals after sending the email
 	clearEmailForm();
 	$('#ReConfirmationModal').modal('hide');
@@ -324,11 +362,10 @@ function retrieveEmailInfo(id) {
 		url : '${pageContext.request.contextPath}/email/get/' + id,
 		type : 'GET',
 		success : function(email) {
-			// console.log(email);
 			// set email info to edit form
 			$('#editSubject').val(email.title);
-			// $('#editBody').val(email.body);
 			editQuill.root.innerHTML = email.body;
+			// Ensure state is properly set
 			$('#editState').val(email.state);
 			$('#editBranch').val(email.branch);
 			$('#editGrade').val(email.grade);
@@ -336,9 +373,10 @@ function retrieveEmailInfo(id) {
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
+			$('#validation-alert .modal-body').html('Failed to retrieve email information.');
+			$('#validation-alert').modal('toggle');
 		}
 	});
-
 }
 
 </script>
@@ -571,3 +609,12 @@ function retrieveEmailInfo(id) {
 	</div>
 </div>
 
+<!-- Validation Alert -->
+<div id="validation-alert" class="modal fade">
+    <div class="modal-dialog">
+        <div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
+            <i class="bi bi-exclamation-circle-fill h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+    </div>
+</div>
