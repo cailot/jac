@@ -53,7 +53,7 @@ public class ClazzController {
 	// search classes by grade & year
 	@GetMapping("/search")
 	@ResponseBody
-	List<ClazzDTO> searchClasses(@RequestParam("grade") String grade) {
+	public List<ClazzDTO> searchClasses(@RequestParam("grade") String grade) {
 		int year = cycleService.academicYear();
 		List<ClazzDTO> dtos = clazzService.findClazzForGradeNCycle(grade, year);
 		return dtos;
@@ -62,7 +62,7 @@ public class ClazzController {
 	// check current academic year and week
 	@GetMapping("/academy")
 	@ResponseBody
-	String[] getAcademicInfo() {
+	public String[] getAcademicInfo() {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
 		return new String[] { String.valueOf(year), String.valueOf(week) };
@@ -71,7 +71,7 @@ public class ClazzController {
 	// count records number in database
 	@GetMapping("/count")
 	@ResponseBody
-	long coutEtc() {
+	public long coutEtc() {
 		long count = clazzService.checkCount();
 		return count;
 	}
@@ -79,10 +79,18 @@ public class ClazzController {
 	// get online course Id
 	@GetMapping("/onlineId")
 	@ResponseBody
-	Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
+	public Long getOnlineId(@RequestParam("grade") String grade, @RequestParam("year") int year) {
 		Long id = clazzService.getOnlineId(grade, year);
 		return id;
 	}
+
+	// get last academic week
+	@GetMapping("/lastAcademicWeek")
+	@ResponseBody
+	public int getLastAcademicWeek(@RequestParam("year") int year) {
+		return cycleService.lastAcademicWeek(year);
+	}
+
 
 	// bring all classes in database
 	@GetMapping("/listClass")

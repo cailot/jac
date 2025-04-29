@@ -31,8 +31,10 @@ $(document).ready(function () {
 			// Check if the request URL matches the one in branch
 			if (settings.url === '/code/branch') {
 				$("#branch").val(window.branch);
-				// Disable #branch and #addBranch
+				// Disable #branch and #editBranch
 				$("#branch").prop('disabled', true);
+				// Add hidden input for branch to preserve its value
+				$('#branch').after('<input type="hidden" name="branch" value="' + window.branch + '">');
 				// $("#editBranch").prop('disabled', true);
 			}
 		});
@@ -785,6 +787,7 @@ function countTablesByGroup() {
 							</c:if>
 							<div class="row justify-content-center">
 								<c:forEach items="${results}" var="omrSheet" varStatus="status">
+									<!-- <pre>${omrSheet}</pre> -->
 									<!-- Answer Omr Sheet Card Section-->
 									<!-- Display OmrSheetDTO details -->
 									<div class="col-md-12 mb-4">
@@ -807,14 +810,18 @@ function countTablesByGroup() {
 														</div>														
 														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
 													</div>
-													
+										
 													<!-- Display Answer Sheets -->
 													<div class="col-10">
 														<div class="row">
 															<c:forEach items="${omrSheet.studentTest}" var="studentTest" varStatus="testStatus">
+																<!-- <pre>${studentTest}</pre> -->
+																
+																
 																<!-- hide testId -->
 																<input type="hidden" id="testId${status.index}_${testStatus.index}" value="${studentTest.testId}" />
-																	
+																
+																
 																<!-- Dynamically set column width based on studentTest size -->
 																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose> mb-4'>
 																	<div id="resultTable${status.index}_${testStatus.index}">
@@ -825,10 +832,12 @@ function countTablesByGroup() {
 																		</script>
 																	</div>
 																</div>
+																
+
 															</c:forEach>
 														</div>
 													</div>
-
+							
 												</div>
 											</div>
 										</div>

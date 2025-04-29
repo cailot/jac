@@ -10,11 +10,23 @@ public interface EmailService {
 	// send simple email
 	void sendEmail(String from, String to, String subject, String body);
 
+	// send simple email with cc
+	void sendEmail(String from, String to, String subject, String body, String cc);
+	
 	// send simple email to multiple recipients
 	void sendEmail(String from, List<String> to, String subject, String body);
 
+	// send simple email to multiple recipients with cc
+	void sendEmail(String from, List<String> to, String subject, String body, String cc);
+
 	// send simple email with attachment
 	void sendEmailWithAttachment(String from, String to, String subject, String body, String fileName, byte[] pdfBytes);
+
+	// send simple email with attachment to multiple recipients
+	void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes);
+
+	// send simple email with attachment to multiple recipients with cc
+	void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes, String cc);
 
 	// bring email from database
 	List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade);
@@ -31,7 +43,16 @@ public interface EmailService {
 	// send email with attachment
 	void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName);
 
+	// send email with attachment to multiple recipients
+	void sendResultWithAttachment(String from, List<String> to, String subject, String body, byte[] fileData, String fileName);
+
 	// send email with attachments
 	void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames);
+
+	// send email with attachments to multiple recipients
+	void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames);
+
+	// send email with attachments to multiple recipients with cc
+	void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames, String cc);
 
 }

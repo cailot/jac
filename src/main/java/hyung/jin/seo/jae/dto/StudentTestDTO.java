@@ -29,11 +29,11 @@ public class StudentTestDTO{
 
 	private List<Integer> answers = new ArrayList<>();
 
-	// private String studentName;
+	private String studentName;
 
-	// private String testName;
+	private String testName;
 
-	// private String fileName;
+	private String fileName;
 
 	// additional info
 	private int volume;

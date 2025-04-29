@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import hyung.jin.seo.jae.dto.BranchDTO;
 import hyung.jin.seo.jae.dto.NoticeEmailDTO;
 import hyung.jin.seo.jae.model.NoticeEmail;
 import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.EmailService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
+import hyung.jin.seo.jae.utils.JaeUtils;
 
 @Controller
 @RequestMapping("email")
@@ -38,8 +40,10 @@ public class EmailController {
     public ResponseEntity<String> emailAnnouncement(@RequestParam String state, @RequestParam String branch, @RequestParam String grade, @RequestParam String sender, @RequestParam String subject, @RequestParam String body){
 		try{
 			// 1. get sender email address
-			String fromEmail = codeService.getBranchEmail(sender);
-			fromEmail = "braybrook@jamesancollegevic.com.au";
+			String ccEmail = codeService.getBranchEmail(sender);
+			BranchDTO branchDTO = codeService.getBranch(branch);
+			String branchName = branchDTO.getName();
+			String fromEmail = JaeUtils.removeAllSpacesAndLowerCase(branchName) + ".notify@jamesancollegevic.com.au";
 			// 2. get receipients
 			List<String> receipients = studentService.getBranchReceipents(state, branch, grade);
 			int size = receipients.size();
@@ -58,11 +62,11 @@ public class EmailController {
 			notice.setBody(body);
 			emailService.saveNoticeEmail(notice);
 			// 5. return response
-			return ResponseEntity.ok(size+"");
+			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"" + size + " emails sent successfully\"}");
 		}catch(Exception e){
-			String message = "\"Error sending email : " + e.getMessage() + "\"";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
-		}
+			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							   .body("{\"status\": \"error\", \"message\": \"" + errorMessage.replace("\"", "'") + "\"}");		}
     }
 
 	// email list for branchEmail.jsp
