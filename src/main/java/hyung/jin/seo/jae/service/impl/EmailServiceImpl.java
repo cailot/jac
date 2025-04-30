@@ -125,7 +125,6 @@ public class EmailServiceImpl implements EmailService {
                 messageHelper.addAttachment(fileName, dataSource);
             }
         };
-
         mailSender.send(preparator);
 	}
 	

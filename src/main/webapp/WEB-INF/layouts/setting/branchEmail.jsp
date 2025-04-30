@@ -215,6 +215,9 @@ function sendEmail() {
 		return;
 	}
 
+	// Show loading spinner with message
+    $('#loading-message').text('Sending email');
+    $('#loading-spinner').modal('show');
     // Perform your email sending logic here
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
@@ -228,7 +231,10 @@ function sendEmail() {
 			subject : subject,
 			body : body
 		},
-		success : function(response) {
+		success : function(response) {	
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			// Display success alert
 			if (response.status === 'success') {
                 $('#success-alert .modal-body').html(response.message);
@@ -242,6 +248,9 @@ function sendEmail() {
             }
 		},
 		error : function(xhr, status, error) {
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			console.log('Error:', error);
             console.log('Status:', status);
             console.log('Response:', xhr.responseText);
@@ -283,6 +292,9 @@ function ReSendEmail() {
 		return;
 	}
 
+	// Show loading spinner with message
+    $('#loading-message').text('Sending email');
+    $('#loading-spinner').modal('show');
 	// Perform your email sending logic here
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
@@ -297,6 +309,9 @@ function ReSendEmail() {
 			body : body
 		},
 		success : function(response) {
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			// Display success alert
 			if (response.status === 'success') {
                 $('#success-alert .modal-body').html(response.message);
@@ -310,6 +325,9 @@ function ReSendEmail() {
             }
 		},
 		error : function(xhr, status, error) {
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			console.log('Error:', error);
             console.log('Status:', status);
             console.log('Response:', xhr.responseText);

@@ -38,11 +38,17 @@ $(document).ready(function () {
 // 		Send Email
 ///////////////////////////////////////////////////////////////////////////
 function sendEmail() {
+    // Show loading spinner with message
+    $('#loading-message').text('Sending receipt email');
+    $('#loading-spinner').modal('show');
     $.ajax({
         url : '${pageContext.request.contextPath}/invoice/emailReceipt?studentId=${param.studentId}&invoiceId=${param.invoiceId}&invoiceHistoryId=${param.invoiceHistoryId}&paymentId=${param.paymentId}&branchCode=${param.branchCode}',
         type : 'GET',
         dataType: 'json',
         success : function(response) {
+            // Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
             if (response.status === 'success') {
                 $('#success-alert .modal-body').html(response.message);
                 $('#success-alert').modal('toggle');
@@ -52,6 +58,9 @@ function sendEmail() {
             }
         },
         error : function(xhr, status, error) {
+            // Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
             console.log('Error:', error);
             console.log('Status:', status);
             console.log('Response:', xhr.responseText);
