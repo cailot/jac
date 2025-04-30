@@ -169,5 +169,22 @@
             </div>
         </div>
     </div>
+
+<!-- Loading Spinner -->
+<div class="modal fade" id="loading-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content loading-spinner-content">
+			<div class="modal-body text-center p-5">
+				<div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<div id="loading-message" class="mt-4 text-primary h4"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
 </body>
 </html>
