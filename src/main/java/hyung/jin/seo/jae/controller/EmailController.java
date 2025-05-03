@@ -48,7 +48,9 @@ public class EmailController {
 			List<String> receipients = studentService.getBranchReceipents(state, branch, grade);
 			int size = receipients.size();
 			receipients = new ArrayList<String>();
+			receipients.add("cailot12345678353@naver.com");
 			receipients.add("cailot@naver.com");
+			receipients.add("cailot@naver.com.au");
 			receipients.add("jh05052008@gmail.com");
 			// 3. send email
 			emailService.sendEmail(fromEmail, receipients, subject, body);
