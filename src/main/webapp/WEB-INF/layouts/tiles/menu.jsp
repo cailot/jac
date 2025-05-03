@@ -52,12 +52,19 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>				
+				<!-- Student List submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Student List
+					</a>
+					<div class="dropdown-menu" aria-labelledby="studentListDropdown">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">Overview</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal</a>
+					</div>
+				</div>
 			</div>
 		</li>
 		<!-- Class -->
@@ -174,6 +181,8 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
 					</c:otherwise>
 				</c:choose>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>								
+
 			</div>
 		</li>
 		<c:choose>
