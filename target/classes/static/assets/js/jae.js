@@ -233,6 +233,23 @@ function headerBranch(tableElementId) {
 	});
 }
 
+// get state name
+function  stateName(value){
+	var stateText = '';
+	switch(value) {
+		case '1': stateText = 'Victoria'; break;
+		case '2': stateText = 'New South Wales'; break;
+		case '3': stateText = 'Queensland'; break;
+		case '4': stateText = 'South Australia'; break;
+		case '5': stateText = 'Tasmania'; break;
+		case '6': stateText = 'Western Australia'; break;
+		case '7': stateText = 'Northern Territory'; break;
+		case '8': stateText = 'ACT'; break;
+		default: stateText = 'All State'; 
+	}
+	return stateText;
+}
+
 // get branch name
 function  branchName(value){
 	var branchText = '';
