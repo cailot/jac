@@ -55,4 +55,7 @@ public interface EmailService {
 	// send email with attachments to multiple recipients with cc
 	void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames, String cc);
 
+	// delete email by id
+	void deleteNoticeEmail(Long id);
+
 }

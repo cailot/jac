@@ -397,6 +397,46 @@ function retrieveEmailInfo(id) {
 	});
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Delete Email
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteEmail(id) {
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search email before deleting');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/email/delete/' + id,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html(data);
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+window.showWarning = function(id) {
+    // Show the warning modal
+    $('#deleteModal').modal('show');
+    // Attach the click event handler to the "Delete" button
+    $('#agreeDelete').off('click').on('click', function() {
+        deleteEmail(id);
+        $('#deleteModal').modal('hide');
+    });
+}
+
 </script>
 
 <style>
@@ -498,6 +538,7 @@ function retrieveEmailInfo(id) {
 												</td>
 												<td class="text-center align-middle">
 													<i class="bi bi-envelope text-primary hand-cursor" data-toggle="tooltip" title="Resend" onclick="retrieveEmailInfo('${email.id}')"></i>&nbsp;
+													<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete User" onclick="showWarning('${email.id}')"></i>
 												</td>
 											</tr>
 										</c:forEach>
@@ -627,6 +668,16 @@ function retrieveEmailInfo(id) {
 	</div>
 </div>
 
+<!-- Warning Alert -->
+<div id="warning-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
+			<i class="bi bi-exclamation-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
 <!-- Validation Alert -->
 <div id="validation-alert" class="modal fade">
     <div class="modal-dialog">
@@ -635,4 +686,23 @@ function retrieveEmailInfo(id) {
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
         </div>
     </div>
+</div>
+
+<!-- Delete Dialogue -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Email Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to delete this email ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-check-circle"></i>&nbsp;Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
 </div>

@@ -349,4 +349,14 @@ public class EmailServiceImpl implements EmailService {
 		return dto;
 	}
 
+	@Override
+	@Transactional
+	public void deleteNoticeEmail(Long id) {
+		try{
+			noticeEmailRepository.deleteById(id);
+		}catch(Exception e){
+			System.out.println("No Email Found");
+		}
+	}
+
 }
