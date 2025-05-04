@@ -314,6 +314,19 @@ function  dayName(value){
 	return dayText;
 }
 
+// payment name
+function  paymentName(value){
+	var payText = '';
+	switch(value) {
+		case '0': payText = 'All'; break;
+		case 'cash': payText = 'Cash'; break;
+		case 'cheque': payText = 'Cheque'; break;
+		case 'card': payText = 'Card'; break;
+		case 'bank': payText = 'Bank'; break;
+	}
+	return payText;
+}
+
 // get day code
 function dayCode(value){
 	var day = '';

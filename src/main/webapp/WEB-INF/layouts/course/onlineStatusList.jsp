@@ -138,7 +138,7 @@ function linkToStudent(studentId) {
 <!-- List Body -->
 <div class="row container-fluid m-5">
 	<div class="modal-body">
-		<form id="studyList" method="get" action="${pageContext.request.contextPath}/onlineCheck/onlineAttend">
+		<form id="studyList" method="get" action="${pageContext.request.contextPath}/loginCheck/onlineAttend">
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-2">
@@ -204,6 +204,48 @@ function linkToStudent(studentId) {
 					</div>					
 				</div>
 			</div>
+			<!-- Search Info-->
+			<c:if test="${branchInfo != null}">
+				<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
+					<table style="width: 100%;">
+						<colgroup>
+							<col style="width: 25%;" />
+							<col style="width: 25%;" />
+							<col style="width: 25%;" />
+							<col style="width: 25%;" />
+						</colgroup>
+						<tr>
+							<td class="text-center">Branch : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(branchName('${branchInfo}'));
+								</script>
+							</span></td>
+							<td class="text-center">Grade : 
+								<span class="font-weight-bold">
+									<script type="text/javascript">
+										document.write(gradeName('${gradeInfo}'));
+									</script>
+								</span>
+							</td>
+							<td class="text-center">Year : <span class="font-weight-bold">								
+								<c:choose>
+									<c:when test="${yearInfo != null}">
+										<c:set var="nextYear" value="${yearInfo + 1}" />
+										<c:set var="yearDisplay" value="Academic Year ${fn:substring(yearInfo, 2, 4)}/${fn:substring(nextYear, 2, 4)}" />
+										<c:out value="${yearDisplay}" />
+									</c:when>
+									<c:otherwise>
+										<c:out value="Year not available" />
+									</c:otherwise>
+								</c:choose>
+							</span></td>
+							<td class="text-center">Set : <span class="font-weight-bold">
+								<c:out value="${setInfo}" />
+							</span></td>
+						</tr>
+					</table>						
+				</div>
+			</c:if>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">

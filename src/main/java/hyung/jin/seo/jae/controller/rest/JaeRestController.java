@@ -7,18 +7,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.dto.ClazzDTO;
-import hyung.jin.seo.jae.dto.TeacherDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollClazzDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollStudentDTO;
 import hyung.jin.seo.jae.dto.mobile.AttendanceRollTeacherDTO;
-import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Teacher;
 import hyung.jin.seo.jae.service.AttendanceService;

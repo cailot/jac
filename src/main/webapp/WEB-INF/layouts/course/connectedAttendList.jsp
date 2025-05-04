@@ -168,6 +168,45 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 					</div>
 				</div>
 			</div>
+
+						<!-- Search Info-->
+						<c:if test="${branchInfo != null}">
+							<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
+								<table style="width: 100%;">
+									<colgroup>
+										<col style="width: 25%;" />
+										<col style="width: 25%;" />
+										<col style="width: 25%;" />
+										<col style="width: 25%;" />
+									</colgroup>
+									<tr>
+										<td class="text-center">Branch : <span class="font-weight-bold">
+											<script type="text/javascript">
+												document.write(branchName('${branchInfo}'));
+											</script>
+										</span></td>
+										<td class="text-center">Grade : 
+											<span class="font-weight-bold">
+												<script type="text/javascript">
+													document.write(gradeName('${gradeInfo}'));
+												</script>
+											</span>
+										</td>
+										<td class="text-center">From : <span class="font-weight-bold">
+											<fmt:parseDate var="startDate" value="${startDateInfo}" pattern="yyyy-MM-dd" />
+											<fmt:formatDate value="${startDate}" pattern="dd/MM/yyyy" />
+										</span></td>
+										<td class="text-center">To : <span class="font-weight-bold">
+											<fmt:parseDate var="endDate" value="${endDateInfo}" pattern="yyyy-MM-dd" />
+											<fmt:formatDate value="${endDate}" pattern="dd/MM/yyyy" />
+										</span></td>
+									</tr>
+								</table>						
+							</div>
+						</c:if>
+
+
+
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">

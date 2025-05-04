@@ -774,8 +774,18 @@ public class InvoiceController {
 		} catch (ParseException e){
 			end = "2099-12-31";
 		}
+		// System.out.println("branch: " + branch);
+		// System.out.println("grade: " + grade);
+		// System.out.println("payment: " + payment);
+		// System.out.println("start: " + start);
+		// System.out.println("end: " + end);
 		// List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, start, end);
 		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, payment, start, end);
+		model.addAttribute(JaeConstants.BRANCH_INFO, branch);
+		model.addAttribute(JaeConstants.GRADE_INFO, grade);
+		model.addAttribute(JaeConstants.PAYMENT_INFO, payment);
+		model.addAttribute(JaeConstants.START_DATE_INFO, start);
+		model.addAttribute(JaeConstants.END_DATE_INFO, end);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "paymentListPage";
 	}
@@ -803,6 +813,11 @@ public class InvoiceController {
 		int toYear = cycleService.academicYear(toDate);
 		int toWeek = cycleService.academicWeeks(toDate);
 		List<StudentDTO> dtos = studentService.listRenewStudent(branch, grade, fromYear, fromWeek, toYear, toWeek);
+		model.addAttribute(JaeConstants.BRANCH_INFO, branch);
+		model.addAttribute(JaeConstants.GRADE_INFO, grade);
+		model.addAttribute(JaeConstants.BOOK_INFO, book);
+		model.addAttribute(JaeConstants.START_DATE_INFO, fromDate);
+		model.addAttribute(JaeConstants.END_DATE_INFO, toDate);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "renewListPage";
 	}

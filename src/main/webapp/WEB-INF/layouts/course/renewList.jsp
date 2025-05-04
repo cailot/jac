@@ -188,10 +188,10 @@ function getSelectedBook() {
 							<option value="0">All</option>
 						</select>
 					</div>
-					<div class="col-md-1">
+					<div class="col-md-2">
 						<label for="book" class="label-form">Book</label> 
 						<select class="form-control" id="book" name="book">
-							<option value="0">No Book</option>
+							<option value="0">Not Charged</option>
 							<option value="1">Vol. 1</option>
 							<option value="2">Vol. 2</option>
 							<option value="3">Vol. 3</option>
@@ -206,13 +206,57 @@ function getSelectedBook() {
 					<div class="col-md-2">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
 					</div>
-					<div class="offset-md-2"></div>
+					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 					</div>
 				</div>
 			</div>
+			<!-- Search Info-->
+			<c:if test="${branchInfo != null}">
+				<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
+					<table style="width: 100%;">
+						<colgroup>
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />							
+						</colgroup>
+						<tr>
+							<td class="text-center">Branch : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(branchName('${branchInfo}'));
+								</script>
+							</span></td>
+							<td class="text-center">Grade : 
+								<span class="font-weight-bold">
+									<script type="text/javascript">
+										document.write(gradeName('${gradeInfo}'));
+									</script>
+								</span>
+							</td>
+							<td class="text-center">Book : <span class="font-weight-bold">								
+								<c:choose>
+									<c:when test="${bookInfo == '0'}">Not Charged</c:when>
+									<c:when test="${bookInfo == '1'}">Vol. 1</c:when>
+									<c:when test="${bookInfo == '2'}">Vol. 2</c:when>
+									<c:when test="${bookInfo == '3'}">Vol. 3</c:when>
+									<c:when test="${bookInfo == '4'}">Vol. 4</c:when>
+									<c:when test="${bookInfo == '5'}">Vol. 5</c:when>
+								</c:choose>
+							</span></td>
+							<td class="text-center">From : <span class="font-weight-bold">
+								<c:out value="${startDateInfo}" />
+							</span></td>
+							<td class="text-center">To : <span class="font-weight-bold">
+								<c:out value="${endDateInfo}" />
+							</span></td>
+						</tr>
+					</table>						
+				</div>
+			</c:if>
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
