@@ -589,6 +589,69 @@ function countTablesByGroup() {
 		cursor: not-allowed;
 	}
 
+/* Add table container styles */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for all tables */
+[id^="resultTable"] table {
+    width: 100% !important;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Style for table cells */
+[id^="resultTable"] table th,
+[id^="resultTable"] table td {
+    width: 10%;
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Adjust card body padding */
+.card-body {
+    padding: 0.75rem;
+}
+
+/* Make row spacing tighter */
+.row {
+    margin-right: -5px;
+    margin-left: -5px;
+}
+
+.col-md-4, .col-md-6 {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+/* Ensure tables don't overflow their containers */
+.col-10 .row > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.col-10 .row > div > div {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Add this to your existing styles */
+[id^="resultTable"] table th,
+[id^="resultTable"] table td {
+    font-size: 12px !important;
+    padding: 4px 2px !important;
+}
+
 </style>
 
 
@@ -823,13 +886,15 @@ function countTablesByGroup() {
 																
 																
 																<!-- Dynamically set column width based on studentTest size -->
-																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose> mb-4'>
-																	<div id="resultTable${status.index}_${testStatus.index}">
-																		<!-- Generate table with result -->
-																		<script>
-																			const resultData${status.index}_${testStatus.index} = JSON.parse("${studentTest.answers}");
-																			generateTableData('${status.index}_${testStatus.index}', resultData${status.index}_${testStatus.index});
-																		</script>
+																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose>'>
+																	<div class="table-container">
+																		<div id="resultTable${status.index}_${testStatus.index}">
+																			<!-- Generate table with result -->
+																			<script>
+																				const resultData${status.index}_${testStatus.index} = JSON.parse("${studentTest.answers}");
+																				generateTableData('${status.index}_${testStatus.index}', resultData${status.index}_${testStatus.index});
+																			</script>
+																		</div>
 																	</div>
 																</div>
 																

@@ -220,11 +220,16 @@ function getSelectedBook() {
 						<colgroup>
 							<col style="width: 20%;" />
 							<col style="width: 20%;" />
-							<col style="width: 20%;" />
-							<col style="width: 20%;" />
-							<col style="width: 20%;" />							
+							<col style="width: 15%;" />
+							<col style="width: 15%;" />
+							<col style="width: 30%;" />							
 						</colgroup>
 						<tr>
+							<td class="text-center">State : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(stateName('1'));
+								</script>
+							</span></td>
 							<td class="text-center">Branch : <span class="font-weight-bold">
 								<script type="text/javascript">
 									document.write(branchName('${branchInfo}'));
@@ -247,11 +252,8 @@ function getSelectedBook() {
 									<c:when test="${bookInfo == '5'}">Vol. 5</c:when>
 								</c:choose>
 							</span></td>
-							<td class="text-center">From : <span class="font-weight-bold">
-								<c:out value="${startDateInfo}" />
-							</span></td>
-							<td class="text-center">To : <span class="font-weight-bold">
-								<c:out value="${endDateInfo}" />
+							<td class="text-center"><span class="font-weight-bold">
+								<c:out value="${startDateInfo}" /> ~ <c:out value="${endDateInfo}" />
 							</span></td>
 						</tr>
 					</table>						

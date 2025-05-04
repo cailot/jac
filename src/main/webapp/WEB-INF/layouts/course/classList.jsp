@@ -496,12 +496,18 @@ function deleteClass(id) {
 				<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
 					<table style="width: 100%;">
 						<colgroup>
-							<col style="width: 25%;" />
-							<col style="width: 25%;" />
-							<col style="width: 25%;" />
-							<col style="width: 25%;" />
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 10%;" />
+							<col style="width: 20%;" />
+							<col style="width: 30%;" />							
 						</colgroup>
 						<tr>
+							<td class="text-center">State : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(stateName('1'));
+								</script>
+							</span></td>
 							<td class="text-center">Branch : <span class="font-weight-bold">
 								<script type="text/javascript">
 									document.write(branchName('${branchInfo}'));

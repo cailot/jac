@@ -174,12 +174,17 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
 								<table style="width: 100%;">
 									<colgroup>
-										<col style="width: 25%;" />
-										<col style="width: 25%;" />
-										<col style="width: 25%;" />
-										<col style="width: 25%;" />
+										<col style="width: 20%;" />
+										<col style="width: 20%;" />
+										<col style="width: 20%;" />
+										<col style="width: 30%;" />
 									</colgroup>
 									<tr>
+										<td class="text-center">State : <span class="font-weight-bold">
+											<script type="text/javascript">
+												document.write(stateName('1'));
+											</script>
+										</span></td>
 										<td class="text-center">Branch : <span class="font-weight-bold">
 											<script type="text/javascript">
 												document.write(branchName('${branchInfo}'));
@@ -192,12 +197,9 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 												</script>
 											</span>
 										</td>
-										<td class="text-center">From : <span class="font-weight-bold">
+										<td class="text-center"><span class="font-weight-bold">
 											<fmt:parseDate var="startDate" value="${startDateInfo}" pattern="yyyy-MM-dd" />
-											<fmt:formatDate value="${startDate}" pattern="dd/MM/yyyy" />
-										</span></td>
-										<td class="text-center">To : <span class="font-weight-bold">
-											<fmt:parseDate var="endDate" value="${endDateInfo}" pattern="yyyy-MM-dd" />
+											<fmt:formatDate value="${startDate}" pattern="dd/MM/yyyy" /> ~	<fmt:parseDate var="endDate" value="${endDateInfo}" pattern="yyyy-MM-dd" />
 											<fmt:formatDate value="${endDate}" pattern="dd/MM/yyyy" />
 										</span></td>
 									</tr>
