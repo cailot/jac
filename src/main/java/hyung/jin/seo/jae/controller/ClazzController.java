@@ -108,6 +108,11 @@ public class ClazzController {
 		}else{
 			dtos = clazzService.listClazz(state, branch, grade, year);
 		}
+
+		model.addAttribute(JaeConstants.BRANCH_INFO, branch);
+		model.addAttribute(JaeConstants.GRADE_INFO, grade);
+		model.addAttribute(JaeConstants.YEAR_INFO, year);
+		model.addAttribute(JaeConstants.CLASS_TYPE_INFO, type);
 		model.addAttribute(JaeConstants.CLASS_LIST, dtos);
 		return "classListPage";
 	}

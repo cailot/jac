@@ -221,6 +221,22 @@ public interface JaeConstants {
 
 	String ATTENDANCE_INFO = "attendanceInfo";
 
+	String GRADE_INFO = "gradeInfo";
+
+	String YEAR_INFO = "yearInfo";
+
+	String CLASS_TYPE_INFO = "classTypeInfo";
+
+	String BOOK_INFO = "bookInfo";
+
+	String PAYMENT_INFO = "paymentInfo";
+
+	String START_DATE_INFO = "startDateInfo";
+
+	String END_DATE_INFO = "endDateInfo";
+
+	String SET_INFO = "setInfo";
+
 	String TYPE_USER = "user";
 
 	String TYPE_HEADER = "header";
