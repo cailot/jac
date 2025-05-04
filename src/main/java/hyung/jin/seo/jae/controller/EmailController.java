@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -89,6 +90,19 @@ public class EmailController {
 		NoticeEmailDTO dto = emailService.getNoticeEmail(id);
 		if(dto==null) return new NoticeEmailDTO(); // return empty if not found
 		return dto;
+	}
+
+	// remove user by username
+	@PutMapping("/delete/{id}")
+	@ResponseBody
+	public ResponseEntity<String> deleteEmail(@PathVariable Long id) {
+		try{
+			emailService.deleteNoticeEmail(id);
+			return ResponseEntity.ok("Email delete success");				
+		}catch(Exception e){
+			String message = "Error deleting branch: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
 	}
 
 }
