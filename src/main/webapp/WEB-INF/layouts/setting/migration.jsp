@@ -179,8 +179,8 @@ function updateFileName(input) {
 	<!-- Search section -->
 	<div class="row m-3 pt-5 justify-content-center">
 		<div class="upload-section col-md-8">
-	    <h2 class="text-center">Upload CSV File</h2>
-	    <form method="post" action="${pageContext.request.contextPath}/batch/upload" enctype="multipart/form-data">
+	    <h2 class="text-center">Upload CSV File For Student Migration</h2>
+	    <form method="post" action="${pageContext.request.contextPath}/migration/student" enctype="multipart/form-data">
 	        <div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->

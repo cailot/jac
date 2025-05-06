@@ -869,7 +869,8 @@ function countTablesByGroup() {
 															</span>
 														</div>
 														<div>
-															<strong>Name:</strong> <c:out value="${omrSheet.studentTest[0].studentName}" />
+															<strong>Name:</strong> 
+															<c:out value="${omrSheet.studentTest[0].studentName}" />											
 														</div>														
 														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
 													</div>
