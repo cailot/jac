@@ -253,15 +253,24 @@ public class JaeController {
 		return "invoiceStatPage";
 	}
 
-	@GetMapping("/migration")
+	@GetMapping("/migrationStudent")
 	public String studentMigration(HttpSession session) {
-		return "migrationPage";
+		return "migrationStudentPage";
+	}
+
+	@GetMapping("/migrationEnrol")
+	public String enrolmentMigration(HttpSession session) {
+		return "migrationEnrolPage";
+	}
+
+	@GetMapping("/migrationInvoice")
+	public String invoiceMigration(HttpSession session) {
+		return "migrationInvoicePage";
 	}
 
 	@GetMapping("/batch")
 	public String batchProcess(HttpSession session) {
 		return "batchPage";
 	}
-
 
 }

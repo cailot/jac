@@ -91,4 +91,7 @@ public interface StudentService {
 
 	// get branch where student is registered
 	String getBranch(Long id);
+
+	// Add student for migration (bypasses ID generator)
+	Student addStudentMigration(Student student);
 }

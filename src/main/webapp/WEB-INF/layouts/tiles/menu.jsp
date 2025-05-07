@@ -174,7 +174,17 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
-						<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
+						<!-- Migration submenu -->
+						<div class="dropdown-submenu">
+							<a class="dropdown-item" href="#" id="migrationDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								Student Migration
+							</a>
+							<div class="dropdown-menu" aria-labelledby="migrationDropdown">
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationStudent">Student</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationInvoice">Invoice</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationEnrol">Enrolment</a>
+							</div>
+						</div>
 					</c:when>
 					<c:otherwise>
 						<!-- Content for branch -->
