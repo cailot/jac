@@ -112,4 +112,12 @@ public class Student {
    	})
     private Set<StudentTest> studentTests = new HashSet<>();
 
+    public void setMemo(String memo) {
+        if (memo != null && memo.length() > 1000) {
+            this.memo = memo.substring(0, 1000);
+        } else {
+            this.memo = memo;
+        }
+    }
+
 }

@@ -394,4 +394,28 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         // get branch by student id
         @Query(value = "SELECT s.branch FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findBranchById(Long id);
+
+        @Modifying
+        @Query(value = "INSERT INTO Student (id, firstName, lastName, password, active, grade, contactNo1, contactNo2, email1, email2, relation1, relation2, address, state, branch, memo, gender, registerDate, endDate) VALUES (:id, :firstName, :lastName, :password, :active, :grade, :contactNo1, :contactNo2, :email1, :email2, :relation1, :relation2, :address, :state, :branch, :memo, :gender, :registerDate, :endDate)", nativeQuery = true)
+        void insertStudentWithId(
+            @Param("id") Long id,
+            @Param("firstName") String firstName,
+            @Param("lastName") String lastName,
+            @Param("password") String password,
+            @Param("active") Integer active,
+            @Param("grade") String grade,
+            @Param("contactNo1") String contactNo1,
+            @Param("contactNo2") String contactNo2,
+            @Param("email1") String email1,
+            @Param("email2") String email2,
+            @Param("relation1") String relation1,
+            @Param("relation2") String relation2,
+            @Param("address") String address,
+            @Param("state") String state,
+            @Param("branch") String branch,
+            @Param("memo") String memo,
+            @Param("gender") String gender,
+            @Param("registerDate") LocalDate registerDate,
+            @Param("endDate") LocalDate endDate
+        );
 }

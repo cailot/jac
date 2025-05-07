@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,55 @@ public class MigrationController {
 	@Autowired
 	private StudentService studentService;
 
+	// Make the class public static and add proper getters/setters
+	public static class MigrationError {
+		private String studentId;
+		private int lineNumber;
+		private String errorMessage;
+		private String fieldName;
+
+		public MigrationError(String studentId, int lineNumber, String errorMessage, String fieldName) {
+			this.studentId = studentId;
+			this.lineNumber = lineNumber;
+			this.errorMessage = errorMessage;
+			this.fieldName = fieldName;
+		}
+
+		// Add proper getters following JavaBean convention
+		public String getStudentId() { 
+			return studentId; 
+		}
+
+		public int getLineNumber() { 
+			return lineNumber; 
+		}
+
+		public String getErrorMessage() { 
+			return errorMessage; 
+		}
+
+		public String getFieldName() { 
+			return fieldName; 
+		}
+
+		// Add setters in case needed
+		public void setStudentId(String studentId) {
+			this.studentId = studentId;
+		}
+
+		public void setLineNumber(int lineNumber) {
+			this.lineNumber = lineNumber;
+		}
+
+		public void setErrorMessage(String errorMessage) {
+			this.errorMessage = errorMessage;
+		}
+
+		public void setFieldName(String fieldName) {
+			this.fieldName = fieldName;
+		}
+	}
+
 	// migrate student
 	@RequestMapping(value = "/student", method = {RequestMethod.POST})
 	public String migrateStudents(@RequestParam(value = "file", required = false) MultipartFile file, Model model) {
@@ -37,26 +88,22 @@ public class MigrationController {
 			String originalFilename = file.getOriginalFilename();
 			if (originalFilename != null) {
 				String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-				if ("csv".equalsIgnoreCase(fileExtension)) {
-					// File extension is CSV, proceed with further processing
-				} else {
-					// Invalid file extension
+				if (!"csv".equalsIgnoreCase(fileExtension)) {
 					model.addAttribute(JaeConstants.ERROR, "Invalid file format. Please upload a CSV file.");
 					return "batchHpiiPage";
 				}
 			} else {
-				// File name not found
 				model.addAttribute(JaeConstants.ERROR, "File name not found. Please try again.");
 				return "batchHpiiPage";
 			}
 		} else {
-			// No file uploaded
 			model.addAttribute(JaeConstants.ERROR, "No file uploaded. Please select a file to upload.");
 			return "batchHpiiPage";
 		}
 		
 		// 2. process student migration
 		List<StudentDTO> dtos = new ArrayList<StudentDTO>();
+		List<MigrationError> failedRecords = new ArrayList<>(); // Changed to use MigrationError class
 		int lineCount = 0;
 		DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
 			DateTimeFormatter.ofPattern("yyyy-MM-dd"),
@@ -64,43 +111,56 @@ public class MigrationController {
 			DateTimeFormatter.ofPattern("MM/dd/yyyy")
 		};
 		
-		if (file != null && !file.isEmpty()) {
-			try {
-				// Create a BufferedReader to read the lines from the uploaded CSV file
-				BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					lineCount++;
-					String[] columns = line.split(",");
+		try {
+			// Create a CSVReader with proper handling of quoted fields
+			CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
+				.withSkipLines(1) // Skip header
+				.build();
+			
+			String[] columns;
+			while ((columns = reader.readNext()) != null) {
+				lineCount++;
+				String oldStudentId = ""; // Store original ID for error reporting
+				
+				try {
+					// Transform the Student_ID from MS SQL format to MySQL format
+					oldStudentId = columns[0].trim(); // Assuming Student_ID is the first column
+					String newStudentId = transformStudentId(oldStudentId);
 					
-					if(lineCount == 1) continue; // skip header in csv
+					// Create Student with transformed ID
+					Student std = new Student();
+					std.setId(Long.parseLong(newStudentId));
+					
+					// Map other fields from CSV with validation
+					try {
+						if(StringUtils.isNotBlank(columns[5])) std.setFirstName(columns[5].trim());
+						if(StringUtils.isNotBlank(columns[6])) std.setLastName(columns[6].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in name fields: " + e.getMessage());
+					}
+					
+					// Set default password
+					String password = JaeConstants.DEFAULT_PASSWORD;
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					String encodedPassword = passwordEncoder.encode(password);
+					std.setPassword(encodedPassword);
 					
 					try {
-						// Transform the Student_ID from MS SQL format to MySQL format
-						String oldStudentId = columns[0].trim(); // Assuming Student_ID is the first column
-						String newStudentId = transformStudentId(oldStudentId);
-						
-						// Create Student with transformed ID
-						Student std = new Student();
-						std.setId(Long.parseLong(newStudentId));
-						
-						// Map other fields from CSV
-						if(StringUtils.isNotBlank(columns[5])) std.setFirstName(columns[5].trim()); // first name
-						if(StringUtils.isNotBlank(columns[6])) std.setLastName(columns[6].trim()); // last name
-						
-						// Set default password
-						String password = JaeConstants.DEFAULT_PASSWORD;
-						BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-						String encodedPassword = passwordEncoder.encode(password);
-						std.setPassword(encodedPassword);
-						
 						// Map grade with transformation
 						String originalGrade = StringUtils.isNotBlank(columns[8]) ? columns[8].trim() : "";
 						std.setGrade(mapGrade(originalGrade));
-						
-						if(StringUtils.isNotBlank(columns[11])) std.setBranch(columns[11].trim()); // branch
-						
-						// Parse dates with multiple formats
+					} catch (Exception e) {
+						throw new Exception("Error in grade field: " + e.getMessage());
+					}
+					
+					try {
+						if(StringUtils.isNotBlank(columns[11])) std.setBranch(columns[11].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in branch field: " + e.getMessage());
+					}
+					
+					try {
+						// Parse dates
 						if(StringUtils.isNotBlank(columns[12])) {
 							LocalDate registerDate = parseDate(columns[12].trim(), dateFormatters);
 							if(registerDate != null) {
@@ -113,43 +173,102 @@ public class MigrationController {
 								std.setEndDate(endDate);
 							}
 						}
-						
-						// Set active status
-						if(StringUtils.isEmpty(columns[13])) {
-							std.setActive(1); // active
-						}else{
-							std.setActive(0); // inactive
-						}
-						
+					} catch (Exception e) {
+						throw new Exception("Error in date fields: " + e.getMessage());
+					}
+					
+					// Set active status
+					if(StringUtils.isEmpty(columns[13])) {
+						std.setActive(1); // active
+					} else {
+						std.setActive(0); // inactive
+					}
+					
+					try {
 						// Handle email addresses
 						String originalEmail = StringUtils.isNotBlank(columns[15]) ? columns[15].trim() : "";
 						List<String> splitEmails = splitEmailAddresses(originalEmail);
-						std.setEmail1(splitEmails.get(0)); // email1
-						if(splitEmails.size() > 1) std.setEmail2(splitEmails.get(1)); // email2
-						
-						// Map remaining fields
-						if(StringUtils.isNotBlank(columns[16])) std.setContactNo1(columns[16].trim()); // contactNo1
-						if(StringUtils.isNotBlank(columns[17])) std.setContactNo2(columns[17].trim()); // contactNo2
-						if(StringUtils.isNotBlank(columns[18])) std.setAddress(columns[18].trim()); // address
-						if(StringUtils.isNotBlank(columns[19])) std.setMemo(columns[19].trim()); // memo
-						
-						// Set default state
-						std.setState(JaeConstants.VICTORIA_CODE);
-						
-						// register Student	
-						std = studentService.addStudent(std);
+						std.setEmail1(splitEmails.get(0));
+						if(splitEmails.size() > 1) std.setEmail2(splitEmails.get(1));
+					} catch (Exception e) {
+						throw new Exception("Error in email fields: " + e.getMessage());
+					}
+					
+					try {
+						// Map contact numbers
+						if(StringUtils.isNotBlank(columns[16])) std.setContactNo1(columns[16].trim());
+						if(StringUtils.isNotBlank(columns[17])) std.setContactNo2(columns[17].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in contact number fields: " + e.getMessage());
+					}
+					
+					try {
+						// Handle address
+						if(StringUtils.isNotBlank(columns[18])) {
+							String fullAddress = columns[18].trim();
+							// System.out.println("Setting address: " + fullAddress);
+							std.setAddress(fullAddress);
+						}
+					} catch (Exception e) {
+						throw new Exception("Error in address field: " + e.getMessage());
+					}
+					
+					try {
+						if(StringUtils.isNotBlank(columns[19])) std.setMemo(columns[19].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in memo field: " + e.getMessage());
+					}
+					
+					// Set default state
+					std.setState(JaeConstants.VICTORIA_CODE);
+					
+					// register Student	
+					try {
+						std = studentService.addStudentMigration(std);
 						dtos.add(new StudentDTO(std));
 					} catch (Exception e) {
-						// Log the error and continue with next record
-						System.err.println("Error processing record at line " + lineCount + ": " + e.getMessage());
+						String errorMsg = e.getMessage();
+						if (errorMsg.contains("Duplicate entry") && errorMsg.contains("PRIMARY")) {
+							errorMsg = "Student ID " + std.getId() + " already exists in the database";
+							failedRecords.add(new MigrationError(oldStudentId, lineCount, errorMsg, "Student ID (Duplicate)"));
+						} else {
+							failedRecords.add(new MigrationError(oldStudentId, lineCount, "Database error: " + errorMsg, "Database"));
+						}
 						continue;
 					}
+				} catch (Exception e) {
+					// Add detailed error information
+					String errorField = "Unknown";
+					String errorMsg = e.getMessage();
+					
+					// Determine which field caused the error
+					if (errorMsg.contains("name")) errorField = "Name";
+					else if (errorMsg.contains("grade")) errorField = "Grade";
+					else if (errorMsg.contains("date")) errorField = "Date";
+					else if (errorMsg.contains("email")) errorField = "Email";
+					else if (errorMsg.contains("address")) errorField = "Address";
+					else if (errorMsg.contains("contact")) errorField = "Contact";
+					else if (errorMsg.contains("PRIMARY") || errorMsg.contains("Duplicate entry")) errorField = "Student ID (Duplicate)";
+					
+					failedRecords.add(new MigrationError(oldStudentId, lineCount, errorMsg, errorField));
+					continue;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				model.addAttribute(JaeConstants.ERROR, "Error processing file: " + e.getMessage());
-				return "batchHpiiPage";
 			}
+			reader.close();
+
+			// Add migration results to the model
+			model.addAttribute("totalProcessed", lineCount);
+			model.addAttribute("successCount", dtos.size());
+			model.addAttribute("failureCount", failedRecords.size());
+			model.addAttribute("failedRecords", failedRecords);
+			if (failedRecords.size() > 0) {
+				model.addAttribute("migrationErrors", "true");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute(JaeConstants.ERROR, "Error processing file: " + e.getMessage());
+			return "batchHpiiPage";
 		}
 		
 		model.addAttribute(JaeConstants.BATCH_LIST, dtos);
@@ -289,5 +408,203 @@ public class MigrationController {
 				return "1";					
 		}		
 	}
+
+
+
+	// migrate invoice
+	@RequestMapping(value = "/invoice", method = {RequestMethod.POST})
+	public String migrateInvoice(@RequestParam(value = "file", required = false) MultipartFile file, Model model) {
+		// 1. validate uploaded file	
+		if (file != null && !file.isEmpty()) {
+			String originalFilename = file.getOriginalFilename();
+			if (originalFilename != null) {
+				String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+				if (!"csv".equalsIgnoreCase(fileExtension)) {
+					model.addAttribute(JaeConstants.ERROR, "Invalid file format. Please upload a CSV file.");
+					return "batchHpiiPage";
+				}
+			} else {
+				model.addAttribute(JaeConstants.ERROR, "File name not found. Please try again.");
+				return "batchHpiiPage";
+			}
+		} else {
+			model.addAttribute(JaeConstants.ERROR, "No file uploaded. Please select a file to upload.");
+			return "batchHpiiPage";
+		}
+		
+		// 2. process student migration
+		List<StudentDTO> dtos = new ArrayList<StudentDTO>();
+		List<MigrationError> failedRecords = new ArrayList<>(); // Changed to use MigrationError class
+		int lineCount = 0;
+		DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
+			DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+			DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+			DateTimeFormatter.ofPattern("MM/dd/yyyy")
+		};
+		
+		try {
+			// Create a CSVReader with proper handling of quoted fields
+			CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
+				.withSkipLines(1) // Skip header
+				.build();
+			
+			String[] columns;
+			while ((columns = reader.readNext()) != null) {
+				lineCount++;
+				String oldStudentId = ""; // Store original ID for error reporting
+				
+				try {
+					// Transform the Student_ID from MS SQL format to MySQL format
+					oldStudentId = columns[0].trim(); // Assuming Student_ID is the first column
+					String newStudentId = transformStudentId(oldStudentId);
+					
+					// Create Student with transformed ID
+					Student std = new Student();
+					std.setId(Long.parseLong(newStudentId));
+					
+					// Map other fields from CSV with validation
+					try {
+						if(StringUtils.isNotBlank(columns[5])) std.setFirstName(columns[5].trim());
+						if(StringUtils.isNotBlank(columns[6])) std.setLastName(columns[6].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in name fields: " + e.getMessage());
+					}
+					
+					// Set default password
+					String password = JaeConstants.DEFAULT_PASSWORD;
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					String encodedPassword = passwordEncoder.encode(password);
+					std.setPassword(encodedPassword);
+					
+					try {
+						// Map grade with transformation
+						String originalGrade = StringUtils.isNotBlank(columns[8]) ? columns[8].trim() : "";
+						std.setGrade(mapGrade(originalGrade));
+					} catch (Exception e) {
+						throw new Exception("Error in grade field: " + e.getMessage());
+					}
+					
+					try {
+						if(StringUtils.isNotBlank(columns[11])) std.setBranch(columns[11].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in branch field: " + e.getMessage());
+					}
+					
+					try {
+						// Parse dates
+						if(StringUtils.isNotBlank(columns[12])) {
+							LocalDate registerDate = parseDate(columns[12].trim(), dateFormatters);
+							if(registerDate != null) {
+								std.setRegisterDate(registerDate);
+							}
+						}
+						if(StringUtils.isNotBlank(columns[13])) {
+							LocalDate endDate = parseDate(columns[13].trim(), dateFormatters);
+							if(endDate != null) {
+								std.setEndDate(endDate);
+							}
+						}
+					} catch (Exception e) {
+						throw new Exception("Error in date fields: " + e.getMessage());
+					}
+					
+					// Set active status
+					if(StringUtils.isEmpty(columns[13])) {
+						std.setActive(1); // active
+					} else {
+						std.setActive(0); // inactive
+					}
+					
+					try {
+						// Handle email addresses
+						String originalEmail = StringUtils.isNotBlank(columns[15]) ? columns[15].trim() : "";
+						List<String> splitEmails = splitEmailAddresses(originalEmail);
+						std.setEmail1(splitEmails.get(0));
+						if(splitEmails.size() > 1) std.setEmail2(splitEmails.get(1));
+					} catch (Exception e) {
+						throw new Exception("Error in email fields: " + e.getMessage());
+					}
+					
+					try {
+						// Map contact numbers
+						if(StringUtils.isNotBlank(columns[16])) std.setContactNo1(columns[16].trim());
+						if(StringUtils.isNotBlank(columns[17])) std.setContactNo2(columns[17].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in contact number fields: " + e.getMessage());
+					}
+					
+					try {
+						// Handle address
+						if(StringUtils.isNotBlank(columns[18])) {
+							String fullAddress = columns[18].trim();
+							// System.out.println("Setting address: " + fullAddress);
+							std.setAddress(fullAddress);
+						}
+					} catch (Exception e) {
+						throw new Exception("Error in address field: " + e.getMessage());
+					}
+					
+					try {
+						if(StringUtils.isNotBlank(columns[19])) std.setMemo(columns[19].trim());
+					} catch (Exception e) {
+						throw new Exception("Error in memo field: " + e.getMessage());
+					}
+					
+					// Set default state
+					std.setState(JaeConstants.VICTORIA_CODE);
+					
+					// register Student	
+					try {
+						std = studentService.addStudentMigration(std);
+						dtos.add(new StudentDTO(std));
+					} catch (Exception e) {
+						String errorMsg = e.getMessage();
+						if (errorMsg.contains("Duplicate entry") && errorMsg.contains("PRIMARY")) {
+							errorMsg = "Student ID " + std.getId() + " already exists in the database";
+							failedRecords.add(new MigrationError(oldStudentId, lineCount, errorMsg, "Student ID (Duplicate)"));
+						} else {
+							failedRecords.add(new MigrationError(oldStudentId, lineCount, "Database error: " + errorMsg, "Database"));
+						}
+						continue;
+					}
+				} catch (Exception e) {
+					// Add detailed error information
+					String errorField = "Unknown";
+					String errorMsg = e.getMessage();
+					
+					// Determine which field caused the error
+					if (errorMsg.contains("name")) errorField = "Name";
+					else if (errorMsg.contains("grade")) errorField = "Grade";
+					else if (errorMsg.contains("date")) errorField = "Date";
+					else if (errorMsg.contains("email")) errorField = "Email";
+					else if (errorMsg.contains("address")) errorField = "Address";
+					else if (errorMsg.contains("contact")) errorField = "Contact";
+					else if (errorMsg.contains("PRIMARY") || errorMsg.contains("Duplicate entry")) errorField = "Student ID (Duplicate)";
+					
+					failedRecords.add(new MigrationError(oldStudentId, lineCount, errorMsg, errorField));
+					continue;
+				}
+			}
+			reader.close();
+
+			// Add migration results to the model
+			model.addAttribute("totalProcessed", lineCount);
+			model.addAttribute("successCount", dtos.size());
+			model.addAttribute("failureCount", failedRecords.size());
+			model.addAttribute("failedRecords", failedRecords);
+			if (failedRecords.size() > 0) {
+				model.addAttribute("migrationErrors", "true");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute(JaeConstants.ERROR, "Error processing file: " + e.getMessage());
+			return "batchHpiiPage";
+		}
+		
+		model.addAttribute(JaeConstants.BATCH_LIST, dtos);
+		return "migrationPage";
+	}
+	
 
 }

@@ -471,4 +471,38 @@ public class StudentServiceImpl implements StudentService {
 		return branch;
 	}
 
+	@Override
+	@Transactional
+	public Student addStudentMigration(Student student) {
+		try {
+			// Use native query to insert the student with the specified ID
+			studentRepository.insertStudentWithId(
+				student.getId(),
+				student.getFirstName(),
+				student.getLastName(),
+				student.getPassword(),
+				student.getActive(),
+				student.getGrade(),
+				student.getContactNo1(),
+				student.getContactNo2(),
+				student.getEmail1(),
+				student.getEmail2(),
+				student.getRelation1(),
+				student.getRelation2(),
+				student.getAddress(),
+				student.getState(),
+				student.getBranch(),
+				student.getMemo(),
+				student.getGender(),
+				student.getRegisterDate(),
+				student.getEndDate()
+			);
+			
+			// Fetch and return the newly inserted student
+			return studentRepository.findById(student.getId()).orElse(null);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to insert student during migration: " + e.getMessage(), e);
+		}
+	}
+
 }
