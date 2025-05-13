@@ -34,4 +34,10 @@ public interface PaymentService {
 	// get total paid by Payment
 	double getTotalPaidById(Long id, Long invoiceId);
 
+	// get oldest payment method for migrate
+	String methodOldestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId);
+
+	// get latest total amount for migrate
+	double totalAmountLatestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId);
+
 }

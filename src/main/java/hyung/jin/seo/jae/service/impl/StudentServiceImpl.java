@@ -88,7 +88,7 @@ public class StudentServiceImpl implements StudentService {
 		try{
 			std = studentRepository.findById(id).get();
 		}catch(Exception e){
-			System.out.println("No student found");
+			System.out.println("No student found by id: " + id);
 		}
 		// studentRepository.findById(id).get();	
 		return std;

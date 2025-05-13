@@ -49,4 +49,6 @@ public interface InvoiceService {
 	// check Invoice any paid or not by Id
 	double getPaidAmount(Long id);
 
+	// add Invoice with specific ID for migration
+	Invoice addInvoiceMigration(Invoice invoice);
 }

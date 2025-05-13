@@ -1,9 +1,12 @@
 package hyung.jin.seo.jae.repository;
 
 import java.util.List;
+import java.time.LocalDate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 
 import hyung.jin.seo.jae.dto.InvoiceDTO;
 import hyung.jin.seo.jae.model.Invoice;
@@ -41,5 +44,18 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 	// return invoice paid amount by id
 	@Query("SELECT i.paidAmount FROM Invoice i WHERE i.id = ?1")
 	double getInvoicePaidAmount(long id);
+
+	@Modifying
+	@Query(value = "INSERT INTO Invoice (id, credit, discount, amount, paidAmount, registerDate, paymentDate, info) VALUES (:id, :credit, :discount, :amount, :paidAmount, :registerDate, :paymentDate, :info)", nativeQuery = true)
+	void insertInvoiceWithId(
+		@Param("id") Long id,
+		@Param("credit") Integer credit,
+		@Param("discount") Double discount,
+		@Param("amount") Double amount,
+		@Param("paidAmount") Double paidAmount,
+		@Param("registerDate") LocalDate registerDate,
+		@Param("paymentDate") LocalDate paymentDate,
+		@Param("info") String info
+	);
 
 }

@@ -129,4 +129,26 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		return paid;
 	}
+
+	@Override
+	public String methodOldestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId) {
+		String method = "";
+		try{
+			method = paymentRepository.methodOldestPaymentByInvoiceIdAndInvoiceHistoryId(invoiceId, invoiceHistoryId);
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return method;
+	}
+
+	@Override
+	public double totalAmountLatestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId) {
+		double total = 0.0;
+		try{
+			total = paymentRepository.totalAmountLatestPaymentByInvoiceIdAndInvoiceHistoryId(invoiceId, invoiceHistoryId);
+		}catch(Exception e){
+			System.out.println("No payment found");
+		}
+		return total;
+	}
 }

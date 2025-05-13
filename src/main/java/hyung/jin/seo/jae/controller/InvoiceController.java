@@ -306,16 +306,16 @@ public class InvoiceController {
 		}
 		// convert to LocalDate
 		payment.setRegisterDate(LocalDate.parse(paymentRegisterDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		Payment paid = paymentService.addPayment(payment);	
+		payment.setInvoice(invoice);
+		payment.setInvoiceHistory(history);
+		paymentService.addPayment(payment);	
 		
 		// 8. update Invoice
 		invoice.setPaidAmount(paidAmount + invoice.getPaidAmount());
-		invoice.addPayment(paid);
 		invoice.setPaymentDate(LocalDate.now());
 		// 9. update InvoiceHistory
 		history.setPaidAmount(invoice.getPaidAmount());
 		history.setAmount(invoice.getAmount());
-		history.addPayment(payment);
 		invoiceService.updateInvoice(invoice, invoId);
 		// update InvoiceHistory is done automatically
 

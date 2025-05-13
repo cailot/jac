@@ -114,7 +114,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice getInvoice(Long id) {
-		return invoiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Enrolment not found"));
+		Invoice invoice = null;
+		try {
+			invoice = invoiceRepository.findById(id).orElse(null);
+		} catch (Exception e) {
+			System.out.println("Error retrieving invoice: " + e.getMessage());
+		}
+		return invoice;
 	}
 
 	@Override
@@ -169,5 +175,28 @@ public class InvoiceServiceImpl implements InvoiceService {
 			System.out.println("No invoice found");
 		}
 		return balance;
+	}
+
+	@Override
+	@Transactional
+	public Invoice addInvoiceMigration(Invoice invoice) {
+		try {
+			// Use native query to insert the invoice with the specified ID
+			invoiceRepository.insertInvoiceWithId(
+				invoice.getId(),
+				invoice.getCredit(),
+				invoice.getDiscount(),
+				invoice.getAmount(),
+				invoice.getPaidAmount(),
+				invoice.getRegisterDate(),
+				invoice.getPaymentDate(),
+				invoice.getInfo()
+			);
+			
+			// Fetch and return the newly inserted invoice
+			return invoiceRepository.findById(invoice.getId()).orElse(null);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to insert invoice during migration: " + e.getMessage(), e);
+		}
 	}
 }
