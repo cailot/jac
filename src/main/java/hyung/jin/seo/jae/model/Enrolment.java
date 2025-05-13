@@ -55,7 +55,7 @@ public class Enrolment{ // bridge table between Student & Class
 	@Column
 	private boolean cancelled;
 
-	@Column(length = 100)
+	@Column(length = 200)
     private String cancellationReason;
 
 	@Column

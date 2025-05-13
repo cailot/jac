@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import java.time.LocalDate;
 
 @Getter
@@ -41,5 +43,13 @@ public class Payment {
     
     // @CreationTimestamp
     private LocalDate registerDate;
+
+    @ManyToOne
+    @JoinColumn(name = "invoiceId")
+    private Invoice invoice;
+
+    @ManyToOne
+    @JoinColumn(name = "invoiceHistoryId")
+    private InvoiceHistory invoiceHistory;
 	
 }

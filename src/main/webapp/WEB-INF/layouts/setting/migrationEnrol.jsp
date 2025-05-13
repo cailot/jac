@@ -89,6 +89,7 @@ function updateFileName(input) {
 }
 
 #hpiiTable {
+    table-layout: fixed;
     width: 100% !important;
     margin: 0;
     border-collapse: collapse;
@@ -371,8 +372,8 @@ label {
 	<!-- Search section -->
 	<div class="row justify-content-center">
 		<div class="upload-section col-md-8">
-	    <h2 class="text-center">Upload CSV File For Invoice Migration</h2>
-	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/invoice" enctype="multipart/form-data">
+	    <h2 class="text-center">Upload CSV File For Enrolment Migration</h2>
+	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/enrol" enctype="multipart/form-data">
 	        <div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->
@@ -435,7 +436,7 @@ label {
 						<table id="failureTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Invoice ID</th>
+									<th>Enrolment ID</th>
 									<th>Line #</th>
 									<th>Field</th>
 									<th>Error Message</th>
@@ -459,34 +460,30 @@ label {
 			<!-- Successfully Migrated Records -->
 			<c:if test="${not empty batchList}">
 				<div class="mt-4">
-					<h4 class="text-success"><i class="fa fa-check-circle"></i> Successfully Migrated Invoices</h4>
+					<h4 class="text-success"><i class="fa fa-check-circle"></i> Successfully Migrated Records</h4>
 					<div class="stats">
 						<table id="hpiiTable" class="display w-100">
 							<thead>
 								<tr>
-									<th>ID</th>
-									<th>Amount</th>
-									<th>Credit</th>
-									<th>Discount</th>
-									<th>Paid Amount</th>
-									<th>Register Date</th>
-									<th>Payment Date</th>
-									<th>Info</th>
+									<th>Student ID</th>
+									<th>Invoice ID</th>
+									<th>Invoice History ID</th>
+									<th>Price</th>
+									<th>Name</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${batchList}" var="record">
 									<tr>
-										<c:if test="${not empty record}">
-											<td title="<c:out value='${record.id}'/>"><c:out value="${record.id}" /></td>
-											<td title="<c:out value='${record.amount}'/>"><c:out value="${record.amount}" /></td>
-											<td title="<c:out value='${record.credit}'/>"><c:out value="${record.credit}" /></td>
-											<td title="<c:out value='${record.discount}'/>"><c:out value="${record.discount}" /></td>
-											<td title="<c:out value='${record.paidAmount}'/>"><c:out value="${record.paidAmount}" /></td>
-											<td title="<c:out value='${record.registerDate}'/>"><c:out value="${record.registerDate}" /></td>
-											<td title="<c:out value='${record.paymentDate}'/>"><c:out value="${record.paymentDate}" /></td>
-											<td title="<c:out value='${record.info}'/>"><c:out value="${record.info}" /></td>
-										</c:if>
+										<td title="<c:out value='${record.studentId}'/>"><c:out value="${record.studentId}" /></td>
+										<td title="<c:out value='${record.invoiceId}'/>"><c:out value="${record.invoiceId}" /></td>
+										<td title="<c:out value='${record.invoiceHistoryId}'/>"><c:out value="${record.invoiceHistoryId}" /></td>
+										<td>
+											<c:out value="${record.price}" />
+										</td>
+										<td>
+											<c:out value="${record.name}" />
+										</td>
 									</tr>
 								</c:forEach>
 							</tbody>

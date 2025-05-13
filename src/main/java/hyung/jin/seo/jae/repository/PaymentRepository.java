@@ -19,7 +19,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Long>{
 	@Query(value = "SELECT SUM(amount) FROM Payment p WHERE p.id <= ?1 AND p.invoiceId = ?2", nativeQuery = true)
 	double getTotalPaidById(Long id, Long invoiceId);
 
-	// @Query(value = "SELECT new hyung.jin.seo.dto.PaymentDTO(p.id, p.amount, p.info, p.registerDate, p.invoice.id, p.invoiceHistory.id, p.invoice.amount) FROM Payment p WHERE p.invoice.id = ?1")
-	// List<PaymentDTO> listPaymentByInvoiceIdId(Long id);
+	// get oldest payment method for migrate
+	@Query(value = "SELECT p.method FROM Payment p WHERE p.invoice.id = ?1 AND p.invoiceHistory.id = ?2 ORDER BY p.registerDate ASC")
+    String methodOldestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId);
+
+	// get latest total amount for migrate
+	@Query(value = "SELECT p.total FROM Payment p WHERE p.invoice.id = ?1 AND p.invoiceHistory.id = ?2 ORDER BY p.registerDate DESC")
+	double totalAmountLatestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId);
 
 }
