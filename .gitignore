@@ -1,3 +1,4 @@
 /target/
 *.war
 target/*.war
+/docs/
