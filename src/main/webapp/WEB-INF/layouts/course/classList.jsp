@@ -2,6 +2,18 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="java.util.Calendar" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="role" property='principal.authorities'/>
+	<c:set var="isAdmin" value="${false}" />
+	<c:if test="${role == '[Administrator]'}" >
+		<c:set var="isAdmin" value="${true}" />
+	</c:if>
+</sec:authorize>
+
+
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css">
 </link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css">
@@ -14,6 +26,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
+
 $(document).ready(function () {
 	$('#classListTable').DataTable({
 		language: {
@@ -40,7 +53,8 @@ $(document).ready(function () {
 
 	$("#addStartDate").datepicker({
 		dateFormat: 'dd/mm/yy',
-		minDate: new Date()
+		minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1))		
+		//minDate: new Date()
 	});
 	$("#editStartDate").datepicker({
 		dateFormat: 'dd/mm/yy'
@@ -696,22 +710,19 @@ function deleteClass(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														
 														<c:choose>
 															<c:when test="${clazz.online == true}">
-																<i class="bi bi-pencil-square text-secondary fa-lg" data-toggle="tooltip" title="Edit Disabled for Online Classes"></i>
+																<c:if test="${isAdmin}">
+																	<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')"></i>
+																</c:if>
+																<c:if test="${!isAdmin}">
+																	<i class="bi bi-pencil-square text-secondary fa-lg" data-toggle="tooltip" title="Edit Disabled for Online Classes"></i>
+																</c:if>
 															</c:when>
 															<c:otherwise>
 																<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')"></i>
 															</c:otherwise>
 														</c:choose>
-														<%-- too dangerous as related to many tables
-														<c:out value="${clazz}" />														
-														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
-														</i>
-														&nbsp;
-														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${clazz.id}')"></i>
-														--%>
 													</td>
 												</tr>
 											</c:forEach>
@@ -794,11 +805,20 @@ function deleteClass(id) {
 <!-- whenever add dialogue launches, start date is set to today -->
 <script>
 	$('#registerClassModal').on('shown.bs.modal', function () {
-		var today = new Date();
-		var day = today.getDate();
-		var month = today.getMonth() + 1; // Note: January is 0
-		var year = today.getFullYear();
+		// var today = new Date();
+		// var day = today.getDate();
+		// var month = today.getMonth() + 1; // Note: January is 0
+		// var year = today.getFullYear();
+		// var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+		
+		
+		var defaultDate = new Date(2024, 5, 10); // Month is 0-indexed, so 5 represents June
+		var day = defaultDate.getDate();
+		var month = defaultDate.getMonth() + 1; // Note: January is 0
+		var year = defaultDate.getFullYear();
 		var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+
+
 		document.getElementById('addStartDate').value = formattedDate;
 		
 		// Set branch value for staff users (non-admin)

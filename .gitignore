@@ -2,3 +2,4 @@
 *.war
 target/*.war
 /docs/
+src/main/resources/application.properties

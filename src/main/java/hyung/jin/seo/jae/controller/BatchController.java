@@ -28,6 +28,7 @@ import hyung.jin.seo.jae.service.CodeService;
 import hyung.jin.seo.jae.service.CourseService;
 import hyung.jin.seo.jae.service.CycleService;
 import hyung.jin.seo.jae.service.OnlineSessionService;
+import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import hyung.jin.seo.jae.utils.JaeUtils;
 
@@ -50,6 +51,9 @@ public class BatchController {
 	@Autowired
 	private ClazzService clazzService;
 
+	@Autowired
+	private StudentService studentService;
+
 	@Value("${inactive.student.enrolment.days}")
 	private int days;
 
@@ -57,7 +61,8 @@ public class BatchController {
 	@GetMapping("/updateInactiveStudent")
 	@ResponseBody
 	int coutUpdateInactiveStudent() {
-		int count = 10;//studentService.updateInactiveStudent(days);
+		int count = 10;
+		studentService.updateInactiveStudent(days);
 		return count;
 	}
 

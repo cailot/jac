@@ -70,6 +70,7 @@ public class CourseDTO implements Serializable, Cloneable{
 		this.online = course.isOnline();
 		this.price = course.getPrice();
 		this.active = course.isActive();
+		this.year = course.getCycle().getYear();
     }
     
 	public CourseDTO(long id, String name, String description, String grade, boolean online, double price, long cycleId, int year, boolean active){

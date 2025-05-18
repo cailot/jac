@@ -82,19 +82,19 @@ public class EnrolmentController {
 	// 	return fetchEnrolment(id, invoiceId);
 	// }
 
-	@GetMapping("/search/student/{id}")
+	@GetMapping("/search/student/{studentId}")
 	@ResponseBody
-	public List searchEnrolmentByStudent1(@PathVariable Long id) {
+	public List searchEnrolmentByStudent1(@PathVariable Long studentId) {
 		List dtos = new ArrayList();
 		// get 3 lastest invoice id
- 		Long firstId = enrolmentService.findLatestInvoiceIdByStudent(id);
-		Long secondId = enrolmentService.find2ndLatestInvoiceIdByStudent(id);
-		Long thirdId = enrolmentService.find3rdLatestInvoiceIdByStudent(id);
+ 		Long firstId = enrolmentService.findLatestInvoiceIdByStudent(studentId);
+		Long secondId = enrolmentService.find2ndLatestInvoiceIdByStudent(studentId);
+		Long thirdId = enrolmentService.find3rdLatestInvoiceIdByStudent(studentId);
 
 		// add 3 enrolments
-		if(firstId!=null) dtos.add(fetchEnrolment(id, firstId));
-		if(secondId!=null) dtos.add(fetchEnrolment(id, secondId));
-		if(thirdId!=null) dtos.add(fetchEnrolment(id, thirdId));
+		if(firstId!=null) dtos.add(fetchEnrolment(studentId, firstId));
+		if(secondId!=null) dtos.add(fetchEnrolment(studentId, secondId));
+		if(thirdId!=null) dtos.add(fetchEnrolment(studentId, thirdId));
 
 		// return dtos mixed by enrolments
 		return dtos;
@@ -103,7 +103,7 @@ public class EnrolmentController {
 
 
 	// fetch enrolment by student id and invoice id
-	private List fetchEnrolment(Long id, Long invoiceId) {
+	private List fetchEnrolment(Long studentId, Long invoiceId) {
 		List dtos = new ArrayList(); 
 		
 		boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
@@ -115,7 +115,7 @@ public class EnrolmentController {
 		boolean isFullPaid = (totalAmount == paidAmount);
 
 		// 1. get enrolments by invoice id
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, id);
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoiceId, studentId);
 		for(EnrolmentDTO enrol : enrols){
 			// set price = 0 if discount = 100%
 			if(StringUtils.defaultString(enrol.getDiscount()).equalsIgnoreCase(JaeConstants.DISCOUNT_FREE)){
@@ -149,20 +149,6 @@ public class EnrolmentController {
 		// 5. return dtos mixed by enrolments and outstandings
 		return dtos;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	// count records number in database
 	@GetMapping("/count")
