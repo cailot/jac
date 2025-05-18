@@ -27,6 +27,7 @@ import hyung.jin.seo.jae.dto.MaterialMigrateDTO;
 import hyung.jin.seo.jae.dto.MigrateDTO;
 import hyung.jin.seo.jae.dto.PaymentMigrateDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
+import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.model.Invoice;
@@ -34,6 +35,7 @@ import hyung.jin.seo.jae.model.InvoiceHistory;
 import hyung.jin.seo.jae.model.Material;
 import hyung.jin.seo.jae.model.Payment;
 import hyung.jin.seo.jae.model.Student;
+import hyung.jin.seo.jae.service.BookService;
 import hyung.jin.seo.jae.service.EnrolmentService;
 import hyung.jin.seo.jae.service.InvoiceHistoryService;
 import hyung.jin.seo.jae.service.InvoiceService;
@@ -63,6 +65,9 @@ public class MigrationController {
 
 	@Autowired
 	private MaterialService materialService;
+
+	@Autowired
+	private BookService bookService;
 
 	// Make the class public static and add proper getters/setters
 	public static class MigrationError {
@@ -693,14 +698,88 @@ public class MigrationController {
 									break;
 								case "30": // Outstanding
 
+									String abbrev = StringUtils.defaultString(columns[14].trim()).toUpperCase();
 
+									System.out.println("st  " + studentId + " invoice " + invoiceId + " abbrev: " + abbrev + " line " + lineCount);
 
+									switch(abbrev){
 
-
-
-
-
-
+										case "CREDIT":
+											// same as discount
+										case "DISCOUNT":
+											// update discount in enrolment
+											double discountValue = Double.parseDouble(columns[20].trim());
+											double enrolmentDiscount = Double.parseDouble(StringUtils.defaultIfBlank(enrolment.getDiscount(),"0"));
+											enrolment.setDiscount(String.valueOf(enrolmentDiscount+discountValue));
+											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
+											// update discount in invoice
+											Invoice discountInvoice = invoiceService.getInvoice(invoiceId);
+											double invoiceDiscount = discountInvoice.getDiscount();
+											discountInvoice.setDiscount(invoiceDiscount+discountValue);
+											invoiceService.updateInvoice(discountInvoice, discountInvoice.getId());	
+											break;
+										
+										case "VSSE":
+											//add VSSE to cancellation reason
+											enrolment.setCancellationReason("VSSE");
+											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
+											break;
+											
+										case "NJAC": // Non JAC
+											//add NJAC to cancellation reason
+											enrolment.setCancellationReason("NJAC");
+											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
+											break;
+										
+										case "TOP UP":
+											// same as extra
+										case "EXTRA": // opposite to discount
+											// update discount in enrolment
+											double extraValue = Double.parseDouble(columns[22].trim());
+											double currentEnrolmentExtra = Double.parseDouble(StringUtils.defaultIfBlank(enrolment.getDiscount(),"0"));
+											enrolment.setDiscount(String.valueOf(currentEnrolmentExtra - extraValue));
+											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
+											// update discount in invoice
+											Invoice extraInvoice = invoiceService.getInvoice(invoiceId);
+											double currentInvoiceDiscount = extraInvoice.getDiscount();
+											extraInvoice.setDiscount(currentInvoiceDiscount - extraValue);
+											invoiceService.updateInvoice(extraInvoice, extraInvoice.getId());	
+											break;
+										case "POSTAGE":
+											// material add bookid = 113 (postage)
+											Invoice postageInvoice = invoiceService.getInvoice(invoiceId);
+											InvoiceHistory postageInvoiceHistory = invoiceHistoryService.getInvoiceHistory(invoiceHistoryId);
+											Material postageMaterial = new Material();
+											Book postageBook = bookService.getBook(113L);
+											postageMaterial.setBook(postageBook);
+											postageMaterial.setInvoice(postageInvoice);
+											postageMaterial.setInvoiceHistory(postageInvoiceHistory);
+											postageMaterial.setPaymentDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+											postageMaterial.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+											// save material - invoice/invoicehistory will be automatically updated
+											materialService.addMaterial(postageMaterial);
+											// update invoice
+											postageInvoice.setDiscount(postageInvoice.getDiscount() - 9.99);
+											invoiceService.updateInvoice(postageInvoice, postageInvoice.getId());											
+											break;
+										case "VOUCHER":
+											// material add bookid = 114 (voucher)
+											Invoice voucherInvoice = invoiceService.getInvoice(invoiceId);
+											InvoiceHistory voucherInvoiceHistory = invoiceHistoryService.getInvoiceHistory(invoiceHistoryId);
+											Material voucherMaterial = new Material();
+											Book voucherBook = bookService.getBook(114L);
+											voucherMaterial.setBook(voucherBook);
+											voucherMaterial.setInvoice(voucherInvoice);
+											voucherMaterial.setInvoiceHistory(voucherInvoiceHistory);
+											voucherMaterial.setPaymentDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+											voucherMaterial.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+											// add voucher material
+											materialService.addMaterial(voucherMaterial);
+											// update invoice
+											voucherInvoice.setDiscount(voucherInvoice.getDiscount() + 50);
+											invoiceService.updateInvoice(voucherInvoice, voucherInvoice.getId());
+											break;			
+									}
 									break;
 
 
@@ -732,18 +811,6 @@ public class MigrationController {
 						}
 
 					}
-
-
-
-
-
-
-
-
-
-
-
-
 					successCount++;					
 
 				} catch (Exception e) {
@@ -822,6 +889,7 @@ public class MigrationController {
 			case "2": paymentMethod = "bank"; break;
 			case "3": paymentMethod = "card"; break;
 			case "4": paymentMethod = "cheque"; break;
+			default: paymentMethod = "cash"; break;
 		}
 		return paymentMethod;
 	}

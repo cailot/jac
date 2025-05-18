@@ -161,6 +161,7 @@ function retrieveCourseInfo(courseId) {
 			$("#editGrade").val(course.grade);
 			$("#editName").val(course.name);
 			$("#editPrice").val(course.price);
+			$("#editYear").val(course.year);
 			$("#editDescription").val(course.description);
 			// if course.online is true, then #editOnline is checked; otherwise #editOnsite is checked
 			if (course.online) {

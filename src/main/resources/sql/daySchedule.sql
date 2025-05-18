@@ -7,5 +7,5 @@ INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('5', 'Friday', CU
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('6', 'SATAM', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('7', 'SATPM', CURDATE());
 INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('8', 'SUNAM', CURDATE());
-INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('9', 'SUNAM', CURDATE());
+INSERT INTO jac.DaySchedule (code, name, registerDate) VALUES ('9', 'SUNPM', CURDATE());
 COMMIT;

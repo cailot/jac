@@ -740,16 +740,17 @@ function retrieveEnrolment(studentId){
 				method: 'GET',
 				success: function(response) {
 					// Handle the response
+					console.log(response);
 					for (let index = response.length - 1; index >= 0; index--) {
 						let value = response[index];
-						// console.log(index + ' -- ' + value);
+						//console.log(index + ' -- ' + value);
 
 						$.each(value, function(count, data) {
 							if (index == 0) {
-								// console.log('Top >>>>>>> index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Top >>>>>>> index : ' + index + ' -- count :' + count + ' --> ' + data);
 								updateInvoiceTableWithTop(data, index);
 							} else {
-								// console.log('Rest <<<<<<< index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Rest <<<<<<< index : ' + index + ' -- count :' + count + ' --> ' + data);
 								updateInvoiceTableWithRest(data, index);
 							}
 						});
