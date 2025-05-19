@@ -486,6 +486,12 @@ function displayStudentInfo(value) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function clearStudentForm() {
 	document.getElementById("studentInfo").reset();
+	
+	// Enable fields and set text color to black except state, branch, id, and activated
+	$("#formFirstName, #formLastName, #formEmail1, #formEmail2, #formRelation1, #formRelation2, #formGrade, #formGender, #formAddress, #formContact1, #formContact2, #formMemo, #formRegisterDate").each(function() {
+		$(this).prop('disabled', false).css("color", "black");
+	});
+
 	// clear enrolment basket
 	clearEnrolmentBasket();
 	// clear invoice table

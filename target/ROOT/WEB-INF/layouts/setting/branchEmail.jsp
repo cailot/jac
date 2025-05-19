@@ -209,19 +209,20 @@ function sendEmail() {
 	var subject = $('#emailSubject').val();
 	var body = quill.root.innerHTML; // Get the content from Quill editor
 
-	// console.log('Subject:', subject);
-	// console.log('Body:', body);
-
 	if ((subject == '') || (body == '')) {
 		$('#warning-alert .modal-body').text('Please fill in Subject & Message');
 		$('#warning-alert').modal('toggle');
 		return;
 	}
 
+	// Show loading spinner with message
+    $('#loading-message').text('Sending email');
+    $('#loading-spinner').modal('show');
     // Perform your email sending logic here
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
 		type : 'GET',
+		dataType: 'json',
 		data : {
 			state : $('#listState').val(),
 			branch : $('#addBranch').val(),
@@ -230,17 +231,42 @@ function sendEmail() {
 			subject : subject,
 			body : body
 		},
-		success : function(count) {
+		success : function(response) {	
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			// Display success alert
-			$('#success-alert .modal-body').html('Email sent to <b>' + count + '</b> recepients successfully.');
-			$('#success-alert').modal('toggle');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.reload();
-			});
-			
+			if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+				$('#success-alert').on('hidden.bs.modal', function (e) {
+					location.reload();
+				});			
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
+			console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
 		}
 	});
 
@@ -258,6 +284,7 @@ function ReSendEmail() {
 
 	var subject = $('#editSubject').val();
 	var body = editQuill.root.innerHTML; // Get the content from Quill editor
+	var state = $('#editState').val(); // Get the state value
 
 	if ((subject == '') || (body == '')) {
 		$('#warning-alert .modal-body').text('Please fill in Subject & Message');
@@ -265,32 +292,61 @@ function ReSendEmail() {
 		return;
 	}
 
+	// Show loading spinner with message
+    $('#loading-message').text('Sending email');
+    $('#loading-spinner').modal('show');
 	// Perform your email sending logic here
 	$.ajax({
 		url : '${pageContext.request.contextPath}/email/sendAnnouncement',
 		type : 'GET',
+		dataType: 'json',
 		data : {
-			state : $('#editState').val(),
+			state : state, // Make sure state is included here
 			branch : $('#editBranch').val(),
 			grade : $('#editGrade').val(),
 			sender : JSON.parse(window.isAdmin)? HEAD_OFFICE : window.branch,
 			subject : subject,
 			body : body
 		},
-		success : function(count) {
+		success : function(response) {
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
 			// Display success alert
-			$('#success-alert .modal-body').html('Email sent to <b>' + count + '</b> recepients successfully.');
-			$('#success-alert').modal('toggle');
-			$('#success-alert').on('hidden.bs.modal', function (e) {
-				location.href = window.location.href;
-			});
-			
+			if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+				$('#success-alert').on('hidden.bs.modal', function (e) {
+					location.reload();
+				});			
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			// Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
+			console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
 		}
 	});
-
+	
 	// Close the modals after sending the email
 	clearEmailForm();
 	$('#ReConfirmationModal').modal('hide');
@@ -324,11 +380,10 @@ function retrieveEmailInfo(id) {
 		url : '${pageContext.request.contextPath}/email/get/' + id,
 		type : 'GET',
 		success : function(email) {
-			// console.log(email);
 			// set email info to edit form
 			$('#editSubject').val(email.title);
-			// $('#editBody').val(email.body);
 			editQuill.root.innerHTML = email.body;
+			// Ensure state is properly set
 			$('#editState').val(email.state);
 			$('#editBranch').val(email.branch);
 			$('#editGrade').val(email.grade);
@@ -336,9 +391,50 @@ function retrieveEmailInfo(id) {
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
+			$('#validation-alert .modal-body').html('Failed to retrieve email information.');
+			$('#validation-alert').modal('toggle');
 		}
 	});
+}
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 			Delete Email
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteEmail(id) {
+	//warn if Id is empty
+	if (id == '') {
+		$('#warning-alert .modal-body').text('Please search email before deleting');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+	
+	// send query to controller
+	$.ajax({
+		url : '${pageContext.request.contextPath}/email/delete/' + id,
+		type : 'PUT',
+		success : function(data) {
+			console.log(data);
+			$('#success-alert .modal-body').html(data);
+			$('#success-alert').modal('show');
+			$('#success-alert').on('hidden.bs.modal', function(e) {
+				location.reload();
+			});
+		},
+		error : function(xhr, status, error) {
+			console.log('Error : ' + error);
+		}
+		
+	}); 
+}
+
+window.showWarning = function(id) {
+    // Show the warning modal
+    $('#deleteModal').modal('show');
+    // Attach the click event handler to the "Delete" button
+    $('#agreeDelete').off('click').on('click', function() {
+        deleteEmail(id);
+        $('#deleteModal').modal('hide');
+    });
 }
 
 </script>
@@ -442,6 +538,7 @@ function retrieveEmailInfo(id) {
 												</td>
 												<td class="text-center align-middle">
 													<i class="bi bi-envelope text-primary hand-cursor" data-toggle="tooltip" title="Resend" onclick="retrieveEmailInfo('${email.id}')"></i>&nbsp;
+													<i class="bi bi-trash text-danger hand-cursor" data-toggle="tooltip" title="Delete User" onclick="showWarning('${email.id}')"></i>
 												</td>
 											</tr>
 										</c:forEach>
@@ -571,3 +668,41 @@ function retrieveEmailInfo(id) {
 	</div>
 </div>
 
+<!-- Warning Alert -->
+<div id="warning-alert" class="modal fade">
+	<div class="modal-dialog">
+		<div class="alert alert-block alert-warning alert-dialog-display jae-border-warning">
+			<i class="bi bi-exclamation-circle-fill fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		</div>
+	</div>
+</div>
+
+<!-- Validation Alert -->
+<div id="validation-alert" class="modal fade">
+    <div class="modal-dialog">
+        <div class="alert alert-block alert-danger alert-dialog-display jae-border-danger">
+            <i class="bi bi-exclamation-circle-fill h5 mt-2"></i>&nbsp;&nbsp;<div class="modal-body"></div>
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Dialogue -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content jae-border-danger">
+            <div class="modal-header btn-danger">
+               <h4 class="modal-title text-white" id="deleteModalLabel"><i class="bi bi-exclamation-circle"></i>&nbsp;&nbsp;Email Delete</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p> Do you want to delete this email ?</p>	
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" id="agreeDelete"><i class="bi bi-check-circle"></i>&nbsp;Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="bi bi-x-circle"></i> Close</button>
+            </div>
+    	</div>
+	</div>
+</div>

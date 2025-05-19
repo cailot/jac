@@ -120,7 +120,7 @@
         <footer class="mt-auto">
             <div class="row" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
-                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.4</span></div>
+                <div class="copyright-font-color">James An College <span class="small text-secondary">v0.4.8</span></div>
             </div>
         </footer>	
     </div>
@@ -169,5 +169,22 @@
             </div>
         </div>
     </div>
+
+<!-- Loading Spinner -->
+<div class="modal fade" id="loading-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content loading-spinner-content">
+			<div class="modal-body text-center p-5">
+				<div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<div id="loading-message" class="mt-4 text-primary h4"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
 </body>
 </html>

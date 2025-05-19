@@ -237,59 +237,6 @@ function removePaymentFromInvoiceList() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Update Lastest Invoice Id
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// function updateLatestInvoiceId1(invoiceId){
-// 	// debugger;
-// 	// get the value of hidden invoiceId
-// 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
-
-// 	console.log('updateLatestInvoiceId : ' + invoiceId + ' - ' + hiddenInvoiceId);
-
-// 	if (typeof invoiceId === "undefined") {
-//     	// if invoiceId is undefined, use hiddenInvoiceId
-//     	$.ajax({
-// 			url: '${pageContext.request.contextPath}/invoice/amount/' + hiddenInvoiceId,
-// 			method: 'GET',
-// 			success: function(response) {
-// 				//debugger;
-// 				$("#rxAmount").text(response.toFixed(2));
-// 				if(parseFloat(response) > 0){
-// 					$('#paymentBtn').prop('disabled', false);
-// 				}else{
-// 					$('#paymentBtn').prop('disabled', true);
-// 				}
-// 			},
-// 			error: function(xhr, status, error) {
-// 				// Handle the error
-// 				console.error(error);
-// 				$("#rxAmount").text(0);
-// 			}
-// 		});	
-//   	} else {
-//     	// invoiceId is defined then compare invoiceId with hiddenInvoiceId
-// 		if(invoiceId >= hiddenInvoiceId){
-// 			// update invoiceId to hiddenInvoiceId
-// 			$("#hiddenInvoiceId").val(invoiceId);
-// 			$.ajax({
-// 				url: '${pageContext.request.contextPath}/invoice/amount/' + invoiceId,
-// 				method: 'GET',
-// 				success: function(response) {
-// 					//debugger;
-// 					$("#rxAmount").text(response.toFixed(2));
-// 					if(parseFloat(response) > 0){
-// 						$('#paymentBtn').prop('disabled', false);
-// 					}else{
-// 						$('#paymentBtn').prop('disabled', true);
-// 					}
-// 				},
-// 				error: function(xhr, status, error) {
-// 					// Handle the error
-// 					console.error(error);
-// 					$("#rxAmount").text(0);
-// 				}
-// 			});	
-// 		}
-// 	}
-// }
 function updateLatestInvoiceId(invoiceId){
 	// get the value of hidden invoiceId
 	var hiddenInvoiceId = parseInt($('#hiddenInvoiceId').val());
@@ -324,7 +271,6 @@ function updateInvoiceTableBalance() {
 		}
 	});		
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Clean invoiceTable
@@ -651,7 +597,59 @@ function addInformation(){
 		}
 	});						
 }
-  
+ 
+///////////////////////////////////////////////////////////////////////////
+// 		Send Invoice Email
+///////////////////////////////////////////////////////////////////////////
+function sendInvoiceEmail() {
+	var studentId = $('#formId').val();
+	var branch = window.branch;
+	if(branch === '0'){
+		branch = '90'; // head office
+	}	
+    // Show loading spinner with message
+    $('#loading-message').text('Sending invoice email');
+    $('#loading-spinner').modal('show');
+	
+	$.ajax({
+        url : '${pageContext.request.contextPath}/invoice/emailInvoice?studentId='+ studentId +'&branchCode=' + branch,
+        type : 'GET',
+        dataType: 'json',
+        success : function(response) {
+            // Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
+            if (response.status === 'success') {
+                $('#success-alert .modal-body').html(response.message);
+                $('#success-alert').modal('toggle');
+            } else {
+                $('#validation-alert .modal-body').html(response.message || 'Failed to send email.');
+                $('#validation-alert').modal('toggle');
+            }
+        },
+        error : function(xhr, status, error) {
+            // Hide loading spinner
+            $('#loading-spinner').modal('hide');
+
+            console.log('Error:', error);
+            console.log('Status:', status);
+            console.log('Response:', xhr.responseText);
+            
+            let errorMessage = 'Failed to send email.';
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response.message) {
+                    errorMessage = response.message;
+                }
+            } catch(e) {
+                console.log('Error parsing response:', e);
+            }
+            
+            $('#validation-alert .modal-body').html(errorMessage);
+            $('#validation-alert').modal('toggle');
+        }        
+    });            
+} 
 </script>
 <style>
 	/* Adjust column sizes for the table */
@@ -710,8 +708,7 @@ function addInformation(){
 					<button type="button" class="btn btn-block btn-primary btn-sm" id="invoiceBtn" onclick="displayInvoiceInformation()">Invoice</button>
 				</div>
 				<div class="col md-auto">
-					<button type="button" class="btn btn-block btn-primary btn-sm"
-						onclick="alert('test...')">Email</button>
+					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="sendInvoiceEmail()">Email</button>
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
@@ -875,3 +872,4 @@ function addInformation(){
 		</div>
 	</div>
 </div>
+

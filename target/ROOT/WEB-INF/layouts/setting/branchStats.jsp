@@ -30,11 +30,11 @@ $(document).ready(function () {
 		url: '${pageContext.request.contextPath}/code/getBranchByCode/' + branch,
 		type: 'GET',
 		success: function (data) {
-			// console.log(data);
+			console.log('Branch data received:', data);
 			branchName = data.name;
 		},
 		error: function (xhr, status, error) {
-			console.log('Error : ' + error);
+			console.log('Error fetching branch: ' + error);
 		}
 	});
 
@@ -51,6 +51,9 @@ function searchStats() {
 		$('#warning-alert').modal('toggle');
 		return;
 	}
+	
+	console.log('Searching for branch stats with date range:', start, 'to', end);
+	
 	$.ajax({
         url: '${pageContext.request.contextPath}/stats/branchActive',
         type: 'POST',
@@ -60,48 +63,49 @@ function searchStats() {
             branch: branch
         },
         success: function (items) {
+			console.log('Received stats data:', items);
+			
 			// Sort the items array by grade
 			items.sort(function(a, b) {
 				return a.grade - b.grade;
 			});
+			
+			console.log('Sorted items:', items);
 
             var table = document.getElementById('regStatTable');
             // flush tbody
             var tbody = document.querySelector('#regStatTable tbody');
             tbody.innerHTML = "";
             // initialise tbody
-            addRows();		
+            addRows();
+            
             $.each(items, function (index, item) {
-                // Find the th element with the corresponding grade
-                var th = $('#regStatTable th[grade="' + item.grade + '"]');
-                if (th.length > 0) {
-                    // Get the column index of the cell
-                    var cellIndex = th.index();
-                    // Get the corresponding cell in the table body
-                    var cell = $('#regStatTable tbody tr:nth-child(1) td:nth-child(' + (cellIndex+1) + ')');                   
-					// Update the cell content
+                // Find the td element with the corresponding grade in the first row
+                var cell = $('#regStatTable tbody tr:first-child td[grade="' + item.grade + '"]');
+                console.log('Looking for grade', item.grade, 'Found cell:', cell.length > 0);
+                
+                if (cell.length > 0) {
+                    // Update the cell content
                     cell.text(item.count);
                     cell.addClass('text-primary');
                     // Add branch and grade as attributes to the cell
                     cell.attr('branch', branch);
-                    cell.attr('grade', item.grade);
-                     // Add click event to call studentList function
-                    cell.click(function() {
+                    // Add click event to call studentList function
+                    cell.off('click').on('click', function() {
                         studentList(branch, item.grade);
                     });
                     // Change cursor to hand pointer on hover
                     cell.css('cursor', 'pointer');
-    
                 } else {
-                    console.error('No th element found with code ' + branch);
+                    console.error('No cell found with grade ' + item.grade);
                 }
             });
 
-			// Calculate the total for the row
-			var row = $('#regStatTable tbody tr:nth-child(1)');
+            // Calculate the total for the row
+            var row = $('#regStatTable tbody tr:nth-child(1)');
             var totalCell = row.find('td:last');
             var total = 0;
-            row.find('td').each(function() {
+            row.find('td[grade]').each(function() {
                 var cellValue = Number($(this).text());
                 if (!isNaN(cellValue)) {
                     total += cellValue;
@@ -116,7 +120,8 @@ function searchStats() {
             updateChart();
         },
         error: function (xhr, status, error) {
-            console.log('Error : ' + error);
+            console.log('Error fetching stats: ' + error);
+            console.log('Response:', xhr.responseText);
         }
     });
     
@@ -159,7 +164,9 @@ function studentList(branch, grade){
 			}
 			$.each(data, function(index, value) {
 				var row = $("<tr>");		
-				row.append($('<td>').text(value.id));
+				// Make student ID clickable
+				var idCell = $('<td>').html('<span class="hand-cursor" onclick="linkToStudent(\'' + value.id + '\')" data-toggle="tooltip" title="Link to Student Information">' + value.id + '</span>');
+				row.append(idCell);
 				row.append($('<td>').text(value.firstName));
 				row.append($('<td>').text(value.lastName));
 				var gradeText = gradeName(value.grade);
@@ -167,10 +174,26 @@ function studentList(branch, grade){
 				row.append($('<td class="text-capitalize">').text((value.gender === "") ? "" : value.gender));	
 				row.append($('<td>').text(formatDate(value.registerDate)));
 				row.append($('<td>').text(formatDate(value.endDate)));
-				row.append($('<td>').text(value.email1));
-				row.append($('<td>').text(value.contactNo1));
+				
+				// Add title attribute to email cell for tooltip
+				var emailCell = $('<td>').text(value.email1);
+				emailCell.attr('title', value.email1);
+				row.append(emailCell);
+				
+				// Add title attribute to contact cell for tooltip
+				var contactCell = $('<td>').text(value.contactNo1);
+				contactCell.attr('title', value.contactNo1);
+				row.append(contactCell);
+				
 				$('#studentListResultTable > tbody').append(row);
 			});
+			
+			// Initialize Bootstrap tooltips after loading data
+			$('#studentListResultTable td').tooltip({
+				container: 'body',
+				placement: 'top'
+			});
+			
 			$('#studentListResult').modal('show');
 		},
 		error : function(xhr, status, error) {
@@ -213,72 +236,64 @@ function generateTableCells(numCells) {
 //		Extract Year Data	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function extractData() {
-	var table = document.getElementById('regStatTable');
-	var data = {
-		p2Row: 0,
-		p3Row: 0,
-		p4Row: 0,
-		p5Row: 0,
-		p6Row: 0,
-		s7Row: 0,
-		s8Row: 0,
-		s9Row: 0,
-		s10Row: 0,
-		s10eRow: 0,
-		tt6Row: 0,
-		tt8Row: 0,
-		tt8eRow: 0,
-		srw4Row: 0,
-		srw5Row: 0,
-		srw6Row: 0,
-		srw7Row: 0,
-		srw8Row: 0,
-		jmssRow: 0,
-		vceRow: 0
-	};
-	
-	// Map grade attributes to data object properties
-	var gradeMap = {
-		1: 'p2Row',
-		2: 'p3Row',
-		3: 'p4Row',
-		4: 'p5Row',
-		5: 'p6Row',
-		6: 's7Row',
-		7: 's8Row',
-		8: 's9Row',
-		9: 's10Row',
-		10: 's10eRow',
-		11: 'tt6Row',
-		12: 'tt8Row',
-		13: 'tt8eRow',
-		14: 'srw4Row',
-		15: 'srw5Row',
-		16: 'srw6Row',
-		17: 'srw7Row',
-		18: 'srw8Row',
-		19: 'jmssRow',
-		20: 'vceRow'
-	};
-	
-	// Iterate over each row in the table, starting from the second row
-	var row = table.rows[1];
-
-	// Iterate over each cell in the row
-	for (var i = 0; i < row.cells.length; i++) {
-		var cell = row.cells[i];
-		// Check if the cell has the 'grade' attribute
-		if (cell.hasAttribute('grade')) {
-			// Get the grade attribute value
-			var grade = cell.getAttribute('grade');
-			// Check if the cell's content can be converted to a number
-			var cellValue = Number(cell.textContent);
-			if (!isNaN(cellValue) && gradeMap[grade]) {
-				// Add the cell's numeric value to the corresponding property in the data object
-				data[gradeMap[grade]] += cellValue;
-			}
-		}
-	}
+    var table = document.getElementById('regStatTable');
+    var data = {
+        p2Row: 0,
+        p3Row: 0,
+        p4Row: 0,
+        p5Row: 0,
+        p6Row: 0,
+        s7Row: 0,
+        s8Row: 0,
+        s9Row: 0,
+        s10Row: 0,
+        s10eRow: 0,
+        tt6Row: 0,
+        tt8Row: 0,
+        tt8eRow: 0,
+        srw4Row: 0,
+        srw5Row: 0,
+        srw6Row: 0,
+        srw7Row: 0,
+        srw8Row: 0,
+        jmssRow: 0,
+        vceRow: 0
+    };
+    
+    // Map grade attributes to data object properties
+    var gradeMap = {
+        1: 'p2Row',
+        2: 'p3Row',
+        3: 'p4Row',
+        4: 'p5Row',
+        5: 'p6Row',
+        6: 's7Row',
+        7: 's8Row',
+        8: 's9Row',
+        9: 's10Row',
+        10: 's10eRow',
+        11: 'tt6Row',
+        12: 'tt8Row',
+        13: 'tt8eRow',
+        14: 'srw4Row',
+        15: 'srw5Row',
+        16: 'srw6Row',
+        17: 'srw7Row',
+        18: 'srw8Row',
+        19: 'jmssRow',
+        20: 'vceRow'
+    };
+    
+    // Find all cells with grade attributes in the first row
+    $('#regStatTable tbody tr:first-child td[grade]').each(function() {
+        var grade = $(this).attr('grade');
+        var cellValue = Number($(this).text());
+        
+        if (!isNaN(cellValue) && gradeMap[grade]) {
+            data[gradeMap[grade]] = cellValue;
+        }
+    });
+    
     tableData = data;
 }
 
@@ -287,19 +302,32 @@ function extractData() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function addRows(){
     // Get the tbody element
-    var tbody = document.querySelector('tbody');
+    var tbody = document.querySelector('#regStatTable tbody');
     // Create a new row and cell
-	var row = document.createElement('tr');
-	var cell = document.createElement('td');
-	// Set the row's id and the cell's text
-	cell.textContent = branchName;
-	cell.className = 'small align-middle text-center header font-weight-bold';
-	// Add the cell to the row
-	row.appendChild(cell);
-	// Add the row to the tbody
-	tbody.appendChild(row);
-	// Add additional cells to the row using the generateTableCells function
-	row.innerHTML += generateTableCells(21); // Only one cell for the specific branch
+    var row = document.createElement('tr');
+    var cell = document.createElement('td');
+    // Set the row's id and the cell's text
+    cell.textContent = branchName;
+    cell.className = 'small align-middle text-center header font-weight-bold';
+    // Add the cell to the row
+    row.appendChild(cell);
+    // Add the row to the tbody
+    tbody.appendChild(row);
+    
+    // Create and add cells with proper grade attributes
+    for (var i = 1; i <= 20; i++) {
+        var tdCell = document.createElement('td');
+        tdCell.className = 'small align-middle text-center';
+        tdCell.textContent = '0';
+        tdCell.setAttribute('grade', i);
+        row.appendChild(tdCell);
+    }
+    
+    // Add the total cell
+    var totalCell = document.createElement('td');
+    totalCell.className = 'small align-middle text-center';
+    totalCell.textContent = '0';
+    row.appendChild(totalCell);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -597,6 +625,16 @@ function export2Excel(){
 	downloadLink.click();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Link To Student Admin
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function linkToStudent(studentId) {
+    //window.location.href = '/studentAdmin?id=' + studentId;
+	var url = '/studentAdmin?id=' + studentId;  
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
 </script>
 
 <style>
@@ -660,6 +698,91 @@ function export2Excel(){
 	}
 }
 
+.table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+#studentListResultTable {
+  table-layout: fixed;
+}
+
+#studentListResultTable th, 
+#studentListResultTable td { 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* Specific widths for email and contact columns */
+.email-column,
+#studentListResultTable td:nth-child(8) {
+  max-width: 180px;
+  width: 180px;
+}
+
+.contact-column,
+#studentListResultTable td:nth-child(9) {
+  max-width: 120px;
+  width: 120px;
+}
+
+/* Other columns with specific widths */
+#studentListResultTable th:first-child,
+#studentListResultTable td:first-child {
+  width: 80px;
+}
+
+#studentListResultTable th:nth-child(2),
+#studentListResultTable td:nth-child(2),
+#studentListResultTable th:nth-child(3),
+#studentListResultTable td:nth-child(3) {
+  width: 100px;
+}
+
+#studentListResultTable th:nth-child(4),
+#studentListResultTable td:nth-child(4),
+#studentListResultTable th:nth-child(5),
+#studentListResultTable td:nth-child(5) {
+  width: 70px;
+}
+
+#studentListResultTable th:nth-child(6),
+#studentListResultTable td:nth-child(6),
+#studentListResultTable th:nth-child(7),
+#studentListResultTable td:nth-child(7) {
+  width: 90px;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+div.dataTables_length{
+	padding-left: 50px;
+	padding-top: 40px;
+	padding-bottom: 10px;
+}
+
+div.dt-buttons {
+	padding-top: 35px;
+	padding-bottom: 10px;
+}
+
+div.dataTables_filter {
+	padding-top: 35px;
+	padding-bottom: 35px;
+}
+
+#studentListTable tr { 
+	vertical-align: middle;
+	height: 45px 	
+}
+	
+.hand-cursor {
+    cursor: pointer;
+}
 </style>
 
 <!-- List Body -->
@@ -772,26 +895,26 @@ function export2Excel(){
 <!-- Search Result Dialog -->
 <div class="modal fade" id="studentListResult">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+      <div class="modal-content jae-border-primary">
+        <div class="modal-header bg-primary text-white rounded-top">
           <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
         </div>
         <div class="modal-body table-wrap">
-          <table class="table table-striped table-bordered" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller;">
+          <table class="table table-striped table-bordered table-responsive-sm" id="studentListResultTable" data-header-style="headerStyle" style="font-size: smaller; width: 100%;">
             <thead class="thead-light">
               <tr>
                 <th data-field="id">ID</th>
                 <th data-field="firstname">First Name</th>
                 <th data-field="lastname">Last Name</th>
                 <th data-field="grade">Grade</th>
-                <th data-field="grade">Gender</th>
+                <th data-field="gender">Gender</th>
                 <th data-field="startdate">Start Date</th>
                 <th data-field="enddate">End Date</th>
-                <th data-field="email">Main Email</th>
-                <th data-field="contact1">Main Contact</th>
+                <th data-field="email" class="email-column">Main Email</th>
+                <th data-field="contact1" class="contact-column">Main Contact</th>
               </tr>
             </thead>
             <tbody>
@@ -809,8 +932,25 @@ function export2Excel(){
     .table-wrap {
       overflow-x: auto;
     }
-    #studentListResultTable th, #studentListResultTable td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .form-group{
+    #studentListResultTable th, #studentListResultTable td { 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+      max-width: 150px; /* Set a reasonable max width for all cells */
+    }
+    
+    /* Specific widths for email and contact columns */
+    #studentListResultTable th:nth-child(8),
+    #studentListResultTable td:nth-child(8) {
+      max-width: 180px;
+    }
+    
+    #studentListResultTable th:nth-child(9),
+    #studentListResultTable td:nth-child(9) {
+      max-width: 120px;
+    }
+    
+    .form-group {
         margin-bottom: 30px;
     }
 </style>

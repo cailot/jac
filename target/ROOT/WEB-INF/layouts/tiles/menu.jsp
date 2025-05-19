@@ -52,9 +52,19 @@
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAdmin">Administration</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentInvoice">Invoice Record</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/studentList">All Student</a> -->
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">All Student</a>
+				<!-- Student List submenu -->
+				<div class="dropdown-submenu">
+					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						Student List
+					</a>
+					<div class="dropdown-menu" aria-labelledby="studentListDropdown">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentBranchList">Overview</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal</a>
+					</div>
+				</div>
 			</div>
 		</li>
 		<!-- Class -->
@@ -75,12 +85,7 @@
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/bookList">Book Management</a>
 				</c:if>
 			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/classList">Class Management</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentEnrol">Enrolment List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/paymentList">Payment List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/renewList">Renewal List</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/overdueList">Overdue List</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class Status</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class Login</a> -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/studentAttendance">Attendance</a>
 				<!-- Jac Study submenu -->
 				<div class="dropdown-submenu">
 					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -91,6 +96,8 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/connectedAttend">Connected Class</a>
 					</div>
 				</div>
+				<!-- OMR -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
 			</div>
 		</li>
 		<!-- User -->
@@ -99,8 +106,15 @@
 				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">User</span>
 			</a>
 			<div class="dropdown-menu">
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">User Management</a>
-				  <a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
+			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/userList">
+					<c:if test="${isAdmin}">
+						User Management
+					</c:if>
+					<c:if test="${!isAdmin}">
+						Staff Management
+					</c:if>
+				</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
 		</li>
 		<!-- Jac Study -->
@@ -144,9 +158,8 @@
 					</div>
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
-				<!-- OMR -->
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrStats">OMR Statistics</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a> -->
+
 			</div>
 		</li>
 		</c:if>
@@ -161,28 +174,49 @@
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/cycle">Academic Cycle</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/batch">Batch Process</a>
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/studentGrade">Grade Update</a>
-						<a class="dropdown-item" href="${pageContext.request.contextPath}/migration">Student Migration</a>
+						<!-- Migration submenu -->
+						<div class="dropdown-submenu">
+							<a class="dropdown-item" href="#" id="migrationDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+								Student Migration
+							</a>
+							<div class="dropdown-menu" aria-labelledby="migrationDropdown">
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationStudent">Student</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationInvoice">Invoice</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationEnrol">Enrolment</a>
+							</div>
+						</div>
 					</c:when>
 					<c:otherwise>
 						<!-- Content for branch -->
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
 					</c:otherwise>
 				</c:choose>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>								
+
 			</div>
 		</li>
-		<c:if test="${isAdmin}">
-		<li class="nav-item dropdown">
-			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Stats</span>
-			</a>
-			<div class="dropdown-menu">
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
-			  	<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Payment Student</a>
-			</div>
-		</li>
-		</c:if>
+		<c:choose>
+			<c:when test="${isAdmin}">
+				<li class="nav-item dropdown">
+					<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
+						<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Stats</span>
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/activeStats">Active Student</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/inactiveStats">Inactive Student</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/invoiceStats">Payment Student</a>
+						<a class="dropdown-item" href="${pageContext.request.contextPath}/omrStats">OMR Statistics</a>
+					</div>
+				</li>
+			</c:when>
+			<c:otherwise><!-- branch -->
+				<li class="nav-item dropdown">
+					<a class="nav-link" href="${pageContext.request.contextPath}/pdf/guide.pdf" download>
+						<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Document</span>
+					</a>
+				</li>
+			</c:otherwise>
+		</c:choose>		
 	</ul>
 	<ul class="navbar_icon" style="margin: 0; padding: 0;">
 		<sec:authorize access="isAuthenticated()">
@@ -210,4 +244,23 @@
 	</ul>
 </nav>
 </div>
+ 
+<style>
+	/* Main menu (top-level) */
+	ul.navbar_menu > li.nav-item > a.nav-link:hover,
+	ul.navbar_menu > li.nav-item > a.nav-link:focus,
+	ul.navbar_menu > li.nav-item > a.nav-link:hover .material-icons,
+	ul.navbar_menu > li.nav-item > a.nav-link:focus .material-icons {
+		color: #ffC107 !important;
+		background-color: inherit !important;
+	}
+	/* Submenu (dropdown) */
+	ul.navbar_menu li.nav-item.dropdown .dropdown-menu a.dropdown-item:hover,
+	ul.navbar_menu li.nav-item.dropdown .dropdown-menu a.dropdown-item:focus,
+	ul.navbar_menu li.nav-item.dropdown .dropdown-menu a.dropdown-item:hover .material-icons,
+	ul.navbar_menu li.nav-item.dropdown .dropdown-menu a.dropdown-item:focus .material-icons {
+		color: #ffC107 !important;
+		background-color: #2d398e !important;
+	}
+</style>
  

@@ -200,7 +200,7 @@
             <artifactId>reactor-netty-http</artifactId>
             <version>1.0.34</version>
         </dependency>
-
+<!--
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -216,13 +216,13 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.20.0</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.7.1</version>
         </dependency>
-
+        
     </dependencies>
     <!-- Aspose Repository -->
     <repositories>

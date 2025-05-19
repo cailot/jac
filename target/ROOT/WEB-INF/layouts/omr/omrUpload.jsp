@@ -31,8 +31,10 @@ $(document).ready(function () {
 			// Check if the request URL matches the one in branch
 			if (settings.url === '/code/branch') {
 				$("#branch").val(window.branch);
-				// Disable #branch and #addBranch
+				// Disable #branch and #editBranch
 				$("#branch").prop('disabled', true);
+				// Add hidden input for branch to preserve its value
+				$('#branch').after('<input type="hidden" name="branch" value="' + window.branch + '">');
 				// $("#editBranch").prop('disabled', true);
 			}
 		});
@@ -587,6 +589,69 @@ function countTablesByGroup() {
 		cursor: not-allowed;
 	}
 
+/* Add table container styles */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0;
+    margin: 0;
+}
+
+/* Style for all tables */
+[id^="resultTable"] table {
+    width: 100% !important;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* Style for table cells */
+[id^="resultTable"] table th,
+[id^="resultTable"] table td {
+    width: 10%;
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Adjust card body padding */
+.card-body {
+    padding: 0.75rem;
+}
+
+/* Make row spacing tighter */
+.row {
+    margin-right: -5px;
+    margin-left: -5px;
+}
+
+.col-md-4, .col-md-6 {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+/* Ensure tables don't overflow their containers */
+.col-10 .row > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.col-10 .row > div > div {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Add this to your existing styles */
+[id^="resultTable"] table th,
+[id^="resultTable"] table td {
+    font-size: 12px !important;
+    padding: 4px 2px !important;
+}
+
 </style>
 
 
@@ -785,6 +850,7 @@ function countTablesByGroup() {
 							</c:if>
 							<div class="row justify-content-center">
 								<c:forEach items="${results}" var="omrSheet" varStatus="status">
+									<!-- <pre>${omrSheet}</pre> -->
 									<!-- Answer Omr Sheet Card Section-->
 									<!-- Display OmrSheetDTO details -->
 									<div class="col-md-12 mb-4">
@@ -803,32 +869,41 @@ function countTablesByGroup() {
 															</span>
 														</div>
 														<div>
-															<strong>Name:</strong> <c:out value="${omrSheet.studentTest[0].studentName}" />
+															<strong>Name:</strong> 
+															<c:out value="${omrSheet.studentTest[0].studentName}" />											
 														</div>														
 														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
 													</div>
-													
+										
 													<!-- Display Answer Sheets -->
 													<div class="col-10">
 														<div class="row">
 															<c:forEach items="${omrSheet.studentTest}" var="studentTest" varStatus="testStatus">
+																<!-- <pre>${studentTest}</pre> -->
+																
+																
 																<!-- hide testId -->
 																<input type="hidden" id="testId${status.index}_${testStatus.index}" value="${studentTest.testId}" />
-																	
+																
+																
 																<!-- Dynamically set column width based on studentTest size -->
-																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose> mb-4'>
-																	<div id="resultTable${status.index}_${testStatus.index}">
-																		<!-- Generate table with result -->
-																		<script>
-																			const resultData${status.index}_${testStatus.index} = JSON.parse("${studentTest.answers}");
-																			generateTableData('${status.index}_${testStatus.index}', resultData${status.index}_${testStatus.index});
-																		</script>
+																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose>'>
+																	<div class="table-container">
+																		<div id="resultTable${status.index}_${testStatus.index}">
+																			<!-- Generate table with result -->
+																			<script>
+																				const resultData${status.index}_${testStatus.index} = JSON.parse("${studentTest.answers}");
+																				generateTableData('${status.index}_${testStatus.index}', resultData${status.index}_${testStatus.index});
+																			</script>
+																		</div>
 																	</div>
 																</div>
+																
+
 															</c:forEach>
 														</div>
 													</div>
-
+							
 												</div>
 											</div>
 										</div>
