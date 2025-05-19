@@ -388,12 +388,12 @@ function retreiveClazzInfo(id, state, branch) {
 		type: 'GET',
 		success: function (data) {
 			$.each(data, function (index, value) {
-				// const cleaned = cleanUpJson(value);
-				// console.log(cleaned);
+				// console.log(value);
 				var row = $("<tr>");
 				row.append($('<td>').text(value.name));
 				row.append($('<td>').text(value.description));
-				row.append($('<td>').text(value.day));
+				var dayCodeText = dayName(value.day);
+				row.append($('<td>').text(dayCodeText));
 				var gradeText = gradeName(value.grade);
 				row.append($('<td>').text(gradeText));
 				row.append($('<td>').text(value.year));
@@ -443,7 +443,8 @@ function addClazz() {
 			var row = $("<tr>");
 			row.append($('<td>').text(value.name));
 			row.append($('<td>').text(value.description));
-			row.append($('<td>').text(value.day));
+			var dayCodeText = dayName(value.day);
+			row.append($('<td>').text(dayCodeText));
 			var gradeText = gradeName(value.grade);
 			row.append($('<td>').text(gradeText));
 			row.append($('<td>').text(value.year));

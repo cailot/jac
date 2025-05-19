@@ -2,6 +2,18 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="java.util.Calendar" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication var="role" property='principal.authorities'/>
+	<c:set var="isAdmin" value="${false}" />
+	<c:if test="${role == '[Administrator]'}" >
+		<c:set var="isAdmin" value="${true}" />
+	</c:if>
+</sec:authorize>
+
+
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css">
 </link>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/buttons.dataTables.min.css">
@@ -14,6 +26,7 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
+
 $(document).ready(function () {
 	$('#classListTable').DataTable({
 		language: {
@@ -40,7 +53,8 @@ $(document).ready(function () {
 
 	$("#addStartDate").datepicker({
 		dateFormat: 'dd/mm/yy',
-		minDate: new Date()
+		minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1))		
+		//minDate: new Date()
 	});
 	$("#editStartDate").datepicker({
 		dateFormat: 'dd/mm/yy'
@@ -58,6 +72,18 @@ $(document).ready(function () {
 		// console.log(today);
 		getCoursesByGrade(grade, '#addCourse', addDay);
 	});
+
+	// when addStartDate changes, get courses by grade
+	$('#addStartDate').change(function () {
+		var grade = $('#addGrade').val();
+		var addDay = $(this).val();
+		// change format as 'yyyy-mm-dd'
+		var date = addDay.split("/");
+		addDay = date[2] + '-' + date[1] + '-' + date[0];
+		getCoursesByGrade(grade, '#addCourse', addDay);
+	});
+
+
 
 	// initialise state list when loading
 	listState('#listState');
@@ -187,7 +213,7 @@ function retrieveClassInfo(clazzId) {
 		url: '${pageContext.request.contextPath}/class/get/class/' + clazzId,
 		type: 'GET',
 		success: async function (clazz) {
-			console.log(clazz.startDate);			
+			// console.log(clazz.startDate);			
 			// firstly populate courses by grade then set the selected option
 			await editInitialiseCourseByGrade(clazz.grade, clazz.startDate, clazz.courseId);
 			$("#editId").val(clazz.id);
@@ -195,6 +221,7 @@ function retrieveClassInfo(clazzId) {
 			$("#editBranch").val(clazz.branch);
 			// Set date value
 			var date = new Date(clazz.startDate); // Replace with your date value
+			$("#editStartDate").prop('disabled', true);
 			$("#editStartDate").datepicker('setDate', date);
 			$("#editGrade").val(clazz.grade);
 			$("#editDay").val(clazz.day);
@@ -292,7 +319,7 @@ function getCoursesByGrade(grade, toWhere, today) {
 			$(toWhere).empty(); // clear the previous options
 			$.each(data, function (index, value) {
 				const cleaned = cleanUpJson(value);
-				//console.log(cleaned);
+				console.log(cleaned);
 				$(toWhere).append($("<option value='" + value.id + "'>").text(value.description).val(value.id)); // add new option
 			});
 		},
@@ -454,7 +481,7 @@ function deleteClass(id) {
 					<div class="col-md-1">
 						<label for="listType" class="label-form">Type</label>
 						<select class="form-control" id="listType" name="listType">
-							<option value="0">All</option>
+							<!-- <option value="0">All</option> -->
 							<option value="Onsite">Onsite</option>
 							<option value="Online">Online</option>
 						</select>
@@ -478,6 +505,55 @@ function deleteClass(id) {
 					</div>
 				</div>
 			</div>
+			<!-- Search Info-->
+			<c:if test="${branchInfo != null}">
+				<div id="searchInfo" class="alert alert-info jae-border-info py-3 mt-4">
+					<table style="width: 100%;">
+						<colgroup>
+							<col style="width: 20%;" />
+							<col style="width: 20%;" />
+							<col style="width: 10%;" />
+							<col style="width: 20%;" />
+							<col style="width: 30%;" />							
+						</colgroup>
+						<tr>
+							<td class="text-center">State : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(stateName('1'));
+								</script>
+							</span></td>
+							<td class="text-center">Branch : <span class="font-weight-bold">
+								<script type="text/javascript">
+									document.write(branchName('${branchInfo}'));
+								</script>
+							</span></td>
+							<td class="text-center">Grade : 
+								<span class="font-weight-bold">
+									<script type="text/javascript">
+										document.write(gradeName('${gradeInfo}'));
+									</script>
+								</span>
+							</td>
+							<td class="text-center">Year : <span class="font-weight-bold">		
+								<c:choose>
+									<c:when test="${yearInfo != null}">
+										<c:set var="nextYear" value="${yearInfo + 1}" />
+										<c:set var="yearDisplay" value="Academic Year ${fn:substring(yearInfo, 2, 4)}/${fn:substring(nextYear, 2, 4)}" />
+										<c:out value="${yearDisplay}" />
+									</c:when>
+									<c:otherwise>
+										<c:out value="Year not available" />
+									</c:otherwise>
+								</c:choose>
+							</span></td>
+							<td class="text-center">Type : <span class="font-weight-bold">
+								<c:out value="${classTypeInfo}" />
+							</span></td>
+						</tr>
+					</table>						
+				</div>
+			</c:if>
+
 			<div class="form-group">
 				<div class="form-row">
 					<div class="col-md-12">
@@ -634,12 +710,19 @@ function deleteClass(id) {
 														</c:otherwise>
 													</c:choose>
 													<td class="text-center align-middle">
-														<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')">
-														</i>
-														<%-- too dangerous as related to many tables
-														&nbsp;
-														<i class="bi bi-trash text-danger fa-lg" data-toggle="tooltip" title="Delete" onclick="confirmDelete('${clazz.id}')"></i>
-														--%>
+														<c:choose>
+															<c:when test="${clazz.online == true}">
+																<c:if test="${isAdmin}">
+																	<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')"></i>
+																</c:if>
+																<c:if test="${!isAdmin}">
+																	<i class="bi bi-pencil-square text-secondary fa-lg" data-toggle="tooltip" title="Edit Disabled for Online Classes"></i>
+																</c:if>
+															</c:when>
+															<c:otherwise>
+																<i class="bi bi-pencil-square text-primary fa-lg hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveClassInfo('${clazz.id}')"></i>
+															</c:otherwise>
+														</c:choose>
 													</td>
 												</tr>
 											</c:forEach>
@@ -722,12 +805,26 @@ function deleteClass(id) {
 <!-- whenever add dialogue launches, start date is set to today -->
 <script>
 	$('#registerClassModal').on('shown.bs.modal', function () {
-		var today = new Date();
-		var day = today.getDate();
-		var month = today.getMonth() + 1; // Note: January is 0
-		var year = today.getFullYear();
+		// var today = new Date();
+		// var day = today.getDate();
+		// var month = today.getMonth() + 1; // Note: January is 0
+		// var year = today.getFullYear();
+		// var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+		
+		
+		var defaultDate = new Date(2024, 5, 10); // Month is 0-indexed, so 5 represents June
+		var day = defaultDate.getDate();
+		var month = defaultDate.getMonth() + 1; // Note: January is 0
+		var year = defaultDate.getFullYear();
 		var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
+
+
 		document.getElementById('addStartDate').value = formattedDate;
+		
+		// Set branch value for staff users (non-admin)
+		if(!JSON.parse(window.isAdmin)){
+			$("#addBranch").val(window.branch);
+		}
 	});
 </script>
 

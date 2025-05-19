@@ -4,6 +4,7 @@
 const ACADEMIC_NEXT_YEAR_COURSE_SUFFIX = " (Next Year)";
 var academicYear;
 var academicWeek;
+var lastAcademicWeek;
 
 const ENROLMENT = 'enrolment';
 // const ELEARNING = 'eLearning';
@@ -30,6 +31,20 @@ $(document).ready(
 			academicYear = response[0];
 			academicWeek = response[1];
 			//console.log(response[1]);
+				// get last academic week
+				$.ajax({
+					url: '${pageContext.request.contextPath}/class/lastAcademicWeek',
+					type: 'GET',
+					data: { year: academicYear },
+					success: function(response) {	
+						lastAcademicWeek = response;
+						console.log('Last academic week: ' + lastAcademicWeek);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.log('Error : ' + errorThrown);
+					}
+				});
+
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			console.log('Error : ' + errorThrown);
@@ -208,9 +223,9 @@ $.ajax({
 		var start_week, end_week;        
 		if (value.year == academicYear) {
 			start_week = parseInt(academicWeek);
-			end_week = parseInt(academicWeek) + 9;
-			if (end_week >= 49) {
-			end_week = 49;
+			end_week = parseInt(academicWeek) + 9;	
+			if (end_week >= lastAcademicWeek) {
+				end_week = lastAcademicWeek;
 			}
 		} else {
 			start_week = 1;
@@ -725,16 +740,17 @@ function retrieveEnrolment(studentId){
 				method: 'GET',
 				success: function(response) {
 					// Handle the response
+					console.log(response);
 					for (let index = response.length - 1; index >= 0; index--) {
 						let value = response[index];
-						// console.log(index + ' -- ' + value);
+						//console.log(index + ' -- ' + value);
 
 						$.each(value, function(count, data) {
 							if (index == 0) {
-								// console.log('Top >>>>>>> index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Top >>>>>>> index : ' + index + ' -- count :' + count + ' --> ' + data);
 								updateInvoiceTableWithTop(data, index);
 							} else {
-								// console.log('Rest <<<<<<< index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Rest <<<<<<< index : ' + index + ' -- count :' + count + ' --> ' + data);
 								updateInvoiceTableWithRest(data, index);
 							}
 						});

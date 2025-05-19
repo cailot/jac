@@ -233,6 +233,23 @@ function headerBranch(tableElementId) {
 	});
 }
 
+// get state name
+function  stateName(value){
+	var stateText = '';
+	switch(value) {
+		case '1': stateText = 'Victoria'; break;
+		case '2': stateText = 'New South Wales'; break;
+		case '3': stateText = 'Queensland'; break;
+		case '4': stateText = 'South Australia'; break;
+		case '5': stateText = 'Tasmania'; break;
+		case '6': stateText = 'Western Australia'; break;
+		case '7': stateText = 'Northern Territory'; break;
+		case '8': stateText = 'ACT'; break;
+		default: stateText = 'All State'; 
+	}
+	return stateText;
+}
+
 // get branch name
 function  branchName(value){
 	var branchText = '';
@@ -312,6 +329,19 @@ function  dayName(value){
 		case '9': dayText = 'SUNPM'; break;
 	}
 	return dayText;
+}
+
+// payment name
+function  paymentName(value){
+	var payText = '';
+	switch(value) {
+		case '0': payText = 'All'; break;
+		case 'cash': payText = 'Cash'; break;
+		case 'cheque': payText = 'Cheque'; break;
+		case 'card': payText = 'Card'; break;
+		case 'bank': payText = 'Bank'; break;
+	}
+	return payText;
 }
 
 // get day code

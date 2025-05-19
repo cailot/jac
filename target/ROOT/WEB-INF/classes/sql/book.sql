@@ -111,4 +111,5 @@ INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V2] JM
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V3] JMSS','19', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('VCE Book','20', 0, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('Postage','0', 9.99, true, CURDATE());
+INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('Voucher','0', -50.00, true, CURDATE());
 COMMIT;

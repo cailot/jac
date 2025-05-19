@@ -174,10 +174,20 @@
 		<put-attribute name="title" value="Student Grade" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/studentGrade.jsp" />
 	</definition>
-	<!-- Migration -->
-	<definition name="migrationPage" extends="base.definition">
+	<!-- Migration Student -->
+	<definition name="migrationStudentPage" extends="base.definition">
 		<put-attribute name="title" value="Student Data Migration" />
-		<put-attribute name="body" value="/WEB-INF/layouts/setting/migration.jsp" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationStudent.jsp" />
+	</definition>
+	<!-- Migration Enrolment -->
+	<definition name="migrationEnrolPage" extends="base.definition">
+		<put-attribute name="title" value="Enrolment Data Migration" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationEnrol.jsp" />
+	</definition>
+	<!-- Migration Invoice -->
+	<definition name="migrationInvoicePage" extends="base.definition">
+		<put-attribute name="title" value="Invoice Data Migration" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationInvoice.jsp" />
 	</definition>
 	<!-- Branch Stats -->
 	<definition name="branchStatsPage" extends="base.definition">

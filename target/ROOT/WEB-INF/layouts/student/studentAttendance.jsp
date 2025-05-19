@@ -46,19 +46,26 @@ $(document).ready(function () {
 			'print'
 		],
 		columnDefs: [
-			{ targets: 0, width: '10%' },
-			{ targets: 1, width: '15%' },
-			{ targets: 2, width: '15%' },
-			{ targets: 3, width: '10%' },
-			{ targets: 4, width: '45%' },
-			{ targets: 5, width: '5%' }
+			{ targets: 0, width: '10%', className: 'min-w-120' },
+			{ targets: 1, width: '15%', className: 'min-w-120' },
+			{ targets: 2, width: '15%', className: 'min-w-120' },
+			{ targets: 3, width: '10%', className: 'min-w-120' },
+			{ targets: -1, width: '5%', className: 'min-w-80' },
+			{ 
+				targets: '_all',
+				className: 'min-w-80',
+				autoWidth: true
+			}
 		],
 		fixedColumns: {
 			leftColumns: 4,
 			rightColumns: 1
 		},
 		paging: true,
-		scrollX: true
+		scrollX: true,
+		scrollCollapse: true,
+		autoWidth: false,
+		responsive: true
 	});
 
 	$("#fromDate").datepicker({
@@ -226,6 +233,15 @@ function linkToStudent(studentId) {
 		margin-bottom: 20px;
 	}
 
+	/* Added minimum width classes */
+	.min-w-80 {
+		min-width: 80px !important;
+	}
+
+	.min-w-120 {
+		min-width: 120px !important;
+	}
+
 	div.dataTables_filter {
 		padding-top: 35px;
 		padding-bottom: 35px;
@@ -248,19 +264,23 @@ function linkToStudent(studentId) {
 		padding-right: 10px !important;
 	}
 
-	
 	div.dataTables_wrapper {
-		width: 1600px;
+		width: 100%;
 		margin: 0 auto;
+		overflow-x: auto;
+	}
+
+	#attendanceTable {
+		width: 100% !important;
+		margin: 0 !important;
 	}
 
 	#attendanceTable .roll {
 		white-space: nowrap;
 		padding: 0 !important;
 		box-sizing: border-box;
-		/* Include padding in the specified width */
-		min-width: 50px;
-		/* Set a fixed width, adjust as needed */
+		min-width: 80px !important;
+		width: auto !important;
 	}
 
 	#attendanceTable .no-gap {
@@ -274,6 +294,26 @@ function linkToStudent(studentId) {
 
 	#attendanceTable .th-background {
 		background-color: #007bff !important;
+	}
+	
+	/* Fix for datepicker appearing behind table */
+	.ui-datepicker, .datepicker {
+		z-index: 9999 !important;
+	}
+
+	/* Added fixed column widths */
+	#attendanceTable th[rowspan="2"],
+	#attendanceTable td:not(.roll):not(:last-child) {
+		min-width: 120px !important;
+		width: auto !important;
+	}
+
+	/* Make the table header stick to content */
+	#attendanceTable thead th {
+		position: sticky;
+		top: 0;
+		background-color: #b8daff;
+		z-index: 1;
 	}
 
 </style>
