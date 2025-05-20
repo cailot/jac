@@ -162,4 +162,33 @@ public class CourseServiceImpl implements CourseService {
 		courseRepository.updateCourseSetActiveTrueById(id);
 	}
 	
+
+	@Override
+	public List<Course> allCourses(int year) {
+		List<Course> courses = new ArrayList<>();
+		try{
+			courses = courseRepository.getAll(year);
+		}catch(Exception e){
+			System.out.println("No course found");
+		}
+		return courses;
+	}
+
+	@Override
+	public Course getNewCourse(Long oldId, int newYear) {
+		Course course = null;
+		try{
+			Course oldCourse = courseRepository.findById(oldId).orElse(null);
+			if (oldCourse == null) return course;
+			course = courseRepository.findByGradeAndNameAndOnlineAndCycleYear(
+				oldCourse.getGrade(),
+				oldCourse.getName(),
+				oldCourse.isOnline(),
+				newYear
+			);
+		}catch(Exception e){
+			System.out.println("No course found");
+		}
+		return course;
+	}
 }

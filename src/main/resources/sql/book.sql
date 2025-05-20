@@ -69,11 +69,13 @@ INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V2] TT
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V3] TT6 & FT6','11', 74, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V4] TT6 & FT6','11', 74, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V5] TT6 & FT6','11', 74, true, CURDATE());
+INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V6] TT6 & FT6','11', 66, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V1] TT6','11', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V2] TT6','11', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V3] TT6','11', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V4] TT6','11', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V5] TT6','11', 37, true, CURDATE());
+INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V6] TT6','11', 33, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V1] FT6 - English','11', 18.5, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V1] FT6 - Mathmatics','11', 18.5, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V2] FT6 - English','11', 18.5, true, CURDATE());
@@ -105,7 +107,7 @@ INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V4] FT
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V4] FT8 - Mathmatics','12', 18.5, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V5] FT8 - English','12', 18.5, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V5] FT8- Mathmatics','12', 18.5, true, CURDATE());
-INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('Successful Comprehension','12', 35.95, true, CURDATE());
+INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('Successful Comprehension','12', 37.95, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V1] JMSS','19', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V2] JMSS','19', 37, true, CURDATE());
 INSERT INTO jac.Book (name, grade, price, active, registerDate) VALUES ('[V3] JMSS','19', 37, true, CURDATE());

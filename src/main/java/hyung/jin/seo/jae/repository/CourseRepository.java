@@ -15,6 +15,9 @@ public interface CourseRepository extends JpaRepository<Course, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c")
 	List<CourseDTO> getAll();
 
+	@Query(value = "SELECT c FROM Course c WHERE c.cycle.year = :year")
+	List<Course> getAll(@Param("year") int year);
+
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.CourseDTO(c.id, c.name, c.description, c.grade, c.online, c.price, c.cycle.id, c.cycle.year, c.active) FROM Course c WHERE c.grade = :grade")
 	List<CourseDTO> getByGrade(@Param("grade") String grade);
 
@@ -43,6 +46,9 @@ public interface CourseRepository extends JpaRepository<Course, Long>{
 	@Modifying
     @Query("UPDATE Course c SET c.active = true WHERE c.id = :id")
     int updateCourseSetActiveTrueById(@Param("id") Long id);
+
+	@Query("SELECT c FROM Course c WHERE c.grade = :grade AND c.name = :name AND c.online = :online AND c.cycle.year = :year")
+	Course findByGradeAndNameAndOnlineAndCycleYear(@Param("grade") String grade, @Param("name") String name, @Param("online") boolean online, @Param("year") int year);
 
 }
 

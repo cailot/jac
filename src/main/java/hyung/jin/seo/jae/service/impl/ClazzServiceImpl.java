@@ -253,7 +253,6 @@ public class ClazzServiceImpl implements ClazzService {
 		return dtos;
 	}
 
-
 	@Override
 	public List<ClazzDTO> filterOnSiteClazz(String state, String branch, String grade, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();

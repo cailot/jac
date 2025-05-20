@@ -2,6 +2,7 @@ package hyung.jin.seo.jae.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import hyung.jin.seo.jae.dto.BranchDTO;
+import hyung.jin.seo.jae.dto.ClazzDTO;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Course;
 import hyung.jin.seo.jae.model.Cycle;
@@ -74,7 +78,7 @@ public class BatchController {
 			// 1. get Cycle
 			Cycle cycle = cycleService.findCycleByYear(year);
 			// 2. create Course
-			List<Course> courses = getCourses(cycle);
+			List<Course> courses = getCourses(year);
 			// 3. add Course
 			for (Course course : courses) {
 				courseService.addCourse(course);
@@ -93,6 +97,37 @@ public class BatchController {
 					clazzService.addClazz(clazz);
 				}
 			}
+			// 5. create class template for branch
+			// get branch code
+			List<BranchDTO> branches = codeService.allBranches();
+			// get start date for new year
+			Cycle newCycle = cycleService.findCycleByYear(year);
+			LocalDate startDate = newCycle.getStartDate();
+
+			// bring last year class from branch
+
+			for(BranchDTO branch : branches){
+				String branchCode = branch.getCode();
+				if(branchCode.equals(JaeConstants.HEAD_OFFICE_CODE) || branchCode.equals(JaeConstants.TEST_CODE)) continue;
+				// get last year class from branch
+				List<ClazzDTO> clazzes = clazzService.listOnsiteClazz(JaeConstants.VICTORIA_CODE, branchCode, "0", String.valueOf(year - 1));
+				for(ClazzDTO clazz : clazzes){
+					if(!clazz.isOnline()){
+						Clazz newClazz = new Clazz();
+						newClazz.setActive(true);
+						newClazz.setName(clazz.getName());
+						newClazz.setState(JaeConstants.VICTORIA_CODE);
+						newClazz.setBranch(branchCode);
+						newClazz.setDay(clazz.getDay());
+						newClazz.setStartDate(startDate);
+						Course newCourse = courseService.getNewCourse(Long.parseLong(clazz.getCourseId()), year);
+						newClazz.setCourse(newCourse);
+						clazzService.addClazz(newClazz);		
+					}
+				}
+			}
+
+
 			// 5. return success message// // 3. return success;
 			return ResponseEntity.ok("Course template generated success");
 		} catch (Exception e) {
@@ -100,6 +135,32 @@ public class BatchController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
 		}
 	}
+
+
+	// get courses for new year
+	private List<Course> getCourses(int year) {
+		List<Course> courses = new ArrayList<>();
+		Cycle cycle = cycleService.findCycleByYear(year);
+		// get old courses
+		List<Course> olds = courseService.allCourses(year-1);
+		for(Course old : olds){
+			Course newCourse = new Course();
+			newCourse.setName(old.getName());
+			newCourse.setGrade(old.getGrade());
+			newCourse.setPrice(old.getPrice());
+			newCourse.setDescription(old.getDescription());
+			newCourse.setOnline(old.isOnline());
+			newCourse.setActive(old.isActive());
+			newCourse.setSubjects(new ArrayList<>(old.getSubjects()));
+			newCourse.setCycle(cycle);
+			courses.add(newCourse);
+		}
+		return courses;
+	}
+
+
+
+
 
 	private List<Course> getCourses(Cycle cycle) {
 		List<Course> courses = new ArrayList<>();
@@ -347,7 +408,7 @@ public class BatchController {
 		courses.add(s9Onsite2);
 		Course s9Onsite1 = new Course();
 		s9Onsite1.setGrade("8");
-		s9Onsite1.setName("S9 Onsite 1");
+		s9Onsite1.setName("S9 Onsite (1)");
 		s9Onsite1.setDescription("Onsite 1 Subject");
 		s9Onsite1.setOnline(false);
 		s9Onsite1.setPrice(0);
@@ -370,7 +431,7 @@ public class BatchController {
 		// Onsite Course
 		Course s10Onsite3 = new Course();
 		s10Onsite3.setGrade("9");
-		s10Onsite3.setName("S10 Onsite 3");
+		s10Onsite3.setName("S10 Onsite (3)");
 		s10Onsite3.setDescription("Onsite 3 Subjects");
 		s10Onsite3.setOnline(false);
 		s10Onsite3.setPrice(0);
@@ -381,7 +442,7 @@ public class BatchController {
 		courses.add(s10Onsite3);
 		Course s10Onsite2 = new Course();
 		s10Onsite2.setGrade("9");
-		s10Onsite2.setName("S10 Onsite 2");
+		s10Onsite2.setName("S10 Onsite (2)");
 		s10Onsite2.setDescription("Onsite 2 Subjects");
 		s10Onsite2.setOnline(false);
 		s10Onsite2.setPrice(0);
@@ -390,7 +451,7 @@ public class BatchController {
 		courses.add(s10Onsite2);
 		Course s10Onsite1 = new Course();
 		s10Onsite1.setGrade("9");
-		s10Onsite1.setName("S10 Onsite 1");
+		s10Onsite1.setName("S10 Onsite (1)");
 		s10Onsite1.setDescription("Onsite 1 Subject");
 		s10Onsite1.setOnline(false);
 		s10Onsite1.setPrice(0);
