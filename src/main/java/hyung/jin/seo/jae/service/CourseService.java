@@ -9,6 +9,9 @@ public interface CourseService {
 	// list all Course
 	List<CourseDTO> allCourses();
 
+	// list all Course by year
+	List<Course> allCourses(int year);
+
 	// list all Course by grade
 	List<CourseDTO> findByGradeNYear(String grade, int year);
 
@@ -41,4 +44,7 @@ public interface CourseService {
 
 	// re-activate Course
 	void reactivateCourse(Long id);
+
+	// get new course
+	Course getNewCourse(Long oldId, int newYear);
 }

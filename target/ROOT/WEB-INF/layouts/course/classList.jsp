@@ -620,6 +620,8 @@ function deleteClass(id) {
 															<c:when test="${clazz.branch eq '32'}">Melton</c:when>
 															<c:when test="${clazz.branch eq '33'}">Glenroy</c:when>
 															<c:when test="${clazz.branch eq '34'}">Pakenham</c:when>
+															<c:when test="${clazz.branch eq '35'}">Tarneit</c:when>
+															<c:when test="${clazz.branch eq '36'}">Clyde</c:when>
 															<c:when test="${clazz.branch eq '90'}">JAC Head Office VIC</c:when>
 															<c:when test="${clazz.branch eq '99'}">Testing</c:when>
 															<c:otherwise>Unknown State</c:otherwise>
@@ -805,22 +807,12 @@ function deleteClass(id) {
 <!-- whenever add dialogue launches, start date is set to today -->
 <script>
 	$('#registerClassModal').on('shown.bs.modal', function () {
-		// var today = new Date();
-		// var day = today.getDate();
-		// var month = today.getMonth() + 1; // Note: January is 0
-		// var year = today.getFullYear();
-		// var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-		
-		
-		var defaultDate = new Date(2024, 5, 10); // Month is 0-indexed, so 5 represents June
-		var day = defaultDate.getDate();
-		var month = defaultDate.getMonth() + 1; // Note: January is 0
-		var year = defaultDate.getFullYear();
+		var today = new Date();
+		var day = today.getDate();
+		var month = today.getMonth() + 1; // Note: January is 0
+		var year = today.getFullYear();
 		var formattedDate = (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-
-
 		document.getElementById('addStartDate').value = formattedDate;
-		
 		// Set branch value for staff users (non-admin)
 		if(!JSON.parse(window.isAdmin)){
 			$("#addBranch").val(window.branch);
