@@ -45,7 +45,8 @@ function createCourseTemplate() {
 	var courseYear = $('#courseYear').val();
 	console.log(courseYear);
 
-	// Show spinner (as Bootstrap modal)
+	// Set loading message
+	$('#loading-message').text('Processing...');
 	$('#loading-spinner').modal('show');
 
 	$.ajax({

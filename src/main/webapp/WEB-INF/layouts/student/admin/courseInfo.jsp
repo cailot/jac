@@ -87,13 +87,15 @@ $(document).ready(
 		// Add event listeners to the input fields within the same row
 		$('#basketTable').on('input', '.onsiteStart, .onsiteEnd, .onsiteWeeks, .onsiteCredit', function () {
 			var $onsiteRow = $(this).closest('tr');  // Find the closest onsite row
-			// how to set .discount = 0?
 			$onsiteRow.find('.discount').text(0);
 			var pairId = $onsiteRow.data('pair-id');  // Get the pair ID
-			var $onlineRow = $('#basketTable').find('tr[data-pair-id="' + pairId + '"]').not($onsiteRow);  // Find the corresponding online row
-
+			var onsiteYear = $onsiteRow.find('.year').text(); // Get the year of the onsite row
+			// Find the corresponding online row with the same pairId AND year
+			var $onlineRow = $('#basketTable').find('tr[data-pair-id="' + pairId + '"]').not($onsiteRow).filter(function() {
+				return $(this).find('.year').text() === onsiteYear && $(this).find('.online').text() === "true";
+			});
 			syncValues($onsiteRow, $onlineRow);  // Pass both rows to the syncValues function
-   		});
+		});
 
 	}
 );
