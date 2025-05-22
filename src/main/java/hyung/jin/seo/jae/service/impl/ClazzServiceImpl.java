@@ -317,4 +317,14 @@ public class ClazzServiceImpl implements ClazzService {
 		return dtos;
 	}
 
+	@Override
+	public boolean isOnline(Long id) {
+		boolean isOnline = false;
+		try {
+			isOnline = clazzRepository.isOnline(id);
+		} catch (Exception e) {
+			System.out.println("No class found");
+		}
+		return isOnline;
+	}
 }

@@ -180,9 +180,13 @@
 								Student Migration
 							</a>
 							<div class="dropdown-menu" aria-labelledby="migrationDropdown">
-								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationStudent">Student</a>
-								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationInvoice">Invoice</a>
-								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationEnrol">Enrolment</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationStudent">1. Student</a>
+								<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/migrationInvoice">Invoice</a> -->
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationEnrol">2. Enrolment</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationMaterial">3. Material</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationEtc">4. Etc</a>
+								<a class="dropdown-item" href="${pageContext.request.contextPath}/migrationPayment">5. Payment</a>
+	
 							</div>
 						</div>
 					</c:when>

@@ -110,5 +110,9 @@ public interface ClazzRepository extends JpaRepository<Clazz, Long> {
 	// get class by grade and year
 	@Query(value = "SELECT c FROM Clazz c where c.course.grade = :grade AND  c.branch = '90' AND c.course.cycle.year = :year AND c.course.online = true")
 	Optional<Clazz> getClazz4OnlineSession(@Param("grade") String grade, @Param("year") int year);
+
+	// check if class is online by class id
+	@Query("SELECT c.course.online FROM Clazz c WHERE c.id = ?1")
+	boolean isOnline(Long clazzId);
 	
 }
