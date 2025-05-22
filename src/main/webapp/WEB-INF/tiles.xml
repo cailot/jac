@@ -189,6 +189,21 @@
 		<put-attribute name="title" value="Invoice Data Migration" />
 		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationInvoice.jsp" />
 	</definition>
+	<!-- Migration Material -->
+	<definition name="migrationMaterialPage" extends="base.definition">
+		<put-attribute name="title" value="Material Data Migration" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationMaterial.jsp" />
+	</definition>
+	<!-- Migration Etc -->
+	<definition name="migrationEtcPage" extends="base.definition">
+		<put-attribute name="title" value="Etc Data Migration" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationEtc.jsp" />
+	</definition>
+	<!-- Migration Payment -->
+	<definition name="migrationPaymentPage" extends="base.definition">
+		<put-attribute name="title" value="Payment Data Migration" />
+		<put-attribute name="body" value="/WEB-INF/layouts/setting/migrationPayment.jsp" />
+	</definition>
 	<!-- Branch Stats -->
 	<definition name="branchStatsPage" extends="base.definition">
 		<put-attribute name="title" value="Branch Statistics" />

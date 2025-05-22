@@ -268,6 +268,21 @@ public class JaeController {
 		return "migrationInvoicePage";
 	}
 
+	@GetMapping("/migrationMaterial")
+	public String materialMigration(HttpSession session) {
+		return "migrationMaterialPage";
+	}
+
+	@GetMapping("/migrationEtc")
+	public String etcMigration(HttpSession session) {
+		return "migrationEtcPage";
+	}
+
+	@GetMapping("/migrationPayment")
+	public String paymentMigration(HttpSession session) {
+		return "migrationPaymentPage";
+	}
+
 	@GetMapping("/batch")
 	public String batchProcess(HttpSession session) {
 		return "batchPage";

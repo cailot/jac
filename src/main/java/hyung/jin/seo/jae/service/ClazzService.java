@@ -80,4 +80,7 @@ public interface ClazzService {
 
 	// delete class
 	void deleteClass(Long id);
+
+	// check if class is online
+	boolean isOnline(Long id);
 }

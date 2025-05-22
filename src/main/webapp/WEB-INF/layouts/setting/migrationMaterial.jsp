@@ -372,8 +372,8 @@ label {
 	<!-- Search section -->
 	<div class="row justify-content-center">
 		<div class="upload-section col-md-8">
-	    <h2 class="text-center">Upload CSV File For Enrolment Migration</h2>
-	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/enrol" enctype="multipart/form-data">
+	    <h2 class="text-center">Upload CSV File For Material Migration</h2>
+	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/material" enctype="multipart/form-data">
 	        <div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->
@@ -465,25 +465,21 @@ label {
 						<table id="hpiiTable" class="display w-100">
 							<thead>
 								<tr>
-									<th>Student ID</th>
+									<th>Book Name</th>
+									<th>Book ID</th>
+									<th>Price</th>
 									<th>Invoice ID</th>
-									<th>Class ID</th>
-									<th>Start Week</th>
-									<th>End Week</th>
+									<th>Register Date</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${batchList}" var="record">
 									<tr>
-										<td title="<c:out value='${record.studentId}'/>"><c:out value="${record.studentId}" /></td>
+										<td title="<c:out value='${record.name}'/>"><c:out value="${record.name}" /></td>
+										<td title="<c:out value='${record.bookId}'/>"><c:out value="${record.bookId}" /></td>
+										<td title="<c:out value='${record.price}'/>"><c:out value="${record.price}" /></td>
 										<td title="<c:out value='${record.invoiceId}'/>"><c:out value="${record.invoiceId}" /></td>
-										<td title="<c:out value='${record.clazzId}'/>"><c:out value="${record.clazzId}" /></td>
-										<td>
-											<c:out value="${record.startWeek}" />
-										</td>
-										<td>
-											<c:out value="${record.endWeek}" />
-										</td>
+										<td title="<c:out value='${record.registerDate}'/>"><c:out value="${record.registerDate}" /></td>
 									</tr>
 								</c:forEach>
 							</tbody>

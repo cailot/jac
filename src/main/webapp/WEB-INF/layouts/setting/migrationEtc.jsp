@@ -372,8 +372,8 @@ label {
 	<!-- Search section -->
 	<div class="row justify-content-center">
 		<div class="upload-section col-md-8">
-	    <h2 class="text-center">Upload CSV File For Enrolment Migration</h2>
-	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/enrol" enctype="multipart/form-data">
+	    <h2 class="text-center">Upload CSV File For Etc Migration</h2>
+	    <form id="uploadForm" method="post" action="${pageContext.request.contextPath}/migration/etc" enctype="multipart/form-data">
 	        <div class="form-row p-4">
 	            <div class="col-md-8">
 	                <!-- Include CSRF token -->
