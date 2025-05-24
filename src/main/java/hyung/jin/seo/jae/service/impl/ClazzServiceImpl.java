@@ -133,10 +133,10 @@ public class ClazzServiceImpl implements ClazzService {
 	}
 
 	@Override
-	public List<ClazzDTO> filterClazz(String state, String branch, String grade) {
+	public List<ClazzDTO> filterClazz(String state, String branch, String grade, int year) {
 		List<ClazzDTO> dtos = new ArrayList<>();
 		try {
-			dtos = clazzRepository.findClassForStateNBranchNGrade(state, branch, grade);
+			dtos = clazzRepository.findClassForAttendance(state, branch, grade, year);
 		} catch (Exception e) {
 			System.out.println("No class found");
 		}
