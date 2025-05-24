@@ -465,24 +465,22 @@ label {
 						<table id="hpiiTable" class="display w-100">
 							<thead>
 								<tr>
-									<th>Student ID</th>
+									<th>Payment ID</th>
 									<th>Invoice ID</th>
-									<th>Class ID</th>
-									<th>Start Week</th>
-									<th>End Week</th>
+									<th>Amount</th>
+									<th>Payment Method</th>
+									<th>Payment Date</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${batchList}" var="record">
 									<tr>
-										<td title="<c:out value='${record.studentId}'/>"><c:out value="${record.studentId}" /></td>
+										<td title="<c:out value='${record.id}'/>"><c:out value="${record.id}" /></td>
 										<td title="<c:out value='${record.invoiceId}'/>"><c:out value="${record.invoiceId}" /></td>
-										<td title="<c:out value='${record.clazzId}'/>"><c:out value="${record.clazzId}" /></td>
-										<td>
-											<c:out value="${record.startWeek}" />
-										</td>
-										<td>
-											<c:out value="${record.endWeek}" />
+										<td title="<c:out value='${record.amount}'/>"><c:out value="${record.amount}" /></td>
+										<td title="<c:out value='${record.method}'/>"><c:out value="${record.method}" /></td>
+										<td title="<c:out value='${record.registerDate}'/>">
+											<c:out value="${record.registerDate}" />
 										</td>
 									</tr>
 								</c:forEach>

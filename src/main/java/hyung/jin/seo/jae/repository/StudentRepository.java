@@ -315,7 +315,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 "WHERE (:state = '0' OR s.state = :state) " +
                 "AND (:branch = '0' OR s.branch = :branch) " +
                 "AND (s.registerDate <= :weekDate) " +
-                "AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate)) " +
+                "AND (s.active = 1 OR (s.active = 0 AND s.endDate > :weekDate)) " +
                 "GROUP BY s.grade")
         List<Object[]> countActiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
 
@@ -324,7 +324,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 "WHERE (:state = '0' OR s.state = :state) " +
                 "AND (:branch = '0' OR s.branch = :branch) " +
                 "AND (s.registerDate <= :weekDate) " +
-                "AND (s.active = 1 AND s.endDate <= :weekDate) " +
+                "AND s.active = 0 " + 
+                "AND s.endDate <= :weekDate " +
                 "GROUP BY s.grade")
         List<Object[]> countInactiveStudentsByGrade(@Param("state") String state, @Param("branch") String branch, @Param("weekDate") LocalDate weekDate);
 
@@ -359,7 +360,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 "AND (:branch = '0' OR s.branch = :branch) " +
                 "AND (s.registerDate <= :weekDate) " +
                 "AND (:grade = '0' OR s.grade = :grade) " +
-                "AND (s.active = 0 OR (s.active = 1 AND s.endDate > :weekDate))" + 
+                "AND (s.active = 1 OR (s.active = 0 AND s.endDate > :weekDate))" + 
                 "ORDER BY s.id")
         List<StudentWithEnrolmentDTO> listActiveStudentsWithEnrolmentByGradeAndWeek(@Param("state") String state, 
                 @Param("branch") String branch, 
@@ -380,7 +381,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 "AND (:branch = '0' OR s.branch = :branch) " +
                 "AND (s.registerDate <= :weekDate) " +
                 "AND (:grade = '0' OR s.grade = :grade) " +              
-                "AND (s.active = 1 AND s.endDate <= :weekDate)" +
+                "AND s.active = 0 " +
+                "AND s.endDate <= :weekDate " +
                 "ORDER BY s.id")
         List<StudentWithEnrolmentDTO> listInactiveStudentsWithEnrolmentByGradeAndWeek(@Param("state") String state, 
                 @Param("branch") String branch, 

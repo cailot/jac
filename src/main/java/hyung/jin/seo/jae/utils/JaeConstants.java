@@ -269,9 +269,9 @@ public interface JaeConstants {
 	//
 	////////////////////////////////////
 
-	int ACTIVE = 0;
+	int ACTIVE = 1;
 
-	int INACTIVE = 1;
+	int INACTIVE = 0;
 
 	////////////////////////////////////
 	//
