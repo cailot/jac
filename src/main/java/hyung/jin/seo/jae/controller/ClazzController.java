@@ -394,7 +394,8 @@ public class ClazzController {
 			@RequestParam(value = "listBranch", required = false) String branch,
 			@RequestParam(value = "listGrade", required = false) String grade) {
 		// System.out.println(state + "\t" + branch + "\t" + grade);
-		List<ClazzDTO> dtos = clazzService.filterClazz(state, branch, grade);
+		int currentYear = cycleService.academicYear();
+		List<ClazzDTO> dtos = clazzService.filterClazz(state, branch, grade, currentYear);
 		return dtos;
 	}
 
