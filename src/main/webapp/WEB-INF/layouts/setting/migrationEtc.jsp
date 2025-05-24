@@ -436,7 +436,7 @@ label {
 						<table id="failureTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th>Enrolment ID</th>
+									<th>Record ID</th>
 									<th>Line #</th>
 									<th>Field</th>
 									<th>Error Message</th>
@@ -445,7 +445,7 @@ label {
 							<tbody>
 								<c:forEach items="${failedRecords}" var="error">
 									<tr>
-										<td>${error.studentId}</td>
+										<td>${error.id}</td>
 										<td>${error.lineNumber}</td>
 										<td>${error.fieldName}</td>
 										<td>${error.errorMessage}</td>
@@ -465,25 +465,21 @@ label {
 						<table id="hpiiTable" class="display w-100">
 							<thead>
 								<tr>
-									<th>Student ID</th>
-									<th>Invoice ID</th>
-									<th>Class ID</th>
-									<th>Start Week</th>
-									<th>End Week</th>
+									<th>ID</th>
+									<th>Register Date</th>
+									<th>Amount</th>
+									<th>Info</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach items="${batchList}" var="record">
 									<tr>
-										<td title="<c:out value='${record.studentId}'/>"><c:out value="${record.studentId}" /></td>
-										<td title="<c:out value='${record.invoiceId}'/>"><c:out value="${record.invoiceId}" /></td>
-										<td title="<c:out value='${record.clazzId}'/>"><c:out value="${record.clazzId}" /></td>
-										<td>
-											<c:out value="${record.startWeek}" />
+										<td title="<c:out value='${record.id}'/>"><c:out value="${record.id}" /></td>
+										<td title="<c:out value='${record.registerDate}'/>"><c:out value="${record.registerDate}" /></td>
+										<td title="<c:out value='${record.amount}'/>">
+											<fmt:formatNumber value="${record.amount}" type="currency" currencySymbol="$" />
 										</td>
-										<td>
-											<c:out value="${record.endWeek}" />
-										</td>
+										<td title="<c:out value='${record.info}'/>"><c:out value="${record.info}" /></td>
 									</tr>
 								</c:forEach>
 							</tbody>

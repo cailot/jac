@@ -36,6 +36,7 @@ public class PaymentDTO extends MoneyDTO{
 		this.total = payment.getTotal();
 		this.method = payment.getMethod();
 		this.info = payment.getInfo();
+		this.invoiceId = String.valueOf(payment.getInvoice().getId());
 	}
 
 	public PaymentDTO(Object[] obj){

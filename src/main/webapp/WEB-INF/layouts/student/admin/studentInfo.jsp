@@ -416,8 +416,9 @@ function updateStudentInfo() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
 	clearStudentForm();
+	//console.log(value);
 	$("#formId").val(value['id']);
-	if(value['endDate']===''){ // active student
+	if(value['active']===1){ // active student
 		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
 		$("#formLastName").val(value['lastName']).css("color", "black").prop('disabled', false);
 		$("#formEmail1").val(value['email1']).css("color", "black").prop('disabled', false);
