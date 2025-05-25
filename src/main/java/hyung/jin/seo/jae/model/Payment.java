@@ -8,6 +8,9 @@ import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,7 +44,7 @@ public class Payment {
     @Column(columnDefinition = "DECIMAL(10,2)")
     private double total;
     
-    // @CreationTimestamp
+    @CreationTimestamp
     private LocalDate registerDate;
 
     @ManyToOne

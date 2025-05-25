@@ -47,7 +47,7 @@ public class Material{ // bridge table between Invoice & Book
 	@JoinColumn(name = "bookId", foreignKey = @ForeignKey(name = "FK_Material_Book"))
 	private Book book;
 	
-	//@CreationTimestamp
+	@CreationTimestamp
     private LocalDate registerDate;
 
 	@CreatedDate

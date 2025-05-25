@@ -61,15 +61,17 @@ public class LoginActivityController {
 			
 			// 4. check student attends online class at the week
 			for(Long studentId : studentIds) {
-				Integer enrolCnt = enrolmentService.isStudentAttendOnlineClazz(studentId, clazzId, set);
-				if(enrolCnt > 0){
+				if (studentId != null) {
+					Integer enrolCnt = enrolmentService.isStudentAttendOnlineClazz(studentId, clazzId, set);
+					if(enrolCnt > 0){
 			
-					// 5. check online activity status
-					// System.out.println(studentId + " attends online class");
-					OnlineActivityDTO activity = onlineActivityService.getStudentStatus(studentId, session);
+						// 5. check online activity status
+						// System.out.println(studentId + " attends online class");
+						OnlineActivityDTO activity = onlineActivityService.getStudentStatus(studentId, session);
 			
-					// 6. add online activity dto
-					dtos.add(activity);					
+						// 6. add online activity dto
+						dtos.add(activity);					
+					}
 				}
 			}
 		}
