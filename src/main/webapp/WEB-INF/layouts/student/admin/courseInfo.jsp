@@ -1271,8 +1271,8 @@ function removeAllInBasket(){
 						<nav>
 							<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
 								<a class="nav-item nav-link active" id="nav-basket-tab" data-toggle="tab" href="#nav-basket" role="tab" aria-controls="nav-basket" aria-selected="true">Purchased Items</a>
-								<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Course To Choose</a>
-								<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Books To Purchase</a>
+								<a class="nav-item nav-link" id="nav-fee-tab" data-toggle="tab" href="#nav-fee" role="tab" aria-controls="nav-fee" aria-selected="true">Class To Choose</a>
+								<a class="nav-item nav-link" id="nav-book-tab" data-toggle="tab" href="#nav-book" role="tab" aria-controls="nav-book" aria-selected="false">Material To Choose</a>
 							</div>
 						</nav>                  
 						<div class="tab-content" id="nav-tabContent">

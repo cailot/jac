@@ -42,13 +42,25 @@ public class SqlScriptRunner {
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/state.sql")); // State
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/branch.sql")); // Branch
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/grade.sql")); // Grade
-			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testType.sql")); // TestType
-			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceType.sql")); // PracticeType
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/user.sql")); // User
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/extrawork.sql")); // Extrawork
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/daySchedule.sql")); // Day
 			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/migration/Fee.sql")); // Migration
-			
+
+			// JAC Study
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testType.sql")); // TestType
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceType.sql")); // PracticeType
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/test.sql")); // Test
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testAnswer.sql")); // TestAnswer
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/testAnswerCollection.sql")); // TestAnswerCollection
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/assessment.sql")); // Assessment
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/assessmentAnswer.sql")); // AssessmentAnswer
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/assessmentAnswerCollection.sql")); // AssessmentAnswerCollection
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/homework.sql")); // Homework
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practice.sql")); // Practice
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceAnswer.sql")); // PracticeAnswer
+			ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/practiceAnswerCollection.sql")); // PracticeAnswerCollection
+
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/braybrook_student.sql")); // Student
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/attendance_test.sql")); // attendane_test
 			//ScriptUtils.executeSqlScript(connection, resourceLoader.getResource("classpath:sql/cc_test.sql")); // connected_class_test

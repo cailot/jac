@@ -143,6 +143,11 @@ public class AttendanceController {
 				// 4-1-3. get student by student ids
 				for(Long studentId : studentIds){
 					Student std = studentService.getStudent(studentId);
+					
+					// Skip if student not found
+					if(std == null) {
+						continue;
+					}
 
 					// 4-1-4. Create AttendanceListDTO
 					AttendanceListDTO dto = new AttendanceListDTO();
@@ -202,6 +207,11 @@ public class AttendanceController {
 			// 4-2-3. get student by student ids
 			for(Long studentId : studentIds){
 				Student std = studentService.getStudent(studentId);
+
+				// Skip if student not found
+				if(std == null) {
+					continue;
+				}
 
 				// 4-2-4. Create AttendanceListDTO
 				AttendanceListDTO dto = new AttendanceListDTO();

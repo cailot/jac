@@ -41,6 +41,10 @@ public class StudentController {
 	private CycleService cycleService;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
+
+	// private String password = JaeConstants.DEFAULT_PASSWORD;//formData.getPassword();
+	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 	
 	// register new student
 	@PostMapping("/register")
@@ -48,10 +52,11 @@ public class StudentController {
 	public StudentDTO registerStudent(@RequestBody StudentDTO formData) {
 		// 1. create Student without elearning
 		Student std = formData.convertToOnlyStudent();
-		String password = JaeConstants.DEFAULT_PASSWORD;//formData.getPassword();
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encodedPassword = passwordEncoder.encode(password);
+		// String password = JaeConstants.DEFAULT_PASSWORD;//formData.getPassword();
+		// BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		String encodedPassword = passwordEncoder.encode(JaeConstants.DEFAULT_PASSWORD);
 		std.setPassword(encodedPassword);
+		std.setActive(JaeConstants.ACTIVE);
 		std = studentService.addStudent(std);
 		StudentDTO dto = new StudentDTO(std);
 		return dto;
