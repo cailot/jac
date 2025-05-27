@@ -397,8 +397,8 @@ function deleteOnline(id) {
 							allOption.textContent = "All";
 							// Append the 'All' option to the select element
 							selectElement.appendChild(allOption);
-							// Loop to add options from 1 to 49
-							for (var i = 1; i <= 49; i++) {
+							// Loop to add options from 1 to 50
+							for (var i = 1; i <= 50; i++) {
 								// Create a new option element
 								var option = document.createElement("option");
 								// Set the value and text content for the option
@@ -616,8 +616,8 @@ function deleteOnline(id) {
 									<script>
 										// Get a reference to the select element
 										var selectElement = document.getElementById("addWeek");									  
-										// Loop to add options from 1 to 49
-										for (var i = 1; i <= 49; i++) {
+										// Loop to add options from 1 to 50
+										for (var i = 1; i <= 50; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 										  // Set the value and text content for the option
@@ -719,8 +719,8 @@ function deleteOnline(id) {
 										// Get a reference to the select element
 										var selectElement = document.getElementById("editWeek");
 									  
-										// Loop to add options from 1 to 49
-										for (var i = 1; i <= 49; i++) {
+										// Loop to add options from 1 to 50
+										for (var i = 1; i <= 50; i++) {
 										  // Create a new option element
 										  var option = document.createElement("option");
 									  

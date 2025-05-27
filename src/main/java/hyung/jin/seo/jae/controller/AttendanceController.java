@@ -384,4 +384,42 @@ public class AttendanceController {
 		}
 	}
 
+	@PutMapping("/updateBatch")
+	@ResponseBody
+	public ResponseEntity<String> updateAttendanceBatch(@RequestBody List<AttendanceListDTO> formDataList) {
+		try {
+			for(AttendanceListDTO formData : formDataList) {
+				// 1. get student id & clazz id
+				Long stdId = Long.parseLong(StringUtils.defaultString(formData.getStudentId(),"0"));
+				Long clzId = Long.parseLong(StringUtils.defaultString(formData.getClazzId(),"0"));
+
+				// 2. get size of arrays
+				int size = formData.getWeek().size();
+				for(int i=0; i<size; i++) {
+					// 3. get week
+					int week = formData.getWeek().get(i);
+					// 4. get status
+					String status = formData.getStatus().get(i);
+
+					if((week==0) || StringUtils.isBlank(status)) continue;
+					
+					// 5. check if it needs to update or not
+					String updateStats = StringUtils.defaultString(status);
+					if(updateStats.equalsIgnoreCase(JaeConstants.ATTEND_YES) || 
+					   updateStats.equalsIgnoreCase(JaeConstants.ATTEND_NO) || 
+					   updateStats.equalsIgnoreCase(JaeConstants.ATTEND_PAUSE) || 
+					   updateStats.equalsIgnoreCase(JaeConstants.ATTEND_OTHER)) {
+						// 6. update attendance
+						attendanceService.updateStatus(stdId, clzId, week, status);
+					}
+				}
+			}
+			// 7. return success
+			return ResponseEntity.ok("\"Batch attendance update success\"");
+		} catch(Exception e) {
+			String message = "Error updating Attendance batch: " + e.getMessage();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(message);
+		}
+	}
+
 }

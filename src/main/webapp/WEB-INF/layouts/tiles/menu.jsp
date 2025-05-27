@@ -40,7 +40,9 @@
 
 <nav class="navbar mt-2 mb-2">
 	<div class="navbar_logo">
-		<img src="${pageContext.request.contextPath}/image/logo-manager.png" style="filter: brightness(0) invert(1);width:55px;" />	
+		<a href="${pageContext.request.contextPath}/studentAdmin">
+			<img src="${pageContext.request.contextPath}/image/logo-manager.png" style="filter: brightness(0) invert(1);width:55px;" />
+		</a>	
 		<span class="ml-3 h3">James An College</span>
 	</div>
 	<ul class="navbar_menu">
@@ -97,7 +99,7 @@
 					</div>
 				</div>
 				<!-- OMR -->
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a> -->
 			</div>
 		</li>
 		<!-- User -->

@@ -605,7 +605,7 @@ function searchStudentById(id){
 	<form id="studentInfo">
 		<div class="form-row">
 			<div class="col-md-8">
-				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID or Name" />
+				<input type="text" class="form-control" style="background-color: #FCF7CA;" id="formKeyword" name="formKeyword" placeholder="ID, Name, Email or Contact Number" />
 			</div>
 			<div class="col-md-4 d-flex justify-content-center align-items-center" data-toggle="tooltip" title="Search Student by Id/Name">
 				<button type="button" class="btn btn-block btn-primary" onclick="searchStudent()"><i class="bi bi-search"></i></button>

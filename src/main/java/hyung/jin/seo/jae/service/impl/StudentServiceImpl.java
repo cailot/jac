@@ -69,9 +69,19 @@ public class StudentServiceImpl implements StudentService {
 	public List<StudentDTO> searchByKeyword(String keyword, String state, String branch) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
-			if(StringUtils.isNumericSpace(keyword)) {
-				//dtos = studentRepository.searchStudentByKeywordId(Long.parseLong(keyword), state, branch);
-				dtos.add(studentRepository.searchStudentById(Long.parseLong(keyword)));
+			// Remove any spaces from the keyword
+			String cleanKeyword = keyword.replaceAll("\\s+", "");			
+			if(StringUtils.isNumericSpace(cleanKeyword)) {
+				// Check if it's a 10-digit number (phone number)
+				if(cleanKeyword.length() == 10) {
+					// For phone search, keep spaces in the keyword
+					dtos = studentRepository.searchStudentByKeywordContact(keyword, state, branch);
+				} else {
+					// For ID search, parse as Long
+					dtos = studentRepository.searchStudentByKeywordId(Long.parseLong(cleanKeyword), state, branch);
+				}
+			}else if(StringUtils.contains(keyword, "@")){
+				dtos = studentRepository.searchStudentByKeywordEmail(keyword, state, branch);
 			}else{
 				dtos = studentRepository.searchStudentByKeywordName(keyword, state, branch);
 			}

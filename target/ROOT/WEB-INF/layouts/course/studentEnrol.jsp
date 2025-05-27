@@ -230,9 +230,9 @@ function updateStudentInfo(){
 			$('#success-alert .modal-body').html('ID : <b>' + std.id + '</b> is updated successfully.');
 			$('#success-alert').modal('show');
 			// fetch data again
-			$('#success-alert').on('hidden.bs.modal', function(e) {
-				location.reload();
-			});
+			// $('#success-alert').on('hidden.bs.modal', function(e) {
+			// 	location.reload();
+			// });
 			
 		},
 		error : function(xhr, status, error) {

@@ -181,8 +181,8 @@ function retreiveUserInfo(username) {
 			$("#editState").val(user.state);
 			$("#editBranch").val(user.branch);
 			$("#editActive").val(user.enabled);
-			// if clazz.active = true, tick the checkbox 'editActiveCheckbox'
-			if (user.enabled == 0) {
+			// if user.enabled = 1, tick the checkbox 'editActiveCheckbox'
+			if (user.enabled == 1) {
 				$("#editActiveCheckbox").prop('checked', true);
 			} else {
 				$("#editActiveCheckbox").prop('checked', false);
@@ -202,9 +202,9 @@ function retreiveUserInfo(username) {
 function updateEditActiveValue(checkbox) {
 	var editActiveInput = document.getElementById("editActive");
 	if (checkbox.checked) {
-		editActiveInput.value = 0;
-	} else {
 		editActiveInput.value = 1;
+	} else {
+		editActiveInput.value = 0;
 	}
 }
 
@@ -530,6 +530,8 @@ window.showWarning = function(id) {
 																<c:when test="${user.branch == '32'}">Melton</c:when>
 																<c:when test="${user.branch == '33'}">Glenroy</c:when>
 																<c:when test="${user.branch == '34'}">Packenham</c:when>
+																<c:when test="${user.branch == '35'}">Tarneit</c:when>
+																<c:when test="${user.branch == '36'}">Clyde</c:when>
 																<c:when test="${user.branch == '90'}">JAC Head Office VIC</c:when>
 																<c:when test="${user.branch == '99'}">Testing</c:when>
 																<c:otherwise></c:otherwise>
@@ -538,7 +540,7 @@ window.showWarning = function(id) {
 													</td>
 													<c:set var="active" value="${user.enabled}" />
 													<c:choose>
-														<c:when test="${active == 0}">
+														<c:when test="${active == 1}">
 															<td class="text-center align-middle">
 																<i class="bi bi-check-circle-fill text-success" data-toggle="tooltip" title="Enabled"></i>
 															</td>

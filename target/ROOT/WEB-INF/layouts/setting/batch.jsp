@@ -42,20 +42,25 @@ function updateInactiveStudent() {
 //		Create Course Template
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function createCourseTemplate() {
-
-	// get value of 'courseYear' dropdown
 	var courseYear = $('#courseYear').val();
 	console.log(courseYear);
+
+	// Set loading message
+	$('#loading-message').text('Processing...');
+	$('#loading-spinner').modal('show');
 
 	$.ajax({
 		url: '${pageContext.request.contextPath}/batch/createCourse/' + courseYear,
 		type: 'GET',
 		success: function (count) {
-			// Display the success alert
+			// Hide spinner
+			$('#loading-spinner').modal('hide');
 			$('#success-alert .modal-body').text(count);
 			$('#success-alert').modal('show');
 		},
 		error: function (xhr, status, error) {
+			// Hide spinner
+			$('#loading-spinner').modal('hide');
 			console.log('Error : ' + error);
 		}
 	});
@@ -365,3 +370,18 @@ function confirmCreateOnline() {
 	</div>
 </div>
 
+
+<!-- Loading Spinner
+<div class="modal fade" id="loading-spinner" data-backdrop="static" data-keyboard="false" tabindex="-1">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content loading-spinner-content">
+			<div class="modal-body text-center p-5">
+				<div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+					<span class="sr-only">Loading...</span>
+				</div>
+				<div id="loading-message" class="mt-4 text-primary h4"></div>
+			</div>
+		</div>
+	</div>
+</div>
+-->

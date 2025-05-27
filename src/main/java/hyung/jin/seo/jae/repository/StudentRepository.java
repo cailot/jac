@@ -173,6 +173,14 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.firstName LIKE ?1 OR s.lastName LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
 	List<StudentDTO> searchStudentByKeywordName(String keyword, String state, String branch);
 
+        // search student by keyword for email
+        @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.email1 LIKE ?1 OR s.email2 LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+        List<StudentDTO> searchStudentByKeywordEmail(String keyword, String state, String branch);
+
+        // search student by keyword for contact number
+        @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (REPLACE(s.contactNo1, ' ', '') LIKE CONCAT('%', REPLACE(?1, ' ', ''), '%') OR REPLACE(s.contactNo2, ' ', '') LIKE CONCAT('%', REPLACE(?1, ' ', ''), '%')) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+        List<StudentDTO> searchStudentByKeywordContact(String keyword, String state, String branch);
+
         // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
         @Query("SELECT new hyung.jin.seo.jae.dto.StudentDTO" +
         "(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, e.clazz.name, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, e.registerDate, s.active, e.startWeek, e.endWeek) " +
