@@ -38,6 +38,7 @@ public class UserController {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encodedPassword = passwordEncoder.encode(password);
 		user.setPassword(encodedPassword);
+		user.setEnabled(JaeConstants.ACTIVE);
 		user = userService.addUser(user);
 		UserDTO dto = new UserDTO(user);
 		return dto;

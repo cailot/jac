@@ -15,6 +15,56 @@
 <script src="${pageContext.request.contextPath}/js/buttons.html5.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/buttons.print.min.js"></script>
 <script>
+// Function to handle updating all attendance records
+function updateAllAttendance() {
+	// Get all rows
+	var rows = $('#attendanceTable tbody tr');
+	var allUpdates = [];
+	
+	// Collect all updates
+	rows.each(function() {
+		var rowId = $(this).data('row-id');
+		var parts = rowId.split('-');
+		var clazzId = parts[0];
+		var studentId = parts[1];
+		
+		// Get weeks and status values
+		var weeks = [];
+		var statuses = [];
+		$(this).find('td.roll').each(function() {
+			weeks.push($(this).find('input[name="week"]').val());
+			statuses.push($(this).find('select[name="statusDropdown"]').val());
+		});
+		
+		allUpdates.push({
+			clazzId: clazzId,
+			studentId: studentId,
+			week: weeks,
+			status: statuses
+		});
+	});
+	
+	// Send all updates in a single request
+	$.ajax({
+		url: '${pageContext.request.contextPath}/attendance/updateBatch',
+		type: 'PUT',
+		contentType: 'application/json',
+		data: JSON.stringify(allUpdates),
+		success: function() {
+			$('#success-alert .modal-body').html('All attendance records updated successfully');
+			$('#success-alert').modal('show');
+			$('#batchConfirm').modal('hide');
+			$('#updateAllCheckbox').prop('checked', false);
+		},
+		error: function(xhr, status, error) {
+			$('#warning-alert .modal-body').html('Error updating attendance: ' + error);
+			$('#warning-alert').modal('show');
+			$('#batchConfirm').modal('hide');
+			$('#updateAllCheckbox').prop('checked', false);
+		}
+	});
+}
+
 $(document).ready(function () {
 
 	// Apply initial color on dropdown list when the page loads
@@ -22,6 +72,20 @@ $(document).ready(function () {
 		var col = $(this).find('option:selected').attr('data-color');
 		$(this).css('color', col);
     });
+
+	// Add event listener for Update All checkbox
+	$('#updateAllCheckbox').change(function() {
+		if(this.checked) {
+			// Show confirmation dialog
+			$('#batchConfirm .modal-body .alert').html('Are you sure you want to update all attendance records?');
+			$('#batchConfirm').modal('show');
+		}
+	});
+
+	// Reset update all checkbox when modal is hidden
+	$('#batchConfirm').on('hidden.bs.modal', function () {
+		$('#updateAllCheckbox').prop('checked', false);
+	});
 
 	// Change color when a new option is selected
 	$('.custom-color-select').change(function() {
@@ -561,9 +625,9 @@ function linkToStudent(studentId) {
 												style="background-color: #b8daff !important;">Day</th>
 											<th class="small text-center align-middle"
 												colspan="${weekSize}">Week</th>
-											<th class="small text-center align-middle th-background"
-												rowspan="2" style="background-color: #b8daff !important;">
-												Update</th>
+											<th class="small text-center align-middle th-background" rowspan="2" style="background-color: #b8daff !important;">
+												Update All <input type="checkbox" id="updateAllCheckbox" class="ml-2" title="Update All">
+											</th>
 										</tr>
 										<tr class="week-sub-columns">
 											<c:forEach items="${weekHeader}" var="week">
@@ -684,17 +748,23 @@ function linkToStudent(studentId) {
 	</div>
 </div>
 
-<!-- Delete Alert -->
-<div id="confirm-alert" class="modal fade">
-	<div class="modal-dialog">
-		<div class="alert alert-block alert-danger">
-			<div class="alert-dialog-display">
-				<i class="fa fa-minus-circle fa-2x"></i>&nbsp;&nbsp;<div class="modal-body"></div>
-			</div>
-			<div style="text-align: right;">
-				<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-sm btn-danger" id="deactivateAction">Delete</button>
-			</div>
-		</div>
-	</div>
+<div class="modal fade" id="batchConfirm" tabindex="-1" role="dialog" aria-labelledby="batchConfirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+                <h4 class="modal-title text-white" id="ReConfirmationModalLabel"><i class="bi bi-send text-dark"></i>&nbsp;&nbsp;Confirm Email Sending</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" role="alert" id="ReconfirmationMessage">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" onclick="updateAllAttendance()"><i class="bi bi-check-circle"></i>Yes, Proceed</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
