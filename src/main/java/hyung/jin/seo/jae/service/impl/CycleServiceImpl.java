@@ -306,9 +306,10 @@ public class CycleServiceImpl implements CycleService {
 			String vacationEndDate = getVacationEndDate(year);
 			int delta = week - vacationStartWeek;
 			LocalDate academicYearVacationEndDate = LocalDate.parse(vacationEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-			// get next or same Monday of vacation end date
-			LocalDate resumeStartDay = academicYearVacationEndDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));     
+			// Adjust to get next Monday after vacation end date
+			LocalDate resumeStartDay = academicYearVacationEndDate.plusDays(1).with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));     
 			LocalDate weekStartDay = resumeStartDay.plusWeeks(delta - 1);             
+			LocalDate weekEndDay = weekStartDay.plusDays(7); // Corrected to ensure it ends on Sunday
 			String formattedWeekStartDay = weekStartDay.format(dateFormatter);
 			return formattedWeekStartDay;
 		}
@@ -334,8 +335,8 @@ public class CycleServiceImpl implements CycleService {
 			String vacationEndDate = getVacationEndDate(year);
 			int delta = week - vacationStartWeek;
 			LocalDate academicYearVacationEndDate = LocalDate.parse(vacationEndDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-			// Adjust to get next Sunday of vacation end date
-			LocalDate resumeStartDay = academicYearVacationEndDate.plusDays(1).with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));     
+			// Adjust to get next Monday after vacation end date
+			LocalDate resumeStartDay = academicYearVacationEndDate.plusDays(1).with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY));     
 			LocalDate weekStartDay = resumeStartDay.plusWeeks(delta - 1);             
 			LocalDate weekEndDay = weekStartDay.plusDays(7); // Corrected to ensure it ends on Sunday
 			String formattedWeekEndDay = weekEndDay.format(dateFormatter);

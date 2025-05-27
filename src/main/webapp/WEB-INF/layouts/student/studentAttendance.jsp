@@ -76,6 +76,16 @@ $(document).ready(function () {
 	// Add event listener for Update All checkbox
 	$('#updateAllCheckbox').change(function() {
 		if(this.checked) {
+			// Get table data
+			var table = $('#attendanceTable').DataTable();
+			var totalStudents = table.rows().count();
+			
+			if(totalStudents === 0) {
+				$('#updateAllCheckbox').prop('checked', false);
+				$('#warning-alert .modal-body').text('No students found to process.');
+				$('#warning-alert').modal('show');
+				return;
+			}
 			// Show confirmation dialog
 			$('#batchConfirm .modal-body .alert').html('Are you sure you want to update all attendance records?');
 			$('#batchConfirm').modal('show');
@@ -748,6 +758,7 @@ function linkToStudent(studentId) {
 	</div>
 </div>
 
+<!-- Batch Confirmation Modal -->
 <div class="modal fade" id="batchConfirm" tabindex="-1" role="dialog" aria-labelledby="batchConfirm" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content jae-border-warning">
