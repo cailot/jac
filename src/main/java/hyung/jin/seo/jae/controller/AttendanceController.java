@@ -70,16 +70,20 @@ public class AttendanceController {
 
 	// search attendance
 	@GetMapping("/search")
-	public String searchAttendance(@RequestParam("listState") String state, @RequestParam("listBranch") String branch, @RequestParam("listGrade") String grade, @RequestParam("listClass") String clazz, @RequestParam("fromDate") String fromDate, @RequestParam("toDate") String toDate, Model model) {
-		
-		// 1. clear session
-		// JaeUtils.clearSession(session);
+	public String searchAttendance(@RequestParam("listState") String state, 
+								 @RequestParam("listBranch") String branch, 
+								 @RequestParam("listGrade") String grade, 
+								 @RequestParam("listClass") String clazz, 
+								 @RequestParam("fromDate") String fromDate, 
+								 @RequestParam("toDate") String toDate,
+								 @RequestParam(value = "page", defaultValue = "0") int page,
+								 @RequestParam(value = "size", defaultValue = "20") int size,
+								 Model model) {
 		
 		List<AttendanceListDTO> dtos = new ArrayList<>();
 		
 		// 2. set search criteria
 		SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-		// criteria.setType(JaeConstants.TYPE_USER);
 		criteria.setState(state);
 		criteria.setBranch(branch);
 		criteria.setGrade(grade);
@@ -91,176 +95,140 @@ public class AttendanceController {
 		criteria.setToDate(toDate);
 		model.addAttribute(JaeConstants.CRITERIA_INFO, criteria);	
 
-		// 3. check academic weeks
+		// 3. check academic years and cycles
 		long startCycleId = cycleService.findIdByDate(fromDate);
 		long endCycleId = cycleService.findIdByDate(toDate);
-		int startWeek = cycleService.academicWeeks(fromDate);
-		int endWeek = cycleService.academicWeeks(toDate);
+		
+		// Get all cycle IDs between start and end dates
+		List<Long> cycleIds = new ArrayList<>();
+		for (long id = startCycleId; id <= endCycleId; id++) {
+			cycleIds.add(id);
+		}
 
-		// 3. header info
+		// 3. header info - collect all weeks across cycles
 		List<Integer> headerWks = new ArrayList<>();
-
-		// 3-1. if start cycle id is different from end cycle id
-		if(startCycleId != endCycleId){
-			// 3-1-1. get start & end cycle info
-			Cycle startCycle = cycleService.getCycle(startCycleId);
-			// 3-1-2. get last date of start year
-			LocalDate endDateOfStartCycle = startCycle.getEndDate();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			String formattedDate = endDateOfStartCycle.format(formatter);
-			int lastWeek = cycleService.academicWeeks(formattedDate);
-			// 3-1-3. set header weeks - first part : start week to last week
-			for(int i=startWeek; i<=lastWeek; i++){
-				headerWks.add(i);
+		List<Integer> yearLabels = new ArrayList<>(); // To store year labels for each week
+		
+		for (Long cycleId : cycleIds) {
+			Cycle cycle = cycleService.getCycle(cycleId);
+			if (cycle == null) continue;
+			
+			// Get week range for this cycle
+			int cycleStartWeek = (cycleId == startCycleId) ? cycleService.academicWeeks(fromDate) : 1;
+			int cycleEndWeek;
+			
+			if (cycleId == endCycleId) {
+				cycleEndWeek = cycleService.academicWeeks(toDate);
+			} else {
+				LocalDate endDateOfCycle = cycle.getEndDate();
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				String formattedDate = endDateOfCycle.format(formatter);
+				cycleEndWeek = cycleService.academicWeeks(formattedDate);
 			}
-			// 3-1-4. set header weeks - second part : 1 to end week
-			for(int i=1; i<=endWeek; i++){
+			
+			// Add weeks and year labels for this cycle
+			for (int i = cycleStartWeek; i <= cycleEndWeek; i++) {
 				headerWks.add(i);
+				yearLabels.add(cycle.getYear());
 			}
-		}else{
-			// 3-2. if start cycle id is same as end cycle id
-			for(int i=startWeek; i<=endWeek; i++){
-				headerWks.add(i);
-			}
-		}		
-		model.addAttribute(JaeConstants.WEEK_HEADER, headerWks);	
+		}
+		
+		model.addAttribute(JaeConstants.WEEK_HEADER, headerWks);
+		model.addAttribute("yearLabels", yearLabels);
 
 		// 4. search AttendanceListDTO
-		// 4-1. if clazzId is "All", then search all clazz Ids
+		List<ClazzDTO> clazzs;
 		if(criteria.getClazzId().equalsIgnoreCase("0")) {
-			List<ClazzDTO> clazzs = clazzService.filterOnSiteClazz(criteria.getState(), criteria.getBranch(), criteria.getGrade()); // except online class	
-			for(ClazzDTO claz : clazzs) {
-				
-				// 4-1-1. get clazz id
-				Long clazId = Long.parseLong(claz.getId());
-				String clazName = claz.getName();
-				String clazDay = claz.getDay();
-				String clazGrade = claz.getGrade();
-
-				// 4-1-2. get student ids by clazz id
-				List<Long> studentIds = enrolmentService.findStudentIdByClazzId(clazId);
-				
-				// 4-1-3. get student by student ids
-				for(Long studentId : studentIds){
-					Student std = studentService.getStudent(studentId);
-					
-					// Skip if student not found
-					if(std == null) {
-						continue;
-					}
-
-					// 4-1-4. Create AttendanceListDTO
-					AttendanceListDTO dto = new AttendanceListDTO();
-					dto.setClazzId(clazId+"");
-					dto.setStudentId(studentId+"");
-					dto.setStudentName(std.getFirstName() + " " + std.getLastName());
-					dto.setClazzName(clazName);
-					dto.setClazzDay(clazDay);
-					dto.setClazzGrade(clazGrade);
-
-
-					List<String> statues = dto.getStatus();
-					List<String> dates = dto.getAttendDate();
-					List<Integer> weeks = dto.getWeek();
-					// 4-1-5. get status by student id, clazz id & week
-					for(int i=startWeek; i<=endWeek; i++){
-						Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeek(studentId, clazId, i);
-						if(attend != null){
-							statues.add(attend.getStatus());
-							dates.add(attend.getAttendDate()+"");
-							weeks.add(i);
-						}else{
-							statues.add("");
-							dates.add("");
-							weeks.add(0);
-						}
-					}
-					dto.setStatus(statues);
-					dto.setAttendDate(dates);
-						
-					// dtos.add(dto);
-					// 4-2-6. add AttendanceListDTO to lists unless statues contains all empty
-					boolean allEmpty = true;
-					for(String status : statues){
-						if(StringUtils.isNotBlank(status)){
-							allEmpty = false;
-							break;
-						}
-					}
-					if(!allEmpty){
-						dtos.add(dto);
-					}
-				}
-			}
-		}else{
+			// 4-1. if clazzId is "All", then search all clazz Ids
+			clazzs = clazzService.filterOnSiteClazz(criteria.getState(), criteria.getBranch(), criteria.getGrade()); // except online class	
+		} else {
 			// 4-2. if clazzId is not "All", then search by clazz Id
-			// 4-2-1. get clazz id
+			clazzs = new ArrayList<>();
 			Long clazId = Long.parseLong(criteria.getClazzId());
 			Clazz claz = clazzService.getClazz(clazId);
+			clazzs.add(new ClazzDTO(claz));
+		}
+
+		// Process classes in batches
+		int totalClasses = clazzs.size();
+		int startIdx = page * size;
+		int endIdx = Math.min(startIdx + size, totalClasses);
+		List<ClazzDTO> pageClazzs = clazzs.subList(startIdx, endIdx);
+
+		for(ClazzDTO claz : pageClazzs) {
+			Long clazId = Long.parseLong(claz.getId());
 			String clazName = claz.getName();
 			String clazDay = claz.getDay();
-			String clazGrade = clazzService.getGrade(clazId);
+			String clazGrade = claz.getGrade();
 
-			// 4-2-2. get student ids by clazz id
+			// Get student ids by clazz id
 			List<Long> studentIds = enrolmentService.findStudentIdByClazzId(clazId);
 			
-			// 4-2-3. get student by student ids
-			for(Long studentId : studentIds){
+			// Process students
+			for(Long studentId : studentIds) {
 				Student std = studentService.getStudent(studentId);
+				if(std == null) continue;
 
-				// Skip if student not found
-				if(std == null) {
-					continue;
-				}
-
-				// 4-2-4. Create AttendanceListDTO
 				AttendanceListDTO dto = new AttendanceListDTO();
+				dto.setClazzId(clazId+"");
 				dto.setStudentId(studentId+"");
 				dto.setStudentName(std.getFirstName() + " " + std.getLastName());
-				dto.setClazzId(clazId+"");
 				dto.setClazzName(clazName);
 				dto.setClazzDay(clazDay);
 				dto.setClazzGrade(clazGrade);
 
-
-				List<String> statues = dto.getStatus();
-				List<String> dates = dto.getAttendDate();
-				List<Integer> weeks = dto.getWeek();
-				// 4-2-5. get status by student id, clazz id & week
-				for(int i=startWeek; i<=endWeek; i++){
-					Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeek(studentId, clazId, i);
-					if(attend != null){
-						statues.add(attend.getStatus());
-						dates.add(attend.getAttendDate()+"");
-						weeks.add(i);
-					}else{
-						statues.add("");
-						dates.add("");
-						weeks.add(0);
+				List<String> statuses = new ArrayList<>();
+				List<String> dates = new ArrayList<>();
+				List<Integer> weeks = new ArrayList<>();
+				
+				// Get attendance for each week across all cycles
+				for (Long cycleId : cycleIds) {
+					Cycle cycle = cycleService.getCycle(cycleId);
+					if (cycle == null) continue;
+					
+					int cycleStartWeek = (cycleId == startCycleId) ? cycleService.academicWeeks(fromDate) : 1;
+					int cycleEndWeek;
+					
+					if (cycleId == endCycleId) {
+						cycleEndWeek = cycleService.academicWeeks(toDate);
+					} else {
+						LocalDate endDateOfCycle = cycle.getEndDate();
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+						String formattedDate = endDateOfCycle.format(formatter);
+						cycleEndWeek = cycleService.academicWeeks(formattedDate);
+					}
+					
+					for (int i = cycleStartWeek; i <= cycleEndWeek; i++) {
+						Attendance attend = attendanceService.getAttendanceByStudentAndClazzAndWeekAndCycle(studentId, clazId, i, cycleId);
+						if (attend != null) {
+							statuses.add(attend.getStatus());
+							dates.add(attend.getAttendDate()+"");
+							weeks.add(i);
+						} else {
+							statuses.add("");
+							dates.add("");
+							weeks.add(0);
+						}
 					}
 				}
-				dto.setStatus(statues);
+				
+				dto.setStatus(statuses);
 				dto.setAttendDate(dates);
+				dto.setWeek(weeks);
 
-				// 4-2-6. add AttendanceListDTO to lists unless statues contains all empty
-				boolean allEmpty = true;
-				for(String status : statues){
-					if(StringUtils.isNotBlank(status)){
-						allEmpty = false;
-						break;
-					}
-				}
-				if(!allEmpty){
+				// Add DTO if it has any non-empty status
+				if(statuses.stream().anyMatch(StringUtils::isNotBlank)) {
 					dtos.add(dto);
 				}
-				//dtos.add(dto);
-			}			
+			}
 		}
 
-		// 5. set AttendanceListDTO to session
+		// Add pagination info to model
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", (int) Math.ceil((double) totalClasses / size));
+		model.addAttribute("pageSize", size);
 		model.addAttribute(JaeConstants.ATTENDANCE_INFO, dtos);	
 
-		// 6. return redirect page
 		return "studentAttendancePage";
 	}
 

@@ -175,13 +175,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 
 	@Override
 	public Attendance getAttendanceByStudentAndClazzAndWeek(Long studentId, Long clazzId, int week) {
-		Attendance attend = null;
-		try {
-			attend = attendanceRepository.getAttendanceByStudentIdAndClazzIdAndWeek(studentId, clazzId, week + "");
-		} catch (Exception e) {
-			System.out.println("No attendance found");
-		}
-		return attend;
+		return attendanceRepository.findByStudentIdAndClazzIdAndWeek(studentId, clazzId, week);
+	}
+
+	@Override
+	public Attendance getAttendanceByStudentAndClazzAndWeekAndCycle(Long studentId, Long clazzId, int week, Long cycleId) {
+		List<Attendance> attendances = attendanceRepository.findByStudentIdAndClazzIdAndWeekAndCycleId(studentId, clazzId, week, cycleId);
+		return attendances.isEmpty() ? null : attendances.get(0); // Return the most recent attendance (first in the list due to DESC order)
 	}
 
 	@Override

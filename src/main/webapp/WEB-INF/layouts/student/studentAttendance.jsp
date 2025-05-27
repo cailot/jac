@@ -752,7 +752,7 @@ function linkToStudent(studentId) {
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content jae-border-warning">
             <div class="modal-header bg-warning">
-                <h4 class="modal-title text-white" id="ReConfirmationModalLabel"><i class="bi bi-send text-dark"></i>&nbsp;&nbsp;Confirm Email Sending</h4>
+                <h4 class="modal-title text-white" id="ReConfirmationModalLabel"><i class="bi bi-collection mr-2 text-dark"></i>&nbsp;&nbsp;Confirm Update All Attendance</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -762,7 +762,7 @@ function linkToStudent(studentId) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="updateAllAttendance()"><i class="bi bi-check-circle"></i>Yes, Proceed</button>
+                <button type="button" class="btn btn-warning" onclick="updateAllAttendance()">Please, Proceed</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>

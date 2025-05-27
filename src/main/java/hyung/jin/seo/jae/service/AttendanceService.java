@@ -19,6 +19,9 @@ public interface AttendanceService {
 	// find attendance by student Id, clazz Id and week
 	Attendance getAttendanceByStudentAndClazzAndWeek(Long studentId, Long clazzId, int week);
 
+	// get attendance by student id, clazz id, week & cycle
+	Attendance getAttendanceByStudentAndClazzAndWeekAndCycle(Long studentId, Long clazzId, int week, Long cycleId);
+
 	// add attendance
 	AttendanceDTO addAttendance(Attendance attendance);
 
