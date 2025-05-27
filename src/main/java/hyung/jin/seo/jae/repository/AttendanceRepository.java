@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
@@ -69,5 +70,13 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 	// return student id by clazz id
 	@Query("SELECT DISTINCT a.student.id FROM Attendance a WHERE a.clazz.id = ?1")
 	List<Long> findStudentIdByClazzId(long clazzId);
+
+	// get attendance by student id, clazz id & week
+	@Query("SELECT a FROM Attendance a WHERE a.student.id = :studentId AND a.clazz.id = :clazzId AND a.week = :week")
+	Attendance findByStudentIdAndClazzIdAndWeek(@Param("studentId") Long studentId, @Param("clazzId") Long clazzId, @Param("week") int week);
+
+	// get attendance by student id, clazz id, week & cycle
+	@Query("SELECT a FROM Attendance a WHERE a.student.id = :studentId AND a.clazz.id = :clazzId AND CAST(a.week AS integer) = :week AND a.clazz.course.cycle.id = :cycleId ORDER BY a.attendDate DESC")
+	List<Attendance> findByStudentIdAndClazzIdAndWeekAndCycleId(@Param("studentId") Long studentId, @Param("clazzId") Long clazzId, @Param("week") int week, @Param("cycleId") Long cycleId);
 
 }

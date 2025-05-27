@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .attendance-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .attendance-table th, .attendance-table td {
+            min-width: 100px;
+            text-align: center;
+        }
+        .year-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .pagination {
+            margin-top: 20px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h2 class="mt-4 mb-4">Student Attendance</h2>
+        
+        <!-- Search Criteria -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Search Criteria</h5>
+                <p>State: <span th:text="${criteriaInfo.state}"></span></p>
+                <p>Branch: <span th:text="${criteriaInfo.branch}"></span></p>
+                <p>Grade: <span th:text="${criteriaInfo.grade}"></span></p>
+                <p>Class: <span th:text="${criteriaInfo.clazzName}"></span></p>
+                <p>From Date: <span th:text="${criteriaInfo.fromDate}"></span></p>
+                <p>To Date: <span th:text="${criteriaInfo.toDate}"></span></p>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="attendance-table">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Class</th>
+                        <th>Day</th>
+                        <th>Grade</th>
+                        <th th:each="week, stat : ${weekHeader}">
+                            Week <span th:text="${week}"></span>
+                            <br>
+                            <span class="year-label" th:text="${yearLabels[stat.index]}"></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="attendance : ${attendanceInfo}">
+                        <td th:text="${attendance.studentName}"></td>
+                        <td th:text="${attendance.clazzName}"></td>
+                        <td th:text="${attendance.clazzDay}"></td>
+                        <td th:text="${attendance.clazzGrade}"></td>
+                        <td th:each="status, stat : ${attendance.status}" th:text="${status}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/attendance/search(
+                        listState=${criteriaInfo.state},
+                        listBranch=${criteriaInfo.branch},
+                        listGrade=${criteriaInfo.grade},
+                        listClass=${criteriaInfo.clazzId},
+                        fromDate=${criteriaInfo.fromDate},
+                        toDate=${criteriaInfo.toDate},
+                        page=${currentPage - 1},
+                        size=${pageSize}
+                    )}" th:unless="${currentPage == 0}">Previous</a>
+                    <span class="page-link" th:if="${currentPage == 0}">Previous</span>
+                </li>
+                
+                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/attendance/search(
+                        listState=${criteriaInfo.state},
+                        listBranch=${criteriaInfo.branch},
+                        listGrade=${criteriaInfo.grade},
+                        listClass=${criteriaInfo.clazzId},
+                        fromDate=${criteriaInfo.fromDate},
+                        toDate=${criteriaInfo.toDate},
+                        page=${pageNum},
+                        size=${pageSize}
+                    )}" th:text="${pageNum + 1}"></a>
+                </li>
+                
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/attendance/search(
+                        listState=${criteriaInfo.state},
+                        listBranch=${criteriaInfo.branch},
+                        listGrade=${criteriaInfo.grade},
+                        listClass=${criteriaInfo.clazzId},
+                        fromDate=${criteriaInfo.fromDate},
+                        toDate=${criteriaInfo.toDate},
+                        page=${currentPage + 1},
+                        size=${pageSize}
+                    )}" th:unless="${currentPage == totalPages - 1}">Next</a>
+                    <span class="page-link" th:if="${currentPage == totalPages - 1}">Next</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 
