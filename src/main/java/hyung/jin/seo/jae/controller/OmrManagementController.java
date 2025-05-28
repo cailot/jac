@@ -93,44 +93,44 @@ public class OmrManagementController {
         String grade = omrUploadDto.getGrade();
         String volume = omrUploadDto.getVolume();
         System.out.println("state: " + state + ", branch: " + branch + ", testGroup: " + testGroup + ", grade: " + grade + ", volume: " + volume);
-        MultipartFile file = omrUploadDto.getFile();
+        List<MultipartFile> files = omrUploadDto.getFiles();
 
-        // validate file is not empty
-        if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute(JaeConstants.ERROR, "Please select a file to upload.");
+        // validate files are not empty
+        if (files == null || files.isEmpty()) {
+            redirectAttributes.addFlashAttribute(JaeConstants.ERROR, "Please select files to upload.");
             return "redirect:/omr/upload";
         }
-        String fileName = file.getOriginalFilename();
-        String fileExtension =  fileName !=null ?  fileName.substring(fileName.lastIndexOf(".") + 1) : "";
-        // validate file extension is pdf
-        if (!JaeConstants.OMR_FILE_PDF.equalsIgnoreCase(fileExtension)) {
-            redirectAttributes.addFlashAttribute("error", "Only PDF file is allowed.");
-            return "redirect:/omr/upload";
+
+        // validate all files are PDFs
+        for (MultipartFile file : files) {
+            String fileName = file.getOriginalFilename();
+            String fileExtension = fileName != null ? fileName.substring(fileName.lastIndexOf(".") + 1) : "";
+            if (!JaeConstants.OMR_FILE_PDF.equalsIgnoreCase(fileExtension)) {
+                redirectAttributes.addFlashAttribute("error", "Only PDF files are allowed. Found invalid file: " + fileName);
+                return "redirect:/omr/upload";
+            }
         }
-    
 
-        // process omr image
-
-        // create omr results 	
-        List<OmrSheetDTO> results = new ArrayList<>();
+        // process omr images
+        List<OmrSheetDTO> allResults = new ArrayList<>();
         
         try {
-            //results = omrService.previewOmr(branch, file);
-            results = previewOmr(branch, file);
+            for (MultipartFile file : files) {
+                List<OmrSheetDTO> fileResults = previewOmr(branch, file);
+                allResults.addAll(fileResults);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute(JaeConstants.ERROR, "Failed to process OMR file.");
+            redirectAttributes.addFlashAttribute(JaeConstants.ERROR, "Failed to process OMR files.");
             return "redirect:/omr/upload";
         }
 
-        // create omr results 	
-        // List<StudentTestDTO> results = processOmrImage();
         // add the meta to flash attributes
         redirectAttributes.addFlashAttribute(JaeConstants.METADATA, omrUploadDto);
         // add the results to flash attributes
-        redirectAttributes.addFlashAttribute(JaeConstants.RESULTS, results);
-        // set scuccess message
-        redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please review answer sheets and click next button at the bottom to proceed scanned image result.");
+        redirectAttributes.addFlashAttribute(JaeConstants.RESULTS, allResults);
+        // set success message
+        redirectAttributes.addFlashAttribute(JaeConstants.SUCCESS, "Please review answer sheets and click next button at the bottom to proceed scanned image results.");
         return "redirect:/omr/upload";
     }
 
