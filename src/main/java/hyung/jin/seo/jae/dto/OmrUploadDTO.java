@@ -1,6 +1,7 @@
 package hyung.jin.seo.jae.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,5 @@ public class OmrUploadDTO implements Serializable{
     
     private String volume;
      
-	private MultipartFile file;
-   
+    private List<MultipartFile> files;
 }

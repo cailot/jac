@@ -109,9 +109,16 @@ function updateVolumeOptions() {
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateFileName(input) {
-    var fileName = input.files[0].name;
+    var fileNames = '';
+    if (input.files.length > 0) {
+        fileNames = '<p>Selected files:</p><ul>';
+        for (var i = 0; i < input.files.length; i++) {
+            fileNames += '<li>' + input.files[i].name + '</li>';
+        }
+        fileNames += '</ul>';
+    }
     var fileNameContainer = document.getElementById("file-name-container");
-    fileNameContainer.innerHTML = "<p>Selected file: " + fileName + "</p>";
+    fileNameContainer.innerHTML = fileNames;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -721,8 +728,8 @@ function countTablesByGroup() {
 	                <!-- Include CSRF token -->
 	                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	                <div class="input-group">
-	                    <input type="file" name="file" class="file-input form-control" id="file-input" onchange="updateFileName(this)">
-	                    <label for="file-input" class="upload-label input-group-text bg-info text-white" id="upload-label">Choose File</label>
+	                    <input type="file" name="files" class="file-input form-control" id="file-input" onchange="updateFileName(this)" multiple accept=".pdf">
+	                    <label for="file-input" class="upload-label input-group-text bg-info text-white" id="upload-label">Choose Files</label>
 	                </div>
 	                <div id="file-name-container"></div>
 	            </div>
