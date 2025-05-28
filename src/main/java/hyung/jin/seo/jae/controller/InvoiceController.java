@@ -180,7 +180,7 @@ public class InvoiceController {
 					// 9-1. set period of enrolment to extra field
 					String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 					String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-					enrol.setExtra(start + " ~ " + end);
+					enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 				}
 				payment.setEnrols(enrolments);
 				double totalPaid = paymentService.getTotalPaidById(Long.parseLong(payment.getId()), invoiceId);
@@ -220,7 +220,7 @@ public class InvoiceController {
 			// 3-1. set period of enrolment to extra field
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end);
+			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 			// 3-2. set headerGrade
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
@@ -342,8 +342,7 @@ public class InvoiceController {
 			// 12-1. set period of enrolment to extra field
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end);
-
+			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 			// 12-2. set headerGrade
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
@@ -513,7 +512,7 @@ public class InvoiceController {
 			
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end);
+			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
@@ -580,7 +579,7 @@ public class InvoiceController {
 			// 3-1. set period of enrolment to extra field
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end);
+			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 			// 3-2. set headerGrade
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
@@ -805,7 +804,8 @@ public class InvoiceController {
 	@GetMapping("/renewList")
 	public String renewStudents(@RequestParam("branch") String branch, 
 									@RequestParam("grade") String grade,
-									@RequestParam("book") String book, 
+									@RequestParam(value = "book", required = false, defaultValue = "0") String book,
+									// @RequestParam("book") String book, 
 									@RequestParam("start") String fromDate,
 									@RequestParam("end") String toDate, Model model){
 		int fromYear = cycleService.academicYear(fromDate);
@@ -1010,8 +1010,7 @@ public class InvoiceController {
 			
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end);
-
+			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
 			}

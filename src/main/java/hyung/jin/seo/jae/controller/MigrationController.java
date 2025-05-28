@@ -1160,6 +1160,7 @@ public class MigrationController {
 											Invoice discountInvoice = invoiceService.getInvoice(invoiceId);
 											double invoiceDiscount = discountInvoice.getDiscount();
 											discountInvoice.setDiscount(invoiceDiscount+discountValue);
+											discountInvoice.setAmount(discountInvoice.getAmount() - discountValue);
 											invoiceService.updateInvoice(discountInvoice, discountInvoice.getId());	
 
 
@@ -1186,6 +1187,7 @@ public class MigrationController {
 											Invoice extraInvoice = invoiceService.getInvoice(invoiceId);
 											double currentInvoiceDiscount = extraInvoice.getDiscount();
 											extraInvoice.setDiscount(currentInvoiceDiscount - extraValue);
+											// extraInvoice.setAmount(extraInvoice.getAmount() + extraValue);
 											invoiceService.updateInvoice(extraInvoice, extraInvoice.getId());	
 
 

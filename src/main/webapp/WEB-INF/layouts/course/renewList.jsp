@@ -55,24 +55,20 @@ $(document).ready(function () {
 	listBranch('#branch');
 	listGrade('#grade');
 
-	// only for Staff
-	if(!JSON.parse(window.isAdmin)){
-		// avoid execute several times
-		//var hiddenInput = false;
-		$(document).ajaxComplete(function(event, xhr, settings) {
-			// Check if the request URL matches the one in listBranch
-			if (settings.url === '/code/branch') {
-				$("#branch").val(window.branch);
-				// Disable #listBranch and #addBranch
-				$("#branch").prop('disabled', true);
-			}
-		});
-	}
+	// If we have search results, make sure book dropdown is enabled
+	<c:if test="${StudentList != null}">
+		$("#book").prop('disabled', false);
+		// Set the book value if it was previously selected
+		<c:if test="${not empty bookInfo}">
+			$("#book").val('${bookInfo}');
+		</c:if>
+	</c:if>
 
-	// send diabled select value via <form>
+	// send disabled select value via <form>
     document.getElementById("renewList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
 		document.getElementById("branch").disabled = false;
+        // No need to disable book dropdown anymore
     });
 
 });
@@ -89,22 +85,37 @@ function linkToStudent(studentId) {
 //		Display Renewal Invoice
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayRenewal(studentId, firstName, lastName, book) {
-	
 	var branch = window.branch;
 	// branch code number...
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
 
+	// Show confirmation modal with message
+    var bookText = $('#book option:selected').text();
+    var message = 'You are about to renew invoice for:<br><br>';
+    message += '<b>Student : <span class="text-primary">' + firstName + ' ' + lastName + ' (' + studentId + ')</span></b><br>';
+    message += '<b>Book Option : <span class="text-primary">' + bookText + '</span></b><br><br>';
+    message += '<b>This action cannot be undone.</b>';
+    
+    $('#IndividualConfirmationMessage').html(message);
+    $('#individualConfirm').modal('show');
+
+    // Handle proceed button click
+    $('#proceedIndividualRenewal').off('click').on('click', function() {
+        $('#individualConfirm').modal('hide');
+        proceedWithRenewal(studentId, firstName, lastName, book, branch);
+    });
+}
+
+function proceedWithRenewal(studentId, firstName, lastName, book, branch) {
 	console.log('Branch : ' + branch +  '  Student ID : ' + studentId + '  Book : ' + book);
-	// return;
 
 	$.ajax({
 		url : '${pageContext.request.contextPath}/invoice/renewInvoice/' + studentId + '/' + book + '/' + branch,
 		type : 'POST',
 		contentType : 'application/json',
 		success : function(response) {
-
 			if(response === EMPTY){
 				$('#warning-alert .modal-body').text('Last invoice is not fully paid.');
 				$('#warning-alert').modal('show');
@@ -117,11 +128,8 @@ function displayRenewal(studentId, firstName, lastName, book) {
 				branch = '90'; // head office
 			}	
 			var url = '/invoice?invoiceId=' + response + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
-			// var url = '/invoice?invoiceId=' + 11301558003 + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;	
 			var win = window.open(url, '_blank');
 			win.focus();
-
-
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -286,22 +294,22 @@ function processBatchInvoices() {
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="book" class="label-form">Book</label> 
-						<select class="form-control" id="book" name="book">
-							<option value="0">Not Charged</option>
-							<option value="1">Vol. 1</option>
-							<option value="2">Vol. 2</option>
-							<option value="3">Vol. 3</option>
-							<option value="4">Vol. 4</option>
-							<option value="5">Vol. 5</option>
-						</select>
-					</div>
-					<div class="col-md-2">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" autocomplete="off" required>
 					</div>
 					<div class="col-md-2">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
+					</div>
+					<div class="col-md-2">
+						<label for="book" class="label-form text-primary">Book</label> 
+						<select class="form-control" id="book" name="book" ${StudentList == null ? 'disabled' : ''}>
+							<option value="0" ${bookInfo == '0' ? 'selected' : ''}>Not Charged</option>
+							<option value="1" ${bookInfo == '1' ? 'selected' : ''}>Vol. 1</option>
+							<option value="2" ${bookInfo == '2' ? 'selected' : ''}>Vol. 2</option>
+							<option value="3" ${bookInfo == '3' ? 'selected' : ''}>Vol. 3</option>
+							<option value="4" ${bookInfo == '4' ? 'selected' : ''}>Vol. 4</option>
+							<option value="5" ${bookInfo == '5' ? 'selected' : ''}>Vol. 5</option>
+						</select>
 					</div>
 					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
@@ -488,6 +496,28 @@ function processBatchInvoices() {
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" onclick="processBatchInvoices()">Please, Proceed</button>
                 <button type="button" class="btn btn-secondary" onclick="$('#selectAll').prop('checked', false);" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Individual Confirmation Modal -->
+<div class="modal fade" id="individualConfirm" tabindex="-1" role="dialog" aria-labelledby="individualConfirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+                <h4 class="modal-title text-white" id="IndividualConfirmationModalLabel"><i class="bi bi-arrow-repeat mr-2 text-dark"></i>&nbsp;&nbsp;Confirm Renew Invoice</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" role="alert" id="IndividualConfirmationMessage">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="proceedIndividualRenewal">Please, Proceed</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

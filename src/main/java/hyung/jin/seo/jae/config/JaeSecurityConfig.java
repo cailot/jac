@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 @Configuration
 @EnableWebSecurity
 public class JaeSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,44 +24,45 @@ public class JaeSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
     }
 	
-	@Override
-	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers(
-                        "/assets/css/**",
-                        "/assets/js/**",
-                        "/assets/fonts/**",
-                        "/assets/images/**",
-                        "/js/**",
-                        "/fonts/**",
-                        "/css/**",
-                        "/image/**"
-                        ); // excluding folders list
-	}
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers(
+            "/assets/css/**",
+            "/assets/js/**",
+            "/assets/fonts/**",
+            "/assets/images/**",
+            "/js/**",
+            "/fonts/**",
+            "/css/**",
+            "/image/**",
+            "/favicon.ico"
+        );
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.headers(headers -> headers.frameOptions().sameOrigin()); // Allow iframe to embed PDF in body
+        http.headers(headers -> headers.frameOptions().sameOrigin());
         http.csrf().disable();
         http
-            .antMatcher("/**")
-            .authorizeRequests(requests -> requests
-                .antMatchers("/**").authenticated() // Secure /**
-                .antMatchers("/login").permitAll())
-            .formLogin(login -> login
-                .loginPage("/login") // Login page link
+            .authorizeRequests()
+                .antMatchers("/login", "/processLogin", "/image/**", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .loginPage("/login")
                 .loginProcessingUrl("/processLogin")
-                .defaultSuccessUrl("/studentAdmin") // Redirect link after login
-                .permitAll())
-            .logout(logout -> logout
-                .logoutUrl("/logout") // Specify logout URL
-                .logoutSuccessUrl("/login") // Redirect URL after logout
-                .invalidateHttpSession(true) // Make session unavailable
-                .permitAll());
-            // .successHandler(customAuthenticationSuccessHandler()); // Add custom success handler
+                .defaultSuccessUrl("/studentAdmin")
+                .permitAll()
+            .and()
+            .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .permitAll();
     }
 
     @Bean
-    public PasswordEncoder getPasswordEncoder(){
+    public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

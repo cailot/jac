@@ -91,7 +91,7 @@
 				<!-- Jac Study submenu -->
 				<div class="dropdown-submenu">
 					<a class="dropdown-item" href="#" id="testDropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						Jac Study Check
+						JAC Study Check
 					</a>
 					<div class="dropdown-menu" aria-labelledby="Practice">
 						<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineStatus">Online Class</a>
@@ -99,7 +99,7 @@
 					</div>
 				</div>
 				<!-- OMR -->
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a> -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
 			</div>
 		</li>
 		<!-- User -->
@@ -123,7 +123,7 @@
 		<c:if test="${isAdmin}">
 		<li class="nav-item dropdown">
 			<a class="nav-link" href="" role="button" aria-haspopup="true" aria-expanded="false">
-				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">Jac Study</span>
+				<span class="material-icons custom-icon mr-2">manage_accounts</span><span class="h5">JAC Study</span>
 			</a>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/onlineList">Online Class</a>
