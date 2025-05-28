@@ -89,22 +89,37 @@ function linkToStudent(studentId) {
 //		Display Renewal Invoice
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayRenewal(studentId, firstName, lastName, book) {
-	
 	var branch = window.branch;
 	// branch code number...
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
 
+	// Show confirmation modal with message
+    var bookText = $('#book option:selected').text();
+    var message = 'You are about to renew invoice for:<br><br>';
+    message += '<b>Student : <span class="text-primary">' + firstName + ' ' + lastName + ' (' + studentId + ')</span></b><br>';
+    message += '<b>Book Option : <span class="text-primary">' + bookText + '</span></b><br><br>';
+    message += '<b>This action cannot be undone.</b>';
+    
+    $('#IndividualConfirmationMessage').html(message);
+    $('#individualConfirm').modal('show');
+
+    // Handle proceed button click
+    $('#proceedIndividualRenewal').off('click').on('click', function() {
+        $('#individualConfirm').modal('hide');
+        proceedWithRenewal(studentId, firstName, lastName, book, branch);
+    });
+}
+
+function proceedWithRenewal(studentId, firstName, lastName, book, branch) {
 	console.log('Branch : ' + branch +  '  Student ID : ' + studentId + '  Book : ' + book);
-	// return;
 
 	$.ajax({
 		url : '${pageContext.request.contextPath}/invoice/renewInvoice/' + studentId + '/' + book + '/' + branch,
 		type : 'POST',
 		contentType : 'application/json',
 		success : function(response) {
-
 			if(response === EMPTY){
 				$('#warning-alert .modal-body').text('Last invoice is not fully paid.');
 				$('#warning-alert').modal('show');
@@ -117,11 +132,8 @@ function displayRenewal(studentId, firstName, lastName, book) {
 				branch = '90'; // head office
 			}	
 			var url = '/invoice?invoiceId=' + response + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;  
-			// var url = '/invoice?invoiceId=' + 11301558003 + '&studentId=' + studentId + '&firstName=' + firstName + '&lastName=' + lastName + '&branchCode=' + branch;	
 			var win = window.open(url, '_blank');
 			win.focus();
-
-
 		},
 		error : function(xhr, status, error) {
 			console.log('Error : ' + error);
@@ -135,6 +147,103 @@ function displayRenewal(studentId, firstName, lastName, book) {
 function getSelectedBook() {
     var bookSelect = document.getElementById('book');
     return bookSelect.options[bookSelect.selectedIndex].value;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Invoice All Students
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function invoiceAll() {
+    // Get checkbox state
+    var isChecked = $('#selectAll').prop('checked');
+    
+    if(!isChecked) {
+        return; // If unchecked, do nothing
+    }
+
+    // Get table data
+    var table = $('#renewListTable').DataTable();
+    var totalStudents = table.rows().count();
+    
+    if(totalStudents === 0) {
+        $('#selectAll').prop('checked', false);
+        $('#warning-alert .modal-body').text('No students found to process.');
+        $('#warning-alert').modal('show');
+        return;
+    }
+
+    // Show confirmation modal with message
+    var book = getSelectedBook();
+    var bookText = $('#book option:selected').text();
+    var message = totalStudents + ' student(s) will be processed.<br><br>';
+    message += '<b>Book Option : <span class="text-primary">' + bookText + '</span></b><br><br>';
+    message += '<b>This action cannot be undone.</b>';
+    
+    $('#ReconfirmationMessage').html(message);
+    $('#batchConfirm').modal('show');
+}
+
+// Add event handler for modal close/cancel
+$('#batchConfirm').on('hidden.bs.modal', function () {
+    $('#selectAll').prop('checked', false);
+});
+
+function processBatchInvoices() {
+    var book = getSelectedBook();
+    var branch = window.branch;
+    // branch code number...
+    if(branch === '0'){
+        branch = '90'; // head office
+    }
+
+    // Get all rows from the table
+    var table = $('#renewListTable').DataTable();
+    var rows = table.rows().data();
+    var processedCount = 0;
+    var totalRows = rows.length;
+    var successCount = 0;
+    var failedCount = 0;
+
+    // Hide confirmation modal
+    $('#batchConfirm').modal('hide');
+
+    // Process each row sequentially
+    function processNextRow(index) {
+        if (index >= totalRows) {
+            // All rows processed
+            $('#success-alert .modal-body').text('Processing completed. Success: ' + successCount + ', Failed: ' + failedCount);
+            $('#success-alert').modal('show');
+            $('#selectAll').prop('checked', false);
+            return;
+        }
+
+        var studentId = rows[index][0].replace(/\D/g,''); // Extract student ID from the cell
+        var firstName = rows[index][1];
+        var lastName = rows[index][2];
+
+        $.ajax({
+            url: '${pageContext.request.contextPath}/invoice/renewInvoice/' + studentId + '/' + book + '/' + branch,
+            type: 'POST',
+            contentType: 'application/json',
+            success: function(response) {
+                if(response !== EMPTY) {
+                    successCount++;
+                } else {
+                    failedCount++;
+                }
+            },
+            error: function() {
+                failedCount++;
+            },
+            complete: function() {
+                processedCount++;
+                // Process next row
+                processNextRow(index + 1);
+            }
+        });
+    }
+
+    // Start processing from first row
+    processNextRow(0);
 }
 
 </script>
@@ -275,7 +384,12 @@ function getSelectedBook() {
 										<th class="align-middle text-center" style="width: 5%">End</th>
 										<th class="align-middle text-center" style="width: 10%">Contact</th>
 										<th class="align-middle text-center" style="width: 10%">Email</th>
-										<th class="align-middle text-center" data-orderable="false" style="width: 5%">Action</th>
+										<th class="align-middle text-center" data-orderable="false" style="width: 5%">
+											<div class="d-flex align-items-center justify-content-center">
+												Action
+												<input type="checkbox" id="selectAll" class="ml-2" onclick="invoiceAll()" data-toggle="tooltip" title="Renew All Invoices"/>
+											</div>
+										</th>
 									</tr>
 								</thead>
 								<tbody id="list-student-body">
@@ -366,4 +480,49 @@ function getSelectedBook() {
 			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 		</div>
 	</div>
+</div>
+
+
+<!-- Batch Confirmation Modal -->
+<div class="modal fade" id="batchConfirm" tabindex="-1" role="dialog" aria-labelledby="batchConfirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+                <h4 class="modal-title text-white" id="ReConfirmationModalLabel"><i class="bi bi-collection mr-2 text-dark"></i>&nbsp;&nbsp;Confirm Renew All Invoices</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="$('#selectAll').prop('checked', false);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" role="alert" id="ReconfirmationMessage">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" onclick="processBatchInvoices()">Please, Proceed</button>
+                <button type="button" class="btn btn-secondary" onclick="$('#selectAll').prop('checked', false);" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Individual Confirmation Modal -->
+<div class="modal fade" id="individualConfirm" tabindex="-1" role="dialog" aria-labelledby="individualConfirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content jae-border-warning">
+            <div class="modal-header bg-warning">
+                <h4 class="modal-title text-white" id="IndividualConfirmationModalLabel"><i class="bi bi-arrow-repeat mr-2 text-dark"></i>&nbsp;&nbsp;Confirm Renew Invoice</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert" role="alert" id="IndividualConfirmationMessage">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="proceedIndividualRenewal">Please, Proceed</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -282,7 +282,7 @@ function clearStudentInfo() {
 					</div>
 					<div class="col-md-2">
 						<label for="studentKeyword" class="label-form">Student Info</label> 
-						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="Name or ID">
+						<input type="text" class="form-control" style="background-color: #FCF7CA;" id="studentKeyword" name="studentKeyword" placeholder="ID, Name, Email or Mobile">
 					</div>
 					<!-- put blank col-md-2 -->
 					<div class="offset-md-3">
@@ -393,7 +393,7 @@ function clearStudentInfo() {
 														<c:if test="${enrol.online != true and enrol.discount != '100%'}">		
 															<tr style="background-color : transparent !important;">
 																<td class="small align-middle" style="white-space: nowrap;">${enrol.name}&nbsp;</td>
-																<td class="small align-middle" style="white-space: nowrap;">(${enrol.extra})</td>
+																<td class="small align-middle" style="white-space: nowrap;">${enrol.extra}</td>
 															</tr>
 														</c:if>
 														</c:forEach>
@@ -401,7 +401,6 @@ function clearStudentInfo() {
 												</td>
 												<c:set var="info" value="${payment.info}" />
 												<td class="text-center align-middle memo">
-													<!--check ${payment.info} is empty or not -->
 													<c:choose>
 														<c:when test="${not empty info}">
 															<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo('${payment.id}', '${payment.info}')"></i>
