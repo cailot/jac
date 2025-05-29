@@ -362,7 +362,8 @@ function updateStudentInfo() {
 	}
 
 	// if activate process, then call activateStudent()
-	if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
+	// if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
+	if($('#formActiveStatus').val()=='0' && $('#formActive').prop('checked')){
 		reactivateStudent();
 		return;
 	}		
@@ -416,7 +417,7 @@ function updateStudentInfo() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
 	clearStudentForm();
-	//console.log(value);
+	console.log(value);
 	$("#formId").val(value['id']);
 	if(value['active']===1){ // active student
 		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
@@ -459,6 +460,7 @@ function displayStudentInfo(value) {
 	$("#formState").val(value['state']);
 	$("#formBranch").val(value['branch']);
 	$("#formEndDate").val(value['endDate']);
+	$("#formActiveStatus").val(value['active']);
 	
 	// set dateFormat again for direct link from enrolment page
 	$("#formRegisterDate").datepicker({
@@ -556,7 +558,7 @@ function searchStudentById(id){
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 	  <div class="modal-content jae-border-primary">
 		<div class="modal-header bg-primary text-white">
-		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
+		  <h5 class="modal-title text-white"><i class="ml-2bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
 		  <button type="button" class="close" data-dismiss="modal">
 			<span>&times;</span>
 		  </button>
@@ -637,11 +639,9 @@ function searchStudentById(id){
 			</div>
 			<div class="col-md-4">
 				<label for="formBranch" class="label-form">Branch</label> 
-				<select class="form-control" id="formBranch" name="formBranch">
-					
+				<select class="form-control" id="formBranch" name="formBranch">	
 					<option value="12">Box Hill</option>
 					<option value="13">Braybrook</option>
-					<!-- <option value="14">Chadstone</option> -->
 					<option value="15">Cranbourne</option>
 					<option value="16">Epping</option>
 					<option value="17">Glen Waverley</option>
@@ -662,9 +662,10 @@ function searchStudentById(id){
 					<option value="32">Melton</option>
 					<option value="33">Glenroy</option>
 					<option value="34">Pakenham</option>
+					<option value="35">Tarneit</option>
+					<option value="36">Clyde</option>
 					<option value="90">JAC Head Office Vic</option>
-					<option value="99">Testing</option>
-				
+					<option value="99">Testing</option>				
 				</select>
 			</div>
 			<div class="col-md-4">
@@ -758,7 +759,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-4">
+			<div class="col-md-12 mt-2">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em !important;">Sub Contact</header>
 				<div class="row">
@@ -788,6 +789,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<input type="hidden" id="formEndDate" name="formEndDate" />
+		<input type="hidden" id="formActiveStatus" name="formActiveStatus" />
 	</form>
 </div>
 
@@ -799,7 +801,7 @@ function searchStudentById(id){
 				<section class="fieldset rounded border-info">
 				<header class="text-info font-weight-bold">Student Registration</header>
 				<form id="studentRegister">
-					<div class="form-row mt-3">
+					<div class="form-row mt-1">
 						<div class="col-md-4">
 							<label for="addState" class="label-form">State</label> 
 							<select class="form-control" id="addState" name="addState" disabled>
@@ -852,7 +854,7 @@ function searchStudentById(id){
 						</div>
 					</div>
 					<div class="form-row mt-3">
-						<div class="col-md-12 mt-4">
+						<div class="col-md-12 mt-2">
 							<section class="fieldset rounded" style="padding: 10px;">
 								<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
 							<div class="row">
@@ -877,7 +879,7 @@ function searchStudentById(id){
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="col-md-12 mt-4">
+						<div class="col-md-12">
 							<section class="fieldset rounded" style="padding: 10px;">
 								<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
 							<div class="row">
@@ -901,7 +903,7 @@ function searchStudentById(id){
 							</section>
 						</div>
 					</div>
-					<div class="form-row mt-4">
+					<div class="form-row mt-2">
 						<div class="col-md-12">
 							<label for="addMemo" class="label-form">Memo</label>
 							<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>

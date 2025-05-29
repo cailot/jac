@@ -4,7 +4,7 @@
 <script>
 $(document).ready(function() {
     // Show the welcome popup every time
-    $('#welcomeModal').modal('show');
+    $('#welcomeModal').modal('hide');
     
     // Initially hide the resetCard
     $('#resetCard').hide();

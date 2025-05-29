@@ -49,7 +49,7 @@ $(document).ready(function () {
 		var totalPaid = parseAndSum(api.column(5, { search: 'applied' }).data());
 
 		// Update footer with total paid amount
-		$('#totalPaid').html('$' + totalPaid.toFixed(2));
+		$('#totalPaid').html('$' + totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 	}
 
     });
@@ -377,13 +377,13 @@ function clearStudentInfo() {
 													<c:out value="${payment.method}"/>	
 												</td>
 												<td class="small align-middle text-right mr-1"> <!-- payment total with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total}" pattern="#0.00" />
+													<fmt:formatNumber value="${payment.total}" pattern="#,##0.00" />
 												</td>
 												<td class="small align-middle text-right mr-1"> 
-													<fmt:formatNumber value="${payment.amount}" pattern="#0.00" />
+													<fmt:formatNumber value="${payment.amount}" pattern="#,##0.00" />
 												</td>
 												<td class="small align-middle text-right mr-1"> <!-- payment outstanding with 2 decimal places -->
-													<fmt:formatNumber value="${payment.total - payment.upto}" pattern="#0.00" />
+													<fmt:formatNumber value="${payment.total - payment.upto}" pattern="#,##0.00" />
 												</td>
 												<!-- Display a property of each object -->
 												<td class="small align-middle ml-1" style="white-space: nowrap; padding: 0px;">

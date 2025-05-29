@@ -362,7 +362,8 @@ function updateStudentInfo() {
 	}
 
 	// if activate process, then call activateStudent()
-	if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
+	// if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
+	if($('#formActiveStatus').val()=='0' && $('#formActive').prop('checked')){
 		reactivateStudent();
 		return;
 	}		
@@ -416,7 +417,7 @@ function updateStudentInfo() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
 	clearStudentForm();
-	//console.log(value);
+	console.log(value);
 	$("#formId").val(value['id']);
 	if(value['active']===1){ // active student
 		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
@@ -459,6 +460,7 @@ function displayStudentInfo(value) {
 	$("#formState").val(value['state']);
 	$("#formBranch").val(value['branch']);
 	$("#formEndDate").val(value['endDate']);
+	$("#formActiveStatus").val(value['active']);
 	
 	// set dateFormat again for direct link from enrolment page
 	$("#formRegisterDate").datepicker({
@@ -556,7 +558,7 @@ function searchStudentById(id){
 	<div class="modal-dialog modal-xl modal-dialog-centered">
 	  <div class="modal-content jae-border-primary">
 		<div class="modal-header bg-primary text-white">
-		  <h5 class="modal-title">&nbsp;<i class="bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
+		  <h5 class="modal-title text-white"><i class="ml-2bi bi-card-list"></i>&nbsp;&nbsp; Student List</h5>
 		  <button type="button" class="close" data-dismiss="modal">
 			<span>&times;</span>
 		  </button>
@@ -732,7 +734,7 @@ function searchStudentById(id){
 			
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-4">
+			<div class="col-md-12 mt-2">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em!important;">Main Contact</header>
 				<div class="row">
@@ -757,7 +759,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-2">
+			<div class="col-md-12">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em !important;">Sub Contact</header>
 				<div class="row">
@@ -787,6 +789,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<input type="hidden" id="formEndDate" name="formEndDate" />
+		<input type="hidden" id="formActiveStatus" name="formActiveStatus" />
 	</form>
 </div>
 

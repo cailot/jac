@@ -49,8 +49,8 @@ $(document).ready(function () {
 			};
 			// Total over all pages
 			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer
-			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toFixed(2) + '</span>');
+			// Update footer with comma formatting
+			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>');
 		}
 
 

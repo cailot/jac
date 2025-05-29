@@ -882,7 +882,7 @@ function processTestResult(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<label for="addGrade" class="label-form h6 badge badge-success text-white">Grade</label>
 										<div id="addGrade" name="addGrade">
 											<!-- First Row -->
 											<div id="addGradeRadio" class="radio-container">
@@ -947,7 +947,7 @@ function processTestResult(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label class="label-form h6 badge badge-success">Class Test</label>										
+										<label class="label-form h6 badge badge-success text-white">Class Test</label>										
 									</div>
 								</div>
 								<div class="form-row">
@@ -991,10 +991,10 @@ function processTestResult(id) {
 						<!-- Result Schedule -->
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="addResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>
+								<label for="addResultDate" class="label-form h6 badge badge-primary text-white">Online Result Schedule</label>
 								<div class="form-row">
 									<div class="col-md-7">
-										<span>The result will be processed at </span>
+										<span>The result will be processed</span>
 									</div>
 									<div class="col-md-5">
 										<div class="input-group date" id="adddatepicker">
@@ -1074,7 +1074,7 @@ function processTestResult(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
+										<label for="editGrade" class="label-form h6 badge badge-success text-white">Grade</label>
 										<div id="editGrade" name="editGrade">
 											<!-- First Row -->
 											<div id="editGradeRadio" class="radio-container">
@@ -1185,10 +1185,10 @@ function processTestResult(id) {
 						<!-- Result Schedule -->
 						<div class="form-group">
 							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="editResultDate" class="label-form h6 badge badge-primary">Online Result Schedule</label>									
+								<label for="editResultDate" class="label-form h6 badge badge-primary text-white">Online Result Schedule</label>									
 								<div class="form-row">
 									<div class="col-md-7">
-										<span>The result will be processed at </span>
+										<span>The result will be processed</span>
 									</div>
 									<div class="col-md-5">
 										<div class="input-group date" id="editdatepicker">
@@ -1204,7 +1204,7 @@ function processTestResult(id) {
 						<!-- Explanation Schedule -->
 						<div id="editExplanationSchedule" class="form-group" style="display: none;">
 							<div class="mb-4" style="border: 2px solid #007bff; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
-								<label for="editResultDate" class="label-form h6 badge badge-primary">Explanation Result Schedule</label>
+								<label for="editResultDate" class="label-form h6 badge badge-primary text-white">Explanation Result Schedule</label>
 								<div class="form-row">
 									<div class="col-md-6">
 										<label for="editExplanationFrom" class="label-form">From</label>

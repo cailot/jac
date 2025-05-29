@@ -242,9 +242,10 @@ function showStudentList(grade) {
                         '<td><span class="small text-center">' + item.endWeek + '</span></td>',
                         '<td><span class="small text-center">' + item.email1 + '</span></td>',
                         '<td><span class="small text-center">' + item.contactNo1 + '</span></td>',
-                        '<td class="small text-center"><i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory(' + item.id + ')"></i>&nbsp;&nbsp;' +
-							'<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo(' + item.id + ')"></i>&nbsp;&nbsp;' +
-							'<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal(' + item.id + ')"></i>' +
+                        '<td class="small text-center"><i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory(' + item.id + ')"></i>' +
+							'<i class="ml-2 bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo(' + item.id + ')"></i>' +
+							'<i class="ml-2 bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal(' + item.id + ')"></i>' +
+							// '<i class="ml-2 bi bi-globe text-danger hand-cursor" data-toggle="tooltip" title="Go to JAC eLearning" onclick="openJACeLearning(' + item.id + ')"></i>' +
 						'</td>'
                     ];
                 });
@@ -531,6 +532,28 @@ function displayFullHistory(studentId) {
 	win.focus();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Open JAC eLearning Platform
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function openJACeLearning(studentId) {
+    // get student password by id
+	var password = "";
+	$.ajax({
+		url: '${pageContext.request.contextPath}/student/getPassword/' + studentId,
+		type: 'GET',
+		async: false,
+		success: function(data) {
+			password = data;
+			var url = 'http://localhost:8085/online/urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			var win = window.open(url, '_blank');
+			win.focus();
+		},
+		error: function(xhr, status, error) {
+			console.log('Error getting password: ' + error);
+		}
+	});
+}
+
 </script>
 
 <style>
@@ -711,53 +734,53 @@ function displayFullHistory(studentId) {
 						</div>
 					
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact1" name="editContact1" placeholder="Contact No">
+							<div class="col-md-12">
+								<div class="fieldset">
+									<header>Main Contact</header>
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="editContact1" name="editContact1" placeholder="Contact No">
+										</div>
+										<div class="col-md-4">
+											<select class="form-control" id="editRelation1" name="editRelation1">
+												<option value="mother">Mother</option>
+												<option value="father">Father</option>
+												<option value="sibling">Sibling</option>
+												<option value="other">Other</option>
+											</select>
+										</div>	
 									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation1" name="editRelation1">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email">
+									<div class="row mt-2">
+										<div class="col-md-12">
+											<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email">
+										</div>
 									</div>
 								</div>
-								</section>
 							</div>
 						</div>
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact2" name="editContact2" placeholder="Contact No">
+							<div class="col-md-12">
+								<div class="fieldset">
+									<header>Sub Contact</header>
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="editContact2" name="editContact2" placeholder="Contact No">
+										</div>
+										<div class="col-md-4">
+											<select class="form-control" id="editRelation2" name="editRelation2">
+												<option value="mother">Mother</option>
+												<option value="father">Father</option>
+												<option value="sibling">Sibling</option>
+												<option value="other">Other</option>
+											</select>
+										</div>	
 									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation2" name="editRelation2">
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail2" name="editEmail2" placeholder="Email">
+									<div class="row mt-2">
+										<div class="col-md-12">
+											<input type="text" class="form-control" id="editEmail2" name="editEmail2" placeholder="Email">
+										</div>
 									</div>
 								</div>
-								</section>
 							</div>
 						</div>
 						<div class="form-row mt-3">

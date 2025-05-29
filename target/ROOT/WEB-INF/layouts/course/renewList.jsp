@@ -55,24 +55,34 @@ $(document).ready(function () {
 	listBranch('#branch');
 	listGrade('#grade');
 
+	// If we have search results, make sure book dropdown is enabled
+	<c:if test="${StudentList != null}">
+		$("#book").prop('disabled', false);
+		// Set the book value if it was previously selected
+		<c:if test="${not empty bookInfo}">
+			$("#book").val('${bookInfo}');
+		</c:if>
+	</c:if>
+
 	// only for Staff
 	if(!JSON.parse(window.isAdmin)){
-		// avoid execute several times
-		//var hiddenInput = false;
-		$(document).ajaxComplete(function(event, xhr, settings) {
-			// Check if the request URL matches the one in listBranch
-			if (settings.url === '/code/branch') {
-				$("#branch").val(window.branch);
-				// Disable #listBranch and #addBranch
-				$("#branch").prop('disabled', true);
+	// avoid execute several times
+	//var hiddenInput = false;
+	$(document).ajaxComplete(function(event, xhr, settings) {
+		// Check if the request URL matches the one in listBranch
+		if (settings.url === '/code/branch') {
+			$("#branch").val(window.branch);
+			$("#branch").prop('disabled', true);
 			}
 		});
 	}
 
-	// send diabled select value via <form>
+
+	// send disabled select value via <form>
     document.getElementById("renewList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
 		document.getElementById("branch").disabled = false;
+        // No need to disable book dropdown anymore
     });
 
 });
@@ -298,22 +308,22 @@ function processBatchInvoices() {
 						</select>
 					</div>
 					<div class="col-md-2">
-						<label for="book" class="label-form">Book</label> 
-						<select class="form-control" id="book" name="book">
-							<option value="0">Not Charged</option>
-							<option value="1">Vol. 1</option>
-							<option value="2">Vol. 2</option>
-							<option value="3">Vol. 3</option>
-							<option value="4">Vol. 4</option>
-							<option value="5">Vol. 5</option>
-						</select>
-					</div>
-					<div class="col-md-2">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" autocomplete="off" required>
 					</div>
 					<div class="col-md-2">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
+					</div>
+					<div class="col-md-2">
+						<label for="book" class="label-form text-primary">Book</label> 
+						<select class="form-control" id="book" name="book" ${StudentList == null ? 'disabled' : ''}>
+							<option value="0" ${bookInfo == '0' ? 'selected' : ''}>Not Charged</option>
+							<option value="1" ${bookInfo == '1' ? 'selected' : ''}>Vol. 1</option>
+							<option value="2" ${bookInfo == '2' ? 'selected' : ''}>Vol. 2</option>
+							<option value="3" ${bookInfo == '3' ? 'selected' : ''}>Vol. 3</option>
+							<option value="4" ${bookInfo == '4' ? 'selected' : ''}>Vol. 4</option>
+							<option value="5" ${bookInfo == '5' ? 'selected' : ''}>Vol. 5</option>
+						</select>
 					</div>
 					<div class="offset-md-1"></div>
 					<div class="col mx-auto">
