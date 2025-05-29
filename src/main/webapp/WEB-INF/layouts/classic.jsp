@@ -26,6 +26,62 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 <style>
+    /* Reset body margins and padding */
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8f9fa;
+    }
+
+    /* Base layout styles */
+    .container-fluid {
+        width: 100%;
+        padding-right: 5px;
+        padding-left: 5px;
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    /* Only constrain width on extra large screens */
+    @media (min-width: 1600px) {
+        .container-fluid {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    }
+
+    @media (min-width: 1920px) {
+        .container-fluid {
+            max-width: 2000px;
+        }
+    }
+
+    /* Modal and fieldset headers */
+    .fieldset {
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        padding: 0.8rem 1rem 1rem;
+        margin: 1.5rem 0 1rem;
+        position: relative;
+    }
+
+    .fieldset header {
+        font-size: 1.4rem !important;
+        font-weight: 500;
+        padding: 0 1rem;
+        background-color: #f8f9fa;
+        position: absolute;
+        top: -1.1rem;
+        left: 1rem;
+        z-index: 1;
+    }
+
+    /* Session timeout bar */
     .session-timeout-bar {
         position: fixed;
         top: 0;
@@ -33,13 +89,124 @@
         z-index: 1050;
         display: none;
     }
+
     .main-content {
-        transition: padding-top 0.3s; /* Smooth transition for padding */
+        transition: padding-top 0.3s;
+        flex: 1;
+        width: 100%;
     }
 
     .tooltip {
-    z-index: 1050 !important; /* Default for Bootstrap */
-}
+        z-index: 1050 !important;
+    }
+
+    /* Form layout improvements */
+    .form-row {
+        margin-right: -5px;
+        margin-left: -5px;
+    }
+
+    .form-row > .col,
+    .form-row > [class*="col-"] {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    /* Table improvements */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Header menu styling */
+    .row:first-child {
+        margin-top: 0;
+    }
+
+    /* Footer styling */
+    footer {
+        background: #fff;
+        padding: 15px 0;
+        margin-top: auto;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 15px;
+    }
+
+    /* Section cards */
+    .section-card {
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    /* Form section spacing */
+    .form-section {
+        margin-bottom: 25px;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Label styling */
+    .label-form {
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    /* Form groups and sections */
+    .form-group {
+        margin-bottom: 0.8rem;
+    }
+
+    .form-row + .form-row {
+        margin-top: 0.8rem;
+    }
+
+    /* Modal title styling */
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    /* Student Registration specific styling */
+    .student-registration-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 0;
+    }
+
+    /* Modal form spacing */
+    .modal-body .form-row:first-child {
+        margin-top: 0.3rem;
+    }
+
+    .modal-body section.fieldset {
+        margin-top: 1.8rem;
+    }
+
+    /* Nested fieldset adjustments */
+    .fieldset .fieldset {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .fieldset .fieldset header {
+        font-size: 1rem !important;
+        top: -0.8rem;
+    }
 </style>
 <script>
     $(function() {
@@ -116,9 +283,10 @@
         </div>
         <div class="row justify-content-center">
             <tiles:insertAttribute name="body" />
+
         </div>
         <footer class="mt-auto">
-            <div class="row" style="padding: 15px 20px;">
+            <div class="row ml-3" style="padding: 15px 20px;">
                 2015 - <%=new java.util.Date().getYear() + 1900%>&copy;&nbsp; All rights reserved.&nbsp;&nbsp;
                 <div class="copyright-font-color">James An College <span class="small text-secondary">v0.5.1</span></div>
             </div>

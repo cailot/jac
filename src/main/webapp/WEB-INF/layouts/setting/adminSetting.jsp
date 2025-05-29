@@ -260,53 +260,53 @@ function clearPassword() {
 						</div>
 					
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact1" name="editContact1" readonly>
+							<div class="col-md-12">
+								<div class="fieldset">
+									<header>Main Contact</header>
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="editContact1" name="editContact1" readonly>
+										</div>
+										<div class="col-md-4">
+											<select class="form-control" id="editRelation1" name="editRelation1" disabled>
+												<option value="mother">Mother</option>
+												<option value="father">Father</option>
+												<option value="sibling">Sibling</option>
+												<option value="other">Other</option>
+											</select>
+										</div>	
 									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation1" name="editRelation1" disabled>
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email" readonly>
+									<div class="row mt-2">
+										<div class="col-md-12">
+											<input type="text" class="form-control" id="editEmail1" name="editEmail1" placeholder="Email" readonly>
+										</div>
 									</div>
 								</div>
-								</section>
 							</div>
 						</div>
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
-								<section class="fieldset rounded" style="padding: 10px;">
-									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
-								<div class="row">
-									<div class="col-md-8">
-										<input type="text" class="form-control" id="editContact2" name="editContact2" readonly>
+							<div class="col-md-12">
+								<div class="fieldset">
+									<header>Sub Contact</header>
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="editContact2" name="editContact2" readonly>
+										</div>
+										<div class="col-md-4">
+											<select class="form-control" id="editRelation2" name="editRelation2" disabled>
+												<option value="mother">Mother</option>
+												<option value="father">Father</option>
+												<option value="sibling">Sibling</option>
+												<option value="other">Other</option>
+											</select>
+										</div>	
 									</div>
-									<div class="col-md-4">
-										<select class="form-control" id="editRelation2" name="editRelation2" disabled>
-											<option value="mother">Mother</option>
-											<option value="father">Father</option>
-											<option value="sibling">Sibling</option>
-											<option value="other">Other</option>
-										</select>
-									</div>	
-								</div>
-								<div class="row mt-2">
-									<div class="col-md-12">
-										<input type="text" class="form-control" id="editEmail2" name="editEmail2" readonly>
+									<div class="row mt-2">
+										<div class="col-md-12">
+											<input type="text" class="form-control" id="editEmail2" name="editEmail2" readonly>
+										</div>
 									</div>
 								</div>
-								</section>
 							</div>
 						</div>
 						<div class="form-row">
