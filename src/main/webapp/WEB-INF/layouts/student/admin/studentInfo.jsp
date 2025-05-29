@@ -637,11 +637,9 @@ function searchStudentById(id){
 			</div>
 			<div class="col-md-4">
 				<label for="formBranch" class="label-form">Branch</label> 
-				<select class="form-control" id="formBranch" name="formBranch">
-					
+				<select class="form-control" id="formBranch" name="formBranch">	
 					<option value="12">Box Hill</option>
 					<option value="13">Braybrook</option>
-					<!-- <option value="14">Chadstone</option> -->
 					<option value="15">Cranbourne</option>
 					<option value="16">Epping</option>
 					<option value="17">Glen Waverley</option>
@@ -662,9 +660,10 @@ function searchStudentById(id){
 					<option value="32">Melton</option>
 					<option value="33">Glenroy</option>
 					<option value="34">Pakenham</option>
+					<option value="35">Tarneit</option>
+					<option value="36">Clyde</option>
 					<option value="90">JAC Head Office Vic</option>
-					<option value="99">Testing</option>
-				
+					<option value="99">Testing</option>				
 				</select>
 			</div>
 			<div class="col-md-4">

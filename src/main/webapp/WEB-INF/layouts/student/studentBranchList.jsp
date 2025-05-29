@@ -536,9 +536,22 @@ function displayFullHistory(studentId) {
 //		Open JAC eLearning Platform
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 function openJACeLearning(studentId) {
-    var url = 'https://jac-study.azurewebsites.net/login';
-    var win = window.open(url, '_blank');
-    win.focus();
+    // get student password by id
+	var password = "";
+	$.ajax({
+		url: '${pageContext.request.contextPath}/student/getPassword/' + studentId,
+		type: 'GET',
+		async: false,
+		success: function(data) {
+			password = data;
+			var url = 'http://localhost:8085/online/urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			var win = window.open(url, '_blank');
+			win.focus();
+		},
+		error: function(xhr, status, error) {
+			console.log('Error getting password: ' + error);
+		}
+	});
 }
 
 </script>

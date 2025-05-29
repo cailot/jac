@@ -409,7 +409,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
                 @Param("weekDate") LocalDate weekDate);
         ///
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+        // get student password by id
+        @Query(value = "SELECT s.password FROM Student s WHERE s.id = ?1", nativeQuery = true)
+        String findStudentPasswordById(Long id);
+
         // get branch by student id
         @Query(value = "SELECT s.branch FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findBranchById(Long id);
