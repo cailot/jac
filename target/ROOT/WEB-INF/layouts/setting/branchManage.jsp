@@ -352,8 +352,10 @@ function showBranchInfo(state, branch){
 			$('#detailTable #bsb').html(branch.bsb);
 			$('#detailTable #accountNumber').html(branch.accountNumber);
 			$('#detailTable #accountName').html(branch.accountName);
-			//$('#detailTable #information').html(branch.info);
-			$('#detailTable #information').html(branch.info.replace(/\n/g, '<br>'));
+			$('#detailTable #infoTextArea').val(branch.info);
+			// Convert markdown to HTML for display
+			var formattedInfo = convertMarkdownToHtml(branch.info);
+			$('#detailTable #information').html(formattedInfo);
 			$('#detailTable #branchId').html(branch.id);
 		},
 		error: function (xhr, status, error) {
@@ -361,6 +363,88 @@ function showBranchInfo(state, branch){
 		}
 	});
 }
+
+function convertMarkdownToHtml(text) {
+    if (!text) return '';
+    
+    // Convert markdown to HTML
+    return text
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/_(.*?)_/g, '<em>$1</em>')
+        // Underline
+        .replace(/__(.*?)__/g, '<u>$1</u>')
+        // Links
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+        // Unordered lists
+        .replace(/^\- (.*)/gm, '<li>$1</li>').replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        // Ordered lists
+        .replace(/^\d+\. (.*)/gm, '<li>$1</li>').replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>')
+        // Subscript
+        .replace(/~(.*?)~/g, '<sub>$1</sub>')
+        // Line breaks
+        .replace(/\n/g, '<br>');
+}
+
+// Update the formatText function to also update the display
+function formatText(command) {
+    var textarea = document.getElementById('editInfo');
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var selectedText = textarea.value.substring(start, end);
+    var replacement = '';
+    
+    switch(command) {
+        case 'bold':
+            replacement = '**' + selectedText + '**';
+            break;
+        case 'italic':
+            replacement = '_' + selectedText + '_';
+            break;
+        case 'underline':
+            replacement = '__' + selectedText + '__';
+            break;
+        case 'link':
+            var url = prompt('Enter URL:', 'http://');
+            if (url) {
+                replacement = '[' + selectedText + '](' + url + ')';
+            }
+            break;
+        case 'list-ul':
+            replacement = '\n- ' + selectedText.split('\n').join('\n- ');
+            break;
+        case 'list-ol':
+            var lines = selectedText.split('\n');
+            replacement = '\n' + lines.map((line, i) => `${i + 1}. ${line}`).join('\n');
+            break;
+        case 'subscript':
+            replacement = '~' + selectedText + '~';
+            break;
+    }
+    
+    if (replacement) {
+        textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+        // Update preview if needed
+        if ($('#previewInfo').length) {
+            $('#previewInfo').html(convertMarkdownToHtml(textarea.value));
+        }
+        textarea.focus();
+        textarea.selectionStart = start;
+        textarea.selectionEnd = start + replacement.length;
+    }
+}
+
+// Add preview functionality to the edit modal
+$(document).ready(function() {
+    $('#editInfo').on('input', function() {
+        var formattedText = convertMarkdownToHtml($(this).val());
+        // If you want to show preview in edit modal
+        if ($('#previewInfo').length) {
+            $('#previewInfo').html(formattedText);
+        }
+    });
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 			Update password
@@ -415,6 +499,72 @@ function updatePassword() {
 		vertical-align: middle;
 		height: 50px 	
 	} 
+
+	.editor-toolbar {
+		background-color: #f8f9fa;
+		padding: 5px;
+		border: 1px solid #ced4da;
+		border-bottom: none;
+		border-radius: 4px 4px 0 0;
+	}
+
+	.editor-toolbar button {
+		padding: 4px 8px;
+	}
+
+	.editor-toolbar button:hover {
+		background-color: #e9ecef;
+	}
+
+	#editInfo {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.preview-section {
+		margin-top: 15px;
+		border: 1px solid #ced4da;
+		border-radius: 4px;
+		padding: 10px;
+		background-color: #f8f9fa;
+	}
+
+	#previewInfo {
+		background-color: white;
+		padding: 10px;
+		border: 1px solid #ced4da;
+		border-radius: 4px;
+	}
+
+	#previewInfo strong {
+		font-weight: bold;
+	}
+
+	#previewInfo em {
+		font-style: italic;
+	}
+
+	#previewInfo u {
+		text-decoration: underline;
+	}
+
+	#previewInfo ul, #previewInfo ol {
+		margin-left: 20px;
+		margin-bottom: 10px;
+	}
+
+	#previewInfo li {
+		margin-bottom: 5px;
+	}
+
+	#previewInfo a {
+		color: #007bff;
+		text-decoration: underline;
+	}
+
+	#previewInfo a:hover {
+		color: #0056b3;
+	}
 
 </style>
 
@@ -742,7 +892,25 @@ function updatePassword() {
 						<div class="form-row mt-2 mb-4">
 							<div class="col-md-12">
 								<label for="editInfo" class="label-form">Information</label>
-								<textarea class="form-control" id="editInfo" name="editInfo" rows="5"></textarea>
+								<div class="editor-toolbar mb-1">
+									<select class="btn btn-sm btn-light border mr-1">
+										<option>Normal</option>
+										<option>Heading 1</option>
+										<option>Heading 2</option>
+									</select>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('bold')"><i class="bi bi-type-bold"></i></button>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('italic')"><i class="bi bi-type-italic"></i></button>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('underline')"><i class="bi bi-type-underline"></i></button>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('link')"><i class="bi bi-link"></i></button>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('list-ul')"><i class="bi bi-list-ul"></i></button>
+									<button type="button" class="btn btn-sm btn-light border mr-1" onclick="formatText('list-ol')"><i class="bi bi-list-ol"></i></button>
+									<button type="button" class="btn btn-sm btn-light border" onclick="formatText('subscript')"><i class="bi bi-subscript"></i></button>
+								</div>
+								<textarea class="form-control mb-2" id="editInfo" name="editInfo" rows="5"></textarea>
+								<div class="preview-section">
+									<label class="label-form">Preview</label>
+									<div id="previewInfo" class="form-control" style="min-height: 100px; max-height: 200px; overflow-y: auto;"></div>
+								</div>
 							</div>
 						</div>
 						<input type="hidden" id="editId" name="editId">

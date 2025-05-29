@@ -99,7 +99,7 @@
 					</div>
 				</div>
 				<!-- OMR -->
-				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
+				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a> -->
 			</div>
 		</li>
 		<!-- User -->
@@ -160,7 +160,7 @@
 					</div>
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
-				<!-- <a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a> -->
+				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
 
 			</div>
 		</li>

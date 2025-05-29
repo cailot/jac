@@ -668,7 +668,7 @@ function deleteHomeworkSchedule(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 5px; margin-right: 5px;">
 								<div class="form-row">
 									<div class="col-md-3">										
-										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<label for="addGrade" class="label-form h6 badge badge-success text-white">Grade</label>
 										<div id="addGrade" name="addGrade">
 											<div class="form-check">
 												<input class="form-check-input" type="checkbox" id="addGradeAll" name="addGradeAll">
@@ -749,7 +749,7 @@ function deleteHomeworkSchedule(id) {
 									</div>	
 
 									<div class="col-md-5">										
-										<label for="addSubject" class="label-form h6 badge badge-success">Subject</label>
+										<label for="addSubject" class="label-form h6 badge badge-success text-white">Subject</label>
 										<div id="addSubject" name="addSubject">
 											<div class="form-check">
 												<input class="form-check-input" type="checkbox" id="addSubjectAll" name="addSubjectAll">
@@ -787,7 +787,7 @@ function deleteHomeworkSchedule(id) {
 									</div>	
 
 									<div class="col-md-4">										
-										<label for="addSubject" class="label-form h6 badge badge-success">Display</label>
+										<label for="addSubject" class="label-form h6 badge badge-success text-white">Display</label>
 										<div id="addDisplay" name="addDisplay">
 											<div>
 												<label for="addSubjectDisplay" class="label-form mt-2">Subject</label> 

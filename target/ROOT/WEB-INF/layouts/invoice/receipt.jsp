@@ -32,7 +32,34 @@ $(document).ready(function () {
                 link.click();
             });
     });
+
+    // Convert markdown in note to HTML
+    var noteText = $('#invoiceNote').html();
+    if (noteText) {
+        $('#invoiceNote').html(convertMarkdownToHtml(noteText.trim()));
+    }
 });
+
+function convertMarkdownToHtml(text) {
+    if (!text) return '';
+    
+    // Convert markdown to HTML
+    return text
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/_(.*?)_/g, '<em>$1</em>')
+        // Underline
+        .replace(/__(.*?)__/g, '<u>$1</u>')
+        // Links
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
+        // Unordered lists
+        .replace(/^\- (.*)/gm, '<li>$1</li>').replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        // Ordered lists
+        .replace(/^\d+\. (.*)/gm, '<li>$1</li>').replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>')
+        // Line breaks
+        .replace(/\n/g, '<br>');
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // 		Send Email
@@ -112,6 +139,46 @@ function sendEmail() {
             visibility: visible; /* Show the watermark by default */
             opacity: 1; /* Make the watermark fully opaque by default */
         }
+    }
+
+    /* Rich text styling for Note section */
+    #invoiceNote {
+        font-family: 'arial', sans-serif;
+        line-height: 1.6;
+    }
+
+    #invoiceNote strong {
+        font-weight: bold;
+    }
+
+    #invoiceNote em {
+        font-style: italic;
+    }
+
+    #invoiceNote u {
+        text-decoration: underline;
+    }
+
+    #invoiceNote ul, #invoiceNote ol {
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+
+    #invoiceNote li {
+        margin-bottom: 5px;
+    }
+
+    #invoiceNote a {
+        color: #007bff;
+        text-decoration: underline;
+    }
+
+    #invoiceNote a:hover {
+        color: #0056b3;
+    }
+
+    #invoiceNote br {
+        margin-bottom: 5px;
     }
 </style>
 
@@ -360,7 +427,7 @@ function sendEmail() {
             </tr>
             <tr>
                 <td style="font-size: 15px; line-height: 1.6; border: 0; padding: 0 10px 10px;">
-                    <p id="invoiceNote">
+                    <p id="invoiceNote" class="rich-text-content">
                         <c:out value="${sessionScope.invoiceBranch.info}" escapeXml="false" />
                     </p>
                 </td>

@@ -425,6 +425,29 @@ function displayFullHistory(studentId) {
 	win.focus();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Open JAC eLearning Platform
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function openJACeLearning(studentId) {
+    // get student password by id
+	var password = "";
+	$.ajax({
+		url: '${pageContext.request.contextPath}/student/getPassword/' + studentId,
+		type: 'GET',
+		async: false,
+		success: function(data) {
+			password = data;
+			var url = 'https://jac-study.azurewebsites.net/online/'
+			var access = url + 'urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			var win = window.open(access, '_blank');
+			win.focus();
+		},
+		error: function(xhr, status, error) {
+			console.log('Error getting password: ' + error);
+		}
+	});
+}
+
 </script>
 
 <style>
@@ -545,9 +568,10 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
 												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
+													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>
+													<i class="ml-2 bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>
+													<i class="ml-2 bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
+													<!-- <i class="ml-2 bi bi-globe text-danger hand-cursor" data-toggle="tooltip" title="Go to JAC eLearning" onclick="openJACeLearning('${student.id}')"></i> -->
 				 								</td>
 											</tr>
 										</c:forEach>
@@ -693,7 +717,7 @@ function displayFullHistory(studentId) {
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Student Edit</header>
 						<form id="studentEdit">
-						<div class="form-row mt-3">
+						<div class="form-row mt-1">
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label> 
 								<select class="form-control" id="editState" name="editState" disabled>
@@ -737,7 +761,7 @@ function displayFullHistory(studentId) {
 						</div>
 					
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
+							<div class="col-md-12 mt-2">
 								<section class="fieldset rounded" style="padding: 10px;">
 									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
 								<div class="row">
@@ -762,7 +786,7 @@ function displayFullHistory(studentId) {
 							</div>
 						</div>
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
+							<div class="col-md-12 mt-2">
 								<section class="fieldset rounded" style="padding: 10px;">
 									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
 								<div class="row">

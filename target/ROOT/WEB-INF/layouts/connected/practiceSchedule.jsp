@@ -768,7 +768,7 @@ function updateVolumeOptions(action) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label for="addGrade" class="label-form h6 badge badge-success">Grade</label>
+										<label for="addGrade" class="label-form h6 badge badge-success text-white">Grade</label>
 										<div id="addGrade" name="addGrade">
 											<!-- First Row -->
 											<div id="addGradeCheckbox" class="checkbox-container">
@@ -838,7 +838,7 @@ function updateVolumeOptions(action) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label class="label-form h6 badge badge-success">Practice</label>										
+										<label class="label-form h6 badge badge-success text-white">Practice</label>										
 									</div>
 								</div>
 								<div class="form-row">
@@ -930,7 +930,7 @@ function updateVolumeOptions(action) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label for="editGrade" class="label-form h6 badge badge-success">Grade</label>
+										<label for="editGrade" class="label-form h6 badge badge-success text-white">Grade</label>
 										<div id="editGrade" name="editGrade">
 											<!-- First Row -->
 											<div id="editGradeCheckbox" class="checkbox-container">
@@ -999,7 +999,7 @@ function updateVolumeOptions(action) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label class="label-form h6 badge badge-success">Practice</label>										
+										<label class="label-form h6 badge badge-success text-white">Practice</label>										
 									</div>
 								</div>
 								<div class="form-row">

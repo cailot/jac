@@ -437,8 +437,9 @@ function openJACeLearning(studentId) {
 		async: false,
 		success: function(data) {
 			password = data;
-			var url = 'http://localhost:8085/online/urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
-			var win = window.open(url, '_blank');
+			var url = 'https://jac-study.azurewebsites.net/online/'
+			var access = url + 'urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			var win = window.open(access, '_blank');
 			win.focus();
 		},
 		error: function(xhr, status, error) {
@@ -716,7 +717,7 @@ function openJACeLearning(studentId) {
 				<section class="fieldset rounded border-primary">
 					<header class="text-primary font-weight-bold">Student Edit</header>
 						<form id="studentEdit">
-						<div class="form-row mt-3">
+						<div class="form-row mt-1">
 							<div class="col-md-4">
 								<label for="editState" class="label-form">State</label> 
 								<select class="form-control" id="editState" name="editState" disabled>
@@ -760,7 +761,7 @@ function openJACeLearning(studentId) {
 						</div>
 					
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
+							<div class="col-md-12 mt-2">
 								<section class="fieldset rounded" style="padding: 10px;">
 									<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
 								<div class="row">
@@ -785,7 +786,7 @@ function openJACeLearning(studentId) {
 							</div>
 						</div>
 						<div class="form-row">
-							<div class="col-md-12 mt-4">
+							<div class="col-md-12 mt-2">
 								<section class="fieldset rounded" style="padding: 10px;">
 									<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
 								<div class="row">

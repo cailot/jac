@@ -492,7 +492,7 @@ window.showWarning = function(id) {
 					<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
 				</div>
 				<div class="col mx-auto">
-					<label class="label-form-white">Search</label> 
+					<label class="label-form-white"><span style="color: white;">0</span></label> 
 					<button type="button" class="btn btn-block btn-success" data-toggle="modal" data-target="#registerNoticeModal"><i class="bi bi-plus-circle"></i>&nbsp;&nbsp;&nbsp;Create Notice</button>
 				</div>
 			</div>
@@ -559,7 +559,7 @@ window.showWarning = function(id) {
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content jae-border-primary">
             <div class="modal-header bg-primary text-white">
-                <h3 class="modal-title" id="emailModalLabel"><i class="bi bi-envelope"></i>&nbsp;&nbsp;&nbsp;Write Email</h3>
+                <h3 class="modal-title text-white" id="emailModalLabel"><i class="ml-2 mr-3 bi bi-envelope"></i>Write Email</h3>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
