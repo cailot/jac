@@ -117,6 +117,14 @@ public class StudentController {
 		return dto;
 	}
 
+
+	@GetMapping("/getPassword/{id}")
+	@ResponseBody
+	public String getPassword(@PathVariable Long id) {
+		String password = studentService.getStudentPassword(id);
+		return password;
+	}
+
 	// update student password
 	@PutMapping("/updatePassword/{id}/{pwd}")
 	@ResponseBody

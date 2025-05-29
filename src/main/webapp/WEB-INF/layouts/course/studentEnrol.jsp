@@ -425,6 +425,28 @@ function displayFullHistory(studentId) {
 	win.focus();
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//		Open JAC eLearning Platform
+////////////////////////////////////////////////////////////////////////////////////////////////////
+function openJACeLearning(studentId) {
+    // get student password by id
+	var password = "";
+	$.ajax({
+		url: '${pageContext.request.contextPath}/student/getPassword/' + studentId,
+		type: 'GET',
+		async: false,
+		success: function(data) {
+			password = data;
+			var url = 'http://localhost:8085/online/urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			var win = window.open(url, '_blank');
+			win.focus();
+		},
+		error: function(xhr, status, error) {
+			console.log('Error getting password: ' + error);
+		}
+	});
+}
+
 </script>
 
 <style>
@@ -545,9 +567,10 @@ function displayFullHistory(studentId) {
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.email1}" /></span></td>
 												<td class="small align-middle ellipsis text-truncate" style="max-width: 0; overflow: hidden;"><span class="ml-1"><c:out value="${student.contactNo1}" /></span></td>
 												<td class="text-center align-middle">
-													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>&nbsp;
-													<i class="bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>&nbsp;
-													<i class="bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
+													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>
+													<i class="ml-2 bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>
+													<i class="ml-2 bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
+													<!-- <i class="ml-2 bi bi-globe text-danger hand-cursor" data-toggle="tooltip" title="Go to JAC eLearning" onclick="openJACeLearning('${student.id}')"></i> -->
 				 								</td>
 											</tr>
 										</c:forEach>

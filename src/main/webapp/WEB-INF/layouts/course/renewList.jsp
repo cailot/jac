@@ -64,6 +64,20 @@ $(document).ready(function () {
 		</c:if>
 	</c:if>
 
+	// only for Staff
+	if(!JSON.parse(window.isAdmin)){
+	// avoid execute several times
+	//var hiddenInput = false;
+	$(document).ajaxComplete(function(event, xhr, settings) {
+		// Check if the request URL matches the one in listBranch
+		if (settings.url === '/code/branch') {
+			$("#branch").val(window.branch);
+			$("#branch").prop('disabled', true);
+			}
+		});
+	}
+
+
 	// send disabled select value via <form>
     document.getElementById("renewList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;

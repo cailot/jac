@@ -515,4 +515,15 @@ public class StudentServiceImpl implements StudentService {
 		}
 	}
 
+	@Override
+	public String getStudentPassword(Long id) {
+		String password = "";
+		try{
+			password = studentRepository.findStudentPasswordById(id);
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return password;
+	}
+
 }
