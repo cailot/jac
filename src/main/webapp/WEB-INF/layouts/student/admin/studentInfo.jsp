@@ -758,7 +758,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-4">
+			<div class="col-md-12 mt-2">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em !important;">Sub Contact</header>
 				<div class="row">
@@ -799,7 +799,7 @@ function searchStudentById(id){
 				<section class="fieldset rounded border-info">
 				<header class="text-info font-weight-bold">Student Registration</header>
 				<form id="studentRegister">
-					<div class="form-row mt-3">
+					<div class="form-row mt-1">
 						<div class="col-md-4">
 							<label for="addState" class="label-form">State</label> 
 							<select class="form-control" id="addState" name="addState" disabled>
@@ -852,7 +852,7 @@ function searchStudentById(id){
 						</div>
 					</div>
 					<div class="form-row mt-3">
-						<div class="col-md-12 mt-4">
+						<div class="col-md-12 mt-2">
 							<section class="fieldset rounded" style="padding: 10px;">
 								<header class="label-form" style="font-size: 0.9rem!important;">Main Contact</header>
 							<div class="row">
@@ -877,7 +877,7 @@ function searchStudentById(id){
 						</div>
 					</div>
 					<div class="form-row">
-						<div class="col-md-12 mt-4">
+						<div class="col-md-12">
 							<section class="fieldset rounded" style="padding: 10px;">
 								<header class="label-form" style="font-size: 0.9rem!important;">Sub Contact</header>
 							<div class="row">
@@ -901,7 +901,7 @@ function searchStudentById(id){
 							</section>
 						</div>
 					</div>
-					<div class="form-row mt-4">
+					<div class="form-row mt-2">
 						<div class="col-md-12">
 							<label for="addMemo" class="label-form">Memo</label>
 							<textarea class="form-control" style="height: 200px;" id="addMemo" name="addMemo"></textarea>
