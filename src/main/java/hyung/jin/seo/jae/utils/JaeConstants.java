@@ -319,9 +319,13 @@ public interface JaeConstants {
 
 	String ROLE_ADMIN = "Role_Administrator";
 
+	String ROLE_DIRECTOR = "Role_Director";
+
 	String ROLE_STAFF = "Role_Staff";
 	
 	String ADMINISTRATOR = "Administrator";
+
+	String DIRECTOR = "Director";
 
 	String STAFF = "Staff";
 

@@ -105,6 +105,8 @@ public class InvoiceController {
 	@Value("${spring.sender.result}")
     private String emailSender;
 
+	@Value("${spring.sender.invoice}")
+    private String invoiceSender;
 
 	// count records number in database
 	@GetMapping("/count")
@@ -652,9 +654,14 @@ public class InvoiceController {
 		try{
 			Student student = studentService.getStudent(Long.parseLong(studentId));
 			String studentName = student.getFirstName() + " " + student.getLastName();
-			String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());
+			//String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());
+			List<String> studentEmails = studentService.getStudentEmailRecipient(Long.parseLong(studentId));
+			studentEmails.clear();
+			studentEmails.add("cailot@naver.com");
+			studentEmails.add("jh05052008@gmail.com");
 			Map<String, Object> data = invoicePdfIngredients(Long.parseLong(studentId), branchCode);
-			String fromEmail = emailSender; //codeService.getBranchEmail(branchCode);
+			String fromEmail = invoiceSender;
+			String bcc = codeService.getBranchEmail(branchCode);
 			StringBuilder emailBodyBuilder = new StringBuilder();
 			emailBodyBuilder.append("<html>")
             .append("<head>")
@@ -673,7 +680,8 @@ public class InvoiceController {
 			String emailContent = String.format(emailTemplate, studentName, studentId);
 			String subject = "Invoice for " + studentName;
 			byte[] pdfData = pdfService.generateInvoicePdf(data);
-			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "invoice.pdf", pdfData);
+			emailService.sendEmailWithAttachment(fromEmail, studentEmails, bcc, subject, emailContent, "invoice_" + studentId + ".pdf", pdfData);
+			// emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "invoice.pdf", pdfData);
 			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
 			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
@@ -688,9 +696,14 @@ public class InvoiceController {
 		try{
 			Student student = studentService.getStudent(Long.parseLong(studentId));
 			String studentName = student.getFirstName() + " " + student.getLastName();
-			String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());			
+			// String studentEmail = JaeUtils.extractMainEmail(student.getEmail1());			
+			List<String> studentEmails = studentService.getStudentEmailRecipient(Long.parseLong(studentId));
+			studentEmails.clear();
+			studentEmails.add("cailot@naver.com");
+			studentEmails.add("jh05052008@gmail.com");
 			Map<String, Object> data = receiptPdfIngredients(Long.parseLong(studentId), Long.parseLong(invoiceId), Long.parseLong(invoiceHistoryId), Long.parseLong(paymentId), branchCode);
-			String fromEmail = emailSender;
+			String fromEmail = invoiceSender;
+			String bcc = codeService.getBranchEmail(branchCode);
 			StringBuilder emailBodyBuilder = new StringBuilder();
 			emailBodyBuilder.append("<html>")
             .append("<head>")
@@ -709,7 +722,8 @@ public class InvoiceController {
 			String emailContent = String.format(emailTemplate, studentName, studentId);
 			String subject = "Receipt for " + studentName;			
 			byte[] pdfData = pdfService.generateReceiptPdf(data);
-			emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "receipt.pdf", pdfData);
+			emailService.sendEmailWithAttachment(fromEmail, studentEmails, bcc, subject, emailContent, "receipt_" + studentId + ".pdf", pdfData);
+			// emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "receipt.pdf", pdfData);
 			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
 			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
@@ -792,10 +806,12 @@ public class InvoiceController {
 	// overdue list for overdueList.jsp
 	@GetMapping("/overdueList")
 	public String overdueStudents(@RequestParam("branch") String branch, 
-									@RequestParam("grade") String grade, Model model) {
+									@RequestParam("grade") String grade,
+									@RequestParam(value = "type", defaultValue = "all") String type,
+									Model model) {
 		int year = cycleService.academicYear();
 		int week = cycleService.academicWeeks();
-		List<StudentDTO> dtos = studentService.listOverdueStudent(branch, grade, year, week);
+		List<StudentDTO> dtos = studentService.listOverdueStudent(branch, grade, type, year, week);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
 		return "overdueListPage";
 	}

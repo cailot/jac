@@ -28,6 +28,9 @@ public interface EmailService {
 	// send simple email with attachment to multiple recipients with cc
 	void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes, String cc);
 
+	// send simple email with attachment to multiple recipients with bcc
+	void sendEmailWithAttachment(String from, List<String> to, String bcc, String subject, String body, String fileName, byte[] pdfBytes);
+
 	// bring email from database
 	List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade);
 

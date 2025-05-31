@@ -87,7 +87,9 @@ public class User implements UserDetails {
         List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
         if(StringUtils.defaultString(role).equalsIgnoreCase(JaeConstants.ROLE_ADMIN)){ // admin
             auths.add(new SimpleGrantedAuthority("Administrator"));
-        }else{ // staff
+        }else if(StringUtils.defaultString(role).equalsIgnoreCase(JaeConstants.ROLE_DIRECTOR)){ // director (same as old staff)
+            auths.add(new SimpleGrantedAuthority("Director"));
+        }else{ // new staff
             auths.add(new SimpleGrantedAuthority("Staff"));
         }
         this.authorities = auths;

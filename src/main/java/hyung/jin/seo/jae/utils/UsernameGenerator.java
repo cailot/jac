@@ -21,8 +21,10 @@ public class UsernameGenerator implements IdentifierGenerator{
     Long nextId = (long) 0;
     if(JaeConstants.ROLE_ADMIN.equalsIgnoreCase(StringUtils.defaultString(role))){
       nextId = (maxId != 1) ? maxId : Long.parseLong("1" + state + branch + "001"); // admin starts with '1'
+    }else if(JaeConstants.ROLE_DIRECTOR.equalsIgnoreCase(StringUtils.defaultString(role))){
+      nextId = (maxId != 1) ? maxId : Long.parseLong("2" + state + branch + "001"); // director starts with '2' (same as old staff)
     }else{
-      nextId = (maxId != 1) ? maxId : Long.parseLong("2" + state + branch + "001"); // staff starts with '2'
+      nextId = (maxId != 1) ? maxId : Long.parseLong("3" + state + branch + "001"); // new staff starts with '3'
     }
     // generate custom Id based on state, branch and nextId
     String customId = String.format("%07d", nextId);

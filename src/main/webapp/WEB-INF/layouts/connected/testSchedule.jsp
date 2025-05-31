@@ -1139,7 +1139,7 @@ function processTestResult(id) {
 							<div class="mb-4" style="border: 2px solid #28a745; padding: 15px; border-radius: 10px; margin-left: 8px; margin-right: 8px;">
 								<div class="form-row">
 									<div class="col-md-12">
-										<label class="label-form h6 badge badge-success">Class Test</label>										
+										<label class="label-form h6 badge badge-success text-white">Class Test</label>										
 									</div>
 								</div>
 								<div class="form-row">

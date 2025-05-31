@@ -416,6 +416,7 @@ window.showWarning = function(id) {
 						<select class="form-control" id="listRole" name="listRole">
 							<option value="0">All</option>
 							<option value="Role_Administrator">Adminitrator</option>
+							<option value="Role_Director">Director</option>
 							<option value="Role_Staff">Staff</option>
 						</select>
 					</div>
@@ -613,6 +614,7 @@ window.showWarning = function(id) {
 								<label for="addRole" class="label-form">Role</label>
 								<select class="form-control" id="addRole" name="addRole">
 									<option value="Role_Staff">Staff</option>
+									<option value="Role_Director">Director</option>
 									<option value="Role_Administrator">Administrator</option>
 								</select>
 							</div>
@@ -680,6 +682,7 @@ window.showWarning = function(id) {
 								<label for="editRole" class="label-form">Role</label>
 								<select class="form-control" id="editRole" name="editRole" disabled>
 									<option value="Role_Staff">Staff</option>
+									<option value="Role_Director">Director</option>
 									<option value="Role_Administrator">Administrator</option>
 								</select>
 							</div>

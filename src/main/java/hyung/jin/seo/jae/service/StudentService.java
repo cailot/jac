@@ -72,7 +72,7 @@ public interface StudentService {
 	List<StudentDTO> listPaymentStudent(String branch, String grade, String payment, String from, String to);
 
 	// list overdue students in overdueList.jsp
-	List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week);
+	List<StudentDTO> listOverdueStudent(String branch, String grade, String type, int year, int week);
 
 	// list renew students in renewList.jsp
 	List<StudentDTO> listRenewStudent(String branch, String grade, int fromYear, int fromWeek, int toYear, int toWeek);
@@ -85,6 +85,9 @@ public interface StudentService {
 
 	// get student email by id
 	String getStudentEmail(Long id);
+
+	// get student email recipients
+	List<String> getStudentEmailRecipient(Long id);
 
 	// get student password by id
 	String getStudentPassword(Long id);

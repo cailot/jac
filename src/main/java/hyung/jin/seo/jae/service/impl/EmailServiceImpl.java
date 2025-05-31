@@ -127,7 +127,35 @@ public class EmailServiceImpl implements EmailService {
         };
         mailSender.send(preparator);
 	}
-	
+
+	@Override
+	public void sendEmailWithAttachment(String from, List<String> to, String bcc, String subject, String body, String fileName, byte[] pdfBytes) {
+		try {
+			MimeMessagePreparator preparator = mimeMessage -> {
+				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+				messageHelper.setFrom(from);
+				
+				// Convert List<String> to array of InternetAddress
+				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+				for (int i = 0; i < to.size(); i++) {
+					recipientAddresses[i] = new InternetAddress(to.get(i));
+				}
+				messageHelper.setTo(recipientAddresses);
+				messageHelper.setBcc(bcc);
+				messageHelper.setSubject(subject);
+				messageHelper.setText(JaeConstants.EMAIL_HEADER_HTML + body, true);
+
+				if (pdfBytes != null && pdfBytes.length > 0) {
+					ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
+					messageHelper.addAttachment(fileName, dataSource);
+				}
+			};
+			mailSender.send(preparator);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes) {
 		try {
@@ -305,7 +333,6 @@ public class EmailServiceImpl implements EmailService {
 			e.printStackTrace();
 		}
 	}
-
 
 	@Override
 	public List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade) {
