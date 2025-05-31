@@ -5,6 +5,8 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <div class="container-fluid jae-header">
 <c:set var="isAdmin" value="${false}" />
+<c:set var="isDirector" value="${false}" />
+<c:set var="isStaff" value="${false}" />
 <c:set var="role" value="" />
 <c:set var="firstName" value="" />
 <c:set var="lastName" value="" />
@@ -19,12 +21,16 @@
 	<c:if test="${role == '[Administrator]'}" >
 		<c:set var="isAdmin" value="${true}" />
 	</c:if>
+	<c:if test="${role == '[Director]'}" >
+		<c:set var="isDirector" value="${true}" />
+	</c:if>
 	<c:set var="role" value="${role}" />
 	<c:set var="firstName" value="${firstName}" />
 	<c:set var="lastName" value="${lastName}" />
 	<!-- Save global variables -->
 	<script>
 		window.isAdmin = "${isAdmin}";
+		window.isDirector = "${isDirector}";
 		window.username = "${id}";
 		window.state = "${state}";
 		window.branch = "${branch}";
@@ -37,6 +43,12 @@
 	</script>
 
 </sec:authorize>
+
+<div class="d-none">
+    <p>isAdmin: ${isAdmin}</p>
+    <p>isDirector: ${isDirector}</p> 
+    <p>isStaff: ${isStaff}</p>
+</div>
 
 <nav class="navbar mt-2 mb-2">
 	<div class="navbar_logo">
@@ -112,9 +124,12 @@
 					<c:if test="${isAdmin}">
 						User Management
 					</c:if>
-					<c:if test="${!isAdmin}">
+					<c:if test="${isDirector}">
 						Staff Management
 					</c:if>
+					<!-- <c:if test="${!isAdmin && !isDirector}">
+						Staff Management
+					</c:if> -->
 				</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/teacherList">Teacher Management</a>
 			</div>
@@ -161,7 +176,6 @@
 				</div>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/assessList">Assessment</a>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/omrUpload">OMR Upload</a>
-
 			</div>
 		</li>
 		</c:if>
@@ -193,8 +207,10 @@
 						</div>
 					</c:when>
 					<c:otherwise>
-						<!-- Content for branch -->
-						<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
+						<c:if test="${isDirector}">
+							<!-- Content for branch -->
+							<a class="dropdown-item" href="${pageContext.request.contextPath}/branchStats">Branch Statistics</a>
+						</c:if>
 					</c:otherwise>
 				</c:choose>
 				<a class="dropdown-item" href="${pageContext.request.contextPath}/branchEmail">Email Announcement</a>								

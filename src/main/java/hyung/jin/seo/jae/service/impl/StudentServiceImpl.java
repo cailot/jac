@@ -72,8 +72,8 @@ public class StudentServiceImpl implements StudentService {
 			// Remove any spaces from the keyword
 			String cleanKeyword = keyword.replaceAll("\\s+", "");			
 			if(StringUtils.isNumericSpace(cleanKeyword)) {
-				// Check if it's a 10-digit number (phone number)
-				if(cleanKeyword.length() == 10) {
+				// Check if it's a 9 or 10-digit number (phone number)
+				if(cleanKeyword.length() >= 9 && cleanKeyword.length() <= 10) {
 					// For phone search, keep spaces in the keyword
 					dtos = studentRepository.searchStudentByKeywordContact(keyword, state, branch);
 				} else {
@@ -389,10 +389,10 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week) {
+	public List<StudentDTO> listOverdueStudent(String branch, String grade, String type, int year, int week) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
-			dtos = studentRepository.listOverdueStudent(branch, grade, year, week);	
+			dtos = studentRepository.listOverdueStudent(branch, grade, type, year, week);	
 		}catch(Exception e){
 			System.out.println("No student found");
 		}
@@ -524,6 +524,33 @@ public class StudentServiceImpl implements StudentService {
 			System.out.println("No student found");
 		}
 		return password;
+	}
+
+	@Override
+	public List<String> getStudentEmailRecipient(Long id) {
+		List<String> emails = new ArrayList<>();
+		try{
+			Object[] obj = studentRepository.findStudentReceiptientById(id);
+			if(obj != null){
+				String email1 = obj[0] != null ? obj[0].toString() : "";
+				String email2 = obj[1] != null ? obj[1].toString() : "";
+				if(StringUtils.isNotBlank(email1)){
+					email1 = JaeUtils.extractMainEmail(email1);
+					if(JaeUtils.isValidEmail(email1)){
+						emails.add(email1);
+					}
+				}
+				if(StringUtils.isNotBlank(email2)){
+					email2 = JaeUtils.extractMainEmail(email2);
+					if(JaeUtils.isValidEmail(email2)){
+						emails.add(email2);
+					}
+				}
+			}
+		}catch(Exception e){
+			System.out.println("No student found");
+		}
+		return emails;
 	}
 
 }

@@ -768,8 +768,8 @@ function searchStudentById(id){
 					</div>
 					<div class="col-md-4">
 						<select class="form-control" id="formRelation2" name="formRelation2">
-							<option value="mother">Mother</option>
 							<option value="father">Father</option>
+							<option value="mother">Mother</option>
 							<option value="sibling">Sibling</option>
 							<option value="other">Others</option>
 						</select>

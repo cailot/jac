@@ -186,15 +186,19 @@ public class TestProcessServiceImpl implements TestProcessService {
 			// Step 8: Generate pdf
 			byte[] pdfBytes = pdfService.generateTestResultPdf(pdfData);
 			// String studentEmail = st.getEmail1();
-			String studentEmail ="jh05052008@gmail.com";
+			List<String> studentEmails = studentService.getStudentEmailRecipient(studentId);
+			studentEmails.clear();
+			studentEmails.add("cailot@naver.com");
+			studentEmails.add("jh05052008@gmail.com");
+			// String studentEmail = studentEmails.get(0);
 			String emailContent = String.format(emailTemplate, studentName, studentId);
 			//  Step 9: Send email to all students using template
 			try {
 				// Add debug logging
-				System.out.println("Attempting to send email to: " + studentEmail + " Id :" + studentId);
+				System.out.println("Attempting to send email to: " + studentEmails + " Id :" + studentId);
 				System.out.println("From: " + emailSender);
 				System.out.println("Subject: " + emailSubject);
-				emailService.sendResultWithAttachment(emailSender, studentEmail, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
+				emailService.sendResultWithAttachment(emailSender, studentEmails, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
 				// emailService.sendEmail(emailSender, studentEmail, emailSubject, emailContent);				
 				System.out.println("Email sent successfully");
 			} catch (Exception e) {

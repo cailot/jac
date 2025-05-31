@@ -122,7 +122,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(" +
         "s.id, s.firstName, s.lastName, s.grade, s.contactNo1, " +
         "(i.amount - i.paidAmount) AS overdueAmount, " +
-        "s.email1, s.state, s.branch, e.startWeek, e.endWeek, clazz.name) " +
+        "s.email1, s.state, s.branch, e.startWeek, e.endWeek, clazz.name, " +
+        "CASE WHEN i.paidAmount = 0 THEN 'Unpaid' ELSE 'OS' END) " +
         "FROM Student s " +
         "JOIN Enrolment e ON s.id = e.student.id " +
         "JOIN Invoice i ON i.id = e.invoice.id " +
@@ -133,9 +134,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (e.discount != '100%') " +
         "AND (?1 = '0' OR s.branch = ?1) " +
         "AND (?2 = '0' OR s.grade = ?2) " +
-        "AND ((cycle.year < ?3) OR (cycle.year = ?3 AND e.startWeek <= ?4)) " +
+        "AND (?3 = 'all' OR (?3 = 'unpaid' AND i.paidAmount = 0) OR (?3 = 'os' AND i.paidAmount > 0)) " +
+        "AND ((cycle.year < ?4) OR (cycle.year = ?4 AND e.startWeek <= ?5)) " +
         "AND e.startWeek = (SELECT MAX(en.startWeek) FROM Enrolment en WHERE en.student.id = s.id)")
-        List<StudentDTO> listOverdueStudent(String branch, String grade, int year, int week);
+        List<StudentDTO> listOverdueStudent(String branch, String grade, String type, int year, int week);
 
         // retrieve renew student by state, branch & grade called from renewList.jsp
         @Query(value = "SELECT DISTINCT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.contactNo1, s.email1, s.state, s.branch, e.startWeek, e.endWeek, clazz.name) FROM Student s " +
@@ -170,15 +172,15 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
 	StudentDTO searchStudentById(Long keyword);
 
         // search student by keyword for Name
-	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.firstName LIKE ?1 OR s.lastName LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+	@Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (LOWER(s.firstName) LIKE LOWER(CONCAT('%', ?1, '%')) OR LOWER(s.lastName) LIKE LOWER(CONCAT('%', ?1, '%'))) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
 	List<StudentDTO> searchStudentByKeywordName(String keyword, String state, String branch);
-
+	
         // search student by keyword for email
         @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (s.email1 LIKE ?1 OR s.email2 LIKE ?1) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
         List<StudentDTO> searchStudentByKeywordEmail(String keyword, String state, String branch);
 
-        // search student by keyword for contact number
-        @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (REPLACE(s.contactNo1, ' ', '') LIKE CONCAT('%', REPLACE(?1, ' ', ''), '%') OR REPLACE(s.contactNo2, ' ', '') LIKE CONCAT('%', REPLACE(?1, ' ', ''), '%')) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
+        // search student by keyword for contact number with partial match
+        @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(s.id, s.firstName, s.lastName, s.grade, s.gender, s.contactNo1, s.contactNo2, s.email1, s.email2, s.state, s.branch, s.registerDate, s.endDate, s.address, s.active, s.memo, s.relation1, s.relation2) FROM Student s WHERE (LOWER(REPLACE(s.contactNo1, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(?1, ' ', ''), '%')) OR LOWER(REPLACE(s.contactNo2, ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(?1, ' ', ''), '%'))) AND (?2 = '0' OR s.state = ?2) AND (?3 = '0' OR s.branch = ?3)")
         List<StudentDTO> searchStudentByKeywordContact(String keyword, String state, String branch);
 
         // list active enrolled student, PASSWORD is replaced with enrolment date, contactNo2 is replaced with clazz name 
@@ -316,6 +318,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         // get main email by studentId
         @Query(value = "SELECT s.email1 FROM Student s WHERE s.id = ?1", nativeQuery = true)
         String findStudentEmailById(Long id);
+
+        // get student email recipients by studentId
+        @Query(value = "SELECT s.email1, s.email2 FROM Student s WHERE s.id = ?1", nativeQuery = true)
+        Object[] findStudentReceiptientById(Long id);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /// count summary by State, Branch, Grade, Active, Date - studentBranchList.jsp 

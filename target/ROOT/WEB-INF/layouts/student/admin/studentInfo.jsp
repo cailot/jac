@@ -734,7 +734,7 @@ function searchStudentById(id){
 			
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-4">
+			<div class="col-md-12 mt-2">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em!important;">Main Contact</header>
 				<div class="row">
@@ -759,7 +759,7 @@ function searchStudentById(id){
 			</div>
 		</div>
 		<div class="form-row">
-			<div class="col-md-12 mt-2">
+			<div class="col-md-12">
 				<section class="fieldset rounded" style="padding: 10px;">
 					<header class="label-form" style="font-size: 0.9em !important;">Sub Contact</header>
 				<div class="row">
@@ -768,8 +768,8 @@ function searchStudentById(id){
 					</div>
 					<div class="col-md-4">
 						<select class="form-control" id="formRelation2" name="formRelation2">
-							<option value="mother">Mother</option>
 							<option value="father">Father</option>
+							<option value="mother">Mother</option>
 							<option value="sibling">Sibling</option>
 							<option value="other">Others</option>
 						</select>

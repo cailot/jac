@@ -214,7 +214,7 @@ public class StudentDTO implements Serializable{
     }
 	
 	// this constructor is specially designed to cover overdueList.jsp
-	public StudentDTO(Long id, String firstName, String lastName, String grade, String contactNo1, double overdueAmount, String email1, String state, String branch, Integer startWeek, Integer endWeek, String clazz) {
+	public StudentDTO(Long id, String firstName, String lastName, String grade, String contactNo1, double overdueAmount, String email1, String state, String branch, Integer startWeek, Integer endWeek, String clazz, String paymentStatus) {
     	this.id = String.valueOf(id);
         this.firstName = (firstName !=null ) ? firstName : "";
         this.lastName = (lastName !=null ) ? lastName : "";
@@ -228,6 +228,7 @@ public class StudentDTO implements Serializable{
 		this.startWeek = startWeek;
 		this.endWeek = endWeek;
 		this.address = (clazz!=null) ? clazz : "";
+		this.memo = paymentStatus;
     }
 
 
