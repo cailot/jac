@@ -237,6 +237,7 @@ $.ajax({
 		var dropdown = $('<select class="clazzChoice">');
 		$.each(data, function(index, clazz) {
 			var option = $('<option>').text(dayName(clazz.day)).val(clazz.id).data('price', clazz.price);
+			debugger;
 			dropdown.append(option);
 		});
 		// Get the value of the first option
@@ -271,14 +272,14 @@ $.ajax({
 			// Online classes show static "All"
 			row.append($('<td class="smaller-table-font day">').text('All')); // day
 		} else {
-			// Onsite classes get a dropdown
+			// Onsite classes get a dropdown - create new dropdown for existing enrollments
 			var dayDropdown = $('<select class="clazzChoice">').css({
 				'width': '85px',
 				'font-size': '12px',
 				'padding': '2px'
 			});
-			// We'll need to populate this with available classes for this course
-			// For now, add the current selection
+			
+			// Add the current selection as the initial option
 			var currentDayOption = $('<option>').text(dayName(value.day) || '').val(value.clazzId || '').data('price', value.price || 0);
 			dayDropdown.append(currentDayOption);
 			
@@ -312,7 +313,7 @@ $.ajax({
 						});
 					},
 					error: function(xhr, status, error) {
-						console.log('Error loading classes:', error);
+						console.log('Error loading classes for existing enrollment:', error);
 						// Fallback to current selection only
 						dayDropdown.empty();
 						dayDropdown.append(currentDayOption);
@@ -320,7 +321,7 @@ $.ajax({
 				});
 			}
 			
-			// Add change handler
+			// Add change handler for existing enrollments
 			dayDropdown.on('change', function() {
 				var selectedValue = $(this).val();
 				var selectedPrice = $(this).find('option:selected').data('price') || 0;
@@ -981,14 +982,14 @@ function updateInvoiceTableWithTop(value, rowCount){
 			// Online classes show static "All"
 			row.append($('<td class="smaller-table-font day">').text('All')); // day
 		} else {
-			// Onsite classes get a dropdown
+			// Onsite classes get a dropdown - create new dropdown for existing enrollments
 			var dayDropdown = $('<select class="clazzChoice">').css({
 				'width': '85px',
 				'font-size': '12px',
 				'padding': '2px'
 			});
-			// We'll need to populate this with available classes for this course
-			// For now, add the current selection
+			
+			// Add the current selection as the initial option
 			var currentDayOption = $('<option>').text(dayName(value.day) || '').val(value.clazzId || '').data('price', value.price || 0);
 			dayDropdown.append(currentDayOption);
 			
@@ -999,16 +1000,16 @@ function updateInvoiceTableWithTop(value, rowCount){
 			var branch = $('#formBranch').val() || '';
 			
 			if (clazzId && year) {
-				$.ajax({
-					url: '${pageContext.request.contextPath}/class/associatedClass',
-					type: 'GET',
-					data: {
+			$.ajax({
+				url: '${pageContext.request.contextPath}/class/associatedClass',
+				type: 'GET',
+				data: {
 						clazzId: clazzId,
 						year: year,
 						state: state,
 						branch: branch
-					},
-					success: function(data) {
+				},
+				success: function(data) {
 						// Clear existing options
 						dayDropdown.empty();
 						// Add all available classes
@@ -1022,7 +1023,7 @@ function updateInvoiceTableWithTop(value, rowCount){
 						});
 					},
 					error: function(xhr, status, error) {
-						console.log('Error loading classes:', error);
+						console.log('Error loading classes for existing enrollment:', error);
 						// Fallback to current selection only
 						dayDropdown.empty();
 						dayDropdown.append(currentDayOption);
@@ -1030,7 +1031,7 @@ function updateInvoiceTableWithTop(value, rowCount){
 				});
 			}
 			
-			// Add change handler
+			// Add change handler for existing enrollments
 			dayDropdown.on('change', function() {
 				var selectedValue = $(this).val();
 				var selectedPrice = $(this).find('option:selected').data('price') || 0;
@@ -1090,9 +1091,9 @@ function updateInvoiceTableWithTop(value, rowCount){
 		row.append($('<td class="hidden-column online">').text(value.online || false)); // online
 		row.append($('<td class="hidden-column grade">').text(value.grade || '')); // grade
 		row.append($('<td class="hidden-column description">').text(value.description || '')); // description
-		
+
 		$('#basketTable > tbody').append(row);
-		
+
 		// Only add to invoice table if NOT free online class
 		if(!freeOnline){
 			addEnrolmentToInvoiceList(value, rowCount);
