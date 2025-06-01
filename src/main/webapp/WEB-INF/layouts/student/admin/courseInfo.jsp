@@ -1,4 +1,3 @@
-
 <script>
 
 const ACADEMIC_NEXT_YEAR_COURSE_SUFFIX = " (Next Year)";
@@ -266,7 +265,92 @@ $.ajax({
 		row.append(hiddenColumn);
 		row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
 		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
-		row.append($('<td class="smaller-table-font day">').append(dropdown)); // day
+		
+		// For day field - create dropdown for onsite classes, static text for online classes
+		if (value.online) {
+			// Online classes show static "All"
+			row.append($('<td class="smaller-table-font day">').text('All')); // day
+		} else {
+			// Onsite classes get a dropdown
+			var dayDropdown = $('<select class="clazzChoice">').css({
+				'width': '85px',
+				'font-size': '12px',
+				'padding': '2px'
+			});
+			// We'll need to populate this with available classes for this course
+			// For now, add the current selection
+			var currentDayOption = $('<option>').text(dayName(value.day) || '').val(value.clazzId || '').data('price', value.price || 0);
+			dayDropdown.append(currentDayOption);
+			
+			// Load all available classes for this course using the current clazzId
+			var clazzId = value.clazzId || '';
+			var year = value.year || '';
+			var state = $('#formState').val() || '';
+			var branch = $('#formBranch').val() || '';
+			
+			if (clazzId && year) {
+				$.ajax({
+					url: '${pageContext.request.contextPath}/class/associatedClass',
+					type: 'GET',
+					data: {
+						clazzId: clazzId,
+						year: year,
+						state: state,
+						branch: branch
+					},
+					success: function(data) {
+						// Clear existing options
+						dayDropdown.empty();
+						// Add all available classes
+						$.each(data, function(index, clazz) {
+							var option = $('<option>').text(dayName(clazz.day)).val(clazz.id).data('price', clazz.price);
+							// Mark current selection as selected
+							if (clazz.id == (value.clazzId || '')) {
+								option.prop('selected', true);
+							}
+							dayDropdown.append(option);
+						});
+					},
+					error: function(xhr, status, error) {
+						console.log('Error loading classes:', error);
+						// Fallback to current selection only
+						dayDropdown.empty();
+						dayDropdown.append(currentDayOption);
+					}
+				});
+			}
+			
+			// Add change handler
+			dayDropdown.on('change', function() {
+				var selectedValue = $(this).val();
+				var selectedPrice = $(this).find('option:selected').data('price') || 0;
+				var currentRow = $(this).closest('tr');
+				
+				// Update the hidden data-type field with new class ID
+				currentRow.find('.data-type').text(CLASS + '|' + selectedValue);
+				// Update price
+				currentRow.find('.price').text(Number(selectedPrice).toFixed(2));
+				// Recalculate amount
+				var weeksTotal = parseInt(currentRow.find('.weeks').text()) || 0;
+				var credit = parseInt(currentRow.find('.credit').text()) || 0;
+				var discount = currentRow.find('.discount').text() || '0';
+				var totalPrice = Math.max(0, (weeksTotal - credit) * selectedPrice);
+				
+				if (discount.toString().includes('%')) {
+					var discountPercent = parseFloat(discount.replace('%', '')) || 0;
+					totalPrice = totalPrice - (totalPrice * (discountPercent / 100));
+				} else {
+					var discountAmount = parseFloat(discount) || 0;
+					totalPrice = Math.max(0, totalPrice - discountAmount);
+				}
+				
+				currentRow.find('.amount').text(totalPrice.toFixed(2));
+				updateTotalBasket();
+			});
+			
+			row.append($('<td class="smaller-table-font day">').append(dayDropdown)); // day with dropdown
+		}
+		
 		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
 
 		var startWeekCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(start_week); // start week
@@ -749,10 +833,10 @@ function retrieveEnrolment(studentId){
 
 						$.each(value, function(count, data) {
 							if (index == 0) {
-								console.log('Top >>>>>>> index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Processing top data, count:', count);
 								updateInvoiceTableWithTop(data, index);
 							} else {
-								console.log('Rest <<<<<<< index : ' + index + ' -- count :' + count + ' --> ' + data);
+								console.log('Processing rest data, count:', count);
 								updateInvoiceTableWithRest(data, index);
 							}
 						});
@@ -807,224 +891,36 @@ function retrieveEnrolment(studentId){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateInvoiceTableWithTop(value, rowCount){
 
-	if (value.hasOwnProperty('extra')) {
+	// Add validation to prevent invalid/empty data from being displayed
+	if (!value || typeof value !== 'object') {
+		console.log('Invalid value object:', value);
+		return;
+	}
 
-		var row = $('<tr class="d-flex" data-pair-id=' + value.grade + '>');
-		// Common part for both online and offline classes
-		var dataTypeCell = $('<td>').addClass('hidden-column').addClass('data-type').text(CLASS + '|' + value.clazzId);
-		row.append(dataTypeCell);
-		if (value.extra === OVERDUE) {
-			row.append($('<td class="text-center"><i class="bi bi-mortarboard-fill text-danger" data-toggle="tooltip" title="Overdue"></i></td>')); // item
-		} else {
-			row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
+	// Debug: Log what properties this object has
+	console.log('Processing object with properties:', Object.keys(value));
+	console.log('Has bookId:', value.hasOwnProperty('bookId'));
+	console.log('Has extra:', value.hasOwnProperty('extra'));
+	console.log('Has method:', value.hasOwnProperty('method'));
+	console.log('Full object:', JSON.stringify(value));
+
+	if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object - check this first since books now also have 'extra' field
+
+		// Validate book data
+		if (!value.name || value.price == null || isNaN(value.price)) {
+			console.log('Invalid book data:', value);
+			return;
 		}
-		row.append($('<td class="smaller-table-font name">').text(value.name)); // name
-		// get associated class list if not online
-		if(value.online == false){
-			$.ajax({
-				url: '${pageContext.request.contextPath}/class/associatedClass',
-				type: 'GET',
-				data: {
-				clazzId: value.clazzId,
-				year: value.year,
-				state : state,
-				branch: $('#formBranch').val()
-				//branch : branch	
-				},
-				success: function(data) {
-					console.log(data);
-					// Create a dropdown list for days
-					var dropdown = $('<select>').addClass('clazzChoice');
-					$.each(data, function(index, classItem) {
-						var option = $('<option>').text(dayName(classItem.day)).val(classItem.id).data('price', classItem.price);
-						if (classItem.id === value.clazzId) {
-							option.attr('selected', 'selected');
-						}
-						dropdown.append(option);
-					});
-					// Add event listener to update text based on selected option
-					dropdown.on('change', function() {
-						var selectedOptionValue = $(this).val();
-						dataTypeCell.text(CLASS + '|' + selectedOptionValue);
-					});
-					// Insert the dropdown list just after the class name
-					row.find('.name').after($('<td class="smaller-table-font day">').append(dropdown)); // day
-				},
-				error : function(xhr, status, error) {
-					console.log('Error : ' + error);
-				}
-			});
-		}else{ // online class
-			row.append($('<td class="smaller-table-font day">').text(dayName(value.day))); // day
-		}
-		row.append($('<td class="smaller-table-font text-center year">').text(value.year)); // year
-		var startWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onlineStart').text(value.startWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('start-week onsiteStart').text(value.startWeek); // start week;
-		startWeekCell.on('input', function() {
-			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var row = $(this).closest('tr'); // Get the closest <tr> element
-			var endWeekValue = parseInt(row.find('.end-week').text()); // Get the value from class end-week cell within the same row
-			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
-			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
-			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
-			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
-			// Update weeks & amount within the same row
-			row.find('.weeks').text(((endWeekValue - updatedValue) + 1) + creditValue);
-			var originalPrice = (((endWeekValue - updatedValue) + 1) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
-			// update total & keypress event to handle Enter key
-			cellEnterKeyUpdateTotalBasket(startWeekCell);
-		});
-		row.append(startWeekCell);
-
-		var endWeekCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onlineEnd').text(value.endWeek) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('end-week onsiteEnd').text(value.endWeek); // end week;
-		endWeekCell.on('input', function() {
-			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var row = $(this).closest('tr'); // Get the closest <tr> element
-			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
-			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
-			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
-			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
-			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
-			// update weeks & amount within the same row
-			row.find('.weeks').text(((updatedValue - startWeekValue) + 1) + creditValue);
-			var originalPrice = (((updatedValue - startWeekValue) + 1) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class two cell within the same row with the calculated value
-			// update total & keypress event to handle Enter key
-			cellEnterKeyUpdateTotalBasket(endWeekCell);
-		});
-		row.append(endWeekCell);
-
-		var weeksCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onlineWeeks').text((value.endWeek - value.startWeek) + 1) : $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('weeks onsiteWeeks').text((value.endWeek - value.startWeek) + 1); // weeks;
-		weeksCell.on('input', function() {
-			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var row = $(this).closest('tr'); // Get the closest <tr> element
-			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
-			var creditValue = parseInt(row.find('.credit').text()); // Get the value from class credit cell within the same row
-			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
-			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
-			// update end-week & amount within the same row
-			row.find('.end-week').text(updatedValue + startWeekValue - 1);
-			var originalPrice = ((updatedValue - creditValue) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
-			// update total & keypress event to handle Enter key
-			cellEnterKeyUpdateTotalBasket(weeksCell);
-		});
-		row.append(weeksCell);
-
-		var creditCell = value.online ? $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('credit onlineCredit').text(value.credit) : $('<td class="smaller-table-font text-center" contenteditable="true" id="onsiteCredit">').addClass('credit onsiteCredit').text(value.credit); // credit;				
-		var previousCredit = parseInt(creditCell.text());
-		creditCell.on('input', function() {
-			var updatedValue = isNaN(parseInt($(this).text())) ? 0 : parseInt($(this).text());
-			var row = $(this).closest('tr'); // Get the closest <tr> element
-			var startWeekValue = parseInt(row.find('.start-week').text()); // Get the value from class start-week cell within the same row
-			var endWeekValue = parseInt(row.find('.end-week').text()); // Get the value from class end-week cell within the same row
-			var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell within the same row
-			var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell within the same row
-			var discountValue = parseFloat(row.find('.discount').text()); // Get the value from class discount cell within the same row
-			var originalEndWeekValue = endWeekValue;
-			if (previousCredit == 0) { // never use credit before
-				// update end-week
-				row.find('.end-week').text(endWeekValue + updatedValue);
-				// update weeks
-				row.find('.weeks').text(weeksValue + updatedValue);
-			} else if (previousCredit > 0) { // already use credit
-				originalEndWeekValue = endWeekValue - previousCredit;
-				// update end-week
-				row.find('.end-week').text(originalEndWeekValue + updatedValue);
-				// update weeks
-				row.find('.weeks').text(originalEndWeekValue - startWeekValue + 1 + updatedValue);
-			}
-			var originalPrice = ((parseInt(row.find('.weeks').text()) - updatedValue) * priceValue);
-			var discountedPrice = parseFloat(originalPrice * (discountValue / 100));
-			row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update class amount cell within the same row with the calculated value
-			previousCredit = updatedValue; // Update previousCredit variable with the new updatedValue
-			creditCell.on('keypress', function(event) {
-				if (event.which === 13) { // Enter key
-					event.preventDefault();
-					$(this).blur(); // Remove focus and stop editing
-				}
-			});
-		});
-		row.append(creditCell);
-
-		// row.append($('<td class="smaller-table-font text-center discount" contenteditable="true">').text(value.discount)); // discount
-		var discountCell = $('<td class="smaller-table-font text-center" contenteditable="true">').addClass('discount').text(value.discount); // discount
-		discountCell.on('input', function() {
-			var updatedValue = $(this).text();
-			var row = $(this).closest('tr'); // Get the parent row of the discount cell
-			if (updatedValue === null || updatedValue === '' || updatedValue === '0') {
-				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
-				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
-				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
-				var originalPrice = (weeksValue - creditValue) * priceValue;
-				// update amount
-				row.find('.amount').text(originalPrice.toFixed(2)); // Update class amount cell in the same row with the calculated value
-			} else if (updatedValue.toString().includes('%')) {
-				// calculate discount percentage
-				// remove '%' from updatedValue
-				updatedValue = parseInt(updatedValue.replace('%', ''));
-				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
-				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
-				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
-				var originalPrice = (weeksValue - creditValue) * priceValue;
-				var discountedPrice = originalPrice * (updatedValue / 100);
-				// update amount
-				row.find('.amount').text((originalPrice - discountedPrice).toFixed(2)); // Update amount cell in the same row with the calculated value
-			} else {
-				// calculate discount amount
-				var weeksValue = parseInt(row.find('.weeks').text()); // Get the value from class weeks cell in the same row
-				var creditValue = parseFloat(row.find('.credit').text()); // Get the value from class credit cell in the same row
-				var priceValue = parseFloat(row.find('.price').text()); // Get the value from class price cell in the same row
-				var originalPrice = (weeksValue - creditValue) * priceValue;
-				// update amount
-				row.find('.amount').text((originalPrice - updatedValue).toFixed(2)); // Update amount cell in the same row with the calculated value
-			}
-			// update total & keypress event to handle Enter key
-			cellEnterKeyUpdateTotalBasket(discountCell);
-		});
-		row.append(discountCell);
-
-		row.append($('<td class="smaller-table-font text-center price">').text(value.price)); // price
-
-		var totalEnrolPrice = ((weeksCell.text()-(creditCell.text()))* value.price);
-		var discount = defaultIfEmpty(discountCell.text(), 0);	
-		if(discount.toString().includes('%')){
-			discount = discount.replace('%', '');
-			totalEnrolPrice = totalEnrolPrice - (totalEnrolPrice * (discount / 100));
-		}else{
-			totalEnrolPrice = totalEnrolPrice - discount;
-		}
-
-		row.append($('<td class="smaller-table-font text-center">').addClass('amount').text(totalEnrolPrice.toFixed(2))); // amount				
-
-		let freeOnline = value.online && value.discount === DISCOUNT_FREE;	
-		var deleteIcon =(freeOnline) ? $("<td>") : $("<td>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete class"><i class="bi bi-trash"></i></a>');
-		row.append(deleteIcon);
-
-		row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId)); // invoiceId
-		row.append($('<td class="hidden-column online">').text(value.online)); // online	
-		row.append($('<td class="hidden-column grade">').text(value.grade)); // grade
-		row.append($('<td class="hidden-column description">').text(value.description)); // description
-		row.append($('<td class="hidden-column enrolId">').text(value.id)); // enrolmentId
-		row.append($('<td class="hidden-column invoiceAmount">').text(value.amount)); // invoice amount	
-		row.append($('<td class="hidden-column paid">').text(value.paid)); // paid	
-		row.append($('<td class="hidden-column extra">').text(value.extra)); // extra	
-
-		$('#basketTable > tbody').append(row);
-
-		// update invoice table with Enrolment unless free online class
-		if(!freeOnline){
-			addEnrolmentToInvoiceList(value, rowCount);
-		}
-	}else if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object
 
 		// update my lecture table
 		var row = $('<tr class="d-flex">');
 		row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.bookId)); // 0
-		row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
+		// Check payment status and apply appropriate styling to book icon
+		if (value.extra === OVERDUE) {
+			row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book text-danger" data-toggle="tooltip" title="Overdue"></i></td>')); // item
+		} else {
+			row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
+		}
 		row.append($('<td class="smaller-table-font" style="width: 36%;">').text(value.name)); // name
 		row.append($('<td style="width: 7%;">'));
 		row.append($('<td style="width: 6%;">'));
@@ -1043,9 +939,166 @@ function updateInvoiceTableWithTop(value, rowCount){
 		// update invoice table with Book
 		addBookToInvoiceList(value, rowCount);
 
-	}else{//} if (value.hasOwnProperty('upto')) { // It is an PaymentDTO object
+	}else if (value.hasOwnProperty('method')) { // It is an PaymentDTO object - check this BEFORE extra property
+		console.log('Payment detected, amount:', value.amount);
+		
+		// Validate payment data
+		if (!value.method || value.amount == null || isNaN(value.amount)) {
+			console.log('Invalid payment data:', value);
+			return;
+		}
+		
 		// update invoice table with Payment
 		addPaymentToInvoiceList(value, rowCount);
+		
+	}else if (value.hasOwnProperty('extra')) { // It is an EnrolmentDTO object
+
+		// Validate enrollment data to prevent NaN entries
+		if (!value.name || value.startWeek == null || value.endWeek == null || 
+			value.price == null || isNaN(value.price) || 
+			isNaN(value.startWeek) || isNaN(value.endWeek)) {
+			console.log('Invalid enrollment data:', value);
+			return;
+		}
+
+		let freeOnline = value.online && value.discount === DISCOUNT_FREE;
+		
+		// Add ALL enrollments to basket table (Purchased Items section) - including free online classes
+		var row = $('<tr class="d-flex">');
+		row.append($('<td>').addClass('hidden-column data-type').text(CLASS + '|' + (value.clazzId || '')));
+		
+		// Check payment status and apply appropriate styling to class icon
+		if (value.extra === OVERDUE) {
+			row.append($('<td class="text-center"><i class="bi bi-mortarboard text-danger" data-toggle="tooltip" title="Overdue"></i></td>')); // item
+		} else {
+			row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>')); // item
+		}
+		
+		row.append($('<td class="smaller-table-font name">').text(value.name || '')); // name
+		
+		// For day field - create dropdown for onsite classes, static text for online classes
+		if (value.online) {
+			// Online classes show static "All"
+			row.append($('<td class="smaller-table-font day">').text('All')); // day
+		} else {
+			// Onsite classes get a dropdown
+			var dayDropdown = $('<select class="clazzChoice">').css({
+				'width': '85px',
+				'font-size': '12px',
+				'padding': '2px'
+			});
+			// We'll need to populate this with available classes for this course
+			// For now, add the current selection
+			var currentDayOption = $('<option>').text(dayName(value.day) || '').val(value.clazzId || '').data('price', value.price || 0);
+			dayDropdown.append(currentDayOption);
+			
+			// Load all available classes for this course using the current clazzId
+			var clazzId = value.clazzId || '';
+			var year = value.year || '';
+			var state = $('#formState').val() || '';
+			var branch = $('#formBranch').val() || '';
+			
+			if (clazzId && year) {
+				$.ajax({
+					url: '${pageContext.request.contextPath}/class/associatedClass',
+					type: 'GET',
+					data: {
+						clazzId: clazzId,
+						year: year,
+						state: state,
+						branch: branch
+					},
+					success: function(data) {
+						// Clear existing options
+						dayDropdown.empty();
+						// Add all available classes
+						$.each(data, function(index, clazz) {
+							var option = $('<option>').text(dayName(clazz.day)).val(clazz.id).data('price', clazz.price);
+							// Mark current selection as selected
+							if (clazz.id == (value.clazzId || '')) {
+								option.prop('selected', true);
+							}
+							dayDropdown.append(option);
+						});
+					},
+					error: function(xhr, status, error) {
+						console.log('Error loading classes:', error);
+						// Fallback to current selection only
+						dayDropdown.empty();
+						dayDropdown.append(currentDayOption);
+					}
+				});
+			}
+			
+			// Add change handler
+			dayDropdown.on('change', function() {
+				var selectedValue = $(this).val();
+				var selectedPrice = $(this).find('option:selected').data('price') || 0;
+				var currentRow = $(this).closest('tr');
+				
+				// Update the hidden data-type field with new class ID
+				currentRow.find('.data-type').text(CLASS + '|' + selectedValue);
+				// Update price
+				currentRow.find('.price').text(Number(selectedPrice).toFixed(2));
+				// Recalculate amount
+				var weeksTotal = parseInt(currentRow.find('.weeks').text()) || 0;
+				var credit = parseInt(currentRow.find('.credit').text()) || 0;
+				var discount = currentRow.find('.discount').text() || '0';
+				var totalPrice = Math.max(0, (weeksTotal - credit) * selectedPrice);
+				
+				if (discount.toString().includes('%')) {
+					var discountPercent = parseFloat(discount.replace('%', '')) || 0;
+					totalPrice = totalPrice - (totalPrice * (discountPercent / 100));
+				} else {
+					var discountAmount = parseFloat(discount) || 0;
+					totalPrice = Math.max(0, totalPrice - discountAmount);
+				}
+				
+				currentRow.find('.amount').text(totalPrice.toFixed(2));
+				updateTotalBasket();
+			});
+			
+			row.append($('<td class="smaller-table-font day">').append(dayDropdown)); // day with dropdown
+		}
+		
+		row.append($('<td class="smaller-table-font text-center year">').text(value.year || '')); // year
+		row.append($('<td class="smaller-table-font text-center start-week">').text(value.startWeek || 0)); // start week
+		row.append($('<td class="smaller-table-font text-center end-week">').text(value.endWeek || 0)); // end week
+		
+		var weeksTotal = Math.max(0, (value.endWeek || 0) - (value.startWeek || 0) + 1);
+		row.append($('<td class="smaller-table-font text-center weeks">').text(weeksTotal)); // weeks
+		row.append($('<td class="smaller-table-font text-center credit">').text(value.credit || 0)); // credit
+		row.append($('<td class="smaller-table-font text-center discount">').text(value.discount || '0')); // discount
+		row.append($('<td class="smaller-table-font text-center price">').text(Number(value.price || 0).toFixed(2))); // price
+		
+		// Calculate amount
+		var totalPrice = Math.max(0, (weeksTotal - (value.credit || 0)) * (value.price || 0));
+		var discount = value.discount || '0';
+		if (discount.toString().includes('%')) {
+			discount = discount.replace('%', '');
+			var discountPercent = parseFloat(discount) || 0;
+			totalPrice = totalPrice - (totalPrice * (discountPercent / 100));
+		} else {
+			var discountAmount = parseFloat(discount) || 0;
+			totalPrice = Math.max(0, totalPrice - discountAmount);
+		}
+		
+		row.append($('<td class="smaller-table-font text-center amount">').text(totalPrice.toFixed(2))); // amount
+		row.append($('<td>').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete class"><i class="bi bi-trash"></i></a>')); // delete
+		row.append($('<td class="hidden-column enrolId">').text(value.id || '')); // enrolId
+		row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId || '')); // invoiceId
+		row.append($('<td class="hidden-column online">').text(value.online || false)); // online
+		row.append($('<td class="hidden-column grade">').text(value.grade || '')); // grade
+		row.append($('<td class="hidden-column description">').text(value.description || '')); // description
+		
+		$('#basketTable > tbody').append(row);
+		
+		// Only add to invoice table if NOT free online class
+		if(!freeOnline){
+			addEnrolmentToInvoiceList(value, rowCount);
+		}
+	} else {
+		console.log('Object type not recognized in Rest. Properties:', Object.keys(value));
 	}
 
 	// update basket total
@@ -1053,40 +1106,60 @@ function updateInvoiceTableWithTop(value, rowCount){
 
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // 	Update Invoice Table with 2nd/3rd last EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateInvoiceTableWithRest(value, rowCount){
 
-	if (value.hasOwnProperty('extra')) {
+	// Add validation to prevent invalid/empty data from being displayed
+	if (!value || typeof value !== 'object') {
+		console.log('Invalid value object:', value);
+		return;
+	}
+
+	if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object - check this first since books now also have 'extra' field
+
+		// Validate book data
+		if (!value.name || value.price == null || isNaN(value.price)) {
+			console.log('Invalid book data:', value);
+			return;
+		}
+
+		// update invoice table with Book
+		addBookToInvoiceList(value, rowCount);
+
+	}else if (value.hasOwnProperty('method')) { // It is an PaymentDTO object - check this BEFORE extra property
+		console.log('Payment detected, amount:', value.amount);
+		
+		// Validate payment data
+		if (!value.method || value.amount == null || isNaN(value.amount)) {
+			console.log('Invalid payment data:', value);
+			return;
+		}
+		
+		// update invoice table with Payment
+		addPaymentToInvoiceList(value, rowCount);
+		
+	}else if (value.hasOwnProperty('extra')) { // It is an EnrolmentDTO object
+
+		// Validate enrollment data to prevent NaN entries
+		if (!value.name || value.startWeek == null || value.endWeek == null || 
+			value.price == null || isNaN(value.price) || 
+			isNaN(value.startWeek) || isNaN(value.endWeek)) {
+			console.log('Invalid enrollment data:', value);
+			return;
+		}
 
 		let freeOnline = value.online && value.discount === DISCOUNT_FREE;	
 		// update invoice table with Enrolment unless free online class
 		if(!freeOnline){
 			addEnrolmentToInvoiceList(value, rowCount);
 		}
-	}else if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object
-
-		// update invoice table with Book
-		addBookToInvoiceList(value, rowCount);
-
-	}else{//} if (value.hasOwnProperty('upto')) { // It is an PaymentDTO object
-		// update invoice table with Payment
-		addPaymentToInvoiceList(value, rowCount);
+	} else {
+		console.log('Object type not recognized in Rest. Properties:', Object.keys(value));
 	}
 
 }
-
-
-
-
-
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //		Check same row exists in basketTable

@@ -334,22 +334,28 @@ public class InvoiceController {
 		
 		// 12. bring to EnrolmentDTO
 		List<EnrolmentDTO> enrolments = new ArrayList<>();
-		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoice(invoId);
+		List<EnrolmentDTO> enrols = enrolmentService.findEnrolmentByInvoiceAndStudent(invoId, studentId);
 		for(EnrolmentDTO enrol : enrols){
 			// if free online course, skip it
 			boolean isFreeOnline = enrol.isOnline() && enrol.getDiscount().equalsIgnoreCase(JaeConstants.DISCOUNT_FREE);
 			if(isFreeOnline) continue;
 		
-			enrol.setInvoiceId(String.valueOf(invoId));				
-			// 12-1. set period of enrolment to extra field
-			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
-			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
-			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
+			enrol.setInvoiceId(String.valueOf(invoId));
+			// Set payment date
+			enrol.setPaymentDate(JaeUtils.getToday());
+			// Set payment status
+			if(totalAmount == (paidAmount + invoice.getPaidAmount())){
+				enrol.setExtra(JaeConstants.FULL_PAID);
+			}else{
+				enrol.setExtra(JaeConstants.OVERDUE);
+			}
 			// 12-2. set headerGrade
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
 			}
 			// 12-3. set earliest start date to headerDueDate
+			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
+			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
 			try {
 				if(JaeUtils.isEarlier(start, headerDueDate)){
 					headerDueDate = start;
@@ -370,6 +376,12 @@ public class InvoiceController {
 		// 15. set MaterialDTO payment date
 		for(MaterialDTO material : materials){
 			material.setPaymentDate(JaeUtils.getToday());
+			// Set payment status for materials based on invoice payment status
+			if(totalAmount == (paidAmount + invoice.getPaidAmount())){
+				material.setExtra(JaeConstants.FULL_PAID);
+			}else{
+				material.setExtra(JaeConstants.OVERDUE);
+			}
 			// material update
 			Material mat = materialService.getMaterial(Long.parseLong(material.getId()));
 			mat.setPaymentDate(LocalDate.now());
@@ -397,7 +409,7 @@ public class InvoiceController {
 		session.setAttribute(JaeConstants.PAYMENT_HEADER, header);
 			
 		// 20. return
-		dtos.addAll(enrols);
+		dtos.addAll(enrolments);  // Use properly configured enrolments instead of incomplete enrols
 		dtos.addAll(materials);
 		dtos.addAll(payments);
 		return dtos;

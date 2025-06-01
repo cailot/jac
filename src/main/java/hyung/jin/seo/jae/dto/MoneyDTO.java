@@ -20,4 +20,6 @@ public class MoneyDTO implements Serializable{
 
 	public String info;
 
+	public String extra;
+
 }
