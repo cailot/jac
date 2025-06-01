@@ -832,7 +832,7 @@ function retrieveEnrolment(studentId){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // 	Update Invoice Table with lastest EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function updateInvoiceTableWithTop(value, rowCount){
+function updateInvoiceTableWithTop(value, rowCount) {
 
 	// Add validation to prevent invalid/empty data from being displayed
 	if (!value || typeof value !== 'object') {
@@ -1108,8 +1108,31 @@ function updateInvoiceTableWithTop(value, rowCount){
 		// Calculate amount
 		calculateAmount(row);
 
-		row.append($('<td class="smaller-table-font text-center amount">').text('0.00'));
-		
+		if(!freeOnline){
+			// Calculate initial amount for class (both onsite and online)
+			var weeks = parseInt(value.endWeek - value.startWeek + 1) || 0;
+			var credit = parseInt(value.credit) || 0;
+			var price = parseFloat(value.price) || 0;
+			var discount = value.discount || '0';
+			var chargeableWeeks = weeks - credit;
+			var amount = chargeableWeeks * price;
+			
+			// Only set amount to 0 if discount is 100%
+			if (discount === '100%') {
+				amount = 0;
+			} else if (discount.includes('%')) {
+				var discountPercent = parseFloat(discount.replace('%', '')) || 0;
+				amount *= (1 - (discountPercent / 100));
+			} else {
+				var discountAmount = parseFloat(discount) || 0;
+				amount = Math.max(0, amount - discountAmount);
+			}
+			
+			row.append($('<td class="smaller-table-font text-center amount">').text(amount.toFixed(2)));
+		} else {
+			row.append($('<td class="smaller-table-font text-center amount">').text('0.00'));
+		}
+
 		row.append($('<td>').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete class"><i class="bi bi-trash"></i></a>')); // delete
 		row.append($('<td class="hidden-column enrolId">').text(value.id || '')); // enrolId
 		row.append($('<td class="hidden-column invoiceId">').text(value.invoiceId || '')); // invoiceId
@@ -1138,18 +1161,29 @@ function calculateAmount(row) {
 	var credit = parseInt(row.find('.credit').text()) || 0;
 	var price = parseFloat(row.find('.price').text()) || 0;
 	var discount = row.find('.discount').text() || '0';
+	var isOnline = row.find('.online').text() === "true";
 
-	var totalPrice = (weeks - credit) * price;
-
-	if (discount.includes('%')) {
-		var discountPercent = parseFloat(discount) || 0;
-		totalPrice = totalPrice * (1 - (discountPercent / 100));
-	} else {
-		var discountAmount = parseFloat(discount) || 0;
-		totalPrice = Math.max(0, totalPrice - discountAmount);
+	// For online classes or 100% discount, amount is always 0
+	if (isOnline || discount === '100%') {
+		row.find('.amount').text('0.00');
+		updateTotalBasket();
+		return;
 	}
 
-	row.find('.amount').text(totalPrice.toFixed(2));
+	// Calculate chargeable weeks and base amount
+	var chargeableWeeks = weeks - credit;
+	var amount = chargeableWeeks * price;
+
+	// Apply discount
+	if (discount.includes('%')) {
+		var discountPercent = parseFloat(discount.replace('%', '')) || 0;
+		amount *= (1 - (discountPercent / 100));
+	} else {
+		var discountAmount = parseFloat(discount) || 0;
+		amount = Math.max(0, amount - discountAmount);
+	}
+
+	row.find('.amount').text(amount.toFixed(2));
 	updateTotalBasket();
 }
 
