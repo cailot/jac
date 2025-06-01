@@ -134,6 +134,12 @@ public class EnrolmentController {
 		// 3. get materials by invoice id and add to list dtos
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
 		for(MaterialDTO material : materials){
+			// set payment status for materials based on invoice payment status
+			if(isFullPaid){
+				material.setExtra(JaeConstants.FULL_PAID);
+			}else{
+				material.setExtra(JaeConstants.OVERDUE);
+			}
 			dtos.add(material);
 		}
 		

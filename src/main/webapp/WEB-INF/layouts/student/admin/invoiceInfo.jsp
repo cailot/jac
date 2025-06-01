@@ -30,51 +30,64 @@ function addEnrolmentToInvoiceList(data, cnt) {
 		return;
 	}
 	
+	// Add null/undefined checks to prevent NaN values
+	if (!data || !data.name || data.startWeek == null || data.endWeek == null || data.price == null) {
+		console.log('Invalid enrollment data:', data);
+		return;
+	}
+	
 	// check cnt is odd number or even number
 	var isOdd = (cnt % 2)==1;
 	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
 	var rowClass = isOdd ? 'row_odd' : 'row_even';
 	var row = $('<tr class="'+ rowClass +'">');
 	// display the row in red if the amount is not fully paid 
-	var needPay = (data.amount - data.paid > 0) ? true : false;
+	var needPay = (data.amount - (data.paid || 0) > 0) ? true : false;
 	// (needPay) ? row.addClass('text-danger') : row.addClass('');
 
     row.append($('<td class="text-center"><i class="bi bi-mortarboard" data-toggle="tooltip" title="class"></i></td>'));
     // row.append($('<td class="smaller-table-font">').text('[' + data.grade.toUpperCase() +'] ' + data.name));
-	row.append($('<td class="smaller-table-font">').text(data.name));
-    row.append($('<td class="smaller-table-font text-center">').text(data.year));
-	row.append($('<td class="smaller-table-font text-center">').text(dayName(data.day)));
+	row.append($('<td class="smaller-table-font">').text(data.name || ''));
+    row.append($('<td class="smaller-table-font text-center">').text(data.year || ''));
+	row.append($('<td class="smaller-table-font text-center">').text(dayName(data.day) || ''));
     
+	// Ensure numeric values with defaults
+	var startWeek = parseInt(data.startWeek) || 0;
+	var endWeek = parseInt(data.endWeek) || 0;
+	var credit = parseInt(data.credit) || 0;
+	var price = parseFloat(data.price) || 0;
+	var weeksTotal = Math.max(0, endWeek - startWeek + 1);
+	
 	// set editable attribute to true if the amount is not fully paid	
-	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(data.startWeek));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(data.endWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(data.endWeek));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('weeks').text(data.endWeek - data.startWeek + 1)) : row.append($('<td class="smaller-table-font text-center" >').addClass('weeks').text(data.endWeek - data.startWeek + 1));
-    (needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(data.credit)) : row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(data.credit));
-	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount)) : row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(startWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('start-week').text(startWeek));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(endWeek)) : row.append($('<td class="smaller-table-font text-center">').addClass('end-week').text(endWeek));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('weeks').text(weeksTotal)) : row.append($('<td class="smaller-table-font text-center" >').addClass('weeks').text(weeksTotal));
+    (needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(credit)) : row.append($('<td class="smaller-table-font text-center">').addClass('credit').text(credit));
+	(needPay) ? row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount || '0')) : row.append($('<td class="smaller-table-font text-center">').addClass('discount').text(data.discount || '0'));
 	
-	row.append($('<td class="smaller-table-font text-right">').addClass('price').text((data.price).toFixed(2)));
+	row.append($('<td class="smaller-table-font text-right">').addClass('price').text(price.toFixed(2)));
 	
-	// (needPay) ? row.append($('<td class="smaller-table-font text-center" contenteditable="true">').text('0 %')) : row.append($('<td class="smaller-table-font text-center">').text('0 %'));
-	
-
-	var totalEnrolPrice = ((row.find('.weeks').text()-(row.find('.credit').text()))* data.price);
-	var discount = defaultIfEmpty(row.find('.discount').text(), 0);	
+	// Calculate total price with proper error handling
+	var totalEnrolPrice = Math.max(0, (weeksTotal - credit) * price);
+	var discount = defaultIfEmpty(data.discount, '0');	
 	if(discount.toString().includes('%')){
 		discount = discount.replace('%', '');
-		totalEnrolPrice = totalEnrolPrice - (totalEnrolPrice * (discount / 100));
+		var discountPercent = parseFloat(discount) || 0;
+		totalEnrolPrice = totalEnrolPrice - (totalEnrolPrice * (discountPercent / 100));
 	}else{
-		totalEnrolPrice = totalEnrolPrice - discount;
+		var discountAmount = parseFloat(discount) || 0;
+		totalEnrolPrice = Math.max(0, totalEnrolPrice - discountAmount);
 	}
 	(needPay) ? row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(totalEnrolPrice.toFixed(2)).attr("id", "amountCell")) : row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(totalEnrolPrice.toFixed(2)).attr("id", "amountCell"));
 
-	row.append($('<td class="smaller-table-font paid-date text-center">').text(data.paymentDate));
+	row.append($('<td class="smaller-table-font paid-date text-center">').text(data.paymentDate || ''));
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'ENROLMENT' + ', ' +  data.id + ', \'\')"></i>'));
 		
 		
-	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + data.id));
-	row.append($('<td>').addClass('hidden-column paid').text(data.paid));
-	row.append($('<td>').addClass('hidden-column invoiceId').text(data.invoiceId));
+	row.append($('<td>').addClass('hidden-column').addClass('enrolment-match').text(ENROLMENT + '|' + (data.id || '')));
+	row.append($('<td>').addClass('hidden-column paid').text(data.paid || '0'));
+	row.append($('<td>').addClass('hidden-column invoiceId').text(data.invoiceId || ''));
 	// row.append($('<td>').addClass('hidden-column invoiceAmount').text(data.amount));
 	
 
@@ -97,8 +110,20 @@ function addEnrolmentToInvoiceList(data, cnt) {
 //		Add Payment to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addPaymentToInvoiceList(data, cnt) {
-	// console.log('addPaymentToInvoiceList >>>> ' + data.id);
-	// debugger;
+	console.log('addPaymentToInvoiceList called with data:', data);
+	
+	// Add validation to prevent issues with invalid payment data
+	if (!data || !data.method || data.amount == null || isNaN(data.amount)) {
+		console.log('Invalid payment data:', data);
+		return;
+	}
+
+	// Ensure required properties exist with defaults
+	var amount = parseFloat(data.amount) || 0;
+	var total = parseFloat(data.total) || amount;
+	var upto = parseFloat(data.upto) || 0;
+	var remaining = total - upto;
+	
 	var isOdd = (cnt % 2)==1;
 	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
 	var rowClass = isOdd ? 'row_odd' : 'row_even';
@@ -114,20 +139,38 @@ function addPaymentToInvoiceList(data, cnt) {
 	newPayment.append($('<td>')); // weeks
 	newPayment.append($('<td>')); // credit
 	newPayment.append($('<td>')); // discount
-	newPayment.append($('<td class="smaller-table-font text-right">').text((data.amount).toFixed(2))); // price	
+	newPayment.append($('<td class="smaller-table-font text-right">').text(amount.toFixed(2))); // price	
 	// set editable attribute to true if the amount is not fully paid	
-	newPayment.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text((data.total - data.upto).toFixed(2))); // remaining
+	newPayment.append($('<td class="smaller-table-font text-right text-primary">').addClass('amount').text(remaining.toFixed(2))); // remaining
 	
-	var registerDate = new Date(data.registerDate); // Assuming data.registerDate is in 'yyyy-MM-dd' format
-	var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-	var formattedDate = registerDate.toLocaleDateString('en-GB', options); // For dd/MM/yyyy format
+	// Handle date formatting with better error handling
+	var formattedDate = '';
+	try {
+		if (data.registerDate) {
+			// Try parsing as string first (dd/MM/yyyy format)
+			if (typeof data.registerDate === 'string' && data.registerDate.includes('/')) {
+				formattedDate = data.registerDate;
+			} else {
+				// Try parsing as Date object
+				var registerDate = new Date(data.registerDate);
+				if (!isNaN(registerDate.getTime())) {
+					var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+					formattedDate = registerDate.toLocaleDateString('en-GB', options);
+				}
+			}
+		}
+	} catch (e) {
+		console.log('Error formatting date:', e);
+		formattedDate = data.registerDate || '';
+	}
+	
 	newPayment.append($('<td class="smaller-table-font text-center paid-date">').text(formattedDate));
 
-	newPayment.append($('<td class="hidden-column paid">').text(data.amount));
-	newPayment.append($('<td class="hidden-column payment-match">').text(PAYMENT + '|' + data.id));
+	newPayment.append($('<td class="hidden-column paid">').text(amount));
+	newPayment.append($('<td class="hidden-column payment-match">').text(PAYMENT + '|' + (data.id || '')));
 
 	// if data.info is not empty, then display filled icon, otherwise display empty icon
-	isNotBlank(data.info) ? newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  data.id + ', \'\')"></i>'));		
+	isNotBlank(data.info) ? newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  (data.id || '') + ', \'' + (data.info || '') + '\')"></i>')) : newPayment.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'PAYMENT' + ', ' +  (data.id || '') + ', \'\')"></i>'));		
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
 	$('#invoiceListTable > tbody > tr').each(function() {
 		if ($(this).find('.payment-match').text() === newPayment.find('.payment-match').text()) {
@@ -139,6 +182,8 @@ function addPaymentToInvoiceList(data, cnt) {
 	
 	// update latest invoice id and balance
 	updateLatestInvoiceId(data.invoiceId);
+	
+	console.log('Payment entry added successfully');
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,6 +192,12 @@ function addPaymentToInvoiceList(data, cnt) {
 function addBookToInvoiceList(data, cnt) {
 	// console.log(data);
 	// $('#hiddenInvoiceId').val(data.invoiceId);
+	
+	// Add validation to prevent issues with invalid data
+	if (!data || !data.name || data.price == null) {
+		console.log('Invalid book data:', data);
+		return;
+	}
 
 	var isOdd = (cnt % 2)==1;
 	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
@@ -155,7 +206,7 @@ function addBookToInvoiceList(data, cnt) {
 	
 	// var row = $('<tr>');
 	row.append($('<td class="text-center"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
-	row.append($('<td class="smaller-table-font">').text(data.name)); // description
+	row.append($('<td class="smaller-table-font">').text(data.name || '')); // description
 	row.append($('<td>')); // year
 	row.append($('<td>')); // day
 	row.append($('<td>')); // start
@@ -164,12 +215,12 @@ function addBookToInvoiceList(data, cnt) {
 	row.append($('<td>')); // credit
 	row.append($('<td>')); // discount
 	row.append($('<td>')); // price	
-	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price).toFixed(2)));// Amount	
-	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate));// payment date
-	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + data.bookId)); // 0
-	row.append($('<td>').addClass('hidden-column').addClass('material-match').text(BOOK + '|' + data.id));
-	row.append($('<td class="hidden-column materialId">').text(data.id)); 
-	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId)); 
+	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price || 0).toFixed(2)));// Amount	
+	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate || ''));// payment date
+	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + (data.bookId || ''))); // 0
+	row.append($('<td>').addClass('hidden-column').addClass('material-match').text(BOOK + '|' + (data.id || '')));
+	row.append($('<td class="hidden-column materialId">').text(data.id || '')); 
+	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId || '')); 
 						
 	// if data.info is not empty, then display filled icon, otherwise display empty icon	
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
@@ -362,17 +413,39 @@ function openPaymentHistory(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function makePayment(){
 	var studentId = $('#formId').val();
+	var payAmount = $('#payAmount').val();
+	var payDate = $('#payDate').val();
+	
+	// Validation checks
+	if (!studentId) {
+		alert('Student ID is required');
+		return;
+	}
+	
+	if (!payAmount || parseFloat(payAmount) <= 0) {
+		alert('Payment amount must be greater than 0');
+		return;
+	}
+	
+	if (!payDate) {
+		alert('Payment date is required');
+		return;
+	}
+	
 	// branch code
 	var branch = window.branch;
 	if(branch === '0'){
 		branch = '90'; // head office
 	}
 	var payment = {
-		amount: $('#payAmount').val(),
+		amount: payAmount,
 		method: $('#payItem').val(),
-		registerDate: $('#payDate').val(),
+		registerDate: payDate,
 		info: $('#payInfo').val()
 	};
+	
+	// Show loading or disable button to prevent double submission
+	$('#paymentModal .btn-primary').prop('disabled', true).text('Processing...');
 	
 	$.ajax({
 		url : '${pageContext.request.contextPath}/invoice/payment/' + studentId + '/' + branch,
@@ -381,9 +454,23 @@ function makePayment(){
 		data : JSON.stringify(payment),
 		contentType : 'application/json',
 		success : function(response) {
+			console.log('Payment response:', response);
+			
+			// Validate response
+			if (!response || !Array.isArray(response)) {
+				console.error('Invalid response format:', response);
+				alert('Invalid response from server');
+				return;
+			}
+			
 			var lastPaymentId = 0;
 			$.each(response, function(index, value){
-				// debugger;
+				// Validate each item in response
+				if (!value || typeof value !== 'object') {
+					console.error('Invalid item in response:', value);
+					return; // skip this item
+				}
+				
 				if (value.hasOwnProperty('extra')) {
 					// It is an EnrolmentDTO object
 					let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
@@ -392,22 +479,25 @@ function makePayment(){
 					}
 				}else if (value.hasOwnProperty('method')) { // payment
 					// It is an PaymentDTO object, extract paymentId
-					var temp = value.id;
-					if(temp > lastPaymentId){
+					var temp = parseInt(value.id);
+					if(temp && temp > lastPaymentId){
 						lastPaymentId = temp;
 					}
 					addPaymentToInvoiceList(value);
-				}else{
+				}else if (value.hasOwnProperty('bookId')) {
 					// It is a BookDTO object
 					addBookToInvoiceList(value, 0);
 				}
 			});
+			
 			// reset payment dialogue info
 			document.getElementById('makePayment').reset();
 			$('#paymentModal').modal('toggle');
 			
-			// display receipt
-			displayReceiptInNewTab(lastPaymentId);
+			// display receipt if payment was successful
+			if(lastPaymentId > 0) {
+				displayReceiptInNewTab(lastPaymentId);
+			}
 			
 			// update invoice & basket tables
 			clearInvoiceTable();
@@ -416,7 +506,25 @@ function makePayment(){
 
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			console.log('Payment Error:', error);
+			console.log('Status:', status);
+			console.log('Response:', xhr.responseText);
+			
+			var errorMessage = 'Payment failed. Please try again.';
+			try {
+				var errorResponse = JSON.parse(xhr.responseText);
+				if (errorResponse.message) {
+					errorMessage = errorResponse.message;
+				}
+			} catch(e) {
+				console.log('Error parsing error response:', e);
+			}
+			
+			alert(errorMessage);
+		},
+		complete: function() {
+			// Re-enable the payment button
+			$('#paymentModal .btn-primary').prop('disabled', false).text('Save');
 		}
 	});						
 }
