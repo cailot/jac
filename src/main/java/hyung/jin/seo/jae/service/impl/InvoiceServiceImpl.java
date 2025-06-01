@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +11,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.InvoiceDTO;
+import hyung.jin.seo.jae.dto.MaterialDTO;
+import hyung.jin.seo.jae.dto.EnrolmentDTO;
+import hyung.jin.seo.jae.dto.PaymentDTO;
 import hyung.jin.seo.jae.model.Invoice;
+import hyung.jin.seo.jae.model.InvoiceHistory;
 import hyung.jin.seo.jae.repository.InvoiceRepository;
 import hyung.jin.seo.jae.service.InvoiceService;
+import hyung.jin.seo.jae.service.InvoiceHistoryService;
+import hyung.jin.seo.jae.service.MaterialService;
+import hyung.jin.seo.jae.service.EnrolmentService;
+import hyung.jin.seo.jae.service.PaymentService;
+import hyung.jin.seo.jae.service.AttendanceService;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 	
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+
+	@Autowired
+	private InvoiceHistoryService invoiceHistoryService;
+
+	@Autowired
+	private MaterialService materialService;
+
+	@Autowired
+	private EnrolmentService enrolmentService;
+
+	@Autowired
+	private PaymentService paymentService;
+
+	@Autowired
+	private AttendanceService attendanceService;
    
 	@Override
 	public long checkCount() {
@@ -197,6 +222,63 @@ public class InvoiceServiceImpl implements InvoiceService {
 			return invoiceRepository.findById(invoice.getId()).orElse(null);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to insert invoice during migration: " + e.getMessage(), e);
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteInvoice(Long id) {
+		try {
+			// Get the invoice to verify it exists
+			Invoice invoice = invoiceRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Invoice not found"));
+
+			// Get ALL enrolments associated with this invoice (not just from invoice history)
+			List<EnrolmentDTO> allEnrolments = enrolmentService.findAllEnrolmentByInvoiceId(id);
+			
+			// First delete all attendance records associated with these enrolments
+			for (EnrolmentDTO enrolment : allEnrolments) {
+				Long enrolmentId = Long.parseLong(enrolment.getId());
+				attendanceService.deleteAttendanceByEnrolment(enrolmentId);
+			}
+
+			// Delete payments associated with this invoice
+			List<PaymentDTO> payments = paymentService.getPaymentByInvoice(id);
+			for (PaymentDTO payment : payments) {
+				paymentService.deletePayment(Long.parseLong(payment.getId()));
+			}
+
+			// Get all invoice histories first (we'll need them to delete associated materials)
+			List<InvoiceHistory> histories = invoiceHistoryService.getAllInvoiceHistoriesByInvoice(id);
+			
+			// Delete materials associated with each invoice history
+			for (InvoiceHistory history : histories) {
+				List<MaterialDTO> historyMaterials = materialService.findMaterialByInvoiceHistory(history.getId());
+				for (MaterialDTO material : historyMaterials) {
+					materialService.deleteMaterial(Long.parseLong(material.getId()));
+				}
+			}
+
+			// Delete materials associated with this invoice (that might not be associated with history)
+			List<MaterialDTO> materials = materialService.findMaterialByInvoice(id);
+			for (MaterialDTO material : materials) {
+				materialService.deleteMaterial(Long.parseLong(material.getId()));
+			}
+
+			// Now delete all enrolments
+			for (EnrolmentDTO enrolment : allEnrolments) {
+				enrolmentService.deleteEnrolment(Long.parseLong(enrolment.getId()));
+			}
+
+			// Now delete all invoice histories (materials have been deleted)
+			for (InvoiceHistory history : histories) {
+				invoiceHistoryService.deleteInvoiceHistory(history.getId());
+			}
+
+			// Finally delete the invoice itself
+			invoiceRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to delete invoice and related records: " + e.getMessage(), e);
 		}
 	}
 }

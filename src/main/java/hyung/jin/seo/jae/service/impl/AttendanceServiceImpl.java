@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.model.Attendance;
@@ -219,6 +220,22 @@ public class AttendanceServiceImpl implements AttendanceService {
 			attendanceRepository.updateStatusById(Long.parseLong(id), status);
 		} catch (Exception e) {
 			System.out.println("No attendance found");
+		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteAttendanceByEnrolment(Long enrolmentId) {
+		try {
+			// Get all attendance records for this enrolment
+			List<Long> attendanceIds = attendanceRepository.findAttendanceIdsByEnrolmentId(enrolmentId);
+			
+			// Delete each attendance record
+			for (Long attendanceId : attendanceIds) {
+				deleteAttendance(attendanceId);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to delete attendance records for enrolment: " + e.getMessage(), e);
 		}
 	}
 }

@@ -51,4 +51,7 @@ public interface InvoiceService {
 
 	// add Invoice with specific ID for migration
 	Invoice addInvoiceMigration(Invoice invoice);
+
+	// delete Invoice and all related records
+	void deleteInvoice(Long id);
 }

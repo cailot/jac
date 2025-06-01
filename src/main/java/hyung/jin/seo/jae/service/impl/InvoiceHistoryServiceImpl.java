@@ -116,4 +116,15 @@ public class InvoiceHistoryServiceImpl implements InvoiceHistoryService {
 		return history;
 	}
 
+	@Override
+	public List<InvoiceHistory> getAllInvoiceHistoriesByInvoice(Long invoiceId) {
+		List<InvoiceHistory> histories = new ArrayList<>();
+		try{
+			histories = invoiceHistoryRepository.findAllByInvoiceId(invoiceId);
+		}catch(Exception e){
+			System.out.println("No InvoiceHistory found");
+		}
+		return histories;
+	}
+
 }

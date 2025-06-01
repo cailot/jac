@@ -9,6 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.model.Enrolment;
@@ -371,6 +372,27 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 		interval.add(start);
 		interval.add(end);
 		return interval;
+	}
+
+	@Override
+	@Transactional
+	public void deleteEnrolment(Long id) {
+		try {
+			enrolmentRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to delete enrolment: " + e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public List<EnrolmentDTO> findAllEnrolmentByInvoiceId(Long invoiceId) {
+		List<EnrolmentDTO> dtos = new ArrayList<>();
+		try {
+			dtos = enrolmentRepository.findAllEnrolmentByInvoiceId(invoiceId);
+		} catch (Exception e) {
+			System.out.println("No enrolment found");
+		}
+		return dtos;
 	}
 
 }
