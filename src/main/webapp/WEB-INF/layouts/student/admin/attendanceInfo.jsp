@@ -9,30 +9,48 @@ const daysOfWeek = ['All', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday
 					
 
 $(document).ready(function() {
+    function adjustAttendanceTableHeight() {
+        // Get the height of the course info section and add some extra space
+        var courseTableHeight = $('#basketTable').height();
+        var attendanceHeight = Math.max(courseTableHeight, 400); // Minimum height of 400px
+        
+        // Initialize DataTable with dynamic height
+        if ($.fn.DataTable.isDataTable('#attendanceTable')) {
+            $('#attendanceTable').DataTable().destroy();
+        }
+        
+        $.fn.dataTable.moment('DD/MM/YYYY');
+        $('#attendanceTable').DataTable({
+            "scrollY": attendanceHeight + "px",
+            "scrollCollapse": true,
+            "lengthChange": false,
+            "searching": false,
+            "paging": false,
+            "info": false,
+            "ordering": false,
+            "order": [[ 2, "asc" ]],
+            "language": {
+                "emptyTable": "",
+                "zeroRecords": ""
+            },
+            "drawCallback": function(settings) {
+                $('#attendanceTable tbody tr:first-child').css('border-top', '1px solid #dee2e6');
+            }
+        });
+    }
 
+    // Initial adjustment
+    adjustAttendanceTableHeight();
 
-    var windowHeight = $(window).height();
-    var scrollHeight = windowHeight * 0.60; // Adjust the percentage as needed
+    // Adjust height when window is resized
+    $(window).on('resize', function() {
+        adjustAttendanceTableHeight();
+    });
 
-	$.fn.dataTable.moment('DD/MM/YYYY');
-	$('#attendanceTable').DataTable({
-		"scrollY": scrollHeight + "px",
-		"scrollCollapse": true,
-		"lengthChange": false,
-		"searching": false,
-		"paging": false,
-		"info": false,
-		"ordering": false,
-		"order": [[ 2, "asc" ]],
-		"language": {
-			"emptyTable": "",    // Removes the "No data available in table" message
-			"zeroRecords": ""    // Removes the "No matching records found" message
-		},
-		"drawCallback": function(settings) {
-        $('#attendanceTable tbody tr:first-child').css('border-top', '1px solid #dee2e6');
-    	}
-	});
-
+    // Adjust height when course table content changes
+    $('#basketTable').on('DOMSubtreeModified', function() {
+        setTimeout(adjustAttendanceTableHeight, 100); // Add slight delay to ensure content is updated
+    });
 });
 
 
