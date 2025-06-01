@@ -40,4 +40,7 @@ public interface PaymentService {
 	// get latest total amount for migrate
 	double totalAmountLatestPaymentByInvoiceIdAndInvoiceHistoryId(Long invoiceId, Long invoiceHistoryId);
 
+	// delete payment by id
+	void deletePayment(Long id);
+
 }

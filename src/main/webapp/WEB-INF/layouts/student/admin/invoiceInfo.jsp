@@ -758,6 +758,76 @@ function sendInvoiceEmail() {
         }        
     });            
 } 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Delete Invoice
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function deleteInvoice() {
+	var invoiceId = $('#hiddenInvoiceId').val();
+	
+	if (!invoiceId || invoiceId === '0') {
+		$('#warning-alert .modal-body').text('No invoice selected to delete');
+		$('#warning-alert').modal('toggle');
+		return;
+	}
+
+	// Show confirmation modal
+	$('#deleteInvoiceModal').modal('toggle');
+}
+
+function confirmDeleteInvoice() {
+	var invoiceId = $('#hiddenInvoiceId').val();
+	
+	// Send AJAX to server
+	$.ajax({
+		url: '${pageContext.request.contextPath}/invoice/delete/' + invoiceId,
+		type: 'DELETE',
+		success: function(response) {
+			// Close the confirmation modal
+			$('#deleteInvoiceModal').modal('toggle');
+			
+			// Clear the invoice table and basket
+			clearInvoiceTable();
+			clearEnrolmentBasket();
+			
+			// Get current student ID to reload their data
+			var studentId = $('#formId').val();
+			if (studentId) {
+				// Reload student's remaining invoice data and attendance
+				retrieveEnrolment(studentId);
+				retrieveAttendance(studentId);
+				
+				// Show success message
+				$('#success-alert .modal-body').text('Invoice deleted successfully. Previous invoice data loaded.');
+				$('#success-alert').modal('toggle');
+			} else {
+				// If no student ID, just show success and refresh
+				$('#success-alert .modal-body').text('Invoice deleted successfully');
+				$('#success-alert').modal('toggle');
+				setTimeout(function() {
+					location.reload();
+				}, 2000);
+			}
+		},
+		error: function(xhr, status, error) {
+			// Close the confirmation modal
+			$('#deleteInvoiceModal').modal('toggle');
+			
+			// Show error message
+			var errorMessage = 'Failed to delete invoice';
+			try {
+				var response = JSON.parse(xhr.responseText);
+				if (response.message) {
+					errorMessage = response.message;
+				}
+			} catch(e) {
+				console.error('Error parsing error response:', e);
+			}
+			$('#error-alert .modal-body').text(errorMessage);
+			$('#error-alert').modal('toggle');
+		}
+	});
+}
 </script>
 <style>
 	/* Adjust column sizes for the table */
@@ -792,9 +862,97 @@ function sendInvoiceEmail() {
 	.row_odd{ background-color: rgba(0,0,0,0.07); }
 	.row_even{ background-color: white; }
 
+	/* Enhanced Modal Styling */
+	#deleteInvoiceModal .modal-content {
+		border-radius: 12px;
+		overflow: hidden;
+	}
+
+	#deleteInvoiceModal .modal-header {
+		padding: 1.5rem 1.5rem 1rem 1.5rem;
+	}
+
+	#deleteInvoiceModal .close:hover {
+		opacity: 1 !important;
+		transform: scale(1.1);
+		transition: all 0.2s ease;
+	}
+
+	#deleteInvoiceModal .btn {
+		border-radius: 6px;
+		font-weight: 500;
+		transition: all 0.3s ease;
+	}
+
+	#deleteInvoiceModal .btn-danger:hover {
+		background-color: #c82333;
+		border-color: #bd2130;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+	}
+
+	#deleteInvoiceModal .btn-outline-secondary:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	#deleteInvoiceModal .alert {
+		border-radius: 8px;
+	}
+
+	#deleteInvoiceModal .modal-dialog {
+		max-width: 480px;
+	}
+
+	/* Animation for the warning icon */
+	#deleteInvoiceModal .bg-danger-light i {
+		animation: pulse 2s infinite;
+	}
+
+	@keyframes pulse {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.05);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	/* Bootstrap Icons margin fix for older Bootstrap versions */
+	#deleteInvoiceModal .me-1 {
+		margin-right: 0.25rem !important;
+	}
+
+	#deleteInvoiceModal .me-2 {
+		margin-right: 0.5rem !important;
+	}
+
+	#deleteInvoiceModal .me-3 {
+		margin-right: 1rem !important;
+	}
+
+	#deleteInvoiceModal .ms-2 {
+		margin-left: 0.5rem !important;
+	}
+
+	#deleteInvoiceModal .mb-0 {
+		margin-bottom: 0 !important;
+	}
+
+	#deleteInvoiceModal .mb-2 {
+		margin-bottom: 0.5rem !important;
+	}
+
+	#deleteInvoiceModal .mb-3 {
+		margin-bottom: 1rem !important;
+	}
+
 </style>
 <!-- Main Body -->
-<div class="modal-body" style="padding-left: 0rem; padding-right: 0rem;">
+<div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
 	<form id="">
 		<div class="form-group">
 			<div class="form-row">
@@ -820,6 +978,9 @@ function sendInvoiceEmail() {
 				</div>
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
+				</div>
+				<div class="col md-auto">
+					<button type="button" class="btn btn-block btn-danger btn-sm" onclick="deleteInvoice()">Delete</button>
 				</div>
 			</div>
 		</div>
@@ -976,6 +1137,48 @@ function sendInvoiceEmail() {
 					</div>
 				</form>	
 				</section>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Delete Invoice Confirmation Modal -->
+<div class="modal fade" id="deleteInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="deleteInvoiceModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content border-0 shadow-lg">
+			<div class="modal-header bg-danger text-white border-0">
+				<div class="d-flex align-items-center">
+					<i class="bi bi-exclamation-triangle-fill me-3" style="font-size: 1.5rem;"></i>
+					<h5 class="modal-title mb-0 font-weight-bold text-white" id="deleteInvoiceModalLabel">Confirm Invoice Deletion</h5>
+				</div>
+				<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.8;">
+					<span aria-hidden="true" style="font-size: 1.2rem;">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body py-4 px-4">
+				<div class="text-center mb-4">
+					<div class="bg-danger-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background-color: rgba(220, 53, 69, 0.1);">
+						<i class="bi bi-trash3-fill text-danger" style="font-size: 2.5rem;"></i>
+					</div>
+					<h6 class="font-weight-bold text-dark my-3">Are you sure you want to delete latest invoice?</h6>
+					<!-- <p class="text-muted mb-3">Are you sure you want to delete latest invoice?</p> -->
+				</div>
+				<div class="alert alert-warning border-0 bg-warning-light" style="background-color: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107;">
+					<div class="d-flex align-items-center">
+						<i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+						<small class="text-warning-dark mb-0">
+							<strong>Warning:</strong> This action cannot be undone.<br> All related records will be permanently deleted.
+						</small>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer border-0 pt-0 px-4 pb-4">
+				<button type="button" class="btn btn-danger px-4 py-2 ms-2" onclick="confirmDeleteInvoice()">
+					<i class="bi bi-trash3 me-1"></i>Delete
+				</button>
+				<button type="button" class="btn btn-secondary px-4 py-2" data-dismiss="modal">
+					<i class="bi bi-x-circle me-1"></i>Cancel
+				</button>
 			</div>
 		</div>
 	</div>

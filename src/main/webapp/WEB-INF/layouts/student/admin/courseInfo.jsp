@@ -717,7 +717,19 @@ function associateRegistration(){
 		.then(() => associatePayment(studentId))
 		.then(() => {
 			retrieveEnrolment(studentId);
-			retrieveAttendance(studentId);
+			// Add a longer delay and better function availability check
+			setTimeout(function() {
+				console.log('Checking if retrieveAttendance function is available...');
+				if (typeof window.retrieveAttendance === 'function') {
+					console.log('retrieveAttendance function found, calling for student:', studentId);
+					window.retrieveAttendance(studentId);
+				} else if (typeof retrieveAttendance === 'function') {
+					console.log('retrieveAttendance function found in global scope, calling for student:', studentId);
+					retrieveAttendance(studentId);
+				} else {
+					console.error('retrieveAttendance function not found!');
+				}
+			}, 1000); // Increased delay to 1 second
 			var rowCount = $('#basketTable tbody tr').length;
 		})
 		.catch(error => {
@@ -824,13 +836,28 @@ function retrieveEnrolment(studentId){
 	// call one by one : getEnrols -> updaateBalance
 	getEnrols(studentId)
 	.then(() => updateBalance())
+	.then(() => {
+		// After enrollment and balance are loaded, retrieve attendance
+		setTimeout(function() {
+			console.log('Retrieving attendance after enrollment data is loaded...');
+			if (typeof window.retrieveAttendance === 'function') {
+				console.log('Calling retrieveAttendance for student:', studentId);
+				window.retrieveAttendance(studentId);
+			} else if (typeof retrieveAttendance === 'function') {
+				console.log('Calling retrieveAttendance (global scope) for student:', studentId);
+				retrieveAttendance(studentId);
+			} else {
+				console.log('retrieveAttendance function not available yet');
+			}
+		}, 500);
+	})
 	.catch(error => {
 		console.error('Error:', error);
 	});
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// 	Update Invoice Table with lastest EnrolmentDTO
+//	Update Invoice Table with lastest EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateInvoiceTableWithTop(value, rowCount) {
 
@@ -1188,7 +1215,7 @@ function calculateAmount(row) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// 	Update Invoice Table with 2nd/3rd last EnrolmentDTO
+//	Update Invoice Table with 2nd/3rd last EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateInvoiceTableWithRest(value, rowCount){
 

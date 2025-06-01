@@ -15,6 +15,9 @@ public interface EnrolmentService {
 	// list enrolments by invoice Id
 	List<EnrolmentDTO> findEnrolmentByInvoice(Long invoiceId);
 
+	// list all enrolments by invoice Id
+	List<EnrolmentDTO> findAllEnrolmentByInvoiceId(Long invoiceId);
+
 	// list raw enrolments by invoice Id
 	List<Enrolment> getEnrolmentByInvoice(Long invoiceId);	
 
@@ -89,5 +92,10 @@ public interface EnrolmentService {
 
 	// return start/end week by invoice & clazz
 	List<Integer> findStartEndWeekByInvoiceNClazz(long invoiceId, long clazzId);
-	
+
+	// find Invoice Id by student Id
+	// List<Long> findInvoiceIdByStudent(Long studentId);
+
+	// delete enrolment by id
+	void deleteEnrolment(Long id);
 }

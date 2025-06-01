@@ -34,4 +34,8 @@ public interface InvoiceHistoryRepository extends JpaRepository<InvoiceHistory, 
 	@Query("SELECT i.amount FROM InvoiceHistory i WHERE i.id = ?1")
 	double getInvoiceHistoryTotalAmount(long id);
 
+	// get all invoice histories by invoice id
+	@Query("SELECT i FROM InvoiceHistory i WHERE i.invoice.id = ?1 ORDER BY i.id")
+	List<InvoiceHistory> findAllByInvoiceId(long invoiceId);
+
 }

@@ -447,18 +447,15 @@ public class EnrolmentController {
 					String clazzDay = clazzService.getDay(clazz.getId());
 					for(int i = startWeek; i <= endWeek; i++){
 						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-						// if attendDate is later than today, create attendance
-						LocalDate today = LocalDate.now();
-						if(attendDate.isAfter(today)){
-							Attendance attendance = new Attendance();
-							attendance.setWeek(i+"");
-							attendance.setStudent(student);
-							attendance.setClazz(clazz);
-							attendance.setDay(clazzDay);
-							attendance.setStatus(JaeConstants.ATTEND_OTHER);						
-							attendance.setAttendDate(attendDate);
-							attendanceService.addAttendance(attendance);
-						}
+						// Create attendance for all weeks regardless of date
+						Attendance attendance = new Attendance();
+						attendance.setWeek(i+"");
+						attendance.setStudent(student);
+						attendance.setClazz(clazz);
+						attendance.setDay(clazzDay);
+						attendance.setStatus(JaeConstants.ATTEND_OTHER);						
+						attendance.setAttendDate(attendDate);
+						attendanceService.addAttendance(attendance);
 					}
 					//////////////////////////////////////////////////////////
 				}

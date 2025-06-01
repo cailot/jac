@@ -64,4 +64,7 @@ public interface AttendanceService {
 	// find stduent Id by clazz Id
 	List<Long> findStudentIdByClazz(Long clazzId);
 
+	// delete attendance records by enrolment id
+	void deleteAttendanceByEnrolment(Long enrolmentId);
+
 }

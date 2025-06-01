@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -1069,6 +1070,21 @@ public class InvoiceController {
 			pay.setUpto(totalPaid);
 		}
 		session.setAttribute(JaeConstants.PAYMENT_PAYMENTS, payments);			
+	}
+
+	// Delete invoice and all related records
+	@DeleteMapping("/delete/{invoiceId}")
+	@ResponseBody
+	public ResponseEntity<String> deleteInvoice(@PathVariable("invoiceId") Long invoiceId) {
+		try {
+			invoiceService.deleteInvoice(invoiceId);
+			return ResponseEntity.ok()
+							   .body("{\"status\": \"success\", \"message\": \"Invoice and related records deleted successfully\"}");
+		} catch (Exception e) {
+			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							   .body("{\"status\": \"error\", \"message\": \"" + errorMessage.replace("\"", "'") + "\"}");
+		}
 	}
 	
 }

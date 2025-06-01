@@ -19,6 +19,9 @@ public interface InvoiceHistoryService {
 	// get last InvoiceHistory by Invoice
 	InvoiceHistory getLastInvoiceHistory(Long invoiceId);
 
+	// get all InvoiceHistories by Invoice
+	List<InvoiceHistory> getAllInvoiceHistoriesByInvoice(Long invoiceId);
+
 	// add InvoiceHistory
 	InvoiceHistory addInvoiceHistory(InvoiceHistory history);
 

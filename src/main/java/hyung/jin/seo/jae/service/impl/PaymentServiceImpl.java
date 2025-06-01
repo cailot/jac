@@ -151,4 +151,14 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		return total;
 	}
+
+	@Override
+	@Transactional
+	public void deletePayment(Long id) {
+		try {
+			paymentRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to delete payment: " + e.getMessage(), e);
+		}
+	}
 }
