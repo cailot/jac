@@ -952,7 +952,7 @@ function confirmDeleteInvoice() {
 
 </style>
 <!-- Main Body -->
-<div class="modal-body" style="padding-left: 0px; padding-right: 5px;">
+<div class="modal-body mr-5" style="padding-left: 0px; padding-right: 5px;">
 	<form id="">
 		<div class="form-group">
 			<div class="form-row">
