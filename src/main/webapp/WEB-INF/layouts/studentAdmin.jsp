@@ -29,8 +29,8 @@
 		</div>
       	<div class="row">
 			<!-- Invoice Info-->
-      		<div class="col-lg-12">
-      			<div class="card-body">
+      		<div class="col-lg-12" style="padding-left: 1px; padding-right: 1px;">
+      			<div class="card-body" style="padding-left: 1px; padding-right: 1px;">
 					<jsp:include page="student/admin/invoiceInfo.jsp"></jsp:include>
       			</div>
       		</div>
