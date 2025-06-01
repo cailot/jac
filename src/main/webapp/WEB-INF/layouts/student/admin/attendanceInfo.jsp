@@ -12,7 +12,7 @@ $(document).ready(function() {
 
 
     var windowHeight = $(window).height();
-    var scrollHeight = windowHeight * 0.35; // Adjust the percentage as needed
+    var scrollHeight = windowHeight * 0.60; // Adjust the percentage as needed
 
 	$.fn.dataTable.moment('DD/MM/YYYY');
 	$('#attendanceTable').DataTable({
