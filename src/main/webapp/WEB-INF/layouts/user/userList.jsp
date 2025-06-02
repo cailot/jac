@@ -39,18 +39,34 @@ $(document).ready(function () {
 
 
 	$('#addRole').change(function() {
+		// Only Administrators can set Administrator role and manage all branches
 		if ($(this).val() == 'Role_Administrator') {
 			$('#addBranch').val('90').prop('disabled', true);
 		} else {
-			$('#addBranch').prop('disabled', false);
+			// For Director and Staff roles, branch selection depends on user permissions
+			var isAdmin = JSON.parse(window.isAdmin);
+			if (!isAdmin) {
+				// Non-admin users (Director/Staff) are restricted to their branch
+				$('#addBranch').prop('disabled', true);
+			} else {
+				$('#addBranch').prop('disabled', false);
+			}
 		}
     });
 
 	$('#editRole').change(function() {
+		// Only Administrators can set Administrator role and manage all branches  
 		if ($(this).val() == 'Role_Administrator') {
 			$('#editBranch').val('90').prop('disabled', true);
 		} else {
-			$('#editBranch').prop('disabled', false);
+			// For Director and Staff roles, branch selection depends on user permissions
+			var isAdmin = JSON.parse(window.isAdmin);
+			if (!isAdmin) {
+				// Non-admin users (Director/Staff) are restricted to their branch
+				$('#editBranch').prop('disabled', true);
+			} else {
+				$('#editBranch').prop('disabled', false);
+			}
 		}
     });
 
@@ -68,23 +84,36 @@ $(document).ready(function () {
 	listBranch('#addBranch');
 	listBranch('#editBranch');
 
-	// only for Staff
+	// Handle permissions for non-admin users (Staff and Director)
 	if(!JSON.parse(window.isAdmin)){
-		// avoid execute several times
-		//var hiddenInput = false;
+		// Check if user is Director - window.isDirector is already set by backend
+		var isDirector = JSON.parse(window.isDirector);
+		
 		$(document).ajaxComplete(function(event, xhr, settings) {
 			// Check if the request URL matches the one in listBranch
 			if (settings.url === '/code/branch') {
 				$("#listBranch").val(window.branch);
 				$("#addBranch").val(window.branch);
-				$("#listRole").val('Role_Staff');
 				
-				// Disable #listBranch and #addBranch
+				if (!isDirector) {
+					// Staff users - most restrictive
+					$("#listRole").val('Role_Staff');
+					$("#listRole").prop('disabled', true);
+					$("#addRole").prop('disabled', true);
+				} else {
+					// Director users - can select Director or Staff roles
+					// Remove Administrator option from search dropdown for Directors
+					$("#listRole option[value='Role_Administrator']").remove();
+					// Remove Administrator option from add dropdown for Directors  
+					$("#addRole option[value='Role_Administrator']").remove();
+					// Set default to Director role for search
+					$("#listRole").val('Role_Director');
+				}
+				
+				// Disable branch selection for all non-admin users
 				$("#listBranch").prop('disabled', true);
 				$("#addBranch").prop('disabled', true);
 				$("#editBranch").prop('disabled', true);
-				$("#listRole").prop('disabled', true);
-				$("#addRole").prop('disabled', true);
 			}
 		});
 	}
@@ -93,7 +122,12 @@ $(document).ready(function () {
 	document.getElementById("userList").addEventListener("submit", function() {
         document.getElementById("listState").disabled = false;
 		document.getElementById("listBranch").disabled = false;
-		document.getElementById("listRole").disabled = false;
+		// Only re-enable listRole if user is not Staff (i.e., if they are Director or Admin)
+		var isDirector = JSON.parse(window.isDirector);
+		var isAdmin = JSON.parse(window.isAdmin);
+		if (isAdmin || isDirector) {
+			document.getElementById("listRole").disabled = false;
+		}
     });
 });
 
