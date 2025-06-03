@@ -129,7 +129,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	public Long getInvoiceIdByStudentId(Long studentId) {
 		Long id = null;
 		try{
-			id = invoiceRepository.findLatestInvoiceIdByStudentId(studentId);
+			id = invoiceRepository.findLatestInvoiceIdByStudentIdPattern(studentId);
 		}catch(Exception e){
 			System.out.println("No invoice found");
 		}
@@ -150,7 +150,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 	@Override
 	public Invoice getLastActiveInvoiceByStudentId(Long studentId) {
-		return invoiceRepository.findLastInvoiceByStudentId(studentId);
+		Invoice invoice = null;
+		try{
+			invoice = invoiceRepository.findLatestInvoiceByStudentIdPattern(studentId);
+		}catch(Exception e){
+			System.out.println("No invoice found");
+		}
+		//return invoiceRepository.findLastInvoiceByStudentId(studentId);
+		return invoice;
 	}
 
 	@Override

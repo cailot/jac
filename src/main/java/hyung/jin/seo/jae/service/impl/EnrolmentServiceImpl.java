@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.repository.EnrolmentRepository;
+import hyung.jin.seo.jae.repository.InvoiceRepository;
 import hyung.jin.seo.jae.service.EnrolmentService;
 
 @Service
@@ -21,6 +22,9 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 
 	@Autowired
 	private EnrolmentRepository enrolmentRepository;
+
+	@Autowired
+	private InvoiceRepository invoiceRepository;
 
 	@Override
 	public List<EnrolmentDTO> allEnrolments() {
@@ -249,7 +253,8 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	public Long findLatestInvoiceIdByStudent(Long studentId) {
 		Long invoiceId = 0L;
 		try {
-			invoiceId = enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+			// invoiceId = enrolmentRepository.findLatestInvoiceIdByStudentId(studentId);
+			invoiceId = invoiceRepository.findLatestInvoiceIdByStudentIdPattern(studentId);
 		} catch (Exception e) {
 			System.out.println("No invoice found");
 		}
@@ -260,7 +265,8 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	public Long find2ndLatestInvoiceIdByStudent(Long studentId) {
 		Long invoiceId = 0L;
 		try {
-			invoiceId = enrolmentRepository.findSecondLatestInvoiceIdByStudentId(studentId);
+			// invoiceId = enrolmentRepository.findSecondLatestInvoiceIdByStudentId(studentId);
+			invoiceId = invoiceRepository.findSecondLatestInvoiceIdByStudentIdPattern(studentId);
 		} catch (Exception e) {
 			System.out.println("No invoice found");
 		}
@@ -271,7 +277,8 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	public Long find3rdLatestInvoiceIdByStudent(Long studentId) {
 		Long invoiceId = 0L;
 		try {
-			invoiceId = enrolmentRepository.findThirdLatestInvoiceIdByStudentId(studentId);
+			// invoiceId = enrolmentRepository.findThirdLatestInvoiceIdByStudentId(studentId);
+			invoiceId = invoiceRepository.findThirdLatestInvoiceIdByStudentIdPattern(studentId);
 		} catch (Exception e) {
 			System.out.println("No invoice found");
 		}
@@ -304,7 +311,8 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	public List<Long> findInvoiceIdByStudent(Long studentId) {
 		List<Long> invoiceIds = new ArrayList<>();
 		try {
-			invoiceIds = enrolmentRepository.findInvoiceIdByStudentId(studentId);
+			// invoiceIds = enrolmentRepository.findInvoiceIdByStudentId(studentId);
+			invoiceIds = invoiceRepository.findInvoiceIdsByStudentIdPattern(studentId);
 		} catch (Exception e) {
 			System.out.println("No invoice found");
 		}

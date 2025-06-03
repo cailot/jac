@@ -84,7 +84,7 @@ public class EnrolmentController {
 
 	@GetMapping("/search/student/{studentId}")
 	@ResponseBody
-	public List searchEnrolmentByStudent1(@PathVariable Long studentId) {
+	public List searchEnrolmentByStudent(@PathVariable Long studentId) {
 		List dtos = new ArrayList();
 		// get 3 lastest invoice id
  		Long firstId = enrolmentService.findLatestInvoiceIdByStudent(studentId);
@@ -92,18 +92,19 @@ public class EnrolmentController {
 		Long thirdId = enrolmentService.find3rdLatestInvoiceIdByStudent(studentId);
 
 		// add 3 enrolments
-		if(firstId!=null) dtos.add(fetchEnrolment(studentId, firstId));
-		if(secondId!=null) dtos.add(fetchEnrolment(studentId, secondId));
-		if(thirdId!=null) dtos.add(fetchEnrolment(studentId, thirdId));
+		if(firstId!=null) dtos.add(fetchInvoice(studentId, firstId));
+		if(secondId!=null) dtos.add(fetchInvoice(studentId, secondId));
+		if(thirdId!=null) dtos.add(fetchInvoice(studentId, thirdId));
 
 		// return dtos mixed by enrolments
+		// System.out.println(dtos);
 		return dtos;
 	}
 
 
 
 	// fetch enrolment by student id and invoice id
-	private List fetchEnrolment(Long studentId, Long invoiceId) {
+	private List fetchInvoice(Long studentId, Long invoiceId) {
 		List dtos = new ArrayList(); 
 		
 		boolean isInvoiceAbsent = ((invoiceId==null) || (invoiceId==0L));
