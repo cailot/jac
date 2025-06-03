@@ -798,7 +798,7 @@ function confirmDeleteInvoice() {
 				retrieveAttendance(studentId);
 				
 				// Show success message
-				$('#success-alert .modal-body').text('Invoice deleted successfully. Previous invoice data loaded.');
+				$('#success-alert .modal-body').text('Invoice deleted successfully');
 				$('#success-alert').modal('toggle');
 			} else {
 				// If no student ID, just show success and refresh
