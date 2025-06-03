@@ -158,6 +158,7 @@ public class InvoiceController {
 
 		// 3. get invoice id by student id
 		List<Long> invoiceIds = enrolmentService.findInvoiceIdByStudent(stdId);
+		// List<Long> invoiceIds = enrolmentService.
 		if(invoiceIds.size() == 0) return "studentInvoicePage";
 
 		// 4. get InvoiceDTOs and save it into session

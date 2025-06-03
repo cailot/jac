@@ -58,4 +58,24 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 		@Param("info") String info
 	);
 
+	// get top (latest) invoice by student ID based on invoice ID pattern
+	@Query(value = "SELECT * FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC LIMIT 1", nativeQuery = true)
+	Invoice findLatestInvoiceByStudentIdPattern(@Param("studentId") Long studentId);
+
+	// get List<Invoice Id> by student ID based on invoice ID pattern
+	@Query(value = "SELECT id FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC", nativeQuery = true)
+	List<Long> findInvoiceIdsByStudentIdPattern(@Param("studentId") Long studentId);
+
+	// get top (latest) invoice ID by student ID based on invoice ID pattern
+	@Query(value = "SELECT id FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC LIMIT 1", nativeQuery = true)
+	Long findLatestInvoiceIdByStudentIdPattern(@Param("studentId") Long studentId);
+
+	// get second top (latest) invoice ID by student ID based on invoice ID pattern
+	@Query(value = "SELECT id FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC LIMIT 1 OFFSET 1", nativeQuery = true)
+	Long findSecondLatestInvoiceIdByStudentIdPattern(@Param("studentId") Long studentId);
+
+	// get third top (latest) invoice ID by student ID based on invoice ID pattern
+	@Query(value = "SELECT id FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC LIMIT 1 OFFSET 2", nativeQuery = true)
+	Long findThirdLatestInvoiceIdByStudentIdPattern(@Param("studentId") Long studentId);
+
 }
