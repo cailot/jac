@@ -502,16 +502,52 @@ function addBookToBasket(value, index){
     row.append($('<td style="width: 8%;">')); // price
     
     if (value.name === 'Extra') {
-        row.append($('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0.00').on('input', function() {
-            var amount = parseFloat($(this).text()) || 0;
-            $(this).text(amount.toFixed(2));
-            updateTotalBasket();
+        var cell = $('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0');
+        
+        cell.on('keydown', function(event) {
+            // Allow backspace and delete
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                return true;
+            }
         }).on('keypress', function(event) {
-            if (event.which === 13) { // Enter key
+            var charCode = (event.which) ? event.which : event.keyCode;
+            
+            // Handle Enter key
+            if (charCode === 13) {
                 event.preventDefault();
                 $(this).blur();
+                return false;
             }
-        }));
+            
+            // Only allow numbers and decimal point
+            if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Prevent multiple decimal points
+            if (charCode === 46 && $(this).text().indexOf('.') !== -1) {
+                event.preventDefault();
+                return false;
+            }
+        }).on('input', function() {
+            var value = $(this).text().trim();
+            // Allow empty or valid number
+            if (value === '' || (!isNaN(value) && value.match(/^\d*\.?\d*$/))) {
+                updateTotalBasket();
+            } else {
+                $(this).text('0');
+                updateTotalBasket();
+            }
+        }).on('blur', function() {
+            var value = $(this).text().trim();
+            if (value === '' || isNaN(value)) {
+                $(this).text('0');
+            }
+            updateTotalBasket();
+        });
+        
+        row.append(cell);
     } else {
         row.append($('<td class="smaller-table-font text-center price amount">').text(Number(value.price).toFixed(2)));
     }
@@ -1332,25 +1368,79 @@ function removeAllInBasket(){
 
 // Add this function to handle Extra amount editing
 function handleExtraAmount(cell) {
-    cell.on('input', function() {
-        var amount = parseFloat($(this).text()) || 0;
-        $(this).text(amount.toFixed(2));
+    cell.on('input', function(e) {
+        // Get cursor position before updating
+        var cursorPos = getCaretPosition(this);
+        
+        // Get the raw input value
+        var rawValue = $(this).text();
+        
+        // Remove any non-numeric characters except decimal point
+        var numericValue = rawValue.replace(/[^\d.]/g, '');
+        
+        // Ensure only one decimal point
+        var parts = numericValue.split('.');
+        if (parts.length > 2) {
+            numericValue = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        // Parse the value and format to 2 decimal places
+        var amount = parseFloat(numericValue) || 0;
+        var formattedValue = amount.toFixed(2);
+        
+        // Only update if the value has changed
+        if ($(this).text() !== formattedValue) {
+            $(this).text(formattedValue);
+            // Restore cursor position
+            setCaretPosition(this, cursorPos);
+        }
+        
         updateTotalBasket();
     }).on('keypress', function(event) {
-        if (event.which === 13) { // Enter key
+        // Allow only numbers, decimal point, and control keys
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode === 13) { // Enter key
             event.preventDefault();
             $(this).blur();
+            return false;
+        }
+        if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault();
+            return false;
         }
     });
 }
 
-// // Update the row creation for Extra
-// if (value.name === 'Extra') {
-//     row.append($('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0.00'));
-//     handleExtraAmount(row.find('.amount'));
-// } else {
-//     row.append($('<td class="smaller-table-font text-center amount">').text(Number(value.price).toFixed(2)));
-// }
+// Helper function to get caret position
+function getCaretPosition(element) {
+    var caretPos = 0;
+    if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount) {
+            var range = selection.getRangeAt(0);
+            var preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            caretPos = preCaretRange.toString().length;
+        }
+    }
+    return caretPos;
+}
+
+// Helper function to set caret position
+function setCaretPosition(element, pos) {
+    var range = document.createRange();
+    var selection = window.getSelection();
+    var textNode = element.firstChild;
+    
+    if (textNode) {
+        pos = Math.min(pos, textNode.length);
+        range.setStart(textNode, pos);
+        range.setEnd(textNode, pos);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
 </script>
 
 	<style>
