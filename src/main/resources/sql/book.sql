@@ -114,5 +114,9 @@ INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUE
 INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (114,'0','Voucher',-50.00,'2025-05-15',1);
 INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (115,'11','[V6] TT6',33.00,'2025-05-20',1);
 INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (116,'11','[V6] TT6 & FT6',66.00,'2025-05-20',1);
+INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (117,'12','VSSE',200.00,'2024-07-01',1);
+INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (118,'12','NJAC',250.00,'2024-07-01',1);
+INSERT INTO jac.Book (`id`,`grade`,`name`,`price`,`registerDate`,`active`) VALUES (119,'0','Extra',0.00,'2024-07-01',1);
+
 
 COMMIT;

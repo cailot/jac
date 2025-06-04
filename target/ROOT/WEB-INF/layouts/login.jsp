@@ -280,7 +280,7 @@ function resetPassword(){
                     <img src="${pageContext.request.contextPath}/image/logo.png" alt="James An College Logo" style="max-width: 200px;">
                 </div>
                 <h4 class="text-center mb-3">Thanks for attending Demo<br> on Monday 26th May 2025</h4>
-                <p class="text-center">System will be officially launched on 16th June 2025.</p>
+                <p class="text-center">System will be officially launched on <u><strong><span class="text-primary">25th August 2025</span></strong></u></p>
                 <p class="text-center">Please feel free to use this system for testing purposes.</p>
 				<!-- <p class="text-center">Please be aware that we are trying to apply the changes to the system as we go along, so this system is still under development and may not be the same as what you see in the demo.</p>		 -->
                 <div class="alert alert-info text-center">

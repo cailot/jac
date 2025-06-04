@@ -47,10 +47,17 @@ $(document).ready(function () {
 				}
 				return total;
 			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer with comma formatting
-			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>');
+			// Total over all pages - only show for Admin & Director
+			if(JSON.parse(window.isAdmin) || JSON.parse(window.isDirector)) {
+				var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
+				// Update footer with comma formatting
+				$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>');
+				// Show the footer
+				$(api.table().footer()).show();
+			}else{
+				// Hide the entire footer for staff
+				$(api.table().footer()).hide();
+			}
 		}
 
 

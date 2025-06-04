@@ -223,12 +223,17 @@ public class EnrolmentController {
 
 		// 3. register Books
 		for(MaterialDTO material : formData){
+			boolean isExtra = false;
 			// 3-1. get book
 			Book book = bookService.getBook(Long.parseLong(material.getBookId()));
+			if(StringUtils.endsWithIgnoreCase(JaeConstants.EXTRA, book.getName())) isExtra = true;
+			double price = isExtra ? material.getPrice() : book.getPrice();
+
 			// 3-2. update invoice amount
-			existingInvo.setAmount(existingInvo.getAmount() + book.getPrice());
+			existingInvo.setAmount(existingInvo.getAmount() + price);
 			// 3-3. create Material
 			Material newMaterial = new Material();
+			if(isExtra) newMaterial.setExtra(price);
 			newMaterial.setBook(book);
 			newMaterial.setInvoice(existingInvo);
 			newMaterial.setInvoiceHistory(existingInvoHistory);
