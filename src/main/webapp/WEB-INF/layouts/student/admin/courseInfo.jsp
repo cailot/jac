@@ -482,38 +482,52 @@ $.ajax({
 //      Add book to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBookToBasket(value, index){
-	// console.log(value);
-	// console.log(index);
-	// if book is already in basket, skip
-	if(isSameRowExisting(BOOK, value.id)){
-		showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
-		return;
-	}
-	var row = $('<tr class="d-flex">');
-	row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
-	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
-	row.append($('<td class="smaller-table-font name" style="width: 36%;">').text(value.name)); // name
-	row.append($('<td style="width: 7%;">'));
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 4%;">'));
-	row.append($('<td style="width: 7%;">'));
-	row.append($('<td style="width: 8%;">')); // price
-	// row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
-	row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(Number(value.price).toFixed(2)));
-	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
-	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
-	row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
-	row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
-		
-	$('#basketTable > tbody').append(row);
+    // console.log(value);
+    // console.log(index);
+    // if book is already in basket, skip
+    if(isSameRowExisting(BOOK, value.id)){
+        showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
+        return;
+    }
+    var row = $('<tr class="d-flex">');
+    row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
+    row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
+    row.append($('<td class="smaller-table-font name" style="width: 43%;">').text(value.name)); // name - increased width from 36% to 43%
+    // Skip one column since we're extending the name column
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 4%;">'));
+    row.append($('<td style="width: 7%;">'));
+    row.append($('<td style="width: 8%;">')); // price
+    
+    if (value.name === 'Extra') {
+        row.append($('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0.00').on('input', function() {
+            var amount = parseFloat($(this).text()) || 0;
+            $(this).text(amount.toFixed(2));
+            updateTotalBasket();
+        }).on('keypress', function(event) {
+            if (event.which === 13) { // Enter key
+                event.preventDefault();
+                $(this).blur();
+            }
+        }));
+    } else {
+        row.append($('<td class="smaller-table-font text-center price amount">').text(Number(value.price).toFixed(2)));
+    }
+    
+    row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
+    row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
+    row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
+    row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
+        
+    $('#basketTable > tbody').append(row);
 
-	// update total	
-	updateTotalBasket();
-	
-	// Automatically dismiss the alert after 2 seconds
-	showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
+    // update total    
+    updateTotalBasket();
+    
+    // Automatically dismiss the alert after 2 seconds
+    showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
 }
 	
 	
@@ -532,13 +546,11 @@ function associateRegistration(){
 		return; 
 	}
 
-	// var elearnings = [];
 	var enrolData = [];
 	var bookData = [];
 
 	$('#basketTable tbody tr').each(function() {
 		// in case of update, enrolId is not null
-		//debugger;
 		var clazzId = null;
 		var bookId = null;
 		var hiddens = $(this).find('.data-type').text();
@@ -548,13 +560,15 @@ function associateRegistration(){
 				bookId = hiddenValues[1];
 				var materialId = $(this).find('.materialId').text();
 				var invoiceId = $(this).find('.invoiceId').text();
+				var name = $(this).find('.name').text();
+				var amount = name === 'Extra' ? parseFloat($(this).find('.amount').text()) || 0 : parseFloat($(this).find('.price').text()) || 0;
 				var book = {
 					"id" : materialId,
 					"invoiceId" : invoiceId,
-					"bookId" : bookId
+					"bookId" : bookId,
+					"price" : amount
 				};
 				bookData.push(book);
-				//return true;
 			}else if(hiddenValues[0] === CLASS){
 				clazzId = hiddenValues[1];
 				enrolData.id = $(this).find('.enrolId').text();
@@ -616,31 +630,6 @@ function associateRegistration(){
 					clearInvoiceTable();
 					// clear enrolment table
 					clearEnrolmentBasket();
-					// if(response.length > 0){
-					// 	// $.each(response, function(index, value){
-					// 	// 	// if extra is NEW, it requires updating enrolment id in basket table
-					// 	// 	if(value.extra != null && value.extra === NEW){
-					// 	// 		$('#basketTable > tbody > tr').each(function() {
-					// 	// 			var hiddens = $(this).find('.data-type').text();
-					// 	// 			if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
-					// 	// 				var hiddenValues = hiddens.split('|');
-					// 	// 				if(hiddenValues[1] === value.clazzId){
-					// 	// 					$(this).find('.enrolId').text(value.id);
-					// 	// 					$(this).find('.invoiceId').text(value.invoiceId);
-					// 	// 					$(this).find('.clazzChoice').prop('disabled', true);        
-					// 	// 				}
-					// 	// 			}
-					// 	// 		});
-					// 	// 	}
-					// 	// 	// let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-					// 	// 	// if(!isFreeOnline){
-					// 	// 	// 	// addEnrolmentToInvoiceList(value, 0);
-					// 	// 	// }
-					// 	// });
-					// } else {
-					// 	// clearEnrolmentBasket();
-					// 	updateLatestInvoiceId(enrolData.invoiceId);
-					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -659,24 +648,6 @@ function associateRegistration(){
 				data: JSON.stringify(bookData),
 				contentType: 'application/json',
 				success: function(response) {
-					// removeBookFromInvoiceList();
-					// if(response.length > 0){
-					// 	// $.each(response, function(index, value){
-					// 	// 	$('#basketTable > tbody > tr').each(function() {
-					// 	// 		var hiddens = $(this).find('.data-type').text();
-					// 	// 		if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
-					// 	// 			var hiddenValues = hiddens.split('|');
-					// 	// 			if(hiddenValues[1] === value.bookId){
-					// 	// 				$(this).find('.materialId').text(value.id);
-					// 	// 				$(this).find('.invoiceId').text(value.invoiceId);
-					// 	// 			}
-					// 	// 		}
-					// 	// 	});
-					// 	// 	// addBookToInvoiceList(value, 0);
-					// 	// });
-					// } else {
-					// 	updateLatestInvoiceId(bookData.invoiceId);
-					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -694,13 +665,6 @@ function associateRegistration(){
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
-					// console.log(response);
-					// removePaymentFromInvoiceList();
-					// if(response.length > 0){
-					// 	$.each(response, function(index, value){
-					// 		addPaymentToInvoiceList(value, 0);
-					// 	});
-					// }
 					resolve();
 				},
 				error: function(xhr, status, error) {
@@ -891,8 +855,8 @@ function updateInvoiceTableWithTop(value, rowCount) {
 		} else {
 			row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
 		}
-		row.append($('<td class="smaller-table-font" style="width: 36%;">').text(value.name)); // name
-		row.append($('<td style="width: 7%;">'));
+		row.append($('<td class="smaller-table-font" style="width: 43%;">').text(value.name)); // name - increased width from 36% to 43%
+		// Skip one column since we're extending the name column  
 		row.append($('<td style="width: 6%;">'));
 		row.append($('<td style="width: 6%;">'));
 		row.append($('<td style="width: 6%;">'));
@@ -1365,6 +1329,28 @@ function removeAllInBasket(){
 		}
 	});
 }
+
+// Add this function to handle Extra amount editing
+function handleExtraAmount(cell) {
+    cell.on('input', function() {
+        var amount = parseFloat($(this).text()) || 0;
+        $(this).text(amount.toFixed(2));
+        updateTotalBasket();
+    }).on('keypress', function(event) {
+        if (event.which === 13) { // Enter key
+            event.preventDefault();
+            $(this).blur();
+        }
+    });
+}
+
+// // Update the row creation for Extra
+// if (value.name === 'Extra') {
+//     row.append($('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0.00'));
+//     handleExtraAmount(row.find('.amount'));
+// } else {
+//     row.append($('<td class="smaller-table-font text-center amount">').text(Number(value.price).toFixed(2)));
+// }
 </script>
 
 	<style>

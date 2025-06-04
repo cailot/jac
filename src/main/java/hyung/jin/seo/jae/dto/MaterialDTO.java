@@ -19,6 +19,9 @@ public class MaterialDTO extends MoneyDTO{
 
 	private double price;
 
+	// inherited from MoneyDTO
+	// private String extra;
+
 	private String paymentDate;
 
 	private String bookId;
@@ -45,12 +48,12 @@ public class MaterialDTO extends MoneyDTO{
 		if(StringUtils.isNotBlank(id)) material.setId(Long.parseLong(id));
     	if(StringUtils.isNotBlank(registerDate)) material.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		if(StringUtils.isNotBlank(paymentDate)) material.setRegisterDate(LocalDate.parse(paymentDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
-		// if(StringUtils.isNotBlank(amount)) material.setAmount(Double.parseDouble(amount));
+		if(StringUtils.isNotBlank(extra)) material.setExtra(Double.parseDouble(extra));
 		if(StringUtils.isNotBlank(info)) material.setInfo(info);		
     	return material;
     }
 
-	public MaterialDTO(long id, LocalDate registerDate, LocalDate paymentDate, String info, long bookId, String name, double price, long invoiceId, long invoiceHistoryId){
+	public MaterialDTO(long id, LocalDate registerDate, LocalDate paymentDate, String info, long bookId, String name, double price, long invoiceId, long invoiceHistoryId, double extra){
 		this.id = String.valueOf(id);
 		this.registerDate = registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.paymentDate = (paymentDate!=null) ? paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
@@ -60,6 +63,7 @@ public class MaterialDTO extends MoneyDTO{
 		this.price = price;
 		this.invoiceId = String.valueOf(invoiceId);
 		this.invoiceHistoryId = String.valueOf(invoiceHistoryId);
+		this.extra = String.valueOf(extra);
 	}
 	
 }

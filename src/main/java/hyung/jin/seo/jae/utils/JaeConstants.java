@@ -138,6 +138,8 @@ public interface JaeConstants {
 
 	String VSSE = "VSSE";
 
+	String EXTRA = "Extra";
+
 	String ACADEMIC_CYCLES = "academicCycles";
 
 	int ACADEMIC_START_COMMING_WEEKS = 29;
@@ -157,6 +159,7 @@ public interface JaeConstants {
 	String RESULTS = "results";
 
 	String METADATA = "meta";
+
 	///////////////////////////////////////////////////////////////////////
 	//
 	//	PAYMENT METHOD LIST

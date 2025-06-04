@@ -141,7 +141,15 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 							<option value="0">All</option>
 						</select>
 					</div>
-					<div class="offset-md-7"></div>
+					<div class="col-md-1">
+						<label for="type" class="label-form">Type</label> 
+						<select class="form-control" id="type" name="type">
+							<option value="all">All</option>
+							<option value="unpaid">Unpaid</option>
+							<option value="os">OS</option>
+						</select>
+					</div>
+					<div class="offset-md-6"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
 						<button type="submit" class="btn btn-primary btn-block"> <i class="bi bi-search"></i>&nbsp;Search</button>
@@ -163,6 +171,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 										<th class="align-middle text-center">Start</th>
 										<th class="align-middle text-center">End</th>
 										<th class="align-middle text-center">Overdue</th>
+										<th class="align-middle text-center">Type</th>
 										<th class="align-middle text-center">Email</th>
 										<th class="align-middle text-center">Phone</th>
 										<th class="align-middle text-center" data-orderable="false">Action</th>
@@ -224,6 +233,20 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, paymentId){
 													<span>
 														<fmt:formatNumber value="${student.contactNo2}" type="number" minFractionDigits="2" maxFractionDigits="2" />
 													</span>
+												</td>
+												<!-- payment status -->
+												<td class="small align-middle text-center">
+<c:choose>
+	<c:when test="${student.memo == 'Unpaid'}">
+		<span class="text-danger">
+	</c:when>
+	<c:otherwise>
+		<span class="text-primary">
+	</c:otherwise>
+</c:choose>
+													<span>
+														<c:out value="${student.memo}" />
+													</span>	
 												</td>
 												<!-- email -->
 												<td class="small align-middle text-left ml-1">

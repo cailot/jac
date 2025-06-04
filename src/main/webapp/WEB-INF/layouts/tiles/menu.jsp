@@ -238,8 +238,9 @@
 					</a>
 				</li>
 			</c:otherwise>
-		</c:choose>		
+		</c:choose>	
 	</ul>
+	
 	<ul class="navbar_icon" style="margin: 0; padding: 0;">
 		<sec:authorize access="isAuthenticated()">
 		<div class="card-body jae-background-color text-right" style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px;">
@@ -264,6 +265,7 @@
 		</div>
 		</sec:authorize> 
 	</ul>
+
 </nav>
 </div>
  

@@ -979,9 +979,16 @@ function confirmDeleteInvoice() {
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
 				</div>
-				<div class="col md-auto">
+
+					<script>
+						// Only show delete button for Admin/Director
+						if(JSON.parse(window.isAdmin) || JSON.parse(window.isDirector)) {
+							document.write('<div class="col md-auto"><button type="button" class="btn btn-block btn-danger btn-sm" onclick="deleteInvoice()">Delete</button></div>');
+						}
+					</script>
+				<!-- <div class="col md-auto">
 					<button type="button" class="btn btn-block btn-danger btn-sm" onclick="deleteInvoice()">Delete</button>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<div class="form-group">

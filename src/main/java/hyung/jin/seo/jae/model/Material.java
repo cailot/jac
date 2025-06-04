@@ -59,4 +59,7 @@ public class Material{ // bridge table between Invoice & Book
 	@Column
 	private boolean old;
 
+	@Column
+	private double extra;
+
 }
