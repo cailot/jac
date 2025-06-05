@@ -1059,8 +1059,19 @@ public class InvoiceController {
 		session.setAttribute(JaeConstants.PAYMENT_ENROLMENTS, enrolments);
 
 		// 6. bring MaterialDTO
+		// List<MaterialDTO> books = new ArrayList<>();
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoice.getId());
+		// for(MaterialDTO material : materials){
+		// 	// check if Extra, then override price
+		// 	System.out.println("material --> " + material);
+		// 	books.add(material);
+		// }
+
+
+
 		session.setAttribute(JaeConstants.PAYMENT_MATERIALS, materials);
+		
+		// session.setAttribute(JaeConstants.PAYMENT_MATERIALS, books);
 		
 		// 7. bring PaymentDTO
 		List<PaymentDTO> payments = paymentService.getPaymentByInvoice(invoice.getId());

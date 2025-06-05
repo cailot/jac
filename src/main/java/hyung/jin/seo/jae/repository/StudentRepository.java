@@ -150,7 +150,8 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "AND (?1 = '0' OR s.branch = ?1) " +
         "AND (?2 = '0' OR s.grade = ?2) " +
         "AND (cycle.year = ?3 AND e.endWeek >= ?4)" +
-        "AND (cycle.year = ?5 AND e.endWeek <= ?6)") 
+        "AND (cycle.year = ?5 AND e.endWeek <= ?6)" +
+        "AND e.endWeek = (SELECT MAX(en.endWeek) FROM Enrolment en WHERE en.student.id = s.id)") 
         List<StudentDTO> listRenewStudent(String branch, String grade, int fromYear, int fromWeek, int toYear, int toWeek);
 
         // retrieve student login activity by state, branch & grade called from studyList.jsp

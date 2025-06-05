@@ -86,19 +86,14 @@ $(document).ready(function() {
 function retrieveAttendance(studentId) {
 	// clear the attendance list
 	clearAttendanceTable();
-	console.log('Retrieving attendance for student:', studentId);
 	
 	// get the attendance list
 	$.ajax({
 			url: '${pageContext.request.contextPath}/attendance/list/student/' + studentId,
 			method: 'GET',
 			success: function(response) {
-				console.log('Attendance response received:', response);
-				
 				// Handle the response
 				$.each(response, function(index, value){
-					console.log('Processing attendance record:', value);
-					
 					try {
 						var id = value.id;  
 						var row = $("<tr>");
@@ -151,7 +146,6 @@ function retrieveAttendance(studentId) {
 						row.append($('<td class="small text-center status-select" style="width: 15%;">').html(status));
 				
 						$('#attendanceTable > tbody').append(row);
-						console.log('Successfully added attendance row for ID:', id);
 					} catch (e) {
 						console.error('Error processing attendance record:', e, value);
 					}
@@ -161,9 +155,6 @@ function retrieveAttendance(studentId) {
 				$('#attendanceTable').show();
 				$('#attendanceTable tbody').show();
 				$('#attendanceTable tbody tr').show();
-				
-				console.log('Finished processing all attendance records. Total rows added:', response.length);
-				console.log('Visible rows in table:', $('#attendanceTable tbody tr:visible').length);
 			},
 			error: function(xhr, status, error) {
 				// Handle the error
@@ -178,14 +169,11 @@ function retrieveAttendance(studentId) {
 //		Update attendace day
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function updateAttendanceDay(id, day) {
-	// get the attendance list
-	// console.log('updateAttendanceDay: ' + id + ' - ' + day);
 	$.ajax({
 			url: '${pageContext.request.contextPath}/attendance/updateDay/' + id + '/' + day,
 			method: 'PUT',
 			success: function(response) {
-				// Handle the response
-				console.log(response);
+				// Success - no need for console log
 			},
 			error: function(xhr, status, error) {
 				// Handle the error
