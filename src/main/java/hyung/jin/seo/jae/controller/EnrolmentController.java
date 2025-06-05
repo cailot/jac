@@ -135,6 +135,12 @@ public class EnrolmentController {
 		// 3. get materials by invoice id and add to list dtos
 		List<MaterialDTO> materials = materialService.findMaterialByInvoice(invoiceId);
 		for(MaterialDTO material : materials){
+			// if Extra, assign extra value (user input) to price
+			// if(StringUtils.equalsAnyIgnoreCase(JaeConstants.EXTRA, material.getName())){
+
+			// }
+			// System.out.println(material);
+			// double price = material.getInput();
 			// set payment status for materials based on invoice payment status
 			if(isFullPaid){
 				material.setExtra(JaeConstants.FULL_PAID);
@@ -154,6 +160,7 @@ public class EnrolmentController {
 		}
 
 		// 5. return dtos mixed by enrolments and outstandings
+		// System.out.println(dtos);
 		return dtos;
 	}
 
@@ -177,7 +184,7 @@ public class EnrolmentController {
 	@PostMapping("/register")
 	@ResponseBody
 	public EnrolmentDTO registerEnrolment(@RequestBody EnrolmentDTO formData) {
-		System.out.println(formData);
+		// System.out.println(formData);
 		// 1. create bare Enrolment
 		Enrolment enrolment = formData.convertToEnrolment();
 		// 2. get Clazz
@@ -233,7 +240,7 @@ public class EnrolmentController {
 			existingInvo.setAmount(existingInvo.getAmount() + price);
 			// 3-3. create Material
 			Material newMaterial = new Material();
-			if(isExtra) newMaterial.setExtra(price);
+			if(isExtra) newMaterial.setInput(price);
 			newMaterial.setBook(book);
 			newMaterial.setInvoice(existingInvo);
 			newMaterial.setInvoiceHistory(existingInvoHistory);

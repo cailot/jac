@@ -23,16 +23,13 @@ $(document).ready(
 //		Retrieve invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addEnrolmentToInvoiceList(data, cnt) {
-	// debugger;
-	//  console.log(data);
 	if((data.online)&&(data.discount === DISCOUNT_FREE)){
-		// console.log('online');
 		return;
 	}
 	
 	// Add null/undefined checks to prevent NaN values
 	if (!data || !data.name || data.startWeek == null || data.endWeek == null || data.price == null) {
-		console.log('Invalid enrollment data:', data);
+		// console.error('Invalid enrollment data:', data);
 		return;
 	}
 	
@@ -190,12 +187,18 @@ function addPaymentToInvoiceList(data, cnt) {
 //		Add Book to invoiceListTable
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBookToInvoiceList(data, cnt) {
-	// console.log(data);
-	// $('#hiddenInvoiceId').val(data.invoiceId);
+	// Debug log for Extra material
+	if (data.name === 'Extra') {
+		console.log('Extra Material in Invoice:', {
+			name: data.name,
+			price: data.price,
+			extra: data.extra,
+			input: data.input
+		});
+	}
 	
 	// Add validation to prevent issues with invalid data
 	if (!data || !data.name || data.price == null) {
-		console.log('Invalid book data:', data);
 		return;
 	}
 
@@ -215,13 +218,17 @@ function addBookToInvoiceList(data, cnt) {
 	row.append($('<td>')); // credit
 	row.append($('<td>')); // discount
 	row.append($('<td>')); // price	
-	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(data.price || 0).toFixed(2)));// Amount	
+	
+	// For Extra material, use the saved extra amount, otherwise use the book's price
+	var displayPrice = data.name === 'Extra' ? parseFloat(data.input) || data.price : data.price;
+	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(displayPrice || 0).toFixed(2)));// Amount	
+	
 	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate || ''));// payment date
 	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + (data.bookId || ''))); // 0
 	row.append($('<td>').addClass('hidden-column').addClass('material-match').text(BOOK + '|' + (data.id || '')));
 	row.append($('<td class="hidden-column materialId">').text(data.id || '')); 
 	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId || '')); 
-						
+	
 	// if data.info is not empty, then display filled icon, otherwise display empty icon	
 	isNotBlank(data.info) ? row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text-fill text-primary" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'' + data.info + '\')"></i>')) : row.append($("<td class='col-1 memo text-center hand-cursor'>").html('<i class="bi bi-chat-square-text text-primary" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(' + 'BOOK' + ', ' +  data.id + ', \'\')"></i>'));	
 	// if any existing row's invoice-match value is same as the new row's invoice-match value, then remove the existing row
@@ -668,7 +675,6 @@ function addInformation(){
 	var info = $('#information').val();
 	
 	let encodeInfo = encodeDecodeString(info).encoded;
-	// console.log('addInformation check : ' + encodeInfo);
 
 	$.ajax({
 		url : '${pageContext.request.contextPath}/invoice/updateInfo/' + dataType + '/' + dataId,
@@ -676,12 +682,10 @@ function addInformation(){
 		data : encodeInfo,
 		contentType : 'application/json',
 		success : function(response) {
-			// console.log('addInformation response : ' + response);
 			// flush old data in the dialogue
 			document.getElementById('showInformation').reset();
 			// disappear information dialogue
 			$('#infoModal').modal('toggle');
-			// debugger;
 			// update memo <td> in invoiceListTable 
 			$('#invoiceListTable > tbody > tr').each(function() {
 					if(dataType === ENROLMENT){
@@ -692,18 +696,13 @@ function addInformation(){
 						if ($(this).find('.material-match').text() === (dataType + '|' + dataId)) {
 							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(BOOK, ' + dataId + ', \'\')"></i>');
 						}
-					}else if(dataType === PAYMENT){
-						if ($(this).find('.payment-match').text() === (dataType + '|' + dataId)) {
-							(isNotBlank(info)) ? $(this).find('.memo').html('<i class="bi bi-chat-square-text-fill text-primary hand-cursor" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'' + encodeInfo + '\')"></i>') : $(this).find('.memo').html('<i class="bi bi-chat-square-text text-primary hand-cursor" data-toggle="tooltip" title="Internal Memo" onclick="displayAddInfo(PAYMENT, ' + dataId + ', \'\')"></i>');
-						}
 					}
-				}
-			);
+			});
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			console.error('Error:', error);
 		}
-	});						
+	});
 }
  
 ///////////////////////////////////////////////////////////////////////////
