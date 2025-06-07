@@ -193,13 +193,20 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<option value="cheque">Cheque</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" autocomplete="off" required>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
 					</div>
+					<div class="col-md-1">
+						<label for="date" class="label-form">Select</label> 
+						<select class="form-control" id="date" name="date">
+							<option value="payDate">Received</option>
+							<option value="registerDate">Registered</option>
+						</select>
+					</div>					
 					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 

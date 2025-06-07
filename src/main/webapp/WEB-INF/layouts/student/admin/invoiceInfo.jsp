@@ -143,22 +143,22 @@ function addPaymentToInvoiceList(data, cnt) {
 	// Handle date formatting with better error handling
 	var formattedDate = '';
 	try {
-		if (data.registerDate) {
+		if (data.payDate) {
 			// Try parsing as string first (dd/MM/yyyy format)
-			if (typeof data.registerDate === 'string' && data.registerDate.includes('/')) {
-				formattedDate = data.registerDate;
+			if (typeof data.payDate === 'string' && data.payDate.includes('/')) {
+				formattedDate = data.payDate;
 			} else {
 				// Try parsing as Date object
-				var registerDate = new Date(data.registerDate);
-				if (!isNaN(registerDate.getTime())) {
+				var payDate = new Date(data.payDate);
+				if (!isNaN(payDate.getTime())) {
 					var options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-					formattedDate = registerDate.toLocaleDateString('en-GB', options);
+					formattedDate = payDate.toLocaleDateString('en-GB', options);
 				}
 			}
 		}
 	} catch (e) {
 		console.log('Error formatting date:', e);
-		formattedDate = data.registerDate || '';
+		formattedDate = data.payDate || '';
 	}
 	
 	newPayment.append($('<td class="smaller-table-font text-center paid-date">').text(formattedDate));
@@ -447,7 +447,7 @@ function makePayment(){
 	var payment = {
 		amount: payAmount,
 		method: $('#payItem').val(),
-		registerDate: payDate,
+		payDate: payDate,
 		info: $('#payInfo').val()
 	};
 	
@@ -978,16 +978,15 @@ function confirmDeleteInvoice() {
 				<div class="col md-auto">
 					<button type="button" class="btn btn-block btn-primary btn-sm" onclick="openPaymentHistory()">Record</button>				
 				</div>
-
+				<%--
+					<!-- Delete Invoice Button -->
 					<script>
 						// Only show delete button for Admin/Director
 						if(JSON.parse(window.isAdmin) || JSON.parse(window.isDirector)) {
 							document.write('<div class="col md-auto"><button type="button" class="btn btn-block btn-danger btn-sm" onclick="deleteInvoice()">Delete</button></div>');
 						}
 					</script>
-				<!-- <div class="col md-auto">
-					<button type="button" class="btn btn-block btn-danger btn-sm" onclick="deleteInvoice()">Delete</button>
-				</div> -->
+				--%>
 			</div>
 		</div>
 		<div class="form-group">

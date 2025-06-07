@@ -29,9 +29,11 @@ public class PaymentDTO extends MoneyDTO{
 
 	private double total;
 
+	private String payDate;
+
 	public PaymentDTO(Payment payment){
 		this.id = String.valueOf(payment.getId());
-		this.registerDate = payment.getRegisterDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		this.payDate = payment.getPayDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		this.amount = payment.getAmount();
 		this.total = payment.getTotal();
 		this.method = payment.getMethod();
@@ -50,15 +52,16 @@ public class PaymentDTO extends MoneyDTO{
 		// this.registerDate = (obj[5] != null) ? dateFormat.format((Date) obj[5]) : null; // registerDate
 		this.invoiceId = (obj[6]!=null) ? String.valueOf(obj[6]) : "0"; // invoiceId
 		this.invoiceHistoryId = (obj[7]!=null) ? String.valueOf(obj[7]) : "0"; // invoiceHistoryId
+		this.payDate = (obj[8]!=null) ? String.valueOf(obj[8]) : null; // payDate
 	}
 
-	public PaymentDTO(long id, double amount, double total, String method, String info, LocalDate registerDate){
+	public PaymentDTO(long id, double amount, double total, String method, String info, LocalDate payDate){
 		this.id = String.valueOf(id);
 		this.amount = amount;
 		this.total = total;
 		this.method = method;
 		this.info = info;
-		this.registerDate = (registerDate!=null) ? registerDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
+		this.payDate = (payDate!=null) ? payDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : null;
 	}
 
 	// public PaymentDTO(long id, double amount, String info, LocalDate registerDate, long invoiceId, long invoiceHistoryId, double total){
@@ -76,6 +79,7 @@ public class PaymentDTO extends MoneyDTO{
     	Payment payment = new Payment();
 		if(StringUtils.isNotBlank(id)) payment.setId(Long.parseLong(id));
     	if(StringUtils.isNotBlank(registerDate)) payment.setRegisterDate(LocalDate.parse(registerDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
+		if(StringUtils.isNotBlank(payDate)) payment.setRegisterDate(LocalDate.parse(payDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));	
 		if(StringUtils.isNotBlank(info)) payment.setInfo(info);
 		payment.setAmount(amount);
 		payment.setTotal(total);

@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -46,6 +47,9 @@ public class Payment {
     
     @CreationTimestamp
     private LocalDate registerDate;
+
+    @CreatedDate
+    private LocalDate payDate;
 
     @ManyToOne
     @JoinColumn(name = "invoiceId")
