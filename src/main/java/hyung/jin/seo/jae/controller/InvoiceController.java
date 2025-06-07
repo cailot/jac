@@ -304,12 +304,12 @@ public class InvoiceController {
 		// 7. create payment
 		Payment payment = formData.convertToPayment();
 		payment.setTotal(totalAmount);
-		String paymentRegisterDate = formData.getRegisterDate();
-		if(StringUtils.isBlank(paymentRegisterDate)){
-			paymentRegisterDate = JaeUtils.getToday();
+		String payDate = formData.getPayDate();
+		if(StringUtils.isBlank(payDate)){
+			payDate = JaeUtils.getToday();
 		}
 		// convert to LocalDate
-		payment.setRegisterDate(LocalDate.parse(paymentRegisterDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		payment.setPayDate(LocalDate.parse(payDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		payment.setInvoice(invoice);
 		payment.setInvoiceHistory(history);
 		paymentService.addPayment(payment);	

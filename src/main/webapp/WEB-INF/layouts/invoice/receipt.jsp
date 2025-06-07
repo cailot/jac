@@ -365,7 +365,7 @@ function sendEmail() {
                                 Payment
                             </td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <c:out value="${payment.registerDate}" />
+                                <c:out value="${payment.payDate}" />
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
                             </td>
