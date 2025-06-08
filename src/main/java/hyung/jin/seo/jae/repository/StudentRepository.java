@@ -100,13 +100,16 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "LEFT JOIN Payment p ON i.id = p.invoiceId " +
         "WHERE (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
-        "AND (p.registerDate BETWEEN :fromTime AND :toTime)",
+        "AND ((:dateType = 'registerDate' AND p.registerDate BETWEEN :fromTime AND :toTime) " +
+        "     OR (:dateType = 'payDate' AND p.payDate BETWEEN :fromTime AND :toTime))",
         nativeQuery = true)
-        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
+        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, 
+                                        @Param("dateType") String dateType,
+                                        @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // retrieve payment student by state, branch & grade called from paymentList.jsp
         @Query(value = "SELECT DISTINCT s.id AS studentId, s.firstName, s.lastName, s.grade, s.state, s.branch, " +
-        "p.registerDate, p.method, p.amount, i.id AS invoiceId, p.invoiceHistoryId, p.id AS paymentId " +
+        "p.registerDate, p.method, p.amount, i.id AS invoiceId, p.invoiceHistoryId, p.id AS paymentId, p.payDate " +
         "FROM Student s " +
         "LEFT JOIN Enrolment e ON s.id = e.studentId " +
         "LEFT JOIN Invoice i ON e.invoiceId = i.id " +
@@ -114,9 +117,12 @@ public interface StudentRepository extends JpaRepository<Student, Long>{
         "WHERE (:branch = '0' OR s.branch = :branch) " +
         "AND (:grade = '0' OR s.grade = :grade) " +
         "AND (:payment = '0' OR p.method = :payment) " +
-        "AND (p.registerDate BETWEEN :fromTime AND :toTime)",
+        "AND ((:dateType = 'registerDate' AND p.registerDate BETWEEN :fromTime AND :toTime) " +
+        "     OR (:dateType = 'payDate' AND p.payDate BETWEEN :fromTime AND :toTime))",
         nativeQuery = true)
-        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, @Param("payment") String payment, @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
+        List<Object[]> listPaymentStudent(@Param("branch") String branch, @Param("grade") String grade, 
+                                        @Param("payment") String payment, @Param("dateType") String dateType,
+                                        @Param("fromTime") LocalDate fromTime, @Param("toTime") LocalDate toTime);
 
         // retrieve overdue student by state, branch & grade called from overdueList.jsp
         @Query(value = "SELECT new hyung.jin.seo.jae.dto.StudentDTO(" +
