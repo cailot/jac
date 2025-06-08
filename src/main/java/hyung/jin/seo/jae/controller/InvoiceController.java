@@ -786,7 +786,8 @@ public class InvoiceController {
 									@RequestParam("grade") String grade,
 									@RequestParam("payment") String payment, 
 									@RequestParam("start") String fromDate,
-									@RequestParam("end") String toDate, 
+									@RequestParam("end") String toDate,
+									@RequestParam("date") String dateType,
 									Model model
 									) {
 		String start = null;
@@ -801,13 +802,7 @@ public class InvoiceController {
 		} catch (ParseException e){
 			end = "2099-12-31";
 		}
-		// System.out.println("branch: " + branch);
-		// System.out.println("grade: " + grade);
-		// System.out.println("payment: " + payment);
-		// System.out.println("start: " + start);
-		// System.out.println("end: " + end);
-		// List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, start, end);
-		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, payment, start, end);
+		List<StudentDTO> dtos = studentService.listPaymentStudent(branch, grade, payment, dateType, start, end);
 		model.addAttribute(JaeConstants.BRANCH_INFO, branch);
 		model.addAttribute(JaeConstants.GRADE_INFO, grade);
 		model.addAttribute(JaeConstants.PAYMENT_INFO, payment);

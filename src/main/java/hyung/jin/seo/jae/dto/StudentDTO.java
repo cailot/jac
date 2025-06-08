@@ -148,6 +148,7 @@ public class StudentDTO implements Serializable{
 		this.contactNo1 = (obj[9]!=null) ? String.valueOf(obj[9]) : "0";
 		this.email1 = (obj[10]!=null) ? String.valueOf(obj[10]) : "0";
 		this.contactNo2 = (obj[11]!=null) ? String.valueOf(obj[11]) : "0";
+		this.address = (obj[12]!=null) ? String.valueOf(obj[12]) : "";
 	}
 	
 	// for statistics dto

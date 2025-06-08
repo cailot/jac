@@ -359,7 +359,7 @@ public class StudentServiceImpl implements StudentService {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate fromDate = LocalDate.parse(from, formatter);
 			LocalDate toDate = LocalDate.parse(to, formatter);
-			List<Object[]> objs = studentRepository.listPaymentStudent(branch, grade, fromDate, toDate);
+			List<Object[]> objs = studentRepository.listPaymentStudent(branch, grade, JaeConstants.DATE_TYPE_PAY, fromDate, toDate);
 			for(Object[] obj : objs){
 				StudentDTO dto = new StudentDTO(obj);
 				dtos.add(dto);
@@ -372,14 +372,19 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<StudentDTO> listPaymentStudent(String branch, String grade, String payment, String from, String to) {
+		return listPaymentStudent(branch, grade, payment, JaeConstants.DATE_TYPE_PAY, from, to);
+	}
+
+	@Override
+	public List<StudentDTO> listPaymentStudent(String branch, String grade, String payment, String dateType, String from, String to) {
 		List<StudentDTO> dtos = new ArrayList<>();
 		try{
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDate fromDate = LocalDate.parse(from, formatter);
 			LocalDate toDate = LocalDate.parse(to, formatter);
-			List<Object[]> objs = studentRepository.listPaymentStudent(branch, grade, payment, fromDate, toDate);
+			List<Object[]> objs = studentRepository.listPaymentStudent(branch, grade, payment, dateType, fromDate, toDate);
 			for(Object[] obj : objs){
-				StudentDTO dto = new StudentDTO(obj);
+ 				StudentDTO dto = new StudentDTO(obj);
 				dtos.add(dto);
 			}	
 		}catch(Exception e){

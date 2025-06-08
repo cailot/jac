@@ -204,6 +204,10 @@ public interface JaeConstants {
 
 	String PAYMENT_HEADER = "receiptHeader";
 
+	String DATE_TYPE_PAY = "payDate";
+
+	String DATE_TYPE_REGISTER = "registerDate";
+
 	String INVOICE_INFO = "invoiceInfo";
 
 	String INVOICE_PAID_AMOUNT = "invoicePaidAmount";
