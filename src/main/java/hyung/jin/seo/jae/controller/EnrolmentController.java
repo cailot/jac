@@ -386,7 +386,7 @@ public class EnrolmentController {
 						attendance.setWeek(i+"");
 						attendance.setStudent(student);
 						attendance.setClazz(clazz);
-						attendance.setDay(clazzDay);
+						attendance.setDay(clazzDay); // Use actual class day from the class
 						attendance.setStatus(JaeConstants.ATTEND_OTHER);
 						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
 						attendance.setAttendDate(attendDate);
@@ -457,15 +457,17 @@ public class EnrolmentController {
 				if(!data.isOnline()){
 					///////////////// Attendance ////////////////////////
 					int academicYear = clazzService.getAcademicYear(clazz.getId());
+					// Get the fresh day value directly from the clazz to ensure it's up-to-date
 					String clazzDay = clazzService.getDay(clazz.getId());
 					for(int i = startWeek; i <= endWeek; i++){
+						// Calculate the attendance date based on the class day
 						LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-						// Create attendance for all weeks regardless of date
+						// Create attendance for all weeks with the correct day
 						Attendance attendance = new Attendance();
 						attendance.setWeek(i+"");
 						attendance.setStudent(student);
 						attendance.setClazz(clazz);
-						attendance.setDay(clazzDay);
+						attendance.setDay(clazzDay); // Use the day from the class
 						attendance.setStatus(JaeConstants.ATTEND_OTHER);						
 						attendance.setAttendDate(attendDate);
 						attendanceService.addAttendance(attendance);
@@ -525,27 +527,12 @@ public class EnrolmentController {
 				long studentId = Long.parseLong(StringUtils.defaultIfBlank(enrol.getStudentId(), "0"));
 				long clazzId = Long.parseLong(StringUtils.defaultIfBlank(enrol.getClazzId(), "0"));
 				
-				// get start/end week
-				List<Integer> weeks = enrolmentService.findStartEndWeekByInvoiceNClazz(invoice.getId(), clazzId);
-				int startWeek = weeks.get(0);
-				int endWeek = weeks.get(1);
-			
-				// get attandance by student and clazz	
-				List<AttendanceDTO> attandances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
-				for(AttendanceDTO attendance : attandances){
-					// check attendDate is later than today
-					LocalDate attendDate = LocalDate.parse(attendance.getAttendDate(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-					LocalDate today = LocalDate.now();
-					// if(attendDate.isAfter(today)){
-					int week = Integer.parseInt(attendance.getWeek());
-					// delete attendance 
-					// 1. if attendDate is later than today 
-					// 2. week is within start/end week
-					if(attendDate.isAfter(today) && week >= startWeek && week <= endWeek){				
-						// delete attendance
-						long attendId = Long.parseLong(attendance.getId());
-						attendanceService.deleteAttendance(attendId);
-					}
+				// Remove all attendance records for this student and class
+				// This ensures when class day changes, old attendance records are purged
+				List<AttendanceDTO> attendances = attendanceService.findAttendanceByStudentAndClazz(studentId, clazzId);
+				for(AttendanceDTO attendance : attendances){
+					long attendId = Long.parseLong(attendance.getId());
+					attendanceService.deleteAttendance(attendId);
 				}
 			}
 			// 7. update enrolment

@@ -3,6 +3,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@page import="hyung.jin.seo.jae.dto.StudentDTO"%>
 <%@page import="hyung.jin.seo.jae.utils.JaeUtils"%>
+<%@page import="hyung.jin.seo.jae.utils.JaeConstants"%>
 <%@page import="java.util.Calendar"%>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.dataTables-1.13.4.min.css"></link>
@@ -47,10 +48,17 @@ $(document).ready(function () {
 				}
 				return total;
 			};
-			// Total over all pages
-			var totalOutstanding = parseAndSum(api.column(6, { search: 'applied' }).data());
-			// Update footer with comma formatting
-			$(api.column(6).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>');
+			// Total over all pages - only show for Admin & Director
+			if(JSON.parse(window.isAdmin) || JSON.parse(window.isDirector)) {
+				var totalOutstanding = parseAndSum(api.column(7, { search: 'applied' }).data());
+				// Update footer with comma formatting
+				$(api.column(7).footer()).html('<span class="text-primary font-weight-bold">$' + totalOutstanding.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</span>');
+				// Show the footer
+				$(api.table().footer()).show();
+			}else{
+				// Hide the entire footer for staff
+				$(api.table().footer()).hide();
+			}
 		}
 
 
@@ -186,13 +194,20 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 							<option value="cheque">Cheque</option>
 						</select>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="start" class="label-form">From Date</label>
 						<input type="text" class="form-control datepicker" id="start" name="start" placeholder="From" autocomplete="off" required>
 					</div>
-					<div class="col-md-2">
+					<div class="col-md-1">
 						<label for="end" class="label-form">To Date</label> <input type="text" class="form-control datepicker" id="end" name="end" placeholder="To" autocomplete="off" required>
 					</div>
+					<div class="col-md-1">
+						<label for="date" class="label-form">Select</label> 
+						<select class="form-control" id="date" name="date">
+							<option value="payDate">Received</option>
+							<option value="registerDate">Registered</option>
+						</select>
+					</div>					
 					<div class="offset-md-2"></div>
 					<div class="col mx-auto">
 						<label class="label-form-white">Search</label> 
@@ -260,7 +275,8 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 										<th class="align-middle text-center">Last Name</th>
 										<th class="align-middle text-center">Grade</th>
 										<th class="align-middle text-center">Method</th>
-										<th class="align-middle text-center" data-orderable="false">Payment Date</th>
+										<th class="align-middle text-center" data-orderable="false">Received</th>
+										<th class="align-middle text-center" data-orderable="false">Registered</th>
 										<th class="align-middle text-center">Amount</th>
 										<th class="align-middle text-center" data-orderable="false">Action</th>
 									</tr>
@@ -304,11 +320,24 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 												</td>
 												<!-- paid method -->
 												<td class="small align-middle text-left text-capitalize ml-2"><span><c:out value="${student.relation1}" /></span></td>
-												<!-- paid date -->
+												<!-- pay date -->
 												<td class="small align-middle text-center">
 													<span>
+														<%--
+														<fmt:parseDate var="studentPayDate" value="${student.payDate}" pattern="yyyy-MM-dd" />
+														<fmt:formatDate value="${studentPayDate}" pattern="dd/MM/yyyy" />
+														--%>
+														<c:out value="${student.address}" />
+													</span>
+												</td>
+												<!-- register date -->
+												<td class="small align-middle text-center">
+													<span>
+														<%--
 														<fmt:parseDate var="studentRegistrationDate" value="${student.registerDate}" pattern="yyyy-MM-dd" />
 														<fmt:formatDate value="${studentRegistrationDate}" pattern="dd/MM/yyyy" />
+														--%>
+														<c:out value="${student.registerDate}" />
 													</span>
 												</td>
 												<!-- paid amount -->
@@ -326,7 +355,7 @@ function displayReceipt(studentId, firstName, lastName, invoiceId, invoiceHistor
 								</tbody>
 								<tfoot>
 									<tr>
-										<td colspan="6" style="text-align:right;"><strong>Total Amount:</strong></td>
+										<td colspan="7" style="text-align:right;"><strong>Total Amount:</strong></td>
 										<td id="totalAmount" class="text-right">0.00</td>
 										<td></td>
 									</tr>

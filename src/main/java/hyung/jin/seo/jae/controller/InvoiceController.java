@@ -1036,6 +1036,7 @@ public class InvoiceController {
 			String start = cycleService.academicStartMonday(enrol.getYear(), enrol.getStartWeek());
 			String end = cycleService.academicEndSunday(enrol.getYear(), enrol.getEndWeek());
 			enrol.setExtra(start + " ~ " + end + " (Week " + enrol.getStartWeek() + " ~ " + enrol.getEndWeek() + ")");
+			 System.out.println(enrol.getExtra());
 			if(!headerGrade.contains(enrol.getGrade())){
 				headerGrade.add(enrol.getGrade().toUpperCase());
 			}

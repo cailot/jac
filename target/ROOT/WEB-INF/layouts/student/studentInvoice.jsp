@@ -370,7 +370,7 @@ function clearStudentInfo() {
 												<td class="payment-id" style="display: none;">${payment.id}</td> <!-- invisible -->
 												<td class="small align-middle text-center">${payment.invoiceId}</td>
 												<td class="small align-middle text-center"> <!-- payment date with dd/MM/yyyy format -->
-													<fmt:parseDate var="parsedDate" value="${payment.registerDate}" pattern="yyyy-MM-dd" />
+													<fmt:parseDate var="parsedDate" value="${payment.payDate}" pattern="yyyy-MM-dd" />
 													<fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" />
 												</td>
 												<td class="small text-capitalize align-middle ml-1"> <!-- payment method with first letter capitalized -->

@@ -278,12 +278,13 @@ function sendEmail() {
                     <c:set var="enrolments" value="${sessionScope.enrolments}" />
                     <c:forEach items="${enrolments}" var="enrolment">
                         <tr>
-                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>Class 
-                                 
+                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
+                                <%--
+                                Class
                                 [<script type="text/javascript">
                                     document.write(gradeName('${enrolment.grade}'));
                                 </script>]
-                                
+                                --%>    
                                 <c:out value="${enrolment.name}" /></td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'><c:out value="${enrolment.extra}" /></td>
                             <c:set var="weeks" value="${enrolment.endWeek - enrolment.startWeek + 1}" />
@@ -319,7 +320,9 @@ function sendEmail() {
                     <c:set var="materials" value="${sessionScope.materials}" />
                     <c:forEach items="${materials}" var="book">
                         <tr>
-                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>Book <c:out value="${book.name}" /></td>
+                            <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
+                                <c:out value="${book.name}" />
+                            </td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>

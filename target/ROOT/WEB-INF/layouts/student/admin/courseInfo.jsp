@@ -29,7 +29,6 @@ $(document).ready(
 			// save the response into the variable
 			academicYear = response[0];
 			academicWeek = response[1];
-			//console.log(response[1]);
 				// get last academic week
 				$.ajax({
 					url: '${pageContext.request.contextPath}/class/lastAcademicWeek',
@@ -37,7 +36,6 @@ $(document).ready(
 					data: { year: academicYear },
 					success: function(response) {	
 						lastAcademicWeek = response;
-						console.log('Last academic week: ' + lastAcademicWeek);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						console.log('Error : ' + errorThrown);
@@ -61,22 +59,57 @@ $(document).ready(
 			e.preventDefault();
 			var tr = $(this).closest('tr');
 			// how to check data-type contains 'book' or 'class' ?
-			// if it is 'book', simply remove <tr>, if it is 'class', remove all rows with the same pairId 
+			// if it is 'book', simply remove <tr>, if it is 'class', remove this row and its paired online/onsite class
 			var hiddens = tr.find('.data-type').text();
 			if(hiddens.indexOf('|') !== -1){
 				var hiddenValues = hiddens.split('|');
 				if(hiddenValues[0] === BOOK){
-					// how to delete current row from baskettable?
+					// delete only the current book row
 					tr.remove();
 				}else if(hiddenValues[0] === CLASS){
+					// Get identifying information from the current row
 					var pairId = tr.data('pair-id');
-					// search another row with the same pairId
-					$('#basketTable > tbody > tr').each(function() {
-						var exist = $(this).data('pair-id');
-						if(exist === pairId){
-							$(this).remove();
+					var year = tr.find('.year').text();
+					var name = tr.find('.name').text();
+					var isOnline = tr.find('.online').text() === "true";
+					
+					if (isOnline) {
+						// If this is an online class, find and remove the corresponding onsite class with same name/year
+						var correspondingName = name.replace(/\s+Online$/, ' Onsite').trim();
+						var $onsiteRow = $('#basketTable > tbody > tr').filter(function() {
+							return $(this).find('.year').text() === year && 
+								   $(this).find('.name').text() === correspondingName &&
+								   $(this).find('.online').text() !== "true";
+						});
+						$onsiteRow.remove();
+						tr.remove();
+					} else {
+						// If this is an onsite class, find and remove only the corresponding online version of THIS EXACT class
+						// Extract the base class name (without Onsite/Online suffix)
+						var baseClassName = name;
+						if (baseClassName.endsWith(' Onsite')) {
+							baseClassName = baseClassName.substring(0, baseClassName.length - 7);
 						}
-					});
+						
+						// The corresponding online class name
+						var correspondingOnlineName = baseClassName + (baseClassName.endsWith(' Online') ? '' : ' Online');
+						
+						var $onlineRow = $('#basketTable > tbody > tr').filter(function() {
+							var rowName = $(this).find('.name').text().trim();
+							var rowIsOnline = $(this).find('.online').text() === "true";
+							var rowYear = $(this).find('.year').text();
+							
+							// Only match if: 
+							// 1. It's an online class
+							// 2. Same year
+							// 3. EXACT corresponding name (e.g., "TT6 Online" for "TT6 Onsite")
+							return rowIsOnline && 
+								   rowYear === year && 
+								   rowName === correspondingOnlineName;
+						});
+						$onlineRow.remove();
+						tr.remove();
+					}
 				}
 			}
 			updateTotalBasket();
@@ -217,7 +250,6 @@ var branch = $('#formBranch').val();
 let grade = value.grade;	  
 let year = value.year;	
 let isOnline = value.online;
-console.log('Grade: ' + grade + ', Year' + year + ',isOnline : ' + isOnline +' ,branch : ' + branch + ' ,coureId : ' + value.id);
 
 $.ajax({
 	url: isOnline ? '${pageContext.request.contextPath}/class/onlineClassByCourse' : '${pageContext.request.contextPath}/class/classesByCourse',
@@ -229,7 +261,6 @@ $.ajax({
 	  branch : isOnline ? 90 : branch	
 	},
 	success: function(data) {
-		console.log(data);
 		var start_week, end_week;        
 		if (value.year == academicYear) {
 			start_week = parseInt(academicWeek);
@@ -482,38 +513,88 @@ $.ajax({
 //      Add book to basket
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function addBookToBasket(value, index){
-	// console.log(value);
-	// console.log(index);
-	// if book is already in basket, skip
-	if(isSameRowExisting(BOOK, value.id)){
-		showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
-		return;
-	}
-	var row = $('<tr class="d-flex">');
-	row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
-	row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
-	row.append($('<td class="smaller-table-font name" style="width: 43%;">').text(value.name)); // name - increased width from 36% to 43%
-	// Skip one column since we're extending the name column
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 6%;">'));
-	row.append($('<td style="width: 4%;">'));
-	row.append($('<td style="width: 7%;">'));
-	row.append($('<td style="width: 8%;">')); // price
-	// row.append($('<td class="smaller-table-font text-center price" style="width: 11%;">').text(value.price.toFixed(2)));
-	row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(Number(value.price).toFixed(2)));
-	row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
-	row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
-	row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
-	row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
-		
-	$('#basketTable > tbody').append(row);
+    // console.log(value);
+    // console.log(index);
+    // if book is already in basket, skip
+    if(isSameRowExisting(BOOK, value.id)){
+        showAlertMessage('warningAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' is already in My Lecture</center>');
+        return;
+    }
+    var row = $('<tr class="d-flex">');
+    row.append($('<td>').addClass('hidden-column').addClass('data-type').text(BOOK + '|' + value.id)); // 0
+    row.append($('<td class="text-center" style="width: 5%;"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
+    row.append($('<td class="smaller-table-font name" style="width: 43%;">').text(value.name)); // name - increased width from 36% to 43%
+    // Skip one column since we're extending the name column
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 6%;">'));
+    row.append($('<td style="width: 4%;">'));
+    row.append($('<td style="width: 7%;">'));
+    row.append($('<td style="width: 8%;">')); // price
+    
+    if (value.name === 'Extra') {
+        var cell = $('<td class="smaller-table-font text-center amount" contenteditable="true">').text('0');
+        
+        cell.on('keydown', function(event) {
+            // Allow backspace and delete
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                return true;
+            }
+        }).on('keypress', function(event) {
+            var charCode = (event.which) ? event.which : event.keyCode;
+            
+            // Handle Enter key
+            if (charCode === 13) {
+                event.preventDefault();
+                $(this).blur();
+                return false;
+            }
+            
+            // Only allow numbers and decimal point
+            if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+                return false;
+            }
+            
+            // Prevent multiple decimal points
+            if (charCode === 46 && $(this).text().indexOf('.') !== -1) {
+                event.preventDefault();
+                return false;
+            }
+        }).on('input', function() {
+            var value = $(this).text().trim();
+            // Allow empty or valid number
+            if (value === '' || (!isNaN(value) && value.match(/^\d*\.?\d*$/))) {
+                updateTotalBasket();
+            } else {
+                $(this).text('0');
+                updateTotalBasket();
+            }
+        }).on('blur', function() {
+            var value = $(this).text().trim();
+            if (value === '' || isNaN(value)) {
+                $(this).text('0');
+            }
+            updateTotalBasket();
+        });
+        
+        row.append(cell);
+    } else {
+        row.append($('<td class="smaller-table-font text-center price amount">').text(Number(value.price).toFixed(2)));
+    }
+    
+    row.append($('<td style="width: 4%;">').html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
+    row.append($('<td>').addClass('hidden-column').addClass('grade').text(value.grade)); 
+    row.append($('<td>').addClass('hidden-column').addClass('materialId').text('')); 
+    row.append($('<td>').addClass('hidden-column').addClass('invoiceId').text('')); 
+        
+    $('#basketTable > tbody').append(row);
 
-	// update total	
-	updateTotalBasket();
-	
-	// Automatically dismiss the alert after 2 seconds
-	showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
+    // update total    
+    updateTotalBasket();
+    
+    // Automatically dismiss the alert after 2 seconds
+    showAlertMessage('addAlert', '<center><i class="bi bi-book"></i> &nbsp;&nbsp' + value.name +' added to My Lecture</center>');
 }
 	
 	
@@ -521,7 +602,6 @@ function addBookToBasket(value, index){
 //      Associate registration with Student 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function associateRegistration(){
-	// debugger
 	// get id from 'formId'
 	const studentId = $('#formId').val();
 	// if id is null, show alert and return
@@ -532,13 +612,11 @@ function associateRegistration(){
 		return; 
 	}
 
-	// var elearnings = [];
 	var enrolData = [];
 	var bookData = [];
 
 	$('#basketTable tbody tr').each(function() {
 		// in case of update, enrolId is not null
-		//debugger;
 		var clazzId = null;
 		var bookId = null;
 		var hiddens = $(this).find('.data-type').text();
@@ -548,59 +626,41 @@ function associateRegistration(){
 				bookId = hiddenValues[1];
 				var materialId = $(this).find('.materialId').text();
 				var invoiceId = $(this).find('.invoiceId').text();
+				var name = $(this).find('.name').text();
+				var amount = name === 'Extra' ? parseFloat($(this).find('.amount').text()) || 0 : parseFloat($(this).find('.price').text()) || 0;
 				var book = {
 					"id" : materialId,
 					"invoiceId" : invoiceId,
-					"bookId" : bookId
+					"bookId" : bookId,
+					"price" : amount,
+					"name": name
 				};
 				bookData.push(book);
-				//return true;
 			}else if(hiddenValues[0] === CLASS){
 				clazzId = hiddenValues[1];
-				enrolData.id = $(this).find('.enrolId').text();
-				enrolData.startWeek = $(this).find('.start-week').text();
-				enrolData.endWeek = $(this).find('.end-week').text();
-				enrolData.price = $(this).find('.price').text();
-				enrolData.grade = $(this).find('.grade').text();
-				enrolData.year = $(this).find('.year').text();
-				enrolData.name = $(this).find('.name').text();
-				enrolData.invoiceId = $(this).find('.invoiceId').text();
-				enrolData.amount = $(this).find('.amount').text();
-				enrolData.discount = $(this).find('.discount').text();
-				enrolData.credit = $(this).find('.credit').text();
-				enrolData.weeks = $(this).find('.weeks').text();
-				enrolData.online = $(this).find('.online').text();
-				enrolData.paid = $(this).find('.paid').text();
-				enrolData.extra = $(this).find('.extra').text();
-				enrolData.day = $(this).find('.clazzChoice option:selected').text();
-				if(enrolData.day === ""){ // if day is not selected from dropdown
-					enrolData.day = $(this).find('.day').text()
-				}
-				var clazz = {
-					"id" : enrolData.id,
-					"startWeek" : enrolData.startWeek,
-					"endWeek" : enrolData.endWeek,
-					"clazzId" : clazzId,
-					"price" : enrolData.price,
-					"grade" : enrolData.grade,
-					"year" : enrolData.year,
-					"name" : enrolData.name,
-					"invoiceId" : enrolData.invoiceId,
-					"amount" : enrolData.amount,
-					"discount" : enrolData.discount,
-					"credit" : enrolData.credit,
-					"weeks" : enrolData.weeks,
-					"day" : enrolData.day,
-					"online" : enrolData.online,
-					"paid" : enrolData.paid,
-					"extra" : enrolData.extra,
-					"studentId" : studentId
+				var enrol = {
+					"id": $(this).find('.enrolId').text(),
+					"startWeek": parseInt($(this).find('.start-week').text()) || 0,
+					"endWeek": parseInt($(this).find('.end-week').text()) || 0,
+					"price": parseFloat($(this).find('.price').text()) || 0,
+					"grade": $(this).find('.grade').text(),
+					"year": $(this).find('.year').text(),
+					"name": $(this).find('.name').text(),
+					"invoiceId": $(this).find('.invoiceId').text(),
+					"amount": parseFloat($(this).find('.amount').text()) || 0,
+					"discount": $(this).find('.discount').text() || '0',
+					"credit": parseInt($(this).find('.credit').text()) || 0,
+					"weeks": parseInt($(this).find('.weeks').text()) || 0,
+					"online": $(this).find('.online').text() === 'true',
+					"paid": $(this).find('.paid').text(),
+					"extra": $(this).find('.extra').text(),
+					"day": $(this).find('.clazzChoice option:selected').text() || $(this).find('.day').text(),
+					"clazzId": clazzId,
+					"studentId": studentId
 				};
-				enrolData.push(clazz);
+				enrolData.push(enrol);
 			}
 		}
-		// how to jump to next <tr>             
-		return true;    
 	});
 
 	// Promise ajax call
@@ -612,39 +672,10 @@ function associateRegistration(){
 				data: JSON.stringify(enrolData),
 				contentType: 'application/json',
 				success: function(response) {
-					// clear invoice table
-					clearInvoiceTable();
-					// clear enrolment table
-					clearEnrolmentBasket();
-					// if(response.length > 0){
-					// 	// $.each(response, function(index, value){
-					// 	// 	// if extra is NEW, it requires updating enrolment id in basket table
-					// 	// 	if(value.extra != null && value.extra === NEW){
-					// 	// 		$('#basketTable > tbody > tr').each(function() {
-					// 	// 			var hiddens = $(this).find('.data-type').text();
-					// 	// 			if ((hiddens.indexOf(CLASS) !== -1) && (hiddens.indexOf('|') !== -1)) {
-					// 	// 				var hiddenValues = hiddens.split('|');
-					// 	// 				if(hiddenValues[1] === value.clazzId){
-					// 	// 					$(this).find('.enrolId').text(value.id);
-					// 	// 					$(this).find('.invoiceId').text(value.invoiceId);
-					// 	// 					$(this).find('.clazzChoice').prop('disabled', true);        
-					// 	// 				}
-					// 	// 			}
-					// 	// 		});
-					// 	// 	}
-					// 	// 	// let isFreeOnline = value.online && value.discount === DISCOUNT_FREE;
-					// 	// 	// if(!isFreeOnline){
-					// 	// 	// 	// addEnrolmentToInvoiceList(value, 0);
-					// 	// 	// }
-					// 	// });
-					// } else {
-					// 	// clearEnrolmentBasket();
-					// 	updateLatestInvoiceId(enrolData.invoiceId);
-					// }
-					resolve();
+					resolve(response);
 				},
 				error: function(xhr, status, error) {
-					console.error(error);
+					console.error('Error in associateClazz:', error);
 					reject(error);
 				}
 			});
@@ -659,28 +690,10 @@ function associateRegistration(){
 				data: JSON.stringify(bookData),
 				contentType: 'application/json',
 				success: function(response) {
-					// removeBookFromInvoiceList();
-					// if(response.length > 0){
-					// 	// $.each(response, function(index, value){
-					// 	// 	$('#basketTable > tbody > tr').each(function() {
-					// 	// 		var hiddens = $(this).find('.data-type').text();
-					// 	// 		if ((hiddens.indexOf(BOOK) !== -1) && (hiddens.indexOf('|') !== -1)) {
-					// 	// 			var hiddenValues = hiddens.split('|');
-					// 	// 			if(hiddenValues[1] === value.bookId){
-					// 	// 				$(this).find('.materialId').text(value.id);
-					// 	// 				$(this).find('.invoiceId').text(value.invoiceId);
-					// 	// 			}
-					// 	// 		}
-					// 	// 	});
-					// 	// 	// addBookToInvoiceList(value, 0);
-					// 	// });
-					// } else {
-					// 	updateLatestInvoiceId(bookData.invoiceId);
-					// }
-					resolve();
+					resolve(response);
 				},
 				error: function(xhr, status, error) {
-					console.error(error);
+					console.error('Error in associateBook:', error);
 					reject(error);
 				}
 			});
@@ -694,17 +707,10 @@ function associateRegistration(){
 				method: 'POST',
 				contentType: 'application/json',
 				success: function(response) {
-					// console.log(response);
-					// removePaymentFromInvoiceList();
-					// if(response.length > 0){
-					// 	$.each(response, function(index, value){
-					// 		addPaymentToInvoiceList(value, 0);
-					// 	});
-					// }
-					resolve();
+					resolve(response);
 				},
 				error: function(xhr, status, error) {
-					console.error(error);
+					console.error('Error in associatePayment:', error);
 					reject(error);
 				}
 			});
@@ -713,29 +719,34 @@ function associateRegistration(){
 
 	// call one by one : associateClazz -> associateBook -> associatePayment
 	associateClazz(studentId, enrolData)
-		.then(() => associateBook(studentId, bookData))
-		.then(() => associatePayment(studentId))
-		.then(() => {
+		.then((clazzResponse) => {
+			return associateBook(studentId, bookData);
+		})
+		.then((bookResponse) => {
+			return associatePayment(studentId);
+		})
+		.then((paymentResponse) => {
+			// Clear tables and update display
+			clearInvoiceTable();
+			clearEnrolmentBasket();
 			retrieveEnrolment(studentId);
+			
 			// Add a longer delay and better function availability check
 			setTimeout(function() {
-				console.log('Checking if retrieveAttendance function is available...');
 				if (typeof window.retrieveAttendance === 'function') {
-					console.log('retrieveAttendance function found, calling for student:', studentId);
 					window.retrieveAttendance(studentId);
 				} else if (typeof retrieveAttendance === 'function') {
-					console.log('retrieveAttendance function found in global scope, calling for student:', studentId);
 					retrieveAttendance(studentId);
 				} else {
 					console.error('retrieveAttendance function not found!');
 				}
 			}, 1000); // Increased delay to 1 second
-			var rowCount = $('#basketTable tbody tr').length;
 		})
 		.catch(error => {
-			console.error('Error:', error);
+			console.error('Association error:', error);
+			$('#warning-alert .modal-body').text('Error during registration: ' + error);
+			$('#warning-alert').modal('toggle');
 		});
-
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -751,17 +762,12 @@ function retrieveEnrolment(studentId){
 				method: 'GET',
 				success: function(response) {
 					// Handle the response
-					console.log(response);
 					for (let index = response.length - 1; index >= 0; index--) {
 						let value = response[index];
-						//console.log(index + ' -- ' + value);
-
 						$.each(value, function(count, data) {
 							if (index == 0) {
-								console.log('Processing top data, count:', count);
 								updateInvoiceTableWithTop(data, index);
 							} else {
-								console.log('Processing rest data, count:', count);
 								updateInvoiceTableWithRest(data, index);
 							}
 						});
@@ -838,16 +844,13 @@ function retrieveEnrolment(studentId){
 	.then(() => updateBalance())
 	.then(() => {
 		// After enrollment and balance are loaded, retrieve attendance
-		setTimeout(function() {
-			console.log('Retrieving attendance after enrollment data is loaded...');
+					setTimeout(function() {
 			if (typeof window.retrieveAttendance === 'function') {
-				console.log('Calling retrieveAttendance for student:', studentId);
 				window.retrieveAttendance(studentId);
 			} else if (typeof retrieveAttendance === 'function') {
-				console.log('Calling retrieveAttendance (global scope) for student:', studentId);
 				retrieveAttendance(studentId);
 			} else {
-				console.log('retrieveAttendance function not available yet');
+				console.error('retrieveAttendance function not available yet');
 			}
 		}, 500);
 	})
@@ -863,22 +866,13 @@ function updateInvoiceTableWithTop(value, rowCount) {
 
 	// Add validation to prevent invalid/empty data from being displayed
 	if (!value || typeof value !== 'object') {
-		console.log('Invalid value object:', value);
 		return;
 	}
-
-	// Debug: Log what properties this object has
-	console.log('Processing object with properties:', Object.keys(value));
-	console.log('Has bookId:', value.hasOwnProperty('bookId'));
-	console.log('Has extra:', value.hasOwnProperty('extra'));
-	console.log('Has method:', value.hasOwnProperty('method'));
-	console.log('Full object:', JSON.stringify(value));
 
 	if (value.hasOwnProperty('bookId')) { // It is an MaterialDTO object - check this first since books now also have 'extra' field
 
 		// Validate book data
 		if (!value.name || value.price == null || isNaN(value.price)) {
-			console.log('Invalid book data:', value);
 			return;
 		}
 
@@ -899,7 +893,11 @@ function updateInvoiceTableWithTop(value, rowCount) {
 		row.append($('<td style="width: 4%;">'));
 		row.append($('<td style="width: 7%;">'));
 		row.append($('<td style="width: 8%;">')); // price
-		row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(value.price.toFixed(2)));
+		
+		// For Extra material, use the saved extra amount, otherwise use the book's price
+		var displayPrice = value.name === 'Extra' ? parseFloat(value.input) || value.price : value.price;
+		row.append($('<td class="smaller-table-font text-center price amount" style="width: 11%;">').text(displayPrice.toFixed(2)));
+
 		row.append($("<td style='width: 4%;'>").html('<a href="javascript:void(0)" data-toggle="tooltip" title="Delete book"><i class="bi bi-trash"></i></a>')); // Action
 		row.append($('<td class="hidden-column grade">').text(value.grade));
 		row.append($('<td class="hidden-column materialId">').text(value.id)); 
@@ -910,11 +908,8 @@ function updateInvoiceTableWithTop(value, rowCount) {
 		addBookToInvoiceList(value, rowCount);
 
 	}else if (value.hasOwnProperty('method')) { // It is an PaymentDTO object - check this BEFORE extra property
-		console.log('Payment detected, amount:', value.amount);
-		
 		// Validate payment data
 		if (!value.method || value.amount == null || isNaN(value.amount)) {
-			console.log('Invalid payment data:', value);
 			return;
 		}
 		
@@ -924,12 +919,20 @@ function updateInvoiceTableWithTop(value, rowCount) {
 	}else if (value.hasOwnProperty('extra')) { // It is an EnrolmentDTO object
 
 		// Validate enrollment data to prevent NaN entries
-		if (!value.name || value.startWeek == null || value.endWeek == null || 
-			value.price == null || isNaN(value.price) || 
-			isNaN(value.startWeek) || isNaN(value.endWeek)) {
-			console.log('Invalid enrollment data:', value);
+		if (!value || typeof value !== 'object') {
 			return;
 		}
+
+		// Set default values for missing or invalid data
+		value.name = value.name || '';
+		value.startWeek = parseInt(value.startWeek) || 0;
+		value.endWeek = parseInt(value.endWeek) || 0;
+		value.price = parseFloat(value.price) || 0;
+		value.credit = parseInt(value.credit) || 0;
+		value.discount = value.discount || '0';
+		value.clazzId = value.clazzId || '';
+		value.year = value.year || '';
+		value.online = !!value.online;
 
 		let freeOnline = value.online && value.discount === DISCOUNT_FREE;
 		
@@ -992,7 +995,7 @@ function updateInvoiceTableWithTop(value, rowCount) {
 						});
 					},
 					error: function(xhr, status, error) {
-						console.log('Error loading classes for existing enrollment:', error);
+						console.error('Error loading classes for existing enrollment:', error);
 						// Fallback to current selection only
 						dayDropdown.empty();
 						dayDropdown.append(currentDayOption);
@@ -1182,38 +1185,6 @@ function updateInvoiceTableWithTop(value, rowCount) {
 
 }
 
-// Add this helper function for calculations
-function calculateAmount(row) {
-	var weeks = parseInt(row.find('.weeks').text()) || 0;
-	var credit = parseInt(row.find('.credit').text()) || 0;
-	var price = parseFloat(row.find('.price').text()) || 0;
-	var discount = row.find('.discount').text() || '0';
-	var isOnline = row.find('.online').text() === "true";
-
-	// For online classes or 100% discount, amount is always 0
-	if (isOnline || discount === '100%') {
-		row.find('.amount').text('0.00');
-		updateTotalBasket();
-		return;
-	}
-
-	// Calculate chargeable weeks and base amount
-	var chargeableWeeks = weeks - credit;
-	var amount = chargeableWeeks * price;
-
-	// Apply discount
-	if (discount.includes('%')) {
-		var discountPercent = parseFloat(discount.replace('%', '')) || 0;
-		amount *= (1 - (discountPercent / 100));
-	} else {
-		var discountAmount = parseFloat(discount) || 0;
-		amount = Math.max(0, amount - discountAmount);
-	}
-
-	row.find('.amount').text(amount.toFixed(2));
-	updateTotalBasket();
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //	Update Invoice Table with 2nd/3rd last EnrolmentDTO
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1221,7 +1192,6 @@ function updateInvoiceTableWithRest(value, rowCount){
 
 	// Add validation to prevent invalid/empty data from being displayed
 	if (!value || typeof value !== 'object') {
-		console.log('Invalid value object:', value);
 		return;
 	}
 
@@ -1229,7 +1199,6 @@ function updateInvoiceTableWithRest(value, rowCount){
 
 		// Validate book data
 		if (!value.name || value.price == null || isNaN(value.price)) {
-			console.log('Invalid book data:', value);
 			return;
 		}
 
@@ -1237,11 +1206,8 @@ function updateInvoiceTableWithRest(value, rowCount){
 		addBookToInvoiceList(value, rowCount);
 
 	}else if (value.hasOwnProperty('method')) { // It is an PaymentDTO object - check this BEFORE extra property
-		console.log('Payment detected, amount:', value.amount);
-		
 		// Validate payment data
 		if (!value.method || value.amount == null || isNaN(value.amount)) {
-			console.log('Invalid payment data:', value);
 			return;
 		}
 		
@@ -1254,7 +1220,6 @@ function updateInvoiceTableWithRest(value, rowCount){
 		if (!value.name || value.startWeek == null || value.endWeek == null || 
 			value.price == null || isNaN(value.price) || 
 			isNaN(value.startWeek) || isNaN(value.endWeek)) {
-			console.log('Invalid enrollment data:', value);
 			return;
 		}
 
@@ -1365,6 +1330,150 @@ function removeAllInBasket(){
 		}
 	});
 }
+
+// Add this function to handle Extra amount editing
+function handleExtraAmount(cell) {
+    cell.on('input', function(e) {
+        // Get cursor position before updating
+        var cursorPos = getCaretPosition(this);
+        
+        // Get the raw input value
+        var rawValue = $(this).text();
+        
+        // Remove any non-numeric characters except decimal point
+        var numericValue = rawValue.replace(/[^\d.]/g, '');
+        
+        // Ensure only one decimal point
+        var parts = numericValue.split('.');
+        if (parts.length > 2) {
+            numericValue = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        // Parse the value and format to 2 decimal places
+        var amount = parseFloat(numericValue) || 0;
+        var formattedValue = amount.toFixed(2);
+        
+        // Only update if the value has changed
+        if ($(this).text() !== formattedValue) {
+            $(this).text(formattedValue);
+            // Restore cursor position
+            setCaretPosition(this, cursorPos);
+        }
+        
+        updateTotalBasket();
+    }).on('keypress', function(event) {
+        // Allow only numbers, decimal point, and control keys
+        var charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode === 13) { // Enter key
+            event.preventDefault();
+            $(this).blur();
+            return false;
+        }
+        if (charCode !== 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+}
+
+// Helper function to get caret position
+function getCaretPosition(element) {
+    var caretPos = 0;
+    if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount) {
+            var range = selection.getRangeAt(0);
+            var preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            caretPos = preCaretRange.toString().length;
+        }
+    }
+    return caretPos;
+}
+
+// Helper function to set caret position
+function setCaretPosition(element, pos) {
+    var range = document.createRange();
+    var selection = window.getSelection();
+    var textNode = element.firstChild;
+    
+    if (textNode) {
+        pos = Math.min(pos, textNode.length);
+        range.setStart(textNode, pos);
+        range.setEnd(textNode, pos);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+function addBookToInvoiceList(data, cnt) {
+	// Add validation to prevent issues with invalid data
+	if (!data || !data.name || data.price == null) {
+		return;
+	}
+
+	// For Extra material, use the saved extra amount, otherwise use the book's price
+	var displayPrice = data.name === 'Extra' ? parseFloat(data.input) || data.price : data.price;
+
+	var isOdd = (cnt % 2)==1;
+	// if cnt is odd number, then apply tr class to row_odd, otherwise set to row_even
+	var rowClass = isOdd ? 'row_odd' : 'row_even';
+	var row = $('<tr class="'+ rowClass +'">');
+	
+	// var row = $('<tr>');
+	row.append($('<td class="text-center"><i class="bi bi-book" data-toggle="tooltip" title="book"></i></td>')); // item
+	row.append($('<td class="smaller-table-font">').text(data.name || '')); // description
+	row.append($('<td>')); // year
+	row.append($('<td>')); // day
+	row.append($('<td>')); // start
+	row.append($('<td>')); // end
+	row.append($('<td>')); // weeks 
+	row.append($('<td>')); // credit
+	row.append($('<td>')); // discount
+	row.append($('<td>')); // price	
+	row.append($('<td class="smaller-table-font text-right">').addClass('amount').text(Number(displayPrice || 0).toFixed(2)));// Amount	
+	row.append($('<td class="smaller-table-font text-center">').text(data.paymentDate || ''));// payment date
+	row.append($('<td>').addClass('hidden-column').addClass('book-match').text(BOOK + '|' + (data.bookId || ''))); // 0
+	row.append($('<td>').addClass('hidden-column').addClass('material-match').text(BOOK + '|' + (data.id || '')));
+	row.append($('<td class="hidden-column materialId">').text(data.id || '')); 
+	row.append($('<td class="hidden-column invoiceId">').text(data.invoiceId || '')); 
+}
+
+
+// Add this helper function for calculations
+function calculateAmount(row) {
+	var weeks = parseInt(row.find('.weeks').text()) || 0;
+	var credit = parseInt(row.find('.credit').text()) || 0;
+	var price = parseFloat(row.find('.price').text()) || 0;
+	var discount = row.find('.discount').text() || '0';
+	var isOnline = row.find('.online').text() === "true";
+
+	// For online classes or 100% discount, amount is always 0
+	if (isOnline || discount === '100%') {
+		row.find('.amount').text('0.00');
+		updateTotalBasket();
+		return;
+	}
+
+	// Calculate chargeable weeks and base amount
+	var chargeableWeeks = weeks - credit;
+	var amount = chargeableWeeks * price;
+
+	// Apply discount
+	if (discount.includes('%')) {
+		var discountPercent = parseFloat(discount.replace('%', '')) || 0;
+		amount *= (1 - (discountPercent / 100));
+	} else {
+		var discountAmount = parseFloat(discount) || 0;
+		amount = Math.max(0, amount - discountAmount);
+	}
+
+	row.find('.amount').text(amount.toFixed(2));
+	updateTotalBasket();
+}
+
+
 </script>
 
 	<style>

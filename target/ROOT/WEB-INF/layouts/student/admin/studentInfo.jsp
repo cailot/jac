@@ -285,7 +285,6 @@ function searchStudent() {
 			branch : window.branch
 		},
 		success : function(data) {
-			//console.log('search - ' + data);
 			if (data == '') {
 				$('#warning-alert .modal-body').html('No record found with <b>' + $("#formKeyword").val() + '</b>');
 				$('#warning-alert').modal('toggle');
@@ -407,7 +406,7 @@ function updateStudentInfo() {
 			$('#success-alert').modal('toggle');
 		},
 		error : function(xhr, status, error) {
-			console.log('Error : ' + error);
+			console.error('Error:', error);
 		}
 	});
 }
@@ -417,7 +416,6 @@ function updateStudentInfo() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 function displayStudentInfo(value) {
 	clearStudentForm();
-	console.log(value);
 	$("#formId").val(value['id']);
 	if(value['active']===1){ // active student
 		$("#formFirstName").val(value['firstName']).css("color", "black").prop('disabled', false);
