@@ -239,11 +239,18 @@ function sendEmail() {
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'></td>
-                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${book.price}" pattern="#0.00" /></td>
+                            <c:choose>
+                                <c:when test="${book.name eq 'Extra'}">
+                                    <c:set var="bookPrice" value="${book.input}" />
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="bookPrice" value="${book.price}" />
+                                </c:otherwise>
+                            </c:choose>
+                            <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'><fmt:formatNumber value="${bookPrice}" pattern="#0.00" /></td>
                             <!-- Add the amount to the finalTotal variable -->
-                            <c:set var="finalTotal" value="${finalTotal + book.price}" />
+                            <c:set var="finalTotal" value="${finalTotal + bookPrice}" />
                         </tr>
-                         <%--<c:out value="${book}" />--%>
                     </c:forEach>
                 </c:if>
 
@@ -257,7 +264,7 @@ function sendEmail() {
                                 Payment
                             </td>
                             <td style='height: 40px; padding: 10px 5px; text-align: center; font-size: 14px; font-weight: bold; border: 1px solid #444;'>
-                                <c:out value="${payment.registerDate}" />
+                                <c:out value="${payment.payDate}" />
                             </td>
                             <td style='height: 40px; padding: 10px 5px; font-size: 14px; font-weight: bold; border: 1px solid #444; text-align: right;'>
                             </td>

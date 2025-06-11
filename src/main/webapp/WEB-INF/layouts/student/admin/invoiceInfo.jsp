@@ -429,10 +429,10 @@ function makePayment(){
 		return;
 	}
 	
-	if (!payAmount || parseFloat(payAmount) <= 0) {
-		alert('Payment amount must be greater than 0');
-		return;
-	}
+	// if (!payAmount || parseFloat(payAmount) <= 0) {
+	// 	alert('Payment amount must be greater than 0');
+	// 	return;
+	// }
 	
 	if (!payDate) {
 		alert('Payment date is required');

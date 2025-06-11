@@ -59,22 +59,57 @@ $(document).ready(
 			e.preventDefault();
 			var tr = $(this).closest('tr');
 			// how to check data-type contains 'book' or 'class' ?
-			// if it is 'book', simply remove <tr>, if it is 'class', remove all rows with the same pairId 
+			// if it is 'book', simply remove <tr>, if it is 'class', remove this row and its paired online/onsite class
 			var hiddens = tr.find('.data-type').text();
 			if(hiddens.indexOf('|') !== -1){
 				var hiddenValues = hiddens.split('|');
 				if(hiddenValues[0] === BOOK){
-					// how to delete current row from baskettable?
+					// delete only the current book row
 					tr.remove();
 				}else if(hiddenValues[0] === CLASS){
+					// Get identifying information from the current row
 					var pairId = tr.data('pair-id');
-					// search another row with the same pairId
-					$('#basketTable > tbody > tr').each(function() {
-						var exist = $(this).data('pair-id');
-						if(exist === pairId){
-							$(this).remove();
+					var year = tr.find('.year').text();
+					var name = tr.find('.name').text();
+					var isOnline = tr.find('.online').text() === "true";
+					
+					if (isOnline) {
+						// If this is an online class, find and remove the corresponding onsite class with same name/year
+						var correspondingName = name.replace(/\s+Online$/, ' Onsite').trim();
+						var $onsiteRow = $('#basketTable > tbody > tr').filter(function() {
+							return $(this).find('.year').text() === year && 
+								   $(this).find('.name').text() === correspondingName &&
+								   $(this).find('.online').text() !== "true";
+						});
+						$onsiteRow.remove();
+						tr.remove();
+					} else {
+						// If this is an onsite class, find and remove only the corresponding online version of THIS EXACT class
+						// Extract the base class name (without Onsite/Online suffix)
+						var baseClassName = name;
+						if (baseClassName.endsWith(' Onsite')) {
+							baseClassName = baseClassName.substring(0, baseClassName.length - 7);
 						}
-					});
+						
+						// The corresponding online class name
+						var correspondingOnlineName = baseClassName + (baseClassName.endsWith(' Online') ? '' : ' Online');
+						
+						var $onlineRow = $('#basketTable > tbody > tr').filter(function() {
+							var rowName = $(this).find('.name').text().trim();
+							var rowIsOnline = $(this).find('.online').text() === "true";
+							var rowYear = $(this).find('.year').text();
+							
+							// Only match if: 
+							// 1. It's an online class
+							// 2. Same year
+							// 3. EXACT corresponding name (e.g., "TT6 Online" for "TT6 Onsite")
+							return rowIsOnline && 
+								   rowYear === year && 
+								   rowName === correspondingOnlineName;
+						});
+						$onlineRow.remove();
+						tr.remove();
+					}
 				}
 			}
 			updateTotalBasket();
