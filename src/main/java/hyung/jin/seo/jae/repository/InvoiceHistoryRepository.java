@@ -17,14 +17,14 @@ public interface InvoiceHistoryRepository extends JpaRepository<InvoiceHistory, 
     @Query("SELECT new hyung.jin.seo.jae.dto.InvoiceDTO(i.id, i.credit, i.discount, i.paidAmount, i.amount, i.registerDate, i.paymentDate, i.info) FROM Invoice i WHERE i.id = (SELECT MAX(en.invoice.id) FROM Enrolment en WHERE en.student.id = ?1)")
 	InvoiceDTO findInvoiceHistoryDTOByStudentId(long studentId);
 
-	// // Fetch the top InvoiceHistory with the highest id for a given invoiceId
-	// @Query("SELECT i FROM InvoiceHistory i WHERE i.invoice.id = ?1 ORDER BY i.id DESC")
-	// InvoiceHistory findTopByInvoiceIdOrderByIdDesc(long invoiceId);
 	// Fetch the top InvoiceHistory with the highest id for a given invoiceId
-	// @Query("SELECT i FROM InvoiceHistory i WHERE i.invoice.id = ?1 ORDER BY i.id DESC")
-	// Optional<InvoiceHistory> findTopByInvoiceIdOrderByIdDesc(long invoiceId);
 	@Query(value = "SELECT * FROM InvoiceHistory i WHERE i.invoiceId = ?1 ORDER BY i.id DESC LIMIT 1", nativeQuery = true)
 	Optional<InvoiceHistory> findTopByInvoiceIdOrderByIdDesc(long invoiceId);
+
+	// Fetch the top InvoiceHistory with the highest id for a given invoiceId
+	@Query(value = "SELECT ih.* FROM InvoiceHistory ih JOIN Invoice i ON ih.invoiceId = i.id WHERE i.info = ?1 ORDER BY i.id DESC LIMIT 1", nativeQuery = true)
+	Optional<InvoiceHistory> findTopByInvoiceIdForMigration(String invoiceId);
+
 
 	// return invoice amount by id
 	@Query("SELECT (i.amount - i.paidAmount) FROM InvoiceHistory i WHERE i.id = ?1")

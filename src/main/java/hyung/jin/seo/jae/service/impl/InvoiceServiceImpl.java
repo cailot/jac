@@ -288,4 +288,16 @@ public class InvoiceServiceImpl implements InvoiceService {
 			throw new RuntimeException("Failed to delete invoice and related records: " + e.getMessage(), e);
 		}
 	}
+
+	// for migration only
+	@Override
+	public Invoice getInvoiceFromInfo(String id) {
+		Invoice invoice = null;
+		try {
+			invoice = invoiceRepository.findByInfo(id);
+		} catch (Exception e) {
+			System.out.println("Error retrieving invoice: " + e.getMessage());
+		}
+		return invoice;
+	}
 }

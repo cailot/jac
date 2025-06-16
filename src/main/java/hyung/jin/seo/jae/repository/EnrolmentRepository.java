@@ -50,8 +50,8 @@ public interface EnrolmentRepository extends JpaRepository<Enrolment, Long> {
 	List<EnrolmentDTO> findEnrolmentByInvoiceIdAndStudentId(long invoiceId, long studentId);
 
 	// bring latest EnrolmentDTO by invoice id & student id + old = false
-	@Query(value = "SELECT * FROM Enrolment e WHERE e.invoiceId = ?1 AND e.studentId = ?2", nativeQuery = true)
-	List<Enrolment> findAllEnrolmentByInvoiceIdAndStudentId(long invoiceId, long studentId);
+	@Query(value = "SELECT e.* FROM Enrolment e JOIN Invoice i ON e.invoiceId = i.id WHERE i.info = ?1 AND e.studentId = ?2", nativeQuery = true)
+	List<Enrolment> findMigratedEnrolmentByInvoiceIdAndStudentId(String invoiceId, long studentId);
 
 	// bring EnrolmentDTO by id
 	@Query("SELECT new hyung.jin.seo.jae.dto.EnrolmentDTO(e.id, e.registerDate, e.cancelled, e.cancellationReason, e.startWeek, e.endWeek, e.info, e.credit, e.discount, e.invoice.id, e.invoice.amount, e.invoice.paidAmount,  e.invoice.paymentDate, e.student.id, e.clazz.id, e.clazz.course.name, e.clazz.course.price, e.clazz.course.online, e.clazz.course.grade, e.clazz.day, e.clazz.course.cycle.year) FROM Enrolment e WHERE e.id = ?1 and e.old = false")

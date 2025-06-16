@@ -1,6 +1,5 @@
 package hyung.jin.seo.jae.controller;
 
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 
@@ -24,16 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.DataSource;
 
 import hyung.jin.seo.jae.dto.EnrolmentDTO;
-import hyung.jin.seo.jae.dto.EnrolmentMigrateDTO;
 import hyung.jin.seo.jae.dto.InvoiceDTO;
 import hyung.jin.seo.jae.dto.MaterialDTO;
-import hyung.jin.seo.jae.dto.MaterialMigrateDTO;
-import hyung.jin.seo.jae.dto.MigrateDTO;
 import hyung.jin.seo.jae.dto.MoneyDTO;
 import hyung.jin.seo.jae.dto.PaymentDTO;
-import hyung.jin.seo.jae.dto.PaymentMigrateDTO;
 import hyung.jin.seo.jae.dto.StudentDTO;
-import hyung.jin.seo.jae.model.Attendance;
 import hyung.jin.seo.jae.model.Book;
 import hyung.jin.seo.jae.model.Clazz;
 import hyung.jin.seo.jae.model.Enrolment;
@@ -149,7 +144,7 @@ public class MigrationController {
 					
 	// migrate student
 	@RequestMapping(value = "/student", method = {RequestMethod.POST})
-	public String migrateStudents(@RequestParam(value = "file", required = false) MultipartFile file, Model model) {
+	public String migrateStudent1(@RequestParam(value = "file", required = false) MultipartFile file, Model model) {
 		// 1. validate uploaded file	
 		if (file != null && !file.isEmpty()) {
 			String originalFilename = file.getOriginalFilename();
@@ -193,7 +188,14 @@ public class MigrationController {
 					// Transform the Student_ID from MS SQL format to MySQL format
 					oldStudentId = columns[0].trim(); // Assuming Student_ID is the first column
 					String newStudentId = transformStudentId(oldStudentId);
-					
+
+					// check if record already exists, if so skip
+					Student existingStudent = studentService.getStudent(Long.parseLong(newStudentId));
+					if (existingStudent != null) {
+						continue; // Skip this record since it already exists
+					}
+
+
 					// Create Student with transformed ID
 					Student std = new Student();
 					std.setId(Long.parseLong(newStudentId));
@@ -633,142 +635,9 @@ public class MigrationController {
 	}
 
 
-	@RequestMapping(value = "/payment", method = {RequestMethod.POST})
-	public String migratePayment(
-			@RequestParam(value = "file", required = false) MultipartFile file, 
-			Model model) {
-		if (file == null || file.isEmpty()) {
-			model.addAttribute(JaeConstants.ERROR, "No file uploaded. Please select a file to upload.");
-			return "migrationPaymentPage";
-		}
-		String originalFilename = file.getOriginalFilename();
-		if (originalFilename == null || !originalFilename.endsWith(".csv")) {
-			model.addAttribute(JaeConstants.ERROR, "Invalid file format. Please upload a CSV file.");
-			return "migrationPaymentPage";
-		}
-	
-		List<PaymentDTO> dtos = new ArrayList<>();
-		List<MigrationError> failedRecords = new ArrayList<>();
-		int lineCount = 0;
-		int successCount = 0;
-		int failureCount = 0;
-		
-		try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
-				.withSkipLines(1).build()) {
-			String[] columns;
-			
-			// Process in smaller batches and log progress
-			int batchSize = 50;
-			int currentBatch = 0;
-			
-			while ((columns = reader.readNext()) != null) {
-				lineCount++;
-				try {
-
-					boolean isNew = false;
-					Long invoiceId = Long.parseLong(columns[0].trim());
-					Long studentId = Long.parseLong(transformStudentId(columns[1].trim()));
-					String paymentMethod = getMigratePaymentMethod(columns[6].trim());
-					LocalDate paymentDate = parseYYYYMMDDDateFormat(columns[5].trim());
-					Double paidAmount = Double.parseDouble(columns[7].trim());
-					Double discount = Double.parseDouble(columns[11].trim());
-					Double paymentTotal = Double.parseDouble(columns[12].trim()) - discount;
-
-					System.out.println("Student  " + studentId + " invoice " + invoiceId + " line " + lineCount);
-							
-
-					// check if invoice exists
-					Invoice existInvoice = invoiceService.getInvoice(invoiceId);
-					if(existInvoice == null){
-						isNew = true;
-					}
-					Invoice invoice = isNew ? new Invoice() : existInvoice;
-					if(isNew){
-						invoice.setId(invoiceId);
-						invoice.setDiscount(discount);
-						invoice.setAmount(paymentTotal); // total amount
-						invoice.setPaidAmount(paidAmount);
-						invoice.setRegisterDate(paymentDate);
-						invoice.setPaymentDate(paymentDate);
-						invoiceService.addInvoiceMigration(invoice);
-					}else{
-						invoice.setPaidAmount(invoice.getPaidAmount() + paidAmount);
-						if(invoice.getAmount()==0){
-							invoice.setAmount(paymentTotal);
-						}
-						invoice.setPaymentDate(paymentDate);
-						invoiceService.updateInvoice(invoice, invoice.getId());						
-					}
-					
-					// create invoice history
-					InvoiceHistory invoiceHistory = new InvoiceHistory();
-					invoiceHistory.setInvoice(invoice);
-					invoiceHistory.setAmount(paymentTotal);
-					invoiceHistory.setPaidAmount(paidAmount);
-					invoiceHistory.setRegisterDate(paymentDate);
-					invoiceHistoryService.addInvoiceHistory(invoiceHistory);
-
-					// create payment
-					Payment payment = new Payment();
-					payment.setInvoice(invoice);
-					payment.setInvoiceHistory(invoiceHistory);
-					payment.setAmount(paidAmount);
-					payment.setTotal(invoice.getAmount());
-					payment.setMethod(paymentMethod);
-					payment.setRegisterDate(paymentDate);
-					paymentService.addPayment(payment);
-
-					// increase counter
-					successCount++;
-					dtos.add(new PaymentDTO(payment));
-				
-				} catch (Exception e) {
-					failureCount++;
-					String paymentId = columns.length > 0 ? columns[0] : "Unknown";
-					String errorMsg = e.getMessage();
-					
-					// Output the failure directly to the console
-					System.out.println("MIGRATION FAILURE - Payment ID: " + paymentId + 
-					                   " at line " + lineCount + " - Reason: " + errorMsg);
-					
-					failedRecords.add(new MigrationError(
-						paymentId,
-						lineCount,
-						errorMsg,
-						"Payment"
-					));
-				}
-				
-				// Print progress info every batch
-				if (lineCount % batchSize == 0) {
-					currentBatch++;
-					System.out.println("Processed batch " + currentBatch + 
-					                   " (" + lineCount + " records, " + 
-					                   successCount + " successful, " + 
-					                   failureCount + " failed)");
-				}
-			}
-				
-		} catch (Exception e) {
-			model.addAttribute(JaeConstants.ERROR, "Error processing file: " + e.getMessage());
-			return "migrationPaymentPage";
-		}
-	
-		model.addAttribute("totalProcessed", lineCount);
-		model.addAttribute("successCount", successCount);
-		model.addAttribute("failureCount", failureCount);
-		model.addAttribute("failedRecords", failedRecords);
-		if (!failedRecords.isEmpty()) {
-			model.addAttribute("migrationErrors", "true");
-		}
-		model.addAttribute(JaeConstants.BATCH_LIST, dtos);
-		return "migrationPaymentPage";
-	}
-	
-	
 	
 	@RequestMapping(value = "/enrol", method = {RequestMethod.POST})
-	public String migrateEnrolment(
+	public String migrateEnrolment2(
 			@RequestParam(value = "file", required = false) MultipartFile file, 
 			Model model) {
 		if (file == null || file.isEmpty()) {
@@ -789,37 +658,39 @@ public class MigrationController {
 		int lineCount = 0;
 		int successCount = 0;
 		int failureCount = 0;
-		DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
-			DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-			DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-			DateTimeFormatter.ofPattern("MM/dd/yyyy")
-		};
+		// DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
+		// 	DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+		// 	DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+		// 	DateTimeFormatter.ofPattern("MM/dd/yyyy")
+		// };
 	
 		try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
 				.withSkipLines(1).build()) {
 			String[] columns;
 			
 			// Process in smaller batches and log progress
-			int batchSize = 50;
+			int batchSize = 100;
 			int currentBatch = 0;
 			
 			while ((columns = reader.readNext()) != null) {
 				lineCount++;
 				try {
 					// 1. check it is a valid enrolment
-					String type = columns[13].trim(); // if 10 = Enrolment, 20 = Material, 30 = Outstanding 
+					// String type = columns[13].trim(); // if 10 = Enrolment, 20 = Material, 30 = Outstanding 
 					Long studentId = Long.parseLong(transformStudentId(columns[1].trim()));
-					Long invoiceId = Long.parseLong(columns[9].trim());
+					String oldInvoiceId = columns[9].trim();
 					Student student = studentService.getStudent(studentId);
-					// Check if invoice exists
-					Invoice invoice = invoiceService.getInvoice(invoiceId);
+					// Check if invoice exists from saved id in Info
+					Invoice invoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
 					if (invoice == null) {
 						// Create new invoice if not found
 						invoice = new Invoice();
-						invoice.setId(invoiceId);
+						invoice.setInfo(oldInvoiceId);
+						// invoice.setId(invoiceId);
 						invoice.setStudentId(studentId);
 						invoice.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
-						invoice = invoiceService.addInvoiceMigration(invoice);
+						// invoice = invoiceService.addInvoiceMigration(invoice);
+						invoice = invoiceService.addInvoice(invoice);
 					}
 												
 					// EnrolmentMigrateDTO enrolmentMigrateDTO = new EnrolmentMigrateDTO();
@@ -828,7 +699,7 @@ public class MigrationController {
 					int endWeek = Integer.parseInt(columns[6].trim());
 					int credit = Integer.parseInt(columns[7].trim());
 					double discount = Double.parseDouble(columns[20].trim());
-					double total = Double.parseDouble(columns[18].trim());
+					double total = Double.parseDouble(columns[22].trim());
 
 					// Add this code before line 920
 					// Look up reference from Fee_Codes table based on fee_idx in columns[12]
@@ -836,7 +707,7 @@ public class MigrationController {
 					Long reference = getReferenceByFeeIdx(feeIdx);
 					if (reference == null) {
 						// If reference is not found, use the fee_idx as fallback, check next row
-						System.out.println("Reference not found for fee_idx " + feeIdx + ", using fee_idx as reference");
+						System.out.println("Reference not found for fee_idx " + feeIdx + ", using fee_idx as reference at " + lineCount);
 						continue;
 					}
 					Clazz clazz = clazzService.getClazz(reference);
@@ -861,8 +732,6 @@ public class MigrationController {
 					enrolment.setCredit(credit);
 					enrolment.setDiscount(discount+"");
 
-
-					
 					// Set register date - use provided date if valid, otherwise use current date
 					try {
 						if (columns[10] != null && !columns[10].trim().isEmpty() && columns[10].trim().matches("\\d{8}")) {
@@ -884,33 +753,28 @@ public class MigrationController {
 					enrolmentService.addEnrolment(enrolment); // Invoice will be automatically updated
 
 					// if onsite class, create attendance
-					if(!clazzService.isOnline(clazz.getId())){
-						///////////////// Attendance ////////////////////////
-						int academicYear = clazzService.getAcademicYear(clazz.getId());
-						String clazzDay = clazzService.getDay(clazz.getId());
-						for(int i = startWeek; i <= endWeek; i++){
-							Attendance attendance = new Attendance();
-							attendance.setWeek(i+"");
-							attendance.setStudent(student);
-							attendance.setClazz(clazz);
-							attendance.setDay(clazzDay);
-							attendance.setStatus(JaeConstants.ATTEND_OTHER);
-							LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
-							attendance.setAttendDate(attendDate);
-							attendanceService.addAttendance(attendance);
-						}
-						//////////////////////////////////////////////////////////
-					}
+					// if(!clazzService.isOnline(clazz.getId())){
+					// 	///////////////// Attendance ////////////////////////
+					// 	int academicYear = clazzService.getAcademicYear(clazz.getId());
+					// 	String clazzDay = clazzService.getDay(clazz.getId());
+					// 	for(int i = startWeek; i <= endWeek; i++){
+					// 		Attendance attendance = new Attendance();
+					// 		attendance.setWeek(i+"");
+					// 		attendance.setStudent(student);
+					// 		attendance.setClazz(clazz);
+					// 		attendance.setDay(clazzDay);
+					// 		attendance.setStatus(JaeConstants.ATTEND_OTHER);
+					// 		LocalDate attendDate = cycleService.getDateByWeekAndDay(academicYear, i, clazzDay);
+					// 		attendance.setAttendDate(attendDate);
+					// 		attendanceService.addAttendance(attendance);
+					// 	}
+					// 	//////////////////////////////////////////////////////////
+					// }
 
 					// 4. add enrolment to dtos
 					EnrolmentDTO enrolmentDTO = new EnrolmentDTO(enrolment);
 					dtos.add(enrolmentDTO);
-
-
-					System.out.println("enrolmentDTO: " + enrolmentDTO + " line " + lineCount);
-
-								
-
+					// System.out.println("enrolmentDTO: " + enrolmentDTO + " line " + lineCount);
 					//}
 					successCount++;					
 
@@ -958,7 +822,7 @@ public class MigrationController {
 	}
 	
 	@RequestMapping(value = "/material", method = {RequestMethod.POST})
-	public String migrateMaterial(
+	public String migrateMaterial3(
 			@RequestParam(value = "file", required = false) MultipartFile file, 
 			Model model) {
 		if (file == null || file.isEmpty()) {
@@ -979,18 +843,18 @@ public class MigrationController {
 		int lineCount = 0;
 		int successCount = 0;
 		int failureCount = 0;
-		DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
-			DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-			DateTimeFormatter.ofPattern("dd/MM/yyyy"),
-			DateTimeFormatter.ofPattern("MM/dd/yyyy")
-		};
+		// DateTimeFormatter[] dateFormatters = new DateTimeFormatter[] {
+		// 	DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+		// 	DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+		// 	DateTimeFormatter.ofPattern("MM/dd/yyyy")
+		// };
 	
 		try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
 				.withSkipLines(1).build()) {
 			String[] columns;
 			
 			// Process in smaller batches and log progress
-			int batchSize = 50;
+			int batchSize = 100;
 			int currentBatch = 0;
 			
 			while ((columns = reader.readNext()) != null) {
@@ -999,20 +863,28 @@ public class MigrationController {
 					// 1. check it is a valid enrolment
 					// String type = columns[13].trim(); // if 10 = Enrolment, 20 = Material, 30 = Outstanding 
 					Long studentId = Long.parseLong(transformStudentId(columns[1].trim()));
-					Long invoiceId = Long.parseLong(columns[9].trim());
+
+					String oldInvoiceId = columns[9].trim();
+
+					if(oldInvoiceId.equalsIgnoreCase("150317")){
+						System.out.println(studentId + " watch - " + oldInvoiceId);
+					}
+
 					// Student student = studentService.getStudent(studentId);
 					// Check if invoice exists
-					Invoice invoice = invoiceService.getInvoice(invoiceId);
+					Invoice invoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
 					if (invoice == null) {
 						// Create new invoice if not found
 						invoice = new Invoice();
-						invoice.setId(invoiceId);
+						invoice.setInfo(oldInvoiceId);
 						invoice.setStudentId(studentId);
 						invoice.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
-						invoice = invoiceService.addInvoiceMigration(invoice);
+						// invoice = invoiceService.addInvoiceMigration(invoice);
+						invoice = invoiceService.addInvoice(invoice);
+						// System.out.println("Created new Invoice for Invoice ID: " + invoice.getId());
 					}
 
-					double total = Double.parseDouble(columns[18].trim());
+					double total = Double.parseDouble(columns[22].trim());
 					// Look up reference from Fee_Codes table based on fee_idx in columns[12]
 					Long feeIdx = Long.parseLong(columns[12].trim());
 					Long reference = getReferenceByFeeIdx(feeIdx);
@@ -1029,7 +901,7 @@ public class MigrationController {
 					invoice.setAmount(invoice.getAmount() + total);
 					//invoiceService.updateInvoice(invoice, invoice.getId());
 					// Get InvoiceHistory
-					InvoiceHistory invoiceHistory = invoiceHistoryService.getLastInvoiceHistory(invoiceId);
+					InvoiceHistory invoiceHistory = invoiceHistoryService.getLastInvoiceHistory(invoice.getId());
 					
 					// If no InvoiceHistory exists, create a new one
 					if (invoiceHistory == null) {
@@ -1038,7 +910,7 @@ public class MigrationController {
 						invoiceHistory.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
 						invoiceHistory.setAmount(total);
 						invoiceHistory = invoiceHistoryService.addInvoiceHistory(invoiceHistory);
-						System.out.println("Created new InvoiceHistory for Invoice ID: " + invoiceId);
+						// System.out.println("Created new InvoiceHistory for Invoice ID: " + invoice.getId());
 					}
 
 					// Create Material
@@ -1054,7 +926,7 @@ public class MigrationController {
 					MaterialDTO materialDTO = new MaterialDTO(material);
 					dtos.add(materialDTO);
 
-					System.out.println("materialDTO: " + materialDTO + " line " + lineCount);
+					// System.out.println("materialDTO: " + materialDTO + " line " + lineCount);
 									
 					successCount++;					
 
@@ -1102,7 +974,7 @@ public class MigrationController {
 	}
 	
 	@RequestMapping(value = "/etc", method = {RequestMethod.POST})
-	public String migrateEtc(
+	public String migrateEtc4(
 			@RequestParam(value = "file", required = false) MultipartFile file, 
 			Model model) {
 		if (file == null || file.isEmpty()) {
@@ -1137,18 +1009,18 @@ public class MigrationController {
 				try {
 					// 1. check it is a valid enrolment
 					Long studentId = Long.parseLong(transformStudentId(columns[1].trim()));
-					Long invoiceId = Long.parseLong(columns[9].trim());
+					String oldInvoiceId = columns[9].trim();
 					// List<Enrolment> enrolments = enrolmentService.findEnrolmentMigrationByInvoiceAndStudent(invoiceId, studentId);
 					// if (enrolments != null && enrolments.size() > 0) {
 						// for(Enrolment enrolment : enrolments){
 							// Outstanding
 							String abbrev = StringUtils.defaultString(columns[14].trim()).toUpperCase();
-							System.out.println("Student  " + studentId + " invoice " + invoiceId + " abbrev: " + abbrev + " line " + lineCount);
+							// System.out.println("Student  " + studentId + " invoice " + oldInvoiceId + " abbrev: " + abbrev + " line " + lineCount);
 							switch(abbrev){
 								case "CREDIT":
 									// same as discount
 								case "DISCOUNT":
-									List<Enrolment> enrols1 = enrolmentService.findEnrolmentMigrationByInvoiceAndStudent(invoiceId, studentId);
+									List<Enrolment> enrols1 = enrolmentService.findEnrolmentMigrationByInvoiceAndStudent(oldInvoiceId, studentId);
 									if (enrols1 != null && enrols1.size() > 0) {
 										for(Enrolment enrolment : enrols1){
 											// update discount in enrolment
@@ -1157,12 +1029,11 @@ public class MigrationController {
 											enrolment.setDiscount(String.valueOf(enrolmentDiscount+discountValue));
 											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
 											// update discount in invoice
-											Invoice discountInvoice = invoiceService.getInvoice(invoiceId);
+											Invoice discountInvoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
 											double invoiceDiscount = discountInvoice.getDiscount();
 											discountInvoice.setDiscount(invoiceDiscount+discountValue);
 											discountInvoice.setAmount(discountInvoice.getAmount() - discountValue);
 											invoiceService.updateInvoice(discountInvoice, discountInvoice.getId());	
-
 
 											EnrolmentDTO enrolmentDTO = new EnrolmentDTO(enrolment);
 											dtos.add(enrolmentDTO);
@@ -1175,27 +1046,44 @@ public class MigrationController {
 								case "TOP UP":
 									// same as extra
 								case "EXTRA": // opposite to discount
-									List<Enrolment> enrolments = enrolmentService.findEnrolmentMigrationByInvoiceAndStudent(invoiceId, studentId);
-									if (enrolments != null && enrolments.size() > 0) {
-										for(Enrolment enrolment : enrolments){
-											// update discount in enrolment
-											double extraValue = Double.parseDouble(columns[22].trim());
-											double currentEnrolmentExtra = Double.parseDouble(StringUtils.defaultIfBlank(enrolment.getDiscount(),"0"));
-											enrolment.setDiscount(String.valueOf(currentEnrolmentExtra - extraValue));
-											enrolmentService.updateEnrolment(enrolment, enrolment.getId());	
-											// update discount in invoice
-											Invoice extraInvoice = invoiceService.getInvoice(invoiceId);
-											double currentInvoiceDiscount = extraInvoice.getDiscount();
-											extraInvoice.setDiscount(currentInvoiceDiscount - extraValue);
-											// extraInvoice.setAmount(extraInvoice.getAmount() + extraValue);
-											invoiceService.updateInvoice(extraInvoice, extraInvoice.getId());	
-
-
-											EnrolmentDTO enrolmentDTO = new EnrolmentDTO(enrolment);
-											dtos.add(enrolmentDTO);
-											// System.out.println("enrolmentDTO: " + enrolmentDTO + " line " + lineCount);
-										}
+									double extraValue = Double.parseDouble(columns[22].trim());
+									Invoice extraInvoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
+									if(extraInvoice == null){
+										extraInvoice = new Invoice();
+										extraInvoice.setInfo(oldInvoiceId);
+										// extraInvoice.setAmount(extraValue);
+										extraInvoice.setStudentId(studentId);
+										extraInvoice.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+										extraInvoice = invoiceService.addInvoice(extraInvoice);
 									}
+									// Look up reference from Fee_Codes table based on fee_idx in columns[12]
+									Long feeIdx = Long.parseLong(columns[12].trim());
+									// Long reference = getReferenceByFeeIdx(feeIdx);
+									// if (reference == null) {
+									// 	// If reference is not found, use the fee_idx as fallback, check next row
+									// 	System.out.println("Reference not found for fee_idx " + feeIdx + ", using fee_idx as reference");
+									// 	continue;
+									// }
+									Book book = bookService.getBook(119L); // Extra id
+									extraInvoice.setAmount(extraInvoice.getAmount() + extraValue);
+									// get InvoiceHistory
+									InvoiceHistory extraHistory = invoiceHistoryService.getLastInvoiceHistoryFromInfo(oldInvoiceId);
+									if(extraHistory == null){
+										extraHistory = new InvoiceHistory();
+										extraHistory.setInvoice(extraInvoice);
+										extraHistory.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+										extraHistory.setAmount(extraInvoice.getAmount());
+										extraHistory = invoiceHistoryService.addInvoiceHistory(extraHistory);
+									}
+									// create material
+									Material extraMaterial = new Material();
+									extraMaterial.setInput(extraValue);
+									LocalDate paymDate = parseYYYYMMDDDateFormat(columns[10].trim());
+									extraMaterial.setRegisterDate(paymDate);
+									extraMaterial.setBook(book);
+									extraMaterial.setInvoice(extraInvoice);
+									extraMaterial.setInvoiceHistory(extraHistory);
+									materialService.addMaterial(extraMaterial);
 									successCount++;
 									break;
 								
@@ -1203,56 +1091,44 @@ public class MigrationController {
 								case "NJAC":
 								case "VOUCHER":
 								case "POSTAGE":
-									// Check if invoice exists
-									Invoice invoice = invoiceService.getInvoice(invoiceId);
-									if (invoice == null) {
-										// Create new invoice if not found
-										invoice = new Invoice();
-										invoice.setId(invoiceId);
-										invoice.setStudentId(studentId);
-										invoice.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
-										invoice = invoiceService.addInvoiceMigration(invoice);
+									double otherValue = Double.parseDouble(columns[22].trim());
+									Invoice otherInvoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
+									if(otherInvoice == null){
+										otherInvoice = new Invoice();
+										otherInvoice.setInfo(oldInvoiceId);
+										// extraInvoice.setAmount(extraValue);
+										otherInvoice.setStudentId(studentId);
+										otherInvoice.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+										otherInvoice = invoiceService.addInvoice(otherInvoice);
 									}
-
-									double total = Double.parseDouble(columns[18].trim());
 									// Look up reference from Fee_Codes table based on fee_idx in columns[12]
-									Long feeIdx = Long.parseLong(columns[12].trim());
-									Long reference = getReferenceByFeeIdx(feeIdx);
+									Long otherFeeIdxLong = Long.parseLong(columns[12].trim());
+									Long reference = getReferenceByFeeIdx(otherFeeIdxLong);
 									if (reference == null) {
 										// If reference is not found, use the fee_idx as fallback, check next row
-										System.out.println("Reference not found for fee_idx " + feeIdx + ", using fee_idx as reference");
+										System.out.println("Reference not found for fee_idx " + otherFeeIdxLong + ", using fee_idx as reference");
 										continue;
 									}
-									Book book = bookService.getBook(reference);
-
-									invoice.setAmount(invoice.getAmount() + total);
+									Book otherBook = bookService.getBook(reference);
+									otherInvoice.setAmount(otherInvoice.getAmount() + otherValue);
 									// get invoice history
-									// Long invoiceHistoryId = enrolment.getInvoiceHistory().getId();
-									// InvoiceHistory invoiceHistory = invoiceHistoryService.getInvoiceHistory(invoiceHistoryId);
-									InvoiceHistory invoiceHistory = invoiceHistoryService.getLastInvoiceHistory(invoiceId);
-									if(invoiceHistory == null){
-										invoiceHistory = new InvoiceHistory();
-										invoiceHistory.setInvoice(invoice);
-										invoiceHistory.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
-										invoiceHistory.setAmount(total);
-										invoiceHistory = invoiceHistoryService.addInvoiceHistory(invoiceHistory);
+									InvoiceHistory otherHistory = invoiceHistoryService.getLastInvoiceHistoryFromInfo(oldInvoiceId);
+									if(otherHistory == null){
+										otherHistory = new InvoiceHistory();
+										otherHistory.setInvoice(otherInvoice);
+										otherHistory.setRegisterDate(parseYYYYMMDDDateFormat(columns[10].trim()));
+										otherHistory.setAmount(otherInvoice.getAmount());
+										otherHistory = invoiceHistoryService.addInvoiceHistory(otherHistory);
 									}
 									// create material
-									Material material = new Material();
+									Material otherMaterial = new Material();
 									LocalDate paymentDate = parseYYYYMMDDDateFormat(columns[10].trim());
-									material.setRegisterDate(paymentDate);
-									material.setBook(book);
-									material.setInvoice(invoice);
-									material.setInvoiceHistory(invoiceHistory);
-									materialService.addMaterial(material);
+									otherMaterial.setRegisterDate(paymentDate);
+									otherMaterial.setBook(otherBook);
+									otherMaterial.setInvoice(otherInvoice);
+									otherMaterial.setInvoiceHistory(otherHistory);
+									materialService.addMaterial(otherMaterial);
 									successCount++;
-
-
-									MaterialDTO materialDTO = new MaterialDTO(material);
-									dtos.add(materialDTO);
-									// System.out.println("materialDTO: " + materialDTO + " line " + lineCount);
-
-									successCount++;					
 									break;								
 							}
 							// EnrolmentDTO enrolmentDTO = new EnrolmentDTO(enrolment);
@@ -1307,6 +1183,142 @@ public class MigrationController {
 	
 
 
+	@RequestMapping(value = "/payment", method = {RequestMethod.POST})
+	public String migratePayment5(
+			@RequestParam(value = "file", required = false) MultipartFile file, 
+			Model model) {
+		if (file == null || file.isEmpty()) {
+			model.addAttribute(JaeConstants.ERROR, "No file uploaded. Please select a file to upload.");
+			return "migrationPaymentPage";
+		}
+		String originalFilename = file.getOriginalFilename();
+		if (originalFilename == null || !originalFilename.endsWith(".csv")) {
+			model.addAttribute(JaeConstants.ERROR, "Invalid file format. Please upload a CSV file.");
+			return "migrationPaymentPage";
+		}
+	
+		List<PaymentDTO> dtos = new ArrayList<>();
+		List<MigrationError> failedRecords = new ArrayList<>();
+		int lineCount = 0;
+		int successCount = 0;
+		int failureCount = 0;
+		
+		try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(file.getInputStream()))
+				.withSkipLines(1).build()) {
+			String[] columns;
+			
+			// Process in smaller batches and log progress
+			int batchSize = 100;
+			int currentBatch = 0;
+			
+			while ((columns = reader.readNext()) != null) {
+				lineCount++;
+				try {
+					// boolean isNew = false;
+					String oldInvoiceId = columns[0].trim();
+					Long studentId = Long.parseLong(transformStudentId(columns[1].trim()));
+					String paymentMethod = getMigratePaymentMethod(columns[6].trim());
+					LocalDate paymentDate = parseYYYYMMDDDateFormat(columns[5].trim());
+					Double paidAmount = Double.parseDouble(columns[7].trim()); 
+					// Double remaining = Double.parseDouble(columns[8].trim()); // OS
+					// Double discount = Double.parseDouble(columns[11].trim());
+					Double total = Double.parseDouble(columns[9].trim());
+					// System.out.println("Student  " + studentId + " invoice " + oldInvoiceId + " line " + lineCount);
+					// check if invoice exists
+					Invoice invoice = invoiceService.getInvoiceFromInfo(oldInvoiceId);
+					if(invoice == null){
+						// isNew = true;
+						System.out.println("No Invoice Found for  " + studentId + " invoice " + oldInvoiceId + " line " + lineCount);
+						continue;
+					}
+					// Invoice invoice = isNew ? new Invoice() : existInvoice;
+					// if(isNew){
+					// 	// invoice.setInfo(oldInvoiceId);
+					// 	// invoice.setAmount(total); // total amount
+					// 	// invoice.setPaidAmount(paidAmount);
+					// 	// invoice.setRegisterDate(paymentDate);
+					// 	// invoice.setPaymentDate(paymentDate);
+					// 	// invoice.setStudentId(studentId);
+					// 	// invoiceService.addInvoiceMigration(invoice);
+					// 	System.out.println("New Invoice Created for  " + studentId + " invoice " + oldInvoiceId + " line " + lineCount);
+					// 	continue;
+					// }else{
+					invoice.setPaidAmount(invoice.getPaidAmount() + paidAmount);
+					if(invoice.getAmount()==0){
+						invoice.setAmount(total);
+					}
+					invoice.setPaymentDate(paymentDate);
+					invoice.setStudentId(studentId);
+					invoiceService.updateInvoice(invoice, invoice.getId());						
+					// }
+					
+					// create invoice history
+					InvoiceHistory invoiceHistory = new InvoiceHistory();
+					invoiceHistory.setInvoice(invoice);
+					invoiceHistory.setAmount(total);
+					invoiceHistory.setPaidAmount(paidAmount);
+					invoiceHistory.setRegisterDate(paymentDate);
+					invoiceHistoryService.addInvoiceHistory(invoiceHistory);
+
+					// create payment
+					Payment payment = new Payment();
+					payment.setInvoice(invoice);
+					payment.setInvoiceHistory(invoiceHistory);
+					payment.setAmount(paidAmount);
+					payment.setTotal(total);
+					payment.setMethod(paymentMethod);
+					payment.setRegisterDate(paymentDate);
+					payment.setPayDate(paymentDate);
+					paymentService.addPayment(payment);
+
+					// increase counter
+					successCount++;
+					dtos.add(new PaymentDTO(payment));
+				
+				} catch (Exception e) {
+					failureCount++;
+					String paymentId = columns.length > 0 ? columns[0] : "Unknown";
+					String errorMsg = e.getMessage();
+					
+					// Output the failure directly to the console
+					System.out.println("MIGRATION FAILURE - Payment ID: " + paymentId + 
+					                   " at line " + lineCount + " - Reason: " + errorMsg);
+					
+					failedRecords.add(new MigrationError(
+						paymentId,
+						lineCount,
+						errorMsg,
+						"Payment"
+					));
+				}
+				
+				// Print progress info every batch
+				if (lineCount % batchSize == 0) {
+					currentBatch++;
+					System.out.println("Processed batch " + currentBatch + 
+					                   " (" + lineCount + " records, " + 
+					                   successCount + " successful, " + 
+					                   failureCount + " failed)");
+				}
+			}
+				
+		} catch (Exception e) {
+			model.addAttribute(JaeConstants.ERROR, "Error processing file: " + e.getMessage());
+			return "migrationPaymentPage";
+		}
+	
+		model.addAttribute("totalProcessed", lineCount);
+		model.addAttribute("successCount", successCount);
+		model.addAttribute("failureCount", failureCount);
+		model.addAttribute("failedRecords", failedRecords);
+		if (!failedRecords.isEmpty()) {
+			model.addAttribute("migrationErrors", "true");
+		}
+		model.addAttribute(JaeConstants.BATCH_LIST, dtos);
+		return "migrationPaymentPage";
+	}
+	
+	
 
 
 

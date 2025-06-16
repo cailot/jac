@@ -297,10 +297,10 @@ public class EnrolmentServiceImpl implements EnrolmentService {
 	}
 
 	@Override
-	public List<Enrolment> findEnrolmentMigrationByInvoiceAndStudent(Long invoiceId, Long studentId) {
+	public List<Enrolment> findEnrolmentMigrationByInvoiceAndStudent(String invoiceId, Long studentId) {
 		List<Enrolment> enrolments = new ArrayList<>();
 		try {
-			enrolments = enrolmentRepository.findAllEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
+			enrolments = enrolmentRepository.findMigratedEnrolmentByInvoiceIdAndStudentId(invoiceId, studentId);
 		} catch (Exception e) {
 			System.out.println("No enrolment found: " + e.getMessage());
 		}

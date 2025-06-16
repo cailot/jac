@@ -1,9 +1,10 @@
 package hyung.jin.seo.jae.controller;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hyung.jin.seo.jae.dto.AttendanceDTO;
 import hyung.jin.seo.jae.dto.ClazzDTO;
@@ -280,13 +283,19 @@ public class EnrolmentController {
 
 	@PostMapping("/associateClazz/{studentId}")
 	@ResponseBody
-	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody EnrolmentDTO[] formData) {
+	// public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody Map<String, Object[]> combinedData) {
+	public List<EnrolmentDTO> associateClazz(@PathVariable Long studentId, @RequestBody Map<String, Object> combinedData) {
 		
 		List<EnrolmentDTO> dtos = new ArrayList<>();
 		// 1. check new Enrolment or not
 		boolean isNewEnrolment = true;
 		// 1-1. check paid invoiceId is included in formData
-		for(EnrolmentDTO data : formData){
+		ObjectMapper mapper = new ObjectMapper();
+		EnrolmentDTO[] enrolForms = mapper.convertValue(combinedData.get("enrolments"), EnrolmentDTO[].class);
+		MaterialDTO[] materialForms = mapper.convertValue(combinedData.get("materials"), MaterialDTO[].class);
+
+		// EnrolmentDTO[] enrolForms = (EnrolmentDTO[])((Object[]) combinedData.get("enrolments"));
+		for(EnrolmentDTO data : enrolForms){
 			if(StringUtils.isNotBlank(data.getInvoiceId()) && !StringUtils.equalsIgnoreCase("100%", data.getDiscount())){
 				isNewEnrolment = false;
 				break;
@@ -308,6 +317,16 @@ public class EnrolmentController {
 			double paidAmount = existingInvo.getPaidAmount();
 				// 3-0-1. remove existing enrolments if paid amount is 0 and enrolment not started yet
 				if(paidAmount==0){
+					// Check if enrolForms is null or empty
+					if((enrolForms == null || enrolForms.length == 0) && (materialForms == null || materialForms.length == 0)){
+						// Both are null/empty - delete invoice when paid not made yet
+						invoiceService.deleteInvoice(existingInvo.getId());
+						return dtos;
+					}
+					// if(enrolForms==null && materialForms == null){ // delete invoice when paid not made yet
+					// 	invoiceService.deleteInvoice(existingInvo.getId());
+					// 	return dtos;
+					// }
 					detachEnrolment(existingInvo);
 				}else if(paidAmount>0 && paidAmount<existingInvo.getAmount()){
 					// if partial paid in previous invoice, can't change until full payment completes
@@ -333,7 +352,7 @@ public class EnrolmentController {
 			invoiceHistoryService.addInvoiceHistory(history);
 
 			// 3-2. create new Enrolment
-			for(EnrolmentDTO data : formData){
+			for(EnrolmentDTO data : enrolForms){
 
 				// 3-2-1. get Clazz
 				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));
@@ -412,7 +431,7 @@ public class EnrolmentController {
 			detachEnrolment(existingInvo);
 
 			// 3-3. update existing Enrolment
-			for(EnrolmentDTO data : formData){
+			for(EnrolmentDTO data : enrolForms){
 
 				// 3-3-1. get Clazz
 				Clazz clazz = clazzService.getClazz(Long.parseLong(data.getClazzId()));

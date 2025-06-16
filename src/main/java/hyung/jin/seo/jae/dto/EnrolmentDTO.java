@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import hyung.jin.seo.jae.model.Enrolment;
 import hyung.jin.seo.jae.utils.JaeUtils;
 import lombok.Getter;
@@ -15,6 +17,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EnrolmentDTO extends MoneyDTO{
     
 	private boolean cancelled;

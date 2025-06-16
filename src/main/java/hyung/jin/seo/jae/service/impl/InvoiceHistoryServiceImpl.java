@@ -127,4 +127,15 @@ public class InvoiceHistoryServiceImpl implements InvoiceHistoryService {
 		return histories;
 	}
 
+	@Override
+	public InvoiceHistory getLastInvoiceHistoryFromInfo(String invoiceId) {
+		InvoiceHistory history = null;
+		try{
+			history = invoiceHistoryRepository.findTopByInvoiceIdForMigration(invoiceId).orElse(null);
+		}catch(Exception e){
+			System.out.println("No InvoiceHistory found");
+		}
+		return history;
+	}
+
 }

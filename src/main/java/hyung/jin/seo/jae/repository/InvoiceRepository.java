@@ -78,4 +78,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>{
 	@Query(value = "SELECT id FROM Invoice WHERE id >= (:studentId * 1000) AND id < ((:studentId + 1) * 1000) ORDER BY id DESC LIMIT 1 OFFSET 2", nativeQuery = true)
 	Long findThirdLatestInvoiceIdByStudentIdPattern(@Param("studentId") Long studentId);
 
+	// migration only - get invoice by checking info value
+	@Query(value = "SELECT * FROM Invoice WHERE info = :info", nativeQuery = true)
+	Invoice findByInfo(@Param("info") String info);
 }

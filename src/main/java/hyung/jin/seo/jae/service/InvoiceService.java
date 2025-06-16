@@ -37,6 +37,9 @@ public interface InvoiceService {
 	// get Invoice by Id
     Invoice getInvoice(Long id);
 
+	// get Invoice by info
+	Invoice getInvoiceFromInfo(String id);
+
 	// get Invoice owing amount by Id
 	double getInvoiceOwingAmount(Long id);
 

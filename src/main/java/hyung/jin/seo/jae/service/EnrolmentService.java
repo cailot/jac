@@ -37,7 +37,7 @@ public interface EnrolmentService {
 	List<EnrolmentDTO> findEnrolmentByInvoiceAndStudent(Long invoiceId, Long studentId);
 
 	// list enrolments for migration by invoice Id and student Id
-	List<Enrolment> findEnrolmentMigrationByInvoiceAndStudent(Long invoiceId, Long studentId);
+	List<Enrolment> findEnrolmentMigrationByInvoiceAndStudent(String invoiceId, Long studentId);
 
 	// return total count
 	long checkCount();

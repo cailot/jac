@@ -328,6 +328,12 @@ function updateStudentInfo() {
 		return;
 	}
 
+	// if activate process, then call reactivateStudent()
+	if($('#formActiveStatus').val()=='0' && $('#formActive').prop('checked')){
+		reactivateStudent();
+		return;
+	}		
+
 	// lastName, email, password validation
 	var last = document.getElementById('formLastName');
 	if(last.value== ""){
@@ -360,13 +366,7 @@ function updateStudentInfo() {
 		return false;
 	}
 
-	// if activate process, then call activateStudent()
-	// if($('#formEndDate').val()!='' && $('#formActive').prop('checked')){
-	if($('#formActiveStatus').val()=='0' && $('#formActive').prop('checked')){
-		reactivateStudent();
-		return;
-	}		
-	//warn if Id is empty
+	// warn if Id is empty
 	if ($("#formId").val() == '') {
 		$('#warning-alert .modal-body').text('Please search student record before update');
 		$('#warning-alert').modal('toggle');
