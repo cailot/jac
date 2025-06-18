@@ -437,8 +437,13 @@ function openJACeLearning(studentId) {
 		async: false,
 		success: function(data) {
 			password = data;
-			var url = 'https://jac-study.azurewebsites.net/online/'
+			// get eLearning endpoint from model attribute
+			var url = '${jacStudyEndpoint}';
+			if (!url) {
+				url = 'https://jac-study.azurewebsites.net/online/';
+			}
 			var access = url + 'urlLoginEncrypted?id=' + studentId + '&encPassword=' + password;	
+			console.log(access);
 			var win = window.open(access, '_blank');
 			win.focus();
 		},
@@ -571,7 +576,7 @@ function openJACeLearning(studentId) {
 													<i class="bi bi-clock-history text-success fa-lg hand-cursor" data-toggle="tooltip" title="Payment History" onclick="displayFullHistory('${student.id}')"></i>
 													<i class="ml-2 bi bi-pencil-square text-primary hand-cursor" data-toggle="tooltip" title="Edit" onclick="retrieveStudentInfo('${student.id}')"></i>
 													<i class="ml-2 bi bi-key text-warning hand-cursor" data-toggle="tooltip" title="Change Password" onclick="showPasswordModal('${student.id}')"></i>
-													<!-- <i class="ml-2 bi bi-globe text-danger hand-cursor" data-toggle="tooltip" title="Go to JAC eLearning" onclick="openJACeLearning('${student.id}')"></i> -->
+													<i class="ml-2 bi bi-globe text-danger hand-cursor" data-toggle="tooltip" title="Go to JAC eLearning" onclick="openJACeLearning('${student.id}')"></i>
 				 								</td>
 											</tr>
 										</c:forEach>

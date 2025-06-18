@@ -13,6 +13,9 @@ public class PropertiesServiceImpl implements PropertiesService {
 	@Value("${connected.homework.answer.count}")
 	private String answerCard;
 
+	@Value("${jac.study.endpoint}")
+	private String elearningEndpoint;
+
 	@Override
 	public int getSubjectCardCount() {
 		return subjectCard!=null ? Integer.parseInt(subjectCard) : 0;
@@ -21,6 +24,11 @@ public class PropertiesServiceImpl implements PropertiesService {
 	@Override
 	public int getAnswerCardCount() {
 		return answerCard!=null ? Integer.parseInt(answerCard) : 0;
+	}
+
+	@Override
+	public String getElearningEndpoint() {
+		return elearningEndpoint != null ? elearningEndpoint : "https://jac-study.azurewebsites.net/online/";
 	}
 
 }

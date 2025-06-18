@@ -8,6 +8,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import hyung.jin.seo.jae.dto.CycleDTO;
 import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.EmailService;
 import hyung.jin.seo.jae.service.PropertiesService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 import java.util.List;
@@ -28,8 +29,8 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 	@Autowired
 	private PropertiesService propertiesService;
 	
-	// @Autowired
-	// private EmailService emailService;
+	@Autowired
+	private EmailService emailService;
 
 	// @Autowired
 	// private PdfService pdfService;
@@ -63,6 +64,8 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 
 		// recognise image
 		// omrService.recogniseImage("src/main/resources/omr/template3.omr", "target/5.png");
+
+		emailService.sendEmail();
 
 		System.out.println("************* Done *************");
 

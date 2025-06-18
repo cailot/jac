@@ -7,4 +7,7 @@ public interface PropertiesService {
 
 	// get Homework answer card value
 	public int getAnswerCardCount();
+
+	// get e-learning endpoint
+	public String getElearningEndpoint();
 }

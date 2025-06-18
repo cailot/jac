@@ -1,11 +1,16 @@
 package hyung.jin.seo.jae.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.imageio.IIOException;
 
 import hyung.jin.seo.jae.dto.NoticeEmailDTO;
 import hyung.jin.seo.jae.model.NoticeEmail;
 
 public interface EmailService {
+
+	void sendEmail() throws IOException;
 
 	// send simple email
 	void sendEmail(String from, String to, String subject, String body);

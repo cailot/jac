@@ -27,6 +27,7 @@ import hyung.jin.seo.jae.dto.StudentDTO;
 import hyung.jin.seo.jae.dto.StudentWithEnrolmentDTO;
 import hyung.jin.seo.jae.model.Student;
 import hyung.jin.seo.jae.service.CycleService;
+import hyung.jin.seo.jae.service.PropertiesService;
 import hyung.jin.seo.jae.service.StudentService;
 import hyung.jin.seo.jae.utils.JaeConstants;
 
@@ -39,6 +40,9 @@ public class StudentController {
 
 	@Autowired
 	private CycleService cycleService;
+
+	@Autowired
+	private PropertiesService propertiesService;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -193,6 +197,7 @@ public class StudentController {
 		int week = cycleService.academicWeeks();
 		List<StudentWithEnrolmentDTO> dtos = studentService.listEnrolmentStudents(state, branch, grade, year, week);
 		model.addAttribute(JaeConstants.STUDENT_LIST, dtos);
+		model.addAttribute("jacStudyEndpoint", propertiesService.getElearningEndpoint());
 		return "studentEnrolPage";
 	}
 

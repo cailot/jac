@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +10,21 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+
 import org.springframework.core.io.ByteArrayResource;
 
 import hyung.jin.seo.jae.dto.NoticeEmailDTO;
@@ -30,6 +41,45 @@ public class EmailServiceImpl implements EmailService {
 
 	@Autowired
 	NoticeEmailRepository noticeEmailRepository;
+
+	@Value("${rhapsody.api.key}")
+	String key;
+
+	@Override
+	public void sendEmail() throws IOException{
+		Email fromEmail = setEmail("Jin", "jaccomvictoria@gmail.com");
+		Email toEmail = setEmail("JinHyung", "jins@jamesancollegevic.com.au");
+		Content content = new Content("text/plain", "Body body upper cut !!");
+		Mail mail = new Mail(fromEmail, "Test subject", toEmail, content);
+		SendGrid grid = new SendGrid(key);
+		Request request = new Request();
+		request.setMethod(Method.POST);
+		request.setEndpoint("mail/send");
+		request.setBody(mail.build());
+		Response response = grid.api(request);
+		System.out.println(response.getStatusCode());
+		response.getBody();
+	}
+
+	private Email setEmail(String name, String address){
+		Email email = new Email();
+		email.setEmail(address);
+		email.setName(name);
+		return email;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	@Override
 	public void sendEmail(String from, String to, String subject, String body) {

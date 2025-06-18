@@ -684,6 +684,26 @@ function countTablesByGroup() {
 
 <!-- Main page -->
 <div style="width: 85%; margin:0 auto;">
+	<!-- Printer Settings Tip -->
+	<c:if test="${empty results}">
+	<div class="row m-3 pt-3 justify-content-center">
+		<div class="col-md-8">
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<i class="bi bi-exclamation-triangle-fill text-danger"></i>&nbsp;
+				<span class="text-danger"><strong>Important Printer Scanning Settings:</strong></span>
+				<ul class="mb-0 mt-1">
+					<li>Resolution: <strong>200</strong></li>
+					<li>Image Option: <strong>None</strong></li>
+					<li>Document Direction: <strong>Landscape</strong></li>
+					<li>Many printers have 'Text Enhancement' set as default - This setting produces poor quality scanning. Please ensure this option is <strong>disabled</strong> for best results.</li>
+				</ul>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	</c:if>
 	<!-- Search section -->
 	<div class="row m-3 pt-5 justify-content-center">
 		<div class="upload-section col-md-8">
@@ -939,7 +959,7 @@ function countTablesByGroup() {
     <div class="modal-dialog modal-extra-large" role="document">
         <div class="modal-content" style="height: 90vh;">
             <div class="modal-header bg-primary text-white text-center">
-                <h5 class="modal-title w-100" id="editModalLabel">Student Answer Edit Dialog</h5>
+                <h5 class="modal-title w-100 text-warning" id="editModalLabel">Student Answer Edit Dialog</h5>
                 <button type="button" class="close position-absolute" style="right: 1rem;" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -1,5 +1,6 @@
 package hyung.jin.seo.jae.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,19 @@ public class EmailController {
 
 	@Autowired
 	private StudentService studentService;
+
+
+	// @GetMapping("/test")
+	// public String sendSingleEmail(){
+	// 	try {
+	// 		emailService.sendEmail();
+	// 	} catch (IOException e) {
+	// 		// TODO Auto-generated catch block
+	// 		e.printStackTrace();
+	// 	}
+	// 	return null;
+	// }
+	
 
 	@GetMapping("/sendAnnouncement")
 	@ResponseBody
