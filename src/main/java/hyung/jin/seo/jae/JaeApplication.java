@@ -64,8 +64,12 @@ public class JaeApplication extends SpringBootServletInitializer implements Comm
 
 		// recognise image
 		// omrService.recogniseImage("src/main/resources/omr/template3.omr", "target/5.png");
-
-		emailService.sendEmail();
+		String[] to = {"jh05052008@gmail.com"};
+		String[] cc = {"jins@jamesancollegevic.com.au"};
+		String[] bcc = {"cailot@naver.com"};
+		String contents = "<h1>This is a test Spring Boot email</h1>" +
+                 "<marquee><p>It can contain <strong>HTML</strong> content.</p></marquee>";
+		// emailService.sendGridEmail("Jin", to, cc, bcc, "Subject : SendGrid", contents);
 
 		System.out.println("************* Done *************");
 

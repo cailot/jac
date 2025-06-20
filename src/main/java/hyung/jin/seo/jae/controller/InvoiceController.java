@@ -675,7 +675,7 @@ public class InvoiceController {
 			studentEmails.add("jh05052008@gmail.com");
 			Map<String, Object> data = invoicePdfIngredients(Long.parseLong(studentId), branchCode);
 			String fromEmail = invoiceSender;
-			String bcc = codeService.getBranchEmail(branchCode);
+			String bcc1 = codeService.getBranchEmail(branchCode);
 			StringBuilder emailBodyBuilder = new StringBuilder();
 			emailBodyBuilder.append("<html>")
             .append("<head>")
@@ -694,8 +694,12 @@ public class InvoiceController {
 			String emailContent = String.format(emailTemplate, studentName, studentId);
 			String subject = "Invoice for " + studentName;
 			byte[] pdfData = pdfService.generateInvoicePdf(data);
-			emailService.sendEmailWithAttachment(fromEmail, studentEmails, bcc, subject, emailContent, "invoice_" + studentId + ".pdf", pdfData);
-			// emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "invoice.pdf", pdfData);
+		
+			String[] to = {"jh05052008@gmail.com"};
+			String[] cc = {"jins@jamesancollegevic.com.au"};
+			String[] bcc = {"cailot@naver.com"};
+			
+			emailService.sendGridEmailWithPdf("Jin", to, cc, bcc, subject, emailContent, "invoice_"+studentId+".pdf", pdfData);
 			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
 			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";
@@ -717,7 +721,7 @@ public class InvoiceController {
 			studentEmails.add("jh05052008@gmail.com");
 			Map<String, Object> data = receiptPdfIngredients(Long.parseLong(studentId), Long.parseLong(invoiceId), Long.parseLong(invoiceHistoryId), Long.parseLong(paymentId), branchCode);
 			String fromEmail = invoiceSender;
-			String bcc = codeService.getBranchEmail(branchCode);
+			String bcc1 = codeService.getBranchEmail(branchCode);
 			StringBuilder emailBodyBuilder = new StringBuilder();
 			emailBodyBuilder.append("<html>")
             .append("<head>")
@@ -736,8 +740,13 @@ public class InvoiceController {
 			String emailContent = String.format(emailTemplate, studentName, studentId);
 			String subject = "Receipt for " + studentName;			
 			byte[] pdfData = pdfService.generateReceiptPdf(data);
-			emailService.sendEmailWithAttachment(fromEmail, studentEmails, bcc, subject, emailContent, "receipt_" + studentId + ".pdf", pdfData);
-			// emailService.sendEmailWithAttachment(fromEmail, "cailot@naver.com", subject, emailContent, "receipt.pdf", pdfData);
+
+			String[] to = {"jh05052008@gmail.com"};
+			String[] cc = {"jins@jamesancollegevic.com.au"};
+			String[] bcc = {bcc1};
+			
+			emailService.sendGridEmailWithPdf("Jin", to, cc, bcc, subject, emailContent, "receipt_"+studentId+".pdf", pdfData);
+			// emailService.sendEmailWithAttachment(fromEmail, studentEmails, bcc, subject, emailContent, "receipt_" + studentId + ".pdf", pdfData);
 			return ResponseEntity.ok().body("{\"status\": \"success\", \"message\": \"Email sent successfully\"}");
 		}catch(Exception e){
 			String errorMessage = e.getMessage() != null ? e.getMessage() : "Unknown error occurred";

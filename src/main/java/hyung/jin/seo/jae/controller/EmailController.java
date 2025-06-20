@@ -68,7 +68,10 @@ public class EmailController {
 			receipients.add("cailot@naver.com.au");
 			receipients.add("jh05052008@gmail.com");
 			// 3. send email
-			emailService.sendEmail(fromEmail, receipients, subject, body);
+			// emailService.sendEmail(fromEmail, receipients, subject, body);
+			String[] recipientsArray = receipients.toArray(new String[0]);
+			emailService.sendGridEmail(fromEmail, recipientsArray, null, null, subject, body);
+
 			// 4. save email to database
 			NoticeEmail notice = new NoticeEmail();
 			notice.setState(state);

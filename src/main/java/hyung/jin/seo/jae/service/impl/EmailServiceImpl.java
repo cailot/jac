@@ -3,17 +3,11 @@ package hyung.jin.seo.jae.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.ByteArrayDataSource;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,365 +18,492 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-
-import org.springframework.core.io.ByteArrayResource;
+import com.sendgrid.helpers.mail.objects.Personalization;
+import com.sendgrid.helpers.mail.objects.Attachments;
 
 import hyung.jin.seo.jae.dto.NoticeEmailDTO;
 import hyung.jin.seo.jae.model.NoticeEmail;
 import hyung.jin.seo.jae.repository.NoticeEmailRepository;
 import hyung.jin.seo.jae.service.EmailService;
-import hyung.jin.seo.jae.utils.JaeConstants;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
-	JavaMailSender mailSender;
+	private JavaMailSender mailSender;
 
 	@Autowired
-	NoticeEmailRepository noticeEmailRepository;
+	private NoticeEmailRepository noticeEmailRepository;
 
-	@Value("${rhapsody.api.key}")
-	String key;
+	@Value("${email.api.key}")
+	private String emailKey;
+
+	private static String SENDER = "jaccomvictoria@gmail.com";
+
+	// @Override
+	// public void sendEmail() throws IOException{
+	// 	Email fromEmail = setEmail("Jin", "jaccomvictoria@gmail.com");
+	// 	Email toEmail = setEmail("JinHyung", "jins@jamesancollegevic.com.au");
+	// 	Content content = new Content("text/plain", "Body body upper cut !!");
+	// 	Mail mail = new Mail(fromEmail, "Test subject", toEmail, content);
+	// 	SendGrid grid = new SendGrid(emailKey);
+	// 	Request request = new Request();
+	// 	request.setMethod(Method.POST);
+	// 	request.setEndpoint("mail/send");
+	// 	request.setBody(mail.build());
+	// 	Response response = grid.api(request);
+	// 	System.out.println(response.getStatusCode());
+	// 	response.getBody();
+	// }
+
+	// private Email setEmail(String name, String address){
+	// 	Email email = new Email();
+	// 	email.setEmail(address);
+	// 	if(StringUtils.isNotEmpty(name)){
+	// 		email.setName(name);
+	// 	}else{
+	// 		email.setName("");
+	// 	}
+	// 	return email;
+	// }
+
+	// Compose Mail for SendGrid
+	private Mail composeMail(String from, String[] tos, String[] ccs, String[] bccs, String subject, String body ){
+		Mail mail = new Mail();
+		// set From
+		Email fromEmail = new Email();
+		fromEmail.setName(from);
+		fromEmail.setEmail(SENDER);
+		mail.setFrom(fromEmail);
+		mail.setSubject(subject);
+		// Content content = new Content("text/plain", body);
+		Content content = new Content("text/html", body);
+		mail.addContent(content);
+		Personalization p = new Personalization();
+		// set To
+		for(String to : tos){
+			p.addTo(new Email(to));
+		}
+		// set CC
+		if(ccs != null && ccs.length > 0){
+			for(String cc : ccs){
+				p.addCc(new Email(cc));
+			}
+		}
+		// set BCC
+		if(bccs != null && bccs.length > 0){
+			for(String bcc : bccs){
+				p.addBcc(new Email(bcc));
+			}
+		}
+		mail.addPersonalization(p);
+		return mail;
+	}
+
 
 	@Override
-	public void sendEmail() throws IOException{
-		Email fromEmail = setEmail("Jin", "jaccomvictoria@gmail.com");
-		Email toEmail = setEmail("JinHyung", "jins@jamesancollegevic.com.au");
-		Content content = new Content("text/plain", "Body body upper cut !!");
-		Mail mail = new Mail(fromEmail, "Test subject", toEmail, content);
-		SendGrid grid = new SendGrid(key);
+	public void sendGridEmail(String from, String[] tos, String[] ccs, String[] bccs, String subject, String body) {
+		// set contents
+		Mail mail = composeMail(from, tos, ccs, bccs, subject, body);
+		// configure SendGrid client
+		SendGrid sendGrid = new SendGrid(emailKey);
+		// set request
 		Request request = new Request();
-		request.setMethod(Method.POST);
-		request.setEndpoint("mail/send");
-		request.setBody(mail.build());
-		Response response = grid.api(request);
-		System.out.println(response.getStatusCode());
-		response.getBody();
-	}
-
-	private Email setEmail(String name, String address){
-		Email email = new Email();
-		email.setEmail(address);
-		email.setName(name);
-		return email;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	@Override
-	public void sendEmail(String from, String to, String subject, String body) {
-		MimeMessage message = mailSender.createMimeMessage();
-		try {
-			message.setFrom(new InternetAddress(from));
-			message.setRecipients(MimeMessage.RecipientType.TO, to);
-			message.setSubject(subject);
-			String contents =  "<h1>This is a test Spring Boot email</h1>" +
-			"<marquee><p>It can contain <strong>HTML</strong> content.</p></marquee>";
-			message.setContent(contents, "text/html; charset=utf-8");
-			mailSender.send(message);
-			System.out.println("MAIL SENT SUCCESSFULLY");
-
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	@Override
-	public void sendEmail(String from, String to, String subject, String body, String cc) {
-		MimeMessage message = mailSender.createMimeMessage();
-		try {
-			message.setFrom(new InternetAddress(from));
-			message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));
-			message.setRecipients(MimeMessage.RecipientType.CC, InternetAddress.parse(cc));
-			message.setSubject(subject);
-			message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
-			mailSender.send(message);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEmail(String from, List<String> to, String subject, String body) {
-		MimeMessage message = mailSender.createMimeMessage();
-		try {
-			message.setFrom(new InternetAddress(from));
-			
-			// Convert List<String> to array of InternetAddress
-			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-			for (int i = 0; i < to.size(); i++) {
-				recipientAddresses[i] = new InternetAddress(to.get(i));
-			}
-			
-			message.setRecipients(MimeMessage.RecipientType.TO, recipientAddresses);
-			message.setSubject(subject);
-			message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
-			mailSender.send(message);
-			System.out.println("MAIL SENT SUCCESSFULLY");
-	
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEmail(String from, List<String> to, String subject, String body, String cc) {
-		MimeMessage message = mailSender.createMimeMessage();
-		try {
-			message.setFrom(new InternetAddress(from));
-			
-			// Convert List<String> to array of InternetAddress
-			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-			for (int i = 0; i < to.size(); i++) {
-				recipientAddresses[i] = new InternetAddress(to.get(i));
-			}
-			
-			message.setRecipients(MimeMessage.RecipientType.TO, recipientAddresses);
-			message.setRecipients(MimeMessage.RecipientType.CC, cc);
-			message.setSubject(subject);
-			message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
-			mailSender.send(message);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEmailWithAttachment(String from, String to, String subject, String body, String fileName, byte[] pdfBytes) {
-		MimeMessagePreparator preparator = mimeMessage -> {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
-            messageHelper.setFrom(from);
-            messageHelper.setTo(to);
-            messageHelper.setSubject(subject);
-            messageHelper.setText(body, true);
-
-            if (pdfBytes != null && pdfBytes.length > 0) {
-                ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
-                messageHelper.addAttachment(fileName, dataSource);
-            }
-        };
-        mailSender.send(preparator);
-	}
-
-	@Override
-	public void sendEmailWithAttachment(String from, List<String> to, String bcc, String subject, String body, String fileName, byte[] pdfBytes) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-				messageHelper.setFrom(from);
-				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setBcc(bcc);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(JaeConstants.EMAIL_HEADER_HTML + body, true);
-
-				if (pdfBytes != null && pdfBytes.length > 0) {
-					ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
-					messageHelper.addAttachment(fileName, dataSource);
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-				messageHelper.setFrom(from);
-				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
-
-				if (pdfBytes != null && pdfBytes.length > 0) {
-					ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
-					messageHelper.addAttachment(fileName, dataSource);
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes, String cc) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-				messageHelper.setFrom(from);
-				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setCc(cc);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
-
-				if (pdfBytes != null && pdfBytes.length > 0) {
-					ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
-					messageHelper.addAttachment(fileName, dataSource);
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName) {
-		// html email
 		try{
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
-				messageHelper.setFrom(from);
-				messageHelper.setTo(to);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
+			request.setMethod(Method.POST);
+			request.setEndpoint("mail/send");
+			request.setBody(mail.build());
+			// send email
+			Response response = sendGrid.api(request);
+			System.out.println("Status Code : " + response.getStatusCode());
+			System.out.println("Status Body : " + response.getBody());
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
 
-				if (fileData != null && fileData.length > 0) {
-					ByteArrayDataSource dataSource = new ByteArrayDataSource(fileData, "application/octet-stream");
-					messageHelper.addAttachment(fileName, dataSource);
-				}
-			};
-			mailSender.send(preparator);
-		}catch(Exception e){
+
+	@Override
+	public void sendGridEmailWithPdf(String from, String[] tos, String[] ccs, String[] bccs, String subject,
+			String body, String fileName, byte[] pdfBytes) {
+		// set contents
+		Mail mail = composeMail(from, tos, ccs, bccs, subject, body);		
+		// Add attachment if present
+		if(pdfBytes != null && pdfBytes.length > 0) {
+			try {
+				Attachments attachments = new Attachments();
+				String base64Content = Base64.getEncoder().encodeToString(pdfBytes);
+				attachments.setContent(base64Content);
+				attachments.setFilename(fileName);
+				attachments.setType("application/pdf");
+				attachments.setDisposition("attachment");
+				mail.addAttachments(attachments);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		// Send email using SendGrid
+		SendGrid sendGrid = new SendGrid(emailKey);
+		Request request = new Request();
+		try {
+			request.setMethod(Method.POST);
+			request.setEndpoint("mail/send");
+			request.setBody(mail.build());
+			Response response = sendGrid.api(request);
+			System.out.println("Status Code: " + response.getStatusCode());
+			System.out.println("Response Body: " + response.getBody());
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void sendResultWithAttachment(String from, List<String> to, String subject, String body, byte[] fileData, String fileName) {
+	public void sendGridEmailWithExcel(String from, String[] tos, String[] ccs, String[] bccs, String subject,
+			String body, String fileName, byte[] excelBytes) {
+		// set contents
+		Mail mail = composeMail(from, tos, ccs, bccs, subject, body);		
+		// Add attachment if present
+		if(excelBytes != null && excelBytes.length > 0) {
+			try {
+				Attachments attachments = new Attachments();
+				String base64Content = Base64.getEncoder().encodeToString(excelBytes);
+				attachments.setContent(base64Content);
+				attachments.setFilename(fileName);
+				// Set Excel MIME type based on file extension
+				String mimeType = fileName.toLowerCase().endsWith(".xlsx") ? 
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : 
+					"application/vnd.ms-excel";
+				attachments.setType(mimeType);
+				attachments.setDisposition("attachment");
+				mail.addAttachments(attachments);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		// Send email using SendGrid
+		SendGrid sendGrid = new SendGrid(emailKey);
+		Request request = new Request();
 		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
-				messageHelper.setFrom(from);
-				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
-
-				if (fileData != null && fileData.length > 0) {
-					ByteArrayDataSource dataSource = new ByteArrayDataSource(fileData, "application/octet-stream");
-					messageHelper.addAttachment(fileName, dataSource);
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
+			request.setMethod(Method.POST);
+			request.setEndpoint("mail/send");
+			request.setBody(mail.build());
+			Response response = sendGrid.api(request);
+			System.out.println("Status Code: " + response.getStatusCode());
+			System.out.println("Response Body: " + response.getBody());
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
+
+
+
+
+
+	// @Override
+	// public void sendEmail(String from, String to, String subject, String body) {
+	// 	MimeMessage message = mailSender.createMimeMessage();
+	// 	try {
+	// 		message.setFrom(new InternetAddress(from));
+	// 		message.setRecipients(MimeMessage.RecipientType.TO, to);
+	// 		message.setSubject(subject);
+	// 		String contents =  "<h1>This is a test Spring Boot email</h1>" +
+	// 		"<marquee><p>It can contain <strong>HTML</strong> content.</p></marquee>";
+	// 		message.setContent(contents, "text/html; charset=utf-8");
+	// 		mailSender.send(message);
+	// 		System.out.println("MAIL SENT SUCCESSFULLY");
+
+	// 	} catch (MessagingException e) {
+	// 		e.printStackTrace();
+	// 	}
+		
+	// }
+
+	// @Override
+	// public void sendEmail(String from, String to, String subject, String body, String cc) {
+	// 	MimeMessage message = mailSender.createMimeMessage();
+	// 	try {
+	// 		message.setFrom(new InternetAddress(from));
+	// 		message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));
+	// 		message.setRecipients(MimeMessage.RecipientType.CC, InternetAddress.parse(cc));
+	// 		message.setSubject(subject);
+	// 		message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
+	// 		mailSender.send(message);
+	// 	} catch (MessagingException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendEmail(String from, List<String> to, String subject, String body) {
+	// 	MimeMessage message = mailSender.createMimeMessage();
+	// 	try {
+	// 		message.setFrom(new InternetAddress(from));
+			
+	// 		// Convert List<String> to array of InternetAddress
+	// 		InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 		for (int i = 0; i < to.size(); i++) {
+	// 			recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 		}
+			
+	// 		message.setRecipients(MimeMessage.RecipientType.TO, recipientAddresses);
+	// 		message.setSubject(subject);
+	// 		message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
+	// 		mailSender.send(message);
+	// 		System.out.println("MAIL SENT SUCCESSFULLY");
+	
+	// 	} catch (MessagingException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendEmail(String from, List<String> to, String subject, String body, String cc) {
+	// 	MimeMessage message = mailSender.createMimeMessage();
+	// 	try {
+	// 		message.setFrom(new InternetAddress(from));
+			
+	// 		// Convert List<String> to array of InternetAddress
+	// 		InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 		for (int i = 0; i < to.size(); i++) {
+	// 			recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 		}
+			
+	// 		message.setRecipients(MimeMessage.RecipientType.TO, recipientAddresses);
+	// 		message.setRecipients(MimeMessage.RecipientType.CC, cc);
+	// 		message.setSubject(subject);
+	// 		message.setContent(JaeConstants.EMAIL_HEADER_HTML + body, "text/html; charset=utf-8");
+	// 		mailSender.send(message);
+	// 	} catch (MessagingException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendEmailWithAttachment(String from, String to, String subject, String body, String fileName, byte[] pdfBytes) {
+	// 	MimeMessagePreparator preparator = mimeMessage -> {
+    //         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+    //         messageHelper.setFrom(from);
+    //         messageHelper.setTo(to);
+    //         messageHelper.setSubject(subject);
+    //         messageHelper.setText(body, true);
+
+    //         if (pdfBytes != null && pdfBytes.length > 0) {
+    //             ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
+    //             messageHelper.addAttachment(fileName, dataSource);
+    //         }
+    //     };
+    //     mailSender.send(preparator);
+	// }
+
+	// @Override
+	// public void sendEmailWithAttachment(String from, List<String> to, String bcc, String subject, String body, String fileName, byte[] pdfBytes) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	// 			messageHelper.setFrom(from);
+				
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setBcc(bcc);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(JaeConstants.EMAIL_HEADER_HTML + body, true);
+
+	// 			if (pdfBytes != null && pdfBytes.length > 0) {
+	// 				ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
+	// 				messageHelper.addAttachment(fileName, dataSource);
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	// 			messageHelper.setFrom(from);
+				
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
+
+	// 			if (pdfBytes != null && pdfBytes.length > 0) {
+	// 				ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
+	// 				messageHelper.addAttachment(fileName, dataSource);
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendEmailWithAttachment(String from, List<String> to, String subject, String body, String fileName, byte[] pdfBytes, String cc) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	// 			messageHelper.setFrom(from);
+				
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setCc(cc);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
+
+	// 			if (pdfBytes != null && pdfBytes.length > 0) {
+	// 				ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfBytes, "application/octet-stream");
+	// 				messageHelper.addAttachment(fileName, dataSource);
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendResultWithAttachment(String from, String to, String subject, String body, byte[] fileData, String fileName) {
+	// 	// html email
+	// 	try{
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+	// 			messageHelper.setFrom(from);
+	// 			messageHelper.setTo(to);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
+
+	// 			if (fileData != null && fileData.length > 0) {
+	// 				ByteArrayDataSource dataSource = new ByteArrayDataSource(fileData, "application/octet-stream");
+	// 				messageHelper.addAttachment(fileName, dataSource);
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	}catch(Exception e){
+	// 		e.printStackTrace();
+	// 	}
+	// }
+
+	// @Override
+	// public void sendResultWithAttachment(String from, List<String> to, String subject, String body, byte[] fileData, String fileName) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+	// 			messageHelper.setFrom(from);
+				
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
+
+	// 			if (fileData != null && fileData.length > 0) {
+	// 				ByteArrayDataSource dataSource = new ByteArrayDataSource(fileData, "application/octet-stream");
+	// 				messageHelper.addAttachment(fileName, dataSource);
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
 	
-	@Override
-	public void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
-				messageHelper.setFrom(from);
-				messageHelper.setTo(to);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
+	// @Override
+	// public void sendResultWithAttachments(String from, String to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true); // true indicates multipart
+	// 			messageHelper.setFrom(from);
+	// 			messageHelper.setTo(to);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
 
-				for (int i = 0; i < fileData.size(); i++) {
-					messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	// 			for (int i = 0; i < fileData.size(); i++) {
+	// 				messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
-	@Override
-	public void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-				messageHelper.setFrom(from);
+	// @Override
+	// public void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	// 			messageHelper.setFrom(from);
 				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
 
-				for (int i = 0; i < fileData.size(); i++) {
-					messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	// 			for (int i = 0; i < fileData.size(); i++) {
+	// 				messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
-	@Override
-	public void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames, String cc) {
-		try {
-			MimeMessagePreparator preparator = mimeMessage -> {
-				MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-				messageHelper.setFrom(from);
+	// @Override
+	// public void sendResultWithAttachments(String from, List<String> to, String subject, String body, List<byte[]> fileData, List<String> fileNames, String cc) {
+	// 	try {
+	// 		MimeMessagePreparator preparator = mimeMessage -> {
+	// 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	// 			messageHelper.setFrom(from);
 				
-				// Convert List<String> to array of InternetAddress
-				InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
-				for (int i = 0; i < to.size(); i++) {
-					recipientAddresses[i] = new InternetAddress(to.get(i));
-				}
-				messageHelper.setTo(recipientAddresses);
-				messageHelper.setCc(cc);
-				messageHelper.setSubject(subject);
-				messageHelper.setText(body, true);
+	// 			// Convert List<String> to array of InternetAddress
+	// 			InternetAddress[] recipientAddresses = new InternetAddress[to.size()];
+	// 			for (int i = 0; i < to.size(); i++) {
+	// 				recipientAddresses[i] = new InternetAddress(to.get(i));
+	// 			}
+	// 			messageHelper.setTo(recipientAddresses);
+	// 			messageHelper.setCc(cc);
+	// 			messageHelper.setSubject(subject);
+	// 			messageHelper.setText(body, true);
 
-				for (int i = 0; i < fileData.size(); i++) {
-					messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
-				}
-			};
-			mailSender.send(preparator);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	// 			for (int i = 0; i < fileData.size(); i++) {
+	// 				messageHelper.addAttachment(fileNames.get(i), new ByteArrayResource(fileData.get(i)));
+	// 			}
+	// 		};
+	// 		mailSender.send(preparator);
+	// 	} catch (Exception e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
 	@Override
 	public List<NoticeEmailDTO> getNoticeEmails(String state, String sender, String grade) {
@@ -435,5 +556,6 @@ public class EmailServiceImpl implements EmailService {
 			System.out.println("No Email Found");
 		}
 	}
+
 
 }

@@ -198,8 +198,9 @@ public class TestProcessServiceImpl implements TestProcessService {
 				System.out.println("Attempting to send email to: " + studentEmails + " Id :" + studentId);
 				System.out.println("From: " + emailSender);
 				System.out.println("Subject: " + emailSubject);
-				emailService.sendResultWithAttachment(emailSender, studentEmails, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
-				// emailService.sendEmail(emailSender, studentEmail, emailSubject, emailContent);				
+				// emailService.sendResultWithAttachment(emailSender, studentEmails, emailSubject, emailContent, pdfBytes, summary.getId() + ".pdf");
+				String[] recipientsArray = studentEmails.toArray(new String[0]);
+				emailService.sendGridEmailWithPdf(emailSender, recipientsArray, null, null, emailSubject, emailContent,  summary.getId() + ".pdf", pdfBytes);
 				System.out.println("Email sent successfully");
 			} catch (Exception e) {
 				System.out.println("Failed to send email: " + e.getMessage());
@@ -232,7 +233,7 @@ public class TestProcessServiceImpl implements TestProcessService {
 			}
 			// send email to branch
 			if(branchSummaryList.size() > 0){
-				String emailReceipient = "cailot@naver.com";//branchDTO.getEmail();
+				String[] emailReceipient = {"cailot@naver.com"};//branchDTO.getEmail();
 				StringBuilder branchEmailBodyBuilder = new StringBuilder();
 				branchEmailBodyBuilder.append("<html>")
 					.append("<head>")
@@ -265,8 +266,11 @@ public class TestProcessServiceImpl implements TestProcessService {
 
 				attachments.add(excelBytes);
 				fileNames.add("summary.xlsx");
-				// Step 12: Send email to branch with summary	
-				emailService.sendResultWithAttachments(emailSender, emailReceipient, emailSubject, emailContent, attachments, fileNames);
+				// Step 12: Send email to branch with summary
+				// emailService.sendGridEmailWithPdf(emailSender, emailReceipient, null, null, emailSubject, emailContent, fileNames, attachments);	
+				emailService.sendGridEmailWithExcel(emailSender, emailReceipient, null, null, emailSubject, emailContent, "summary.xlsx", excelBytes);	
+				
+				// emailService.sendResultWithAttachments(emailSender, emailReceipient, emailSubject, emailContent, attachments, fileNames);
 			}
 	
 		}// end of branch list

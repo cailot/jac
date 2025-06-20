@@ -116,7 +116,7 @@ public class OmrManagementController {
         
         try {
             for (MultipartFile file : files) {
-                List<OmrSheetDTO> fileResults = previewOmr(branch, file);
+                List<OmrSheetDTO> fileResults = previewOmr(branch, testGroup, grade, volume, file);
                 allResults.addAll(fileResults);
             }
         } catch (IOException e) {
@@ -135,7 +135,7 @@ public class OmrManagementController {
     }
 
     // invoke omr preview api call to JAC-HUB server
-    private List<OmrSheetDTO> previewOmr(String branch, MultipartFile file) throws IOException {
+    private List<OmrSheetDTO> previewOmr(String branch, String testGroup, String grade, String volume, MultipartFile file) throws IOException {
          // 1. complete endpoint url
          String url = omrEndpoint + "/preview";
          // 2. create headers
@@ -151,6 +151,9 @@ public class OmrManagementController {
          // 4. create the request entity
          MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
          body.add("branch", branch);
+         body.add("testGroup", testGroup);
+         body.add("grade", grade);
+         body.add("volume", volume);
          body.add("file", fileResource);
          HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
          // 5. send the request

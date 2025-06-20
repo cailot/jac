@@ -692,7 +692,7 @@ function countTablesByGroup() {
 				<i class="bi bi-exclamation-triangle-fill text-danger"></i>&nbsp;
 				<span class="text-danger"><strong>Important Printer Scanning Settings:</strong></span>
 				<ul class="mb-0 mt-1">
-					<li>Resolution: <strong>200</strong></li>
+					<li>Resolution: <strong>200</strong> dpi</li>
 					<li>Image Option: <strong>None</strong></li>
 					<li>Document Direction: <strong>Landscape</strong></li>
 					<li>Many printers have 'Text Enhancement' set as default - This setting produces poor quality scanning. Please ensure this option is <strong>disabled</strong> for best results.</li>
