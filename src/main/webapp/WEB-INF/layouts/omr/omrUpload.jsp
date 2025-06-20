@@ -887,34 +887,34 @@ function countTablesByGroup() {
 													<!-- Display Student ID and Name once per OmrSheetDTO -->
 													<div class="col-2 d-flex flex-column align-items-center justify-content-center" style="gap: 15px;">
 														<div>
-															<strong><c:out value="${omrSheet.studentTest[0].testName}" /></strong>
+															<strong><c:out value="${omrSheet.testName}" /></strong>
 														</div>
 														<div>
 															<strong>Student ID:</strong>
 															<span id="studentId${status.index}">
-																<c:out value="${omrSheet.studentTest[0].studentId}" />
+																<c:out value="${omrSheet.studentId}" />
 															</span>
 														</div>
 														<div>
 															<strong>Name:</strong> 
-															<c:out value="${omrSheet.studentTest[0].studentName}" />											
+															<c:out value="${omrSheet.studentName}" />											
 														</div>														
-														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.studentTest[0].fileName}')"></i></h3>
+														<h3><i class="bi bi-pencil-square text-primary" data-toggle="tooltip" title="Edit Student Answer" onclick="editAnswer(${status.index}, '${omrSheet.fileName}')"></i></h3>
 													</div>
 										
 													<!-- Display Answer Sheets -->
 													<div class="col-10">
 														<div class="row">
-															<c:forEach items="${omrSheet.studentTest}" var="studentTest" varStatus="testStatus">
+															<c:forEach items="${omrSheet.answer}" var="studentTest" varStatus="testStatus">
 																<!-- <pre>${studentTest}</pre> -->
-																
-																
+																<c:out value="${omrSheet.testIds[testStatus.index]}" />
+																<c:out value="${fn:length(omrSheet.answer)}" />
 																<!-- hide testId -->
-																<input type="hidden" id="testId${status.index}_${testStatus.index}" value="${studentTest.testId}" />
+																<input type="hidden" id="testId${status.index}_${testStatus.index}" value="${omrSheet.testIds[testStatus.index]}" />
 																
 																
 																<!-- Dynamically set column width based on studentTest size -->
-																<div class='<c:choose><c:when test="${fn:length(omrSheet.studentTest) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose>'>
+																<div class='<c:choose><c:when test="${fn:length(omrSheet.answer) == 2}">col-md-6</c:when><c:otherwise>col-md-4</c:otherwise></c:choose>'>
 																	<div class="table-container">
 																		<div id="resultTable${status.index}_${testStatus.index}">
 																			<!-- Generate table with result -->

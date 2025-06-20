@@ -3,6 +3,7 @@ package hyung.jin.seo.jae.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,7 +142,8 @@ public class OmrManagementController {
          // 2. create headers
          HttpHeaders headers = new HttpHeaders();
          headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-         // 3. crearte the file part
+         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+         // 3. create the file part
          Resource fileResource = new ByteArrayResource(file.getBytes()){
              @Override
              public String getFilename() {
@@ -171,7 +173,6 @@ public class OmrManagementController {
              System.out.println("Failed to fetch OMR preview: " + response.getStatusCode());
              return new ArrayList<>();
          }    
-         // System.out.println(">>>>>>>>>>> " + dtos);
          // 7. return response;
          return dtos;  
     }
